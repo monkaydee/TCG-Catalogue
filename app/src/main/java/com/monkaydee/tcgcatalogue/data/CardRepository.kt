@@ -8,6 +8,7 @@ import com.monkaydee.tcgcatalogue.data.db.PortfolioSnapshot
 import com.monkaydee.tcgcatalogue.data.remote.CardBrief
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.CardIndexApi
+import com.monkaydee.tcgcatalogue.data.remote.EbayApi
 import com.monkaydee.tcgcatalogue.data.remote.FxApi
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.Price
@@ -45,6 +46,7 @@ class CardRepository(
     private val cardIndex: CardIndexApi,
     private val priceCharting: PriceChartingApi,
     private val tcgplayer: TcgPlayerApi,
+    private val ebay: EbayApi,
     private val fx: FxApi,
     val settings: SettingsStore,
 ) {
@@ -138,13 +140,25 @@ class CardRepository(
     fun rawPrice(card: CardCandidate, variant: Variant, s: AppSettings): Price? =
         Pricing.pick(variant, card.rarity, Pricing.sourceFor(card.game, s.pokemonSource), s.usdToEur)
 
-    /** Price of a graded copy from PriceCharting's sold listings, or null if PriceCharting doesn't list the card. */
+    /**
+     * Price of a graded copy: PriceCharting's sold prices for that company and grade, otherwise
+     * the average of the last 5 eBay sales of the card in that grade. Null if neither has data.
+     */
     suspend fun gradedPrice(card: CardCandidate, variant: Variant, grade: GradeInfo): Price? {
         val grader = grade.grader ?: return null
         val g = grade.grade ?: return null
-        val table = priceCharting.table(card, variant) ?: return null
-        val (amount, note) = PriceChartingApi.priceFor(table, grader, g, grade.qualifier) ?: return null
-        return Price(amount, PriceSource.PRICECHARTING, note)
+        val table = priceCharting.table(card, variant)
+        // PriceCharting's estimates for graders without their own column are a last resort.
+        val pc = table?.let { PriceChartingApi.priceFor(it, grader, g, grade.qualifier) }
+        if (pc != null && pc.second == null) return Price(pc.first, PriceSource.PRICECHARTING)
+        val euro = settings.current().currency == "EUR"
+        val sold = runCatching { ebay.gradedAverage(card, grader, g, grade.qualifier, euro) }.getOrNull()
+        if (sold != null) {
+            val source = if (sold.currency == "EUR") PriceSource.EBAY_DE else PriceSource.EBAY_US
+            val label = GradeInfo(grader, g, grade.qualifier).label
+            return Price(sold.average, source, "Average of the last ${sold.count} $label sales on ${sold.site}")
+        }
+        return pc?.let { (amount, note) -> Price(amount, PriceSource.PRICECHARTING, note) }
     }
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
@@ -176,7 +190,7 @@ class CardRepository(
     private suspend fun priceFor(card: CardCandidate, variant: Variant, grade: GradeInfo?, condition: String, s: AppSettings): Price? {
         if (grade?.grader == null || grade.grade == null) return conditionPrice(card, variant, condition, s)
         return gradedPrice(card, variant, grade)
-            ?: rawPrice(card, variant, s)?.copy(note = "No graded sales found for this card; showing the raw price")
+            ?: rawPrice(card, variant, s)?.copy(note = "No graded sales found on PriceCharting or eBay; showing the raw price")
     }
 
     // ---- Collection ----

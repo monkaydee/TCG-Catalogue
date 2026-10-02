@@ -114,9 +114,10 @@ fun AddCardSheet(
         gradedQuote = runCatching { repo.gradedPrice(card, variant, gradeInfo) }.getOrNull()
         gradedLoading = false
     }
-    val shown = if (graded) gradedQuote else conditionQuote ?: raw
+    val shown = if (graded) gradedQuote ?: raw.takeIf { !gradedLoading } else conditionQuote ?: raw
     val loading = if (graded) gradedLoading else conditionLoading
-    val note = if (graded && !gradedLoading && gradedQuote == null) "No graded sales on PriceCharting; the raw price will be used" else shown?.note
+    val gradedMissing = graded && !gradedLoading && gradedQuote == null
+    val note = if (gradedMissing) "No ${gradeInfo.label} sales on PriceCharting or eBay; the raw price will be used" else shown?.note
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(
@@ -155,7 +156,7 @@ fun AddCardSheet(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text(
-                        if (graded) "${gradeInfo.label} · ${shown?.source?.label ?: "PriceCharting"}" else "per copy · ${variant.label} · $condition · ${shown?.source?.label.orEmpty()}",
+                        if (graded) "${gradeInfo.label} · ${if (gradedMissing) "raw price" else shown?.source?.label ?: "looking up sales…"}" else "per copy · ${variant.label} · $condition · ${shown?.source?.label.orEmpty()}",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     note?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }

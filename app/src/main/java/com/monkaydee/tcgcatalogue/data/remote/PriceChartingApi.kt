@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Graded card prices (PSA / BGS / CGC / SGC / TAG / ACE 10s and Grade 1–9.5) from PriceCharting,
  * which tracks sold listings. Reads the public card pages, at most once per card per day.
  */
-class PriceChartingApi(private val http: Http) {
+class PriceChartingApi(private val http: Http, private val browser: Browser? = null) {
     /** Prices in USD by row label: "Ungraded", "Grade 9", "PSA 10", "BGS 10 Black", ... */
     data class Table(val url: String, val title: String, val prices: Map<String, Double>)
 
@@ -19,10 +19,11 @@ class PriceChartingApi(private val http: Http) {
     /** PriceCharting's prices for [card] in the [variant] printing, or null if it isn't listed. */
     suspend fun table(card: CardCandidate, variant: Variant?): Table? {
         val key = "${card.game}/${card.cardId}/${variant?.key}"
-        cache[key]?.takeIf { System.currentTimeMillis() - it.at < DAY }?.let { return it.table }
-        val table = runCatching { find(card, variant) }.getOrNull()
-        cache[key] = Cached(table, System.currentTimeMillis())
-        return table
+        cache[key]?.takeIf { System.currentTimeMillis() - it.at < (if (it.table == null) NOT_FOUND_TTL else DAY) }?.let { return it.table }
+        val result = runCatching { find(card, variant) }
+        // Only remember real answers; a failed request is retried next time.
+        if (result.isSuccess) cache[key] = Cached(result.getOrNull(), System.currentTimeMillis())
+        return result.getOrNull()
     }
 
     private suspend fun find(card: CardCandidate, variant: Variant?): Table? {
@@ -47,13 +48,24 @@ class PriceChartingApi(private val http: Http) {
         return page(best.url)?.let { parseTable(best.url, it) }
     }
 
-    private suspend fun page(url: String) = http.getText(url, accept = "text/html", userAgent = BROWSER)
+    /** Fetches a page directly, or through the browser when PriceCharting blocks the request. */
+    private suspend fun page(url: String): String? {
+        val direct = runCatching { http.getText(url, accept = "text/html", userAgent = BROWSER) }
+        direct.getOrNull()?.takeIf { looksReal(it) }?.let { return it }
+        if (direct.isSuccess && direct.getOrNull() == null) return null // 404
+        val viaBrowser = browser?.html(url)?.takeIf { looksReal(it) }
+        return viaBrowser ?: throw (direct.exceptionOrNull() ?: java.io.IOException("PriceCharting blocked the request"))
+    }
+
+    /** A bot check ("Just a moment...") instead of the page. */
+    private fun looksReal(html: String) = html.contains("pricecharting", ignoreCase = true) && !html.contains("Just a moment", ignoreCase = true)
 
     internal data class Result(val url: String, val title: String, val console: String)
 
     companion object {
         private const val BASE = "https://www.pricecharting.com"
         private const val DAY = 24 * 60 * 60 * 1000L
+        private const val NOT_FOUND_TTL = 6 * 60 * 60 * 1000L
         private const val BROWSER = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36"
 
         private val resultRow = Regex("""<tr[^>]*id="product-\d+"[^>]*>(.*?)</tr>""", RegexOption.DOT_MATCHES_ALL)

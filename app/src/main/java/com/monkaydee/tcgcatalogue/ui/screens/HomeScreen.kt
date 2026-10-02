@@ -163,7 +163,8 @@ fun HomeScreen(
         val from = range.days?.let { LocalDate.now().toEpochDay() - it } ?: Long.MIN_VALUE
         // History is only tracked for the whole portfolio, so the chart ignores the game filter.
         val history = state.snapshots.filter { it.day >= from }.map { if (s.currency == "EUR") it.valueEur else it.valueUsd }
-        val top = cards.sortedByDescending { Money.unit(it, s.currency, s.usdToEur) }.take(10)
+        val byValue = cards.sortedByDescending { Money.unit(it, s.currency, s.usdToEur) }
+        val top = byValue.take(10)
 
         LazyColumn(
             Modifier.padding(padding).fillMaxSize(),
@@ -211,7 +212,7 @@ fun HomeScreen(
                 item {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(top, key = { it.id }) { c ->
-                            Column(Modifier.width(96.dp).clickable { onOpenCard(c.id) }) {
+                            Column(Modifier.width(96.dp).clickable { CardBrowse.open(byValue.map { it.id }, c.id, onOpenCard) }) {
                                 CardImage(c.imageUrl, thumb = true)
                                 Text(c.name, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 Text(Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.labelSmall)

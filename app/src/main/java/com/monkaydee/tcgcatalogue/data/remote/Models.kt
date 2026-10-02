@@ -6,6 +6,8 @@ enum class PriceSource(val label: String, val currency: String) {
     CARDMARKET("Cardmarket", "EUR"),
     TCGPLAYER("TCGplayer", "USD"),
     PRICECHARTING("PriceCharting", "USD"),
+    EBAY_US("eBay", "USD"),
+    EBAY_DE("eBay.de", "EUR"),
 }
 
 data class Price(val amount: Double, val source: PriceSource, val note: String? = null) {

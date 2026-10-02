@@ -95,7 +95,7 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
                     }
                 }
             }
-            items(sorted, key = { it.id }) { c -> OwnedCardRow(c, s) { onOpenCard(c.id) } }
+            items(sorted, key = { it.id }) { c -> OwnedCardRow(c, s) { CardBrowse.open(sorted.map { it.id }, c.id, onOpenCard) } }
         }
     }
 }
