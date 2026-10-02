@@ -43,6 +43,7 @@ import com.monkaydee.tcgcatalogue.data.Money
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.ui.components.CONDITIONS
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
+import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import com.monkaydee.tcgcatalogue.ui.components.QuantityStepper
 import kotlinx.coroutines.launch
 
@@ -129,7 +130,7 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CardImage(c.imageUrl, Modifier.fillMaxWidth(0.75f))
+        CardOrSlab(c, Modifier.fillMaxWidth(if (c.graded) 0.8f else 0.75f))
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(c.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("${c.setName} · ${c.number}", style = MaterialTheme.typography.bodyMedium)

@@ -44,6 +44,9 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 - **Collection**: portfolio value, value chart (1M / 3M / 1Y / All), most valuable cards, and
   every set with its value, copy count and completion (`12/165`).
 - **Set view**: owned cards sorted by value or by number.
+- **Virtual slabs**: graded cards are shown inside a slab with their company's label (PSA, BGS
+  incl. gold and Black Label, CGC, SGC, TAG, ACE, …), the grade words (GEM MT 10, MINT 9, …) and
+  the cert number, so graded and raw cards are told apart at a glance.
 - **Card view**: swipe left/right to go through the cards in the order of the list you opened
   them from (a set, or your whole collection by value from "Most valuable").
 - **Prices**: Pokémon and Magic from Cardmarket (EUR, trend) or TCGplayer (USD, market). Choose

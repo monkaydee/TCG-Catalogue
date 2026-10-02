@@ -57,6 +57,7 @@ import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.data.db.PortfolioSnapshot
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
+import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.ui.components.ValueChart
 import com.monkaydee.tcgcatalogue.ui.theme.Gain
@@ -213,7 +214,7 @@ fun HomeScreen(
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(top, key = { it.id }) { c ->
                             Column(Modifier.width(96.dp).clickable { CardBrowse.open(byValue.map { it.id }, c.id, onOpenCard) }) {
-                                CardImage(c.imageUrl, thumb = true)
+                                CardOrSlab(c, thumb = true)
                                 Text(c.name, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 Text(Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.labelSmall)
                             }

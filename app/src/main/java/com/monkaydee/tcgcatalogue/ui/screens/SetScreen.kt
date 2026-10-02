@@ -42,6 +42,7 @@ import com.monkaydee.tcgcatalogue.data.Money
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
+import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import kotlinx.coroutines.flow.map
 
 private fun numberKey(c: OwnedCard): String {
@@ -104,7 +105,7 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
 fun OwnedCardRow(c: OwnedCard, s: AppSettings, onClick: () -> Unit) {
     Card(Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            CardImage(c.imageUrl, Modifier.width(52.dp), thumb = true)
+            CardOrSlab(c, Modifier.width(if (c.graded) 60.dp else 52.dp), thumb = true)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(c.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)

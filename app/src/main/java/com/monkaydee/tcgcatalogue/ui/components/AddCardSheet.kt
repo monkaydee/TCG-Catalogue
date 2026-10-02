@@ -144,7 +144,14 @@ fun AddCardSheet(
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                CardImage(variant.imageUrl ?: card.imageUrl, Modifier.width(140.dp))
+                if (graded) {
+                    GradedSlab(
+                        variant.imageUrl ?: card.imageUrl, gradeInfo.grader, gradeInfo.grade, gradeInfo.qualifier,
+                        card.name, "${card.setName} #${card.number.substringBefore('/')}", gradeInfo.cert, Modifier.width(150.dp),
+                    )
+                } else {
+                    CardImage(variant.imageUrl ?: card.imageUrl, Modifier.width(140.dp))
+                }
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(card.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     Text(card.setName, style = MaterialTheme.typography.bodyMedium)

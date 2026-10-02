@@ -71,6 +71,7 @@ import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
+import com.monkaydee.tcgcatalogue.ui.components.GradedSlab
 import com.monkaydee.tcgcatalogue.ui.theme.Gain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -348,7 +349,12 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
             )
             if (top != null) {
                 Spacer(Modifier.width(6.dp))
-                CardImage(top.imageUrl, Modifier.width(52.dp), thumb = true)
+                val g = item.grade?.takeIf { it.grader != null && it.grade != null }
+                if (g != null) {
+                    GradedSlab(top.imageUrl, g.grader, g.grade, g.qualifier, top.name, top.number, g.cert, Modifier.width(60.dp), thumb = true)
+                } else {
+                    CardImage(top.imageUrl, Modifier.width(52.dp), thumb = true)
+                }
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
