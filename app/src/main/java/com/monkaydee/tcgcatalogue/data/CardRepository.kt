@@ -7,12 +7,19 @@ import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.data.db.PortfolioSnapshot
 import com.monkaydee.tcgcatalogue.data.remote.CardBrief
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
+import com.monkaydee.tcgcatalogue.data.remote.CardIndexApi
 import com.monkaydee.tcgcatalogue.data.remote.FxApi
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
+import com.monkaydee.tcgcatalogue.data.remote.Price
+import com.monkaydee.tcgcatalogue.data.remote.PriceChartingApi
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
+import com.monkaydee.tcgcatalogue.data.remote.Pricing
+import com.monkaydee.tcgcatalogue.data.remote.ScryfallApi
 import com.monkaydee.tcgcatalogue.data.remote.TcgDexApi
 import com.monkaydee.tcgcatalogue.data.remote.Variant
+import com.monkaydee.tcgcatalogue.data.remote.toBrief
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
+import com.monkaydee.tcgcatalogue.scan.GradeInfo
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -33,6 +40,9 @@ class CardRepository(
     private val db: AppDatabase,
     private val tcgdex: TcgDexApi,
     private val onePiece: OnePieceApi,
+    private val scryfall: ScryfallApi,
+    private val cardIndex: CardIndexApi,
+    private val priceCharting: PriceChartingApi,
     private val fx: FxApi,
     val settings: SettingsStore,
 ) {
@@ -43,10 +53,32 @@ class CardRepository(
     fun observeSet(game: Game, setId: String) = db.cards().observeSet(game, setId)
     fun observeCard(id: Long) = db.cards().observe(id)
 
+    // ---- Recognition ----
+
+    /** Downloads (or refreshes daily) the card indexes of the enabled games, so the scanner can match their codes. */
+    suspend fun prepareIndexes() {
+        settings.current().enabledGames.filter { it.indexed }.forEach { runCatching { cardIndex.index(it) } }
+    }
+
+    /** Per indexed game, a check whether a code exists in its card index (only indexes already loaded). */
+    fun indexMatchers(enabled: Set<Game>): Map<Game, (String) -> Boolean> =
+        enabled.filter { it.indexed }.mapNotNull { g -> cardIndex.cached(g)?.let { idx -> g to { code: String -> idx.byNumber.containsKey(code) } } }
+            .toMap()
+
     /** Resolves what the camera read into matching cards, best match first. */
     suspend fun resolve(hit: ScanHit): List<CardCandidate> = when (hit) {
         is ScanHit.OnePiece -> listOfNotNull(onePiece.card(hit.code))
         is ScanHit.Pokemon -> resolvePokemon(hit)
+        is ScanHit.Magic -> resolveMagic(hit)
+        is ScanHit.Indexed -> cardIndex.lookup(hit.game, hit.code)
+    }
+
+    private suspend fun resolveMagic(hit: ScanHit.Magic): List<CardCandidate> {
+        if (hit.set != null && hit.number != null) {
+            runCatching { scryfall.card(hit.set, hit.number) }.getOrNull()?.let { return listOf(it) }
+        }
+        val name = hit.nameGuess ?: return emptyList()
+        return listOfNotNull(runCatching { scryfall.named(name, hit.set) }.getOrNull() ?: runCatching { scryfall.named(name) }.getOrNull())
     }
 
     private suspend fun resolvePokemon(hit: ScanHit.Pokemon): List<CardCandidate> = coroutineScope {
@@ -73,18 +105,59 @@ class CardRepository(
     fun isConfident(candidates: List<CardCandidate>): Boolean =
         candidates.size == 1 || (candidates.size > 1 && candidates[0].score - candidates[1].score >= 0.25)
 
-    suspend fun searchPokemon(name: String): List<CardBrief> = tcgdex.searchByName(name)
+    // ---- Search ----
 
-    suspend fun details(brief: CardBrief): CardCandidate? = when (brief.game) {
-        Game.POKEMON -> tcgdex.card(brief.cardId)
-        Game.ONE_PIECE -> onePiece.card(brief.cardId)
+    /** Manual search. Pokémon: name; Magic: name or "SET 123"; One Piece and indexed games: code or name. */
+    suspend fun search(game: Game, query: String): List<CardBrief> {
+        val q = query.trim()
+        return when (game) {
+            Game.POKEMON -> tcgdex.searchByName(q)
+            Game.ONE_PIECE -> CardTextParser.findOnePiece(listOf(com.monkaydee.tcgcatalogue.scan.OcrLine(q.uppercase())))
+                ?.let { listOfNotNull(onePiece.card(it.code)?.toBrief()) }.orEmpty()
+            Game.MAGIC -> {
+                val m = Regex("""^([A-Za-z0-9]{3,5})\s+(\d+[a-z★]?)$""").find(q)
+                val exact = m?.let { runCatching { scryfall.card(it.groupValues[1], it.groupValues[2]) }.getOrNull() }
+                exact?.let { listOf(it.toBrief()) } ?: scryfall.search(q).map { it.toBrief() }
+            }
+            else -> cardIndex.search(game, q).map { it.toBrief() }
+        }
     }
 
-    fun sourceFor(game: Game, s: AppSettings) = if (game == Game.POKEMON) s.pokemonSource else PriceSource.TCGPLAYER
+    suspend fun details(brief: CardBrief): CardCandidate? = brief.candidate ?: when (brief.game) {
+        Game.POKEMON -> tcgdex.card(brief.cardId)
+        Game.ONE_PIECE -> onePiece.card(brief.cardId)
+        Game.MAGIC -> brief.cardId.split('/').takeIf { it.size == 2 }?.let { (set, n) -> scryfall.card(set, n) }
+        else -> brief.cardId.toLongOrNull()?.let { cardIndex.byProduct(brief.game, it) }
+    }
 
-    suspend fun add(candidate: CardCandidate, variant: Variant, quantity: Int, condition: String): Long {
+    // ---- Prices ----
+
+    /** Raw-card market price of [variant], cross-checked between Cardmarket and TCGplayer. */
+    fun rawPrice(card: CardCandidate, variant: Variant, s: AppSettings): Price? =
+        Pricing.pick(variant, card.rarity, Pricing.sourceFor(card.game, s.pokemonSource), s.usdToEur)
+
+    /** Price of a graded copy from PriceCharting's sold listings, or null if PriceCharting doesn't list the card. */
+    suspend fun gradedPrice(card: CardCandidate, variant: Variant, grade: GradeInfo): Price? {
+        val grader = grade.grader ?: return null
+        val g = grade.grade ?: return null
+        val table = priceCharting.table(card, variant) ?: return null
+        val (amount, note) = PriceChartingApi.priceFor(table, grader, g, grade.qualifier) ?: return null
+        return Price(amount, PriceSource.PRICECHARTING, note)
+    }
+
+    /** Graded price if available, otherwise the raw price with a note. */
+    private suspend fun priceFor(card: CardCandidate, variant: Variant, grade: GradeInfo?, s: AppSettings): Price? {
+        if (grade?.grader == null || grade.grade == null) return rawPrice(card, variant, s)
+        return gradedPrice(card, variant, grade)
+            ?: rawPrice(card, variant, s)?.copy(note = "No graded sales found for this card; showing the raw price")
+    }
+
+    // ---- Collection ----
+
+    suspend fun add(candidate: CardCandidate, variant: Variant, quantity: Int, condition: String, grade: GradeInfo? = null): Long {
         val s = settings.current()
-        val price = variant.price(sourceFor(candidate.game, s))
+        val graded = grade?.grader != null && grade.grade != null
+        val price = runCatching { priceFor(candidate, variant, grade, s) }.getOrNull()
         val id = db.cards().addOrIncrement(
             OwnedCard(
                 game = candidate.game,
@@ -98,11 +171,16 @@ class CardRepository(
                 rarity = candidate.rarity,
                 imageUrl = variant.imageUrl ?: candidate.imageUrl,
                 quantity = quantity,
-                condition = condition,
+                condition = if (graded) grade!!.label else condition,
                 price = price?.amount,
                 priceCurrency = price?.currency ?: "USD",
                 priceSource = price?.source?.label,
                 priceUpdatedAt = System.currentTimeMillis(),
+                grader = grade?.grader.takeIf { graded },
+                grade = grade?.grade.takeIf { graded },
+                gradeQualifier = grade?.qualifier.takeIf { graded },
+                certNumber = grade?.cert?.takeIf { graded },
+                priceNote = price?.note,
             ),
         )
         runCatching { ensureSet(candidate) }
@@ -127,8 +205,18 @@ class CardRepository(
                 CardSet(Game.POKEMON, s.id, s.name, s.official, s.logoUrl, release)
             }
             Game.ONE_PIECE -> CardSet(Game.ONE_PIECE, c.setId, c.setName, onePiece.setSize(c.setId))
+            Game.MAGIC -> scryfall.set(c.setId)?.let { (name, size) -> CardSet(Game.MAGIC, c.setId, name, size) }
+            else -> CardSet(c.game, c.setId, c.setName, c.setTotal)
         } ?: return
         db.sets().upsert(set)
+    }
+
+    /** Fetches the current data of a card in the collection. */
+    private suspend fun fetch(game: Game, cardId: String): CardCandidate? = when (game) {
+        Game.POKEMON -> tcgdex.card(cardId)
+        Game.ONE_PIECE -> onePiece.card(cardId)
+        Game.MAGIC -> cardId.split('/').takeIf { it.size == 2 }?.let { (set, n) -> scryfall.card(set, n) }
+        else -> cardId.toLongOrNull()?.let { cardIndex.byProduct(game, it) }
     }
 
     /**
@@ -147,20 +235,21 @@ class CardRepository(
             async {
                 gate.withPermit {
                     val (game, cardId) = key
-                    val fresh = runCatching {
-                        if (game == Game.POKEMON) tcgdex.card(cardId) else onePiece.card(cardId)
-                    }.getOrNull()
+                    val fresh = runCatching { fetch(game, cardId) }.getOrNull()
                     if (fresh != null) {
                         runCatching { ensureSet(fresh) }
                         for (row in rows) {
                             val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: continue
-                            val price = variant.price(sourceFor(game, s)) ?: continue
+                            val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
+                            val price = runCatching { priceFor(fresh, variant, grade, s) }.getOrNull() ?: continue
                             db.cards().update(
                                 row.copy(
                                     price = price.amount,
                                     priceCurrency = price.currency,
                                     priceSource = price.source.label,
                                     priceUpdatedAt = System.currentTimeMillis(),
+                                    priceNote = price.note,
+                                    rarity = fresh.rarity ?: row.rarity,
                                 ),
                             )
                             updated.incrementAndGet()
@@ -198,10 +287,7 @@ class CardRepository(
         backup.cards.distinctBy { it.game to it.setId }.forEach { c ->
             runCatching {
                 if (db.sets().get(c.game, c.setId) == null) {
-                    when (c.game) {
-                        Game.POKEMON -> tcgdex.setDetails(c.setId)?.let { (s, r) -> db.sets().upsert(CardSet(c.game, s.id, s.name, s.official, s.logoUrl, r)) }
-                        Game.ONE_PIECE -> db.sets().upsert(CardSet(c.game, c.setId, c.setName, onePiece.setSize(c.setId)))
-                    }
+                    fetch(c.game, c.cardId)?.let { ensureSet(it) }
                 }
             }
         }

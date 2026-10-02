@@ -34,6 +34,7 @@ import com.monkaydee.tcgcatalogue.BuildConfig
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.Backup
 import com.monkaydee.tcgcatalogue.data.CardRepository
+import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.ui.components.CONDITIONS
 import kotlinx.coroutines.Dispatchers
@@ -84,16 +85,33 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             Text("1 USD = %.4f EUR (ECB rate, refreshed with prices)".format(s.usdToEur), style = MaterialTheme.typography.bodySmall)
 
             HorizontalDivider()
-            Text("Pokémon price source", style = MaterialTheme.typography.titleSmall)
+            Text("Games", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "The scanner looks for these games. Dragon Ball, Union Arena, Weiss Schwarz and Naruto download a card list (up to a few MB, refreshed daily).",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Game.entries.forEach { g ->
+                    FilterChip(g in s.enabledGames, {
+                        val next = if (g in s.enabledGames) s.enabledGames - g else s.enabledGames + g
+                        if (next.isNotEmpty()) scope.launch { repo.settings.setEnabledGames(next) }
+                    }, { Text(g.short) })
+                }
+            }
+
+            HorizontalDivider()
+            Text("Price source (Pokémon & Magic)", style = MaterialTheme.typography.titleSmall)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                PriceSource.entries.forEach { p ->
+                listOf(PriceSource.CARDMARKET, PriceSource.TCGPLAYER).forEach { p ->
                     FilterChip(s.pokemonSource == p, {
                         scope.launch { repo.settings.setPokemonSource(p); onRefresh() }
                     }, { Text("${p.label} (${p.currency})") })
                 }
             }
             Text(
-                "Cardmarket trend price for European prices, TCGplayer market price for US prices. One Piece prices always come from TCGplayer. Falls back to the other market when a price is missing.",
+                "Cardmarket trend price for European prices, TCGplayer market price for US prices. The other games only have TCGplayer prices. " +
+                    "When the two markets disagree by more than 3×, one of them is linked to the wrong card and the app uses the other one (the card shows a note). " +
+                    "Graded cards are priced from PriceCharting's sold listings.",
                 style = MaterialTheme.typography.bodySmall,
             )
 
@@ -129,6 +147,9 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                 "Version ${BuildConfig.VERSION_NAME}\n" +
                     "Pokémon data & prices: TCGdex (tcgdex.dev)\n" +
                     "One Piece data & prices: OPTCG API (optcgapi.com)\n" +
+                    "Magic data & prices: Scryfall (scryfall.com)\n" +
+                    "Dragon Ball, Union Arena, Weiss Schwarz, Naruto: TCGplayer via TCGCSV (tcgcsv.com)\n" +
+                    "Graded prices: PriceCharting (pricecharting.com)\n" +
                     "Exchange rates: Frankfurter (ECB)\n" +
                     "Text recognition runs on-device with Google ML Kit.",
                 style = MaterialTheme.typography.bodySmall,

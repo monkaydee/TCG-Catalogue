@@ -24,7 +24,10 @@ object PhotoRecognizer {
     /** Big enough to read the small collector number on a binder page, small enough for memory. */
     private const val MAX_SIDE = 4000
 
-    suspend fun recognize(context: Context, uri: Uri, filter: GameFilter): List<ScanHit> {
+    /** Cards found in a photo, and the slab label if the photo shows one graded card. */
+    data class Result(val hits: List<ScanHit>, val grade: GradeInfo?)
+
+    suspend fun recognize(context: Context, uri: Uri, parse: (List<OcrLine>) -> List<ScanHit>): Result {
         val bitmap = withContext(Dispatchers.IO) { decode(context, uri) }
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         try {
@@ -36,10 +39,10 @@ object PhotoRecognizer {
                     val box = line.boundingBox
                     OcrLine(line.text, (box?.top ?: 0) / height, (box?.height() ?: 0) / height)
                 }
-                val hits = CardTextParser.parseAll(lines, filter)
-                if (hits.isNotEmpty()) return hits
+                val hits = parse(lines)
+                if (hits.isNotEmpty()) return Result(hits, CardTextParser.parseGrade(lines).takeIf { hits.size == 1 })
             }
-            return emptyList()
+            return Result(emptyList(), null)
         } finally {
             recognizer.close()
             bitmap.recycle()

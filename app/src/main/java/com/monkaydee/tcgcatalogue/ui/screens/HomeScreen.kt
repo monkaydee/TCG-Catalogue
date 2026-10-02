@@ -57,6 +57,7 @@ import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.data.db.PortfolioSnapshot
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
+import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.ui.components.ValueChart
 import com.monkaydee.tcgcatalogue.ui.theme.Gain
 import com.monkaydee.tcgcatalogue.ui.theme.Loss
@@ -202,10 +203,8 @@ fun HomeScreen(
                 }
             }
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(gameFilter == null, { gameFilter = null }, { Text("All") })
-                    Game.entries.forEach { g -> FilterChip(gameFilter == g, { gameFilter = g }, { Text(g.label) }) }
-                }
+                val owned = state.cards.map { it.game }.toSet()
+                GameChips(gameFilter, { gameFilter = it }, Game.entries.filter { it in owned }, nullLabel = "All")
             }
             if (top.isNotEmpty()) {
                 item { Text("Most valuable", style = MaterialTheme.typography.titleMedium) }
@@ -246,7 +245,7 @@ private fun SetRow(set: SetSummaryUi, currency: String, onClick: () -> Unit) {
             Column(Modifier.weight(1f)) {
                 Text(set.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    "${set.game.label} · " + if (set.total > 0) "${set.owned}/${set.total} cards" else "${set.owned} cards",
+                    "${set.game.short} · " + if (set.total > 0) "${set.owned}/${set.total} cards" else "${set.owned} cards",
                     style = MaterialTheme.typography.bodySmall,
                 )
                 if (set.total > 0) {
@@ -273,7 +272,9 @@ private fun EmptyState(modifier: Modifier, onScan: () -> Unit, onPhotos: () -> U
         Text("Your collection is empty", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(8.dp))
         Text(
-            "Scan a Pokémon or One Piece card. The app reads the collector number (e.g. 025/165 or OP05-060) and looks up the card and its market price.",
+            "Scan a card from Pokémon, One Piece, Magic, Dragon Ball, Union Arena, Weiss Schwarz or Naruto. " +
+                "The app reads the number printed on the card (e.g. 025/165, OP05-060, FB01-139) and looks up the card and its market price. " +
+                "Graded slabs are recognised too.",
             style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(Modifier.height(16.dp))

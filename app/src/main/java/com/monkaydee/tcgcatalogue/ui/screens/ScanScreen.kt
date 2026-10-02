@@ -71,7 +71,9 @@ import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
-import com.monkaydee.tcgcatalogue.scan.GameFilter
+import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.scan.GradeInfo
+import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.scan.OcrLine
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.TextAnalyzer
@@ -82,7 +84,10 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 data class ScanState(
-    val filter: GameFilter = GameFilter.AUTO,
+    /** null = recognise any enabled game */
+    val filter: Game? = null,
+    /** Slab label read together with the card, if it is graded. */
+    val grade: GradeInfo? = null,
     /** Text read but not yet confirmed by a second frame. */
     val reading: String? = null,
     val loading: Boolean = false,
@@ -101,11 +106,27 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
     /** Camera frames are only analysed while nothing else is going on. */
     val scanning get() = state.value.let { !it.loading && it.candidates.isEmpty() }
 
-    fun setFilter(f: GameFilter) = state.update { it.copy(filter = f) }
+    private var enabled: Set<Game> = Game.entries.toSet()
+
+    init {
+        viewModelScope.launch {
+            repo.settings.flow.collect {
+                enabled = it.enabledGames
+                repo.prepareIndexes()
+            }
+        }
+    }
+
+    fun setFilter(f: Game?) = state.update { it.copy(filter = f) }
 
     fun onLines(lines: List<OcrLine>) {
         if (!scanning) return
-        val hit = CardTextParser.parse(lines, state.value.filter) ?: return
+        val filter = state.value.filter
+        val hit = CardTextParser.parse(lines, filter, repo.indexMatchers(enabled))
+            ?.takeIf { filter != null || it.game in enabled } ?: return
+        // A slab label is read with the card; keep it while the same card stays in view.
+        val grade = CardTextParser.parseGrade(lines)
+        if (hit.key != lastKey || grade != null) state.update { it.copy(grade = grade ?: it.grade.takeIf { hit.key == lastKey }) }
         // Require two consecutive frames to agree before calling the API, to filter OCR misreads.
         streak = if (hit.key == lastKey) streak + 1 else 1
         lastKey = hit.key
@@ -115,10 +136,7 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
         if (streak >= 2) resolve(hit)
     }
 
-    private fun describe(hit: ScanHit) = when (hit) {
-        is ScanHit.OnePiece -> hit.code
-        is ScanHit.Pokemon -> "${hit.number}/${hit.total}" + (hit.nameGuess?.let { " · $it" } ?: "")
-    }
+    private fun describe(hit: ScanHit) = describeHit(hit) + (state.value.grade?.let { " · ${it.label}" } ?: "")
 
     private fun resolve(hit: ScanHit) {
         streak = 0
@@ -134,10 +152,13 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
                 else -> {
                     val s = repo.settings.current()
                     val top = candidates.first()
+                    val grade = state.value.grade?.takeIf { it.grader != null && it.grade != null }
                     if (s.quickAdd && repo.isConfident(candidates)) {
-                        repo.add(top, top.variants.first(), 1, s.defaultCondition)
+                        repo.add(top, top.variants.first(), 1, s.defaultCondition, grade)
                         cooldownUntil = System.currentTimeMillis() + 4000
-                        state.update { it.copy(loading = false, message = "Added ${top.name} (${top.number})", addedCount = it.addedCount + 1) }
+                        state.update {
+                            it.copy(loading = false, grade = null, message = "Added ${top.name} (${top.number})" + (grade?.let { g -> " · ${g.label}" } ?: ""), addedCount = it.addedCount + 1)
+                        }
                     } else {
                         state.update { it.copy(loading = false, candidates = candidates) }
                     }
@@ -146,19 +167,27 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
         }
     }
 
-    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String) {
+    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?) {
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition) }
-                .onSuccess { state.update { s -> s.copy(candidates = emptyList(), message = "Added ${c.name} ×$qty", addedCount = s.addedCount + qty) } }
-                .onFailure { state.update { s -> s.copy(candidates = emptyList(), message = "Could not save: ${it.message}") } }
+            runCatching { repo.add(c, v, qty, condition, grade) }
+                .onSuccess { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Added ${c.name} ×$qty", addedCount = s.addedCount + qty) } }
+                .onFailure { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Could not save: ${it.message}") } }
             cooldownUntil = System.currentTimeMillis() + 3000
         }
     }
 
     fun dismiss() {
         cooldownUntil = System.currentTimeMillis() + 3000
-        state.update { it.copy(candidates = emptyList(), reading = null) }
+        state.update { it.copy(candidates = emptyList(), reading = null, grade = null) }
     }
+}
+
+/** "025/165 · Pikachu", "OP05-060", "DMU 107" */
+fun describeHit(hit: ScanHit): String = when (hit) {
+    is ScanHit.OnePiece -> hit.code
+    is ScanHit.Pokemon -> "${hit.number}/${hit.total}" + (hit.nameGuess?.let { " · $it" } ?: "")
+    is ScanHit.Magic -> listOfNotNull(hit.set?.uppercase(), hit.number).joinToString(" ").ifEmpty { hit.nameGuess.orEmpty() }
+    is ScanHit.Indexed -> hit.code
 }
 
 @Composable
@@ -193,15 +222,14 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
 
         Column(Modifier.fillMaxWidth().statusBarsPadding().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                GameFilter.entries.forEach { f ->
-                    FilterChip(
-                        selected = state.filter == f,
-                        onClick = { vm.setFilter(f) },
-                        label = { Text(when (f) { GameFilter.AUTO -> "Auto"; GameFilter.POKEMON -> "Pokémon"; GameFilter.ONE_PIECE -> "One Piece" }) },
+                Box(Modifier.weight(1f)) {
+                    GameChips(
+                        selected = state.filter,
+                        onSelect = vm::setFilter,
+                        games = Game.entries.filter { it in settings.enabledGames },
                         colors = FilterChipDefaults.filterChipColors(containerColor = Color.Black.copy(alpha = 0.5f), labelColor = Color.White),
                     )
                 }
-                Spacer(Modifier.weight(1f))
                 FilledTonalIconButton(onClick = { torch = !torch; camera?.cameraControl?.enableTorch(torch) }) {
                     Icon(if (torch) Icons.Default.FlashOff else Icons.Default.FlashOn, "Torch")
                 }
@@ -242,7 +270,7 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
         }
     }
 
-    AddCardSheet(state.candidates, settings, onAdd = vm::add, onDismiss = vm::dismiss)
+    AddCardSheet(state.candidates, settings, repo, initialGrade = state.grade, onAdd = vm::add, onDismiss = vm::dismiss)
 }
 
 @Composable

@@ -5,9 +5,23 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
-enum class Game(val label: String) {
+enum class Game(val label: String, val short: String = label) {
     POKEMON("Pokémon"),
     ONE_PIECE("One Piece"),
+    MAGIC("Magic: The Gathering", "Magic"),
+    DRAGON_BALL_FW("Dragon Ball Fusion World", "DB Fusion World"),
+    DRAGON_BALL_SUPER("Dragon Ball Super", "DB Super"),
+    UNION_ARENA("Union Arena"),
+    WEISS_SCHWARZ("Weiss Schwarz"),
+    NARUTO("Naruto"),
+    ;
+
+    /** Looked up in the daily card index built from TCGplayer data (scripts/build_card_index.py). */
+    val indexed: Boolean get() = this in INDEXED
+
+    companion object {
+        val INDEXED = setOf(DRAGON_BALL_FW, DRAGON_BALL_SUPER, UNION_ARENA, WEISS_SCHWARZ, NARUTO)
+    }
 }
 
 /** One row per distinct (card, variant, condition) the user owns. */
@@ -21,7 +35,10 @@ data class OwnedCard(
     val game: Game,
     /** API id: TCGdex id ("sv03.5-025") or One Piece card id ("OP05-060"). */
     val cardId: String,
-    /** Pokémon: normal / holo / reverse / firstEdition. One Piece: card_image_id ("OP05-060_p1"). */
+    /**
+     * Pokémon: normal / holo / reverse / firstEdition. One Piece: card_image_id ("OP05-060_p1").
+     * Magic: nonfoil / foil / etched. Indexed games: TCGplayer printing ("Normal", "Foil").
+     */
     val variant: String,
     val variantLabel: String,
     val name: String,
@@ -32,6 +49,7 @@ data class OwnedCard(
     val rarity: String? = null,
     val imageUrl: String? = null,
     val quantity: Int = 1,
+    /** "NM".."DMG" for raw cards, the slab label ("PSA 10", "BGS 10 Black Label") for graded ones. */
     val condition: String = "NM",
     /** Latest market price per copy, in [priceCurrency]. */
     val price: Double? = null,
@@ -40,7 +58,18 @@ data class OwnedCard(
     val priceUpdatedAt: Long? = null,
     val purchasePrice: Double? = null,
     val addedAt: Long = System.currentTimeMillis(),
-)
+    /** Grading company ("PSA", "BGS", "CGC", ...) for slabbed cards, null for raw cards. */
+    val grader: String? = null,
+    /** "10", "9.5", ... */
+    val grade: String? = null,
+    /** "Black Label" (BGS) or "Pristine" (CGC) for the special 10s. */
+    val gradeQualifier: String? = null,
+    val certNumber: String? = null,
+    /** Explains where an unusual price comes from, e.g. when the two markets disagreed. */
+    val priceNote: String? = null,
+) {
+    val graded: Boolean get() = grader != null
+}
 
 /** Cached set metadata, used for completion percentages and logos. */
 @Serializable

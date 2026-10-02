@@ -26,15 +26,19 @@ class Http(
     val json = Json { ignoreUnknownKeys = true; isLenient = true; explicitNulls = false }
 
     /** GET [url] and parse it as JSON. Returns null on HTTP 404. */
-    suspend fun getJson(url: String): JsonElement? = withContext(Dispatchers.IO) {
-        val request = Request.Builder().url(url).header("User-Agent", "TCG-Catalogue-Android").build()
-        client.newCall(request).execute().use { response ->
-            if (response.code == 404) return@withContext null
-            if (!response.isSuccessful) throw HttpException(response.code, "HTTP ${response.code} for $url")
-            val body = response.body?.string().orEmpty()
-            if (body.isBlank()) null else json.parseToJsonElement(body)
+    suspend fun getJson(url: String): JsonElement? =
+        getText(url, accept = "application/json")?.takeIf { it.isNotBlank() }?.let(json::parseToJsonElement)
+
+    /** GET [url] as text. Returns null on HTTP 404. */
+    suspend fun getText(url: String, accept: String = "*/*", userAgent: String = "TCG-Catalogue-Android/1.0"): String? =
+        withContext(Dispatchers.IO) {
+            val request = Request.Builder().url(url).header("User-Agent", userAgent).header("Accept", accept).build()
+            client.newCall(request).execute().use { response ->
+                if (response.code == 404) return@withContext null
+                if (!response.isSuccessful) throw HttpException(response.code, "HTTP ${response.code} for $url")
+                response.body?.string().orEmpty()
+            }
         }
-    }
 }
 
 // Small helpers for navigating loosely-typed API responses.

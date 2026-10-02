@@ -1,8 +1,9 @@
 # TCG Catalogue
 
-An Android app to catalogue **Pokémon** and **One Piece** trading cards: scan a card with the
-camera, and the app identifies it, looks up its market price, files it under its set and
-tracks the value of your whole collection over time.
+An Android app to catalogue trading cards: **Pokémon, One Piece, Magic: The Gathering,
+Dragon Ball Super (Masters and Fusion World), Union Arena, Weiss Schwarz and Naruto**. Scan a
+card (raw or graded) with the camera or from a photo; the app identifies it, looks up its market
+price, files it under its set and tracks the value of your whole collection over time.
 
 ## Install
 
@@ -22,6 +23,15 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
     sets have the same size. If it's still unclear, you choose from the matches with images.
   - One Piece: `OP05-060`, `ST01-001`, `EB01-012`, `PRB01-001`, `P-001`, including all
     alternate arts / SP / manga printings as separate choices.
+  - Magic: the set code and collector number at the bottom left (`DMU • EN`, `0107 M`);
+    falls back to the card name.
+  - Dragon Ball Fusion World / Super, Union Arena, Weiss Schwarz, Naruto: the card code
+    (`FB01-139`, `BT1-031`, `UE01BT/BLC-1-001`, `HOL/W91-E001`), matched against a daily card
+    index. English prints only (the index comes from TCGplayer).
+- **Graded cards**: the slab label is read too. That covers PSA, BGS/Beckett (including Black Label),
+  CGC (including Pristine), SGC, TAG, ACE, AOG, GSG and PI, plus the grade and cert number.
+  Graded copies are priced from PriceCharting's sold listings for that company and grade. You can
+  also set or correct the company, grade and cert by hand.
 - **Import photos**: took pictures while you were out? Pick them from the gallery (Scan →
   *From photos*, or the photo icon on the Collection screen), or share them to TCG Catalogue
   from any app. Each photo is read on the phone, tried in all four orientations, and can contain
@@ -32,8 +42,10 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 - **Collection**: portfolio value, value chart (1M / 3M / 1Y / All), most valuable cards, and
   every set with its value, copy count and completion (`12/165`).
 - **Set view**: owned cards sorted by value or by number.
-- **Prices**: Pokémon from Cardmarket (EUR, trend) or TCGplayer (USD, market). Choose
-  in Settings. One Piece from TCGplayer. Displayed in EUR or USD using ECB rates. Prices
+- **Prices**: Pokémon and Magic from Cardmarket (EUR, trend) or TCGplayer (USD, market). Choose
+  in Settings. All other games use TCGplayer. When Cardmarket and TCGplayer disagree by more than 3×,
+  one of them is linked to the wrong card (e.g. TCGdex gives the gold Zekrom 115/113 the price of the
+  regular Zekrom). The app then uses the other market and shows a note on the card. Displayed in EUR or USD using ECB rates. Prices
   refresh daily in the background, which also records the portfolio history.
 - **Printing, condition, quantity** per card (normal / holo / reverse / 1st edition;
   NM–DMG).
@@ -68,7 +80,17 @@ CameraX frame ──▶ ML Kit text recognition (on-device)
 | Background refresh | WorkManager                                         |
 | Pokémon data       | [TCGdex](https://tcgdex.dev) (Cardmarket + TCGplayer prices) |
 | One Piece data     | [OPTCG API](https://optcgapi.com) (TCGplayer prices) |
+| Magic data         | [Scryfall](https://scryfall.com) (Cardmarket + TCGplayer prices) |
+| Other games        | [TCGCSV](https://tcgcsv.com) (TCGplayer) → daily index on the `data` branch |
+| Graded prices      | [PriceCharting](https://www.pricecharting.com) sold listings |
 | Exchange rates     | [Frankfurter](https://frankfurter.dev) (ECB)        |
+
+## Card index
+
+`scripts/build_card_index.py` downloads every set of the indexed games from TCGCSV and writes one
+compact JSON file per game (`{"groups": …, "cards": [[code, name, set, rarity, productId, prices]]}`).
+`.github/workflows/card-index.yml` runs it every day and force-pushes the files to the `data`
+branch. The app downloads the files of the enabled games from there, at most once a day.
 
 ## Building locally
 
@@ -83,7 +105,9 @@ Requires JDK 17+ and the Android SDK (platform 35).
 
 - APKs are signed with the key in `app/signing/debug.keystore`. It's checked in so that CI builds
   can update each other. Don't publish the app to the Play Store with this key.
-- Prices are for raw (ungraded) cards.
+- Graded prices come from PriceCharting's public card pages. Smaller graders (AOG, GSG, PI, …)
+  have no separate 10 prices there, so their 10s are estimated from the general Grade 9.5 price,
+  and the card says so.
 - Recognition relies on the printed number. Very old Pokémon cards without numbers, and cards
   that are badly worn or shot at an angle, may need the manual search.
 - Free community APIs are used. If one goes down or changes, lookups for that game fail until

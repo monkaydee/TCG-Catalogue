@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.scan
 
+import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -55,8 +56,8 @@ class CardTextParserTest {
     }
 
     @Test fun filterRespected() {
-        assertNull(CardTextParser.parse(lines("OP05-060"), GameFilter.POKEMON))
-        assertNull(CardTextParser.parse(lines("025/165"), GameFilter.ONE_PIECE))
+        assertNull(CardTextParser.parse(lines("OP05-060"), Game.POKEMON))
+        assertNull(CardTextParser.parse(lines("025/165"), Game.ONE_PIECE))
     }
 
     @Test fun binderPageFindsEveryCard() {

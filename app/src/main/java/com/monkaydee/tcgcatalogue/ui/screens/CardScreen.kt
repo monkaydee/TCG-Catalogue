@@ -92,16 +92,28 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit) {
                 } else {
                     Text("No market price available", style = MaterialTheme.typography.bodySmall)
                 }
-                Text("Raw-card market price; graded copies are worth a different amount.", style = MaterialTheme.typography.labelSmall)
+                c.priceNote?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
+                if (c.graded) {
+                    Text(
+                        listOfNotNull(c.condition, c.certNumber?.let { "Cert #$it" }).joinToString(" · "),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                    Text("Graded price from PriceCharting sold listings.", style = MaterialTheme.typography.labelSmall)
+                } else {
+                    Text("Raw-card market price.", style = MaterialTheme.typography.labelSmall)
+                }
             }
             Text("Quantity", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
             QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
-            Text("Condition", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
-            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CONDITIONS.forEach { cond ->
-                    FilterChip(cond == c.condition, {
-                        scope.launch { runCatching { repo.update(c.copy(condition = cond)) } }
-                    }, { Text(cond) })
+            if (!c.graded) {
+                Text("Condition", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
+                FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CONDITIONS.forEach { cond ->
+                        FilterChip(cond == c.condition, {
+                            scope.launch { runCatching { repo.update(c.copy(condition = cond)) } }
+                        }, { Text(cond) })
+                    }
                 }
             }
         }

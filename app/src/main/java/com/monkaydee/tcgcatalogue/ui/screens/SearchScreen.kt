@@ -47,7 +47,9 @@ import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.scan.OcrLine
+import com.monkaydee.tcgcatalogue.scan.GradeInfo
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
+import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -69,25 +71,22 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
         state.value = SearchState(loading = true)
         viewModelScope.launch {
             runCatching {
-                val line = listOf(OcrLine(q.uppercase(), top = 0.9f))
-                when (game) {
-                    Game.ONE_PIECE -> {
-                        val hit = CardTextParser.findOnePiece(line)
-                            ?: return@runCatching state.update { it.copy(loading = false, message = "Enter the card code, e.g. OP05-060 or ST01-001") }
-                        val found = repo.resolve(hit)
-                        state.update { it.copy(loading = false, candidates = found, message = if (found.isEmpty()) "No card ${hit.code}" else null) }
-                    }
-                    Game.POKEMON -> {
-                        val hit = CardTextParser.findPokemon(listOf(OcrLine(q, top = 0.9f)))
-                        if (hit != null) {
-                            // "025/165" optionally followed by the name: "025/165 pikachu"
-                            val name = q.replace(Regex("""[A-Z]{0,3}\d{1,3}\s?/\s?[A-Z]{0,3}\d{2,3}"""), "").trim().ifEmpty { null }
-                            val found = repo.resolve(hit.copy(nameGuess = name))
-                            state.update { it.copy(loading = false, candidates = found, message = if (found.isEmpty()) "No card $q" else null) }
-                        } else {
-                            val results = repo.searchPokemon(q)
-                            state.update { it.copy(loading = false, results = results, message = if (results.isEmpty()) "Nothing found for \"$q\"" else null) }
-                        }
+                val pokemonNumber = if (game == Game.POKEMON) CardTextParser.findPokemon(listOf(OcrLine(q, top = 0.9f))) else null
+                if (pokemonNumber != null) {
+                    // "025/165" optionally followed by the name: "025/165 pikachu"
+                    val name = q.replace(Regex("""[A-Z]{0,3}\d{1,3}\s?/\s?[A-Z]{0,3}\d{2,3}"""), "").trim().ifEmpty { null }
+                    val found = repo.resolve(pokemonNumber.copy(nameGuess = name))
+                    state.update { it.copy(loading = false, candidates = found, message = if (found.isEmpty()) "No card $q" else null) }
+                } else {
+                    val results = repo.search(game, q)
+                    val single = results.singleOrNull()?.candidate
+                    state.update {
+                        it.copy(
+                            loading = false,
+                            results = if (single != null) emptyList() else results,
+                            candidates = listOfNotNull(single),
+                            message = if (results.isEmpty()) "Nothing found for \"$q\"" else null,
+                        )
                     }
                 }
             }.onFailure { e -> state.update { it.copy(loading = false, message = "Search failed: ${e.message}") } }
@@ -102,15 +101,26 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
         }
     }
 
-    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String) {
+    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?) {
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition) }
+            runCatching { repo.add(c, v, qty, condition, grade) }
                 .onSuccess { state.update { it.copy(candidates = emptyList(), message = "Added ${c.name} ×$qty") } }
                 .onFailure { e -> state.update { it.copy(candidates = emptyList(), message = "Could not save: ${e.message}") } }
         }
     }
 
     fun dismiss() = state.update { it.copy(candidates = emptyList()) }
+}
+
+private fun searchHint(game: Game) = when (game) {
+    Game.POKEMON -> "Name or number (e.g. Pikachu, 025/165)"
+    Game.ONE_PIECE -> "Card code (e.g. OP05-060)"
+    Game.MAGIC -> "Name or set + number (e.g. Sheoldred, DMU 107)"
+    Game.DRAGON_BALL_FW -> "Code or name (e.g. FB01-139)"
+    Game.DRAGON_BALL_SUPER -> "Code or name (e.g. BT1-031)"
+    Game.UNION_ARENA -> "Code or name (e.g. UE01BT/BLC-1-001)"
+    Game.WEISS_SCHWARZ -> "Code or name (e.g. HOL/W91-001)"
+    Game.NARUTO -> "Code or name"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -131,15 +141,13 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit) {
         },
     ) { padding ->
         Column(Modifier.padding(padding).padding(horizontal = 16.dp).fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Game.entries.forEach { g -> FilterChip(game == g, { game = g }, { Text(g.label) }) }
-            }
+            GameChips(game, { g -> if (g != null) game = g }, nullLabel = null)
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                label = { Text(if (game == Game.POKEMON) "Name or number (e.g. Pikachu, 025/165)" else "Card code (e.g. OP05-060)") },
+                label = { Text(searchHint(game)) },
                 trailingIcon = { IconButton(onClick = { vm.search(game, query) }) { Icon(Icons.Default.Search, "Search") } },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { vm.search(game, query) }),
@@ -163,5 +171,5 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit) {
         }
     }
 
-    AddCardSheet(state.candidates, settings, onAdd = vm::add, onDismiss = vm::dismiss)
+    AddCardSheet(state.candidates, settings, repo, onAdd = vm::add, onDismiss = vm::dismiss)
 }

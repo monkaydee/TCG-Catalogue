@@ -61,13 +61,16 @@ import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.Variant
-import com.monkaydee.tcgcatalogue.scan.GameFilter
+import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.scan.CardTextParser
+import com.monkaydee.tcgcatalogue.scan.GradeInfo
+import com.monkaydee.tcgcatalogue.ui.components.GameChips
+import com.monkaydee.tcgcatalogue.ui.components.display
 import com.monkaydee.tcgcatalogue.scan.PhotoRecognizer
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
-import com.monkaydee.tcgcatalogue.ui.components.displayPrice
 import com.monkaydee.tcgcatalogue.ui.theme.Gain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -84,6 +87,7 @@ data class ImportItem(
     val key: Long,
     val photo: Uri,
     val hit: ScanHit? = null,
+    val grade: GradeInfo? = null,
     val status: ImportStatus,
     val candidates: List<CardCandidate> = emptyList(),
     val note: String? = null,
@@ -91,7 +95,8 @@ data class ImportItem(
 
 data class ImportState(
     val items: List<ImportItem> = emptyList(),
-    val filter: GameFilter = GameFilter.AUTO,
+    /** null = recognise any enabled game */
+    val filter: Game? = null,
     val reviewing: Long? = null,
 )
 
@@ -103,10 +108,13 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     init {
         // Photos are read one at a time to keep memory use low.
-        viewModelScope.launch { for (uri in queue) process(uri) }
+        viewModelScope.launch {
+            repo.prepareIndexes()
+            for (uri in queue) process(uri)
+        }
     }
 
-    fun setFilter(f: GameFilter) = state.update { it.copy(filter = f) }
+    fun setFilter(f: Game?) = state.update { it.copy(filter = f) }
 
     fun addPhotos(uris: List<Uri>) {
         viewModelScope.launch {
@@ -128,18 +136,24 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     private suspend fun process(photo: Uri) {
         val placeholder = state.value.items.firstOrNull { it.photo == photo && it.status == ImportStatus.READING } ?: return
-        val hits = runCatching { PhotoRecognizer.recognize(context, photo, state.value.filter) }
-        if (hits.isFailure) {
+        val filter = state.value.filter
+        val enabled = repo.settings.current().enabledGames
+        val result = runCatching {
+            PhotoRecognizer.recognize(context, photo) { lines ->
+                CardTextParser.parseAll(lines, filter, repo.indexMatchers(enabled)).filter { filter != null || it.game in enabled }
+            }
+        }
+        if (result.isFailure) {
             replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.ERROR, note = "Could not open the photo")))
             return
         }
-        val found = hits.getOrThrow()
-        if (found.isEmpty()) {
+        val found = result.getOrThrow()
+        if (found.hits.isEmpty()) {
             replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.NO_NUMBER)))
             return
         }
-        val items = found.mapIndexed { i, hit ->
-            ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, ImportStatus.LOOKING_UP)
+        val items = found.hits.mapIndexed { i, hit ->
+            ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, found.grade, ImportStatus.LOOKING_UP)
         }
         replace(placeholder.key, items)
         items.forEach { lookUp(it) }
@@ -154,9 +168,12 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             candidates.isEmpty() -> item.copy(status = ImportStatus.NOT_FOUND)
             repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
-                runCatching { repo.add(top, top.variants.first(), 1, repo.settings.current().defaultCondition) }
+                val grade = item.grade?.takeIf { it.grader != null && it.grade != null }
+                runCatching { repo.add(top, top.variants.first(), 1, repo.settings.current().defaultCondition, grade) }
                     .fold(
-                        onSuccess = { item.copy(status = ImportStatus.ADDED, candidates = candidates, note = "${top.name} · ${top.setName}") },
+                        onSuccess = {
+                            item.copy(status = ImportStatus.ADDED, candidates = candidates, note = "${top.name} · ${top.setName}" + (grade?.let { g -> " · ${g.label}" } ?: ""))
+                        },
                         onFailure = { item.copy(status = ImportStatus.REVIEW, candidates = candidates) },
                     )
             }
@@ -184,12 +201,13 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     fun closeReview() = state.update { it.copy(reviewing = null) }
     fun remove(item: ImportItem) = state.update { s -> s.copy(items = s.items.filterNot { it.key == item.key }) }
 
-    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String) {
+    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?) {
         state.update { it.copy(reviewing = null) }
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition) }.onSuccess {
+            runCatching { repo.add(c, v, qty, condition, grade) }.onSuccess {
                 state.value.items.firstOrNull { it.key == key }?.let { item ->
-                    replace(key, listOf(item.copy(status = ImportStatus.ADDED, note = "${c.name} · ${c.setName}" + if (qty > 1) " ×$qty" else "")))
+                    val extra = listOfNotNull(grade?.label, "×$qty".takeIf { qty > 1 })
+                    replace(key, listOf(item.copy(status = ImportStatus.ADDED, note = (listOf("${c.name} · ${c.setName}") + extra).joinToString(" · "))))
                 }
             }
         }
@@ -202,7 +220,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             val condition = repo.settings.current().defaultCondition
             s.items.filter { it.status == ImportStatus.REVIEW }.forEach { item ->
                 val top = item.candidates.first()
-                add(item.key, top, top.variants.first(), 1, condition)
+                add(item.key, top, top.variants.first(), 1, condition, item.grade?.takeIf { it.grader != null && it.grade != null })
             }
         }
     }
@@ -255,13 +273,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    GameFilter.entries.forEach { f ->
-                        FilterChip(state.filter == f, { vm.setFilter(f) }, {
-                            Text(when (f) { GameFilter.AUTO -> "Auto"; GameFilter.POKEMON -> "Pokémon"; GameFilter.ONE_PIECE -> "One Piece" })
-                        })
-                    }
-                }
+                GameChips(state.filter, vm::setFilter, Game.entries.filter { it in settings.enabledGames })
             }
             if (state.items.isEmpty()) {
                 item {
@@ -302,7 +314,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                     }
                 }
                 items(state.items, key = { it.key }) { item ->
-                    ImportRow(item, settings, onReview = { vm.review(item) }, onRetry = { vm.retry(item) }, onRemove = { vm.remove(item) }, onManual = onManual)
+                    ImportRow(item, settings, repo, onReview = { vm.review(item) }, onRetry = { vm.retry(item) }, onRemove = { vm.remove(item) }, onManual = onManual)
                 }
             }
         }
@@ -313,19 +325,18 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
         AddCardSheet(
             reviewing.candidates,
             settings,
-            onAdd = { c, v, q, cond -> vm.add(reviewing.key, c, v, q, cond) },
+            repo,
+            initialGrade = reviewing.grade,
+            onAdd = { c, v, q, cond, g -> vm.add(reviewing.key, c, v, q, cond, g) },
             onDismiss = vm::closeReview,
         )
     }
 }
 
-private fun ScanHit.label() = when (this) {
-    is ScanHit.OnePiece -> code
-    is ScanHit.Pokemon -> "$number/$total"
-}
+private fun ScanHit.label() = describeHit(this)
 
 @Composable
-private fun ImportRow(item: ImportItem, settings: AppSettings, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit) {
+private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardRepository, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit) {
     val top = item.candidates.firstOrNull()
     Card(Modifier.fillMaxWidth().clickable(enabled = item.status == ImportStatus.REVIEW, onClick = onReview)) {
         Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -346,9 +357,10 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, onReview: () -> U
                     ImportStatus.LOOKING_UP -> Text("Looking up ${item.hit?.label()}…", style = MaterialTheme.typography.bodyMedium)
                     ImportStatus.REVIEW -> {
                         Text(top!!.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        item.grade?.let { Text(it.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary) }
                         Text("${top.setName} · ${top.number}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(
-                            if (item.candidates.size > 1) "${item.candidates.size} possible matches · tap to choose" else "${top.variants.first().displayPrice(top.game, settings)} · tap to add",
+                            if (item.candidates.size > 1) "${item.candidates.size} possible matches · tap to choose" else "${repo.rawPrice(top, top.variants.first(), settings).display(settings)} · tap to add",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
                         )

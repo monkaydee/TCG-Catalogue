@@ -5,9 +5,10 @@ import com.monkaydee.tcgcatalogue.data.db.Game
 enum class PriceSource(val label: String, val currency: String) {
     CARDMARKET("Cardmarket", "EUR"),
     TCGPLAYER("TCGplayer", "USD"),
+    PRICECHARTING("PriceCharting", "USD"),
 }
 
-data class Price(val amount: Double, val source: PriceSource) {
+data class Price(val amount: Double, val source: PriceSource, val note: String? = null) {
     val currency: String get() = source.currency
 }
 
@@ -19,7 +20,7 @@ data class Variant(
     /** Overrides the card image when the variant looks different (One Piece alt arts). */
     val imageUrl: String? = null,
 ) {
-    /** The price from [preferred] if known, otherwise any other source. */
+    /** The price from [preferred] if known, otherwise any other source. See [Pricing] for the checked version. */
     fun price(preferred: PriceSource): Price? =
         prices[preferred]?.let { Price(it, preferred) }
             ?: prices.entries.firstOrNull()?.let { Price(it.value, it.key) }
@@ -41,7 +42,16 @@ data class CardCandidate(
     val score: Double = 0.0,
 )
 
-/** Brief search result; details are fetched when the user picks it. */
-data class CardBrief(val game: Game, val cardId: String, val name: String, val number: String, val imageUrl: String?)
+/** Brief search result; details are fetched when the user picks it unless already known ([candidate]). */
+data class CardBrief(
+    val game: Game,
+    val cardId: String,
+    val name: String,
+    val number: String,
+    val imageUrl: String?,
+    val candidate: CardCandidate? = null,
+)
+
+fun CardCandidate.toBrief() = CardBrief(game, cardId, name, number, imageUrl, this)
 
 data class SetSummary(val id: String, val name: String, val official: Int, val total: Int, val logoUrl: String?)

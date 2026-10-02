@@ -9,6 +9,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.SelectableChipColors
+import com.monkaydee.tcgcatalogue.data.db.Game
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -31,6 +37,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+
+/** One chip per game (plus "Auto"/"All" when [nullLabel] is set), scrolling sideways. */
+@Composable
+fun GameChips(
+    selected: Game?,
+    onSelect: (Game?) -> Unit,
+    games: List<Game> = Game.entries,
+    nullLabel: String? = "Auto",
+    colors: SelectableChipColors? = null,
+) {
+    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (nullLabel != null) {
+            FilterChip(selected == null, { onSelect(null) }, { Text(nullLabel) }, colors = colors ?: FilterChipDefaults.filterChipColors())
+        }
+        games.forEach { g ->
+            FilterChip(selected == g, { onSelect(g) }, { Text(g.short) }, colors = colors ?: FilterChipDefaults.filterChipColors())
+        }
+    }
+}
 
 /** Low-resolution URL for list thumbnails (TCGdex serves several sizes). */
 fun thumbUrl(url: String?): String? = url?.replace("/high.webp", "/low.webp")
