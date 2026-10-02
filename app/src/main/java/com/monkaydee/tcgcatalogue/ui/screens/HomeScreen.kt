@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -29,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -117,6 +119,7 @@ fun HomeScreen(
     onOpenCard: (Long) -> Unit,
     onSearch: () -> Unit,
     onScan: () -> Unit,
+    onPhotos: () -> Unit,
 ) {
     val vm: HomeViewModel = viewModel { HomeViewModel(repo) }
     val state by vm.state.collectAsState()
@@ -131,6 +134,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text("TCG Catalogue") },
                 actions = {
+                    IconButton(onClick = onPhotos) { Icon(Icons.Default.AddPhotoAlternate, "Import photos") }
                     IconButton(onClick = onSearch) { Icon(Icons.Default.Search, "Search cards") }
                     if (refreshing) {
                         CircularProgressIndicator(Modifier.size(24.dp).padding(2.dp), strokeWidth = 2.dp)
@@ -143,7 +147,7 @@ fun HomeScreen(
         },
     ) { padding ->
         if (state.loaded && state.cards.isEmpty()) {
-            EmptyState(Modifier.padding(padding), onScan)
+            EmptyState(Modifier.padding(padding), onScan, onPhotos)
             return@Scaffold
         }
         val cards = state.cards.filter { gameFilter == null || it.game == gameFilter }
@@ -260,7 +264,7 @@ private fun SetRow(set: SetSummaryUi, currency: String, onClick: () -> Unit) {
 }
 
 @Composable
-private fun EmptyState(modifier: Modifier, onScan: () -> Unit) {
+private fun EmptyState(modifier: Modifier, onScan: () -> Unit, onPhotos: () -> Unit) {
     Column(
         modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.Center,
@@ -277,6 +281,12 @@ private fun EmptyState(modifier: Modifier, onScan: () -> Unit) {
             Icon(Icons.Default.CameraAlt, null)
             Spacer(Modifier.width(8.dp))
             Text("Scan a card")
+        }
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(onClick = onPhotos) {
+            Icon(Icons.Default.AddPhotoAlternate, null)
+            Spacer(Modifier.width(8.dp))
+            Text("Import photos")
         }
     }
 }

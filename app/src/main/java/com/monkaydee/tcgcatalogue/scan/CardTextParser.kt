@@ -46,25 +46,47 @@ object CardTextParser {
         return findPokemon(lines)
     }
 
-    fun findOnePiece(lines: List<OcrLine>): ScanHit.OnePiece? {
-        for (line in lines) {
-            val text = line.text.uppercase()
-            onePieceCode.find(text)?.let { m ->
-                val prefix = m.groupValues[1].replace('0', 'O')
-                return ScanHit.OnePiece("$prefix${digits(m.groupValues[2])}-${digits(m.groupValues[3])}")
-            }
+    /**
+     * Every card in a photo, e.g. a binder page or several cards on a table.
+     * Pokémon name guesses are only kept when there is a single card, since a
+     * name can't be matched to the right number when several cards are visible.
+     */
+    fun parseAll(lines: List<OcrLine>, filter: GameFilter = GameFilter.AUTO): List<ScanHit> {
+        if (filter != GameFilter.POKEMON) {
+            val op = allOnePiece(lines)
+            if (op.isNotEmpty() || filter == GameFilter.ONE_PIECE) return op
         }
-        for (line in lines) {
-            onePiecePromo.find(line.text.uppercase())?.let { m ->
-                return ScanHit.OnePiece("P-${digits(m.groupValues[1])}")
-            }
-        }
-        return null
+        val numbers = allPokemonNumbers(lines)
+        val name = if (numbers.size == 1) guessName(lines) else null
+        return numbers.map { (number, total) -> ScanHit.Pokemon(number, total, name) }
     }
 
+    fun findOnePiece(lines: List<OcrLine>): ScanHit.OnePiece? = allOnePiece(lines).firstOrNull()
+
     fun findPokemon(lines: List<OcrLine>): ScanHit.Pokemon? {
-        // The collector number is printed near the bottom; prefer the lowest match.
-        val matches = lines.sortedByDescending { it.top }.flatMap { line ->
+        val (number, total) = allPokemonNumbers(lines).firstOrNull() ?: return null
+        return ScanHit.Pokemon(number, total, guessName(lines))
+    }
+
+    private fun allOnePiece(lines: List<OcrLine>): List<ScanHit.OnePiece> {
+        val codes = lines.flatMap { line ->
+            onePieceCode.findAll(line.text.uppercase()).map { m ->
+                val prefix = m.groupValues[1].replace('0', 'O')
+                ScanHit.OnePiece("$prefix${digits(m.groupValues[2])}-${digits(m.groupValues[3])}")
+            }.toList()
+        }
+        // Promo codes ("P-001") are short and easy to misread, so only look for them when nothing else matched.
+        val found = codes.ifEmpty {
+            lines.flatMap { line ->
+                onePiecePromo.findAll(line.text.uppercase()).map { m -> ScanHit.OnePiece("P-${digits(m.groupValues[1])}") }.toList()
+            }
+        }
+        return found.distinct()
+    }
+
+    /** Collector numbers as (printed number, set size), lowest on the card first. */
+    private fun allPokemonNumbers(lines: List<OcrLine>): List<Pair<String, Int>> =
+        lines.sortedByDescending { it.top }.flatMap { line ->
             pokemonNumber.findAll(line.text).mapNotNull { m ->
                 val prefix = m.groupValues[1]
                 val number = m.groupValues[2]
@@ -78,10 +100,7 @@ object CardTextParser {
                 if (prefix.isEmpty() && number.toInt() > total * 2) return@mapNotNull null
                 printed to total
             }.toList()
-        }
-        val (number, total) = matches.firstOrNull() ?: return null
-        return ScanHit.Pokemon(number, total, guessName(lines))
-    }
+        }.distinct()
 
     /** The card name is the tallest plain-text line in the top part of the card. */
     fun guessName(lines: List<OcrLine>): String? = lines

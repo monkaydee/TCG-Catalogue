@@ -69,6 +69,10 @@ class CardRepository(
         }.sortedByDescending { it.score }
     }
 
+    /** True when the best match is clearly the right card, so it can be added without asking. */
+    fun isConfident(candidates: List<CardCandidate>): Boolean =
+        candidates.size == 1 || (candidates.size > 1 && candidates[0].score - candidates[1].score >= 0.25)
+
     suspend fun searchPokemon(name: String): List<CardBrief> = tcgdex.searchByName(name)
 
     suspend fun details(brief: CardBrief): CardCandidate? = when (brief.game) {

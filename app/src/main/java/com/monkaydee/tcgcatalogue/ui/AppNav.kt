@@ -12,6 +12,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,7 +28,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.ui.screens.CardScreen
+import com.monkaydee.tcgcatalogue.ui.screens.ImportScreen
 import com.monkaydee.tcgcatalogue.ui.screens.HomeScreen
 import com.monkaydee.tcgcatalogue.ui.screens.ScanScreen
 import com.monkaydee.tcgcatalogue.ui.screens.SearchScreen
@@ -52,6 +55,12 @@ fun AppNav(repo: CardRepository) {
     val route = entry?.destination?.route
     val refreshState by remember { PriceRefreshWorker.observeNow(context).map { it.firstOrNull()?.state } }.collectAsState(initial = null)
     val refresh = { PriceRefreshWorker.runNow(context) }
+
+    // Photos shared from another app open the import screen, which picks them up.
+    val shared by SharedPhotos.pending.collectAsState()
+    LaunchedEffect(shared) {
+        if (shared.isNotEmpty() && nav.currentDestination?.route?.startsWith("import") != true) nav.navigate("import")
+    }
 
     fun goTab(r: String) = nav.navigate(r) {
         popUpTo(nav.graph.findStartDestination().id) { saveState = true }
@@ -85,9 +94,20 @@ fun AppNav(repo: CardRepository) {
                     onOpenCard = { nav.navigate("card/$it") },
                     onSearch = { nav.navigate("search") },
                     onScan = { goTab("scan") },
+                    onPhotos = { nav.navigate("import?pick=true") },
                 )
             }
-            composable("scan") { ScanScreen(repo, onManual = { nav.navigate("search") }) }
+            composable("scan") {
+                ScanScreen(repo, onManual = { nav.navigate("search") }, onPhotos = { nav.navigate("import?pick=true") })
+            }
+            composable("import?pick={pick}", arguments = listOf(navArgument("pick") { type = NavType.BoolType; defaultValue = false })) { e ->
+                ImportScreen(
+                    repo = repo,
+                    openPicker = e.arguments?.getBoolean("pick") == true,
+                    onBack = { nav.popBackStack() },
+                    onManual = { nav.navigate("search") },
+                )
+            }
             composable("settings") { SettingsScreen(repo, onRefresh = refresh) }
             composable("search") { SearchScreen(repo, onBack = { nav.popBackStack() }) }
             composable(

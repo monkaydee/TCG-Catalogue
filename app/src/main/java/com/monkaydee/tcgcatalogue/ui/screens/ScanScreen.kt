@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalIconButton
@@ -38,6 +39,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -132,8 +134,7 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
                 else -> {
                     val s = repo.settings.current()
                     val top = candidates.first()
-                    val confident = candidates.size == 1 || top.score - candidates[1].score >= 0.25
-                    if (s.quickAdd && confident) {
+                    if (s.quickAdd && repo.isConfident(candidates)) {
                         repo.add(top, top.variants.first(), 1, s.defaultCondition)
                         cooldownUntil = System.currentTimeMillis() + 4000
                         state.update { it.copy(loading = false, message = "Added ${top.name} (${top.number})", addedCount = it.addedCount + 1) }
@@ -161,7 +162,7 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
 }
 
 @Composable
-fun ScanScreen(repo: CardRepository, onManual: () -> Unit) {
+fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit) {
     val context = LocalContext.current
     val vm: ScanViewModel = viewModel { ScanViewModel(repo) }
     val state by vm.state.collectAsState()
@@ -177,6 +178,8 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit) {
             Text("The camera is used to read the card number. Images never leave your phone.", textAlign = TextAlign.Center)
             Spacer(Modifier.height(16.dp))
             Button(onClick = { launcher.launch(Manifest.permission.CAMERA) }) { Text("Allow camera") }
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(onClick = onPhotos) { Text("Import photos instead") }
         }
         return
     }
@@ -224,10 +227,17 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit) {
                 style = MaterialTheme.typography.bodyMedium,
             )
             if (state.addedCount > 0) Text("${state.addedCount} added this session", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
-            Button(onClick = onManual) {
-                Icon(Icons.Default.Keyboard, null)
-                Spacer(Modifier.size(8.dp))
-                Text("Type it in")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onPhotos) {
+                    Icon(Icons.Default.PhotoLibrary, null)
+                    Spacer(Modifier.size(8.dp))
+                    Text("From photos")
+                }
+                Button(onClick = onManual) {
+                    Icon(Icons.Default.Keyboard, null)
+                    Spacer(Modifier.size(8.dp))
+                    Text("Type it in")
+                }
             }
         }
     }

@@ -59,6 +59,22 @@ class CardTextParserTest {
         assertNull(CardTextParser.parse(lines("025/165"), GameFilter.ONE_PIECE))
     }
 
+    @Test fun binderPageFindsEveryCard() {
+        val hits = CardTextParser.parseAll(lines("Pikachu", "025/165", "Bulbasaur 001/165", "Charmander", "004/165", "025/165"))
+        assertEquals(listOf("025", "001", "004").toSet(), hits.map { (it as ScanHit.Pokemon).number }.toSet())
+        assertTrue(hits.all { (it as ScanHit.Pokemon).nameGuess == null })
+    }
+
+    @Test fun multipleOnePieceCards() {
+        val hits = CardTextParser.parseAll(lines("OP05-060 L", "ST01-012", "OP05-060"))
+        assertEquals(listOf(ScanHit.OnePiece("OP05-060"), ScanHit.OnePiece("ST01-012")), hits)
+    }
+
+    @Test fun singleCardKeepsName() {
+        val hits = CardTextParser.parseAll(listOf(OcrLine("Pikachu", 0.05f, 0.04f), OcrLine("025/165", 0.95f, 0.01f)))
+        assertEquals(listOf(ScanHit.Pokemon("025", 165, "Pikachu")), hits)
+    }
+
     @Test fun similarityToleratesOcrErrors() {
         assertTrue(CardTextParser.similarity("Pikachu", "Pikachu") == 1.0)
         assertTrue(CardTextParser.similarity("Pikaehu", "Pikachu") > 0.8)

@@ -22,6 +22,10 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
     sets have the same size. If it's still unclear, you choose from the matches with images.
   - One Piece: `OP05-060`, `ST01-001`, `EB01-012`, `PRB01-001`, `P-001`, including all
     alternate arts / SP / manga printings as separate choices.
+- **Import photos**: took pictures while you were out? Pick them from the gallery (Scan →
+  *From photos*, or the photo icon on the Collection screen), or share them to TCG Catalogue
+  from any app. Each photo is read on the phone, tried in all four orientations, and can contain
+  several cards (e.g. a binder page). You review the matches or add them all at once.
 - **Quick add**: scan a stack of cards quickly. Cards that are clearly recognised are added
   without asking.
 - **Manual add**: search Pokémon by name or number, One Piece by code.
