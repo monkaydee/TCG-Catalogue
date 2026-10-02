@@ -1,0 +1,296 @@
+package com.monkaydee.tcgcatalogue.ui.screens
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.util.Size
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FlashOff
+import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size as GSize
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.monkaydee.tcgcatalogue.data.AppSettings
+import com.monkaydee.tcgcatalogue.data.CardRepository
+import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
+import com.monkaydee.tcgcatalogue.data.remote.Variant
+import com.monkaydee.tcgcatalogue.scan.CardTextParser
+import com.monkaydee.tcgcatalogue.scan.GameFilter
+import com.monkaydee.tcgcatalogue.scan.OcrLine
+import com.monkaydee.tcgcatalogue.scan.ScanHit
+import com.monkaydee.tcgcatalogue.scan.TextAnalyzer
+import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
+
+data class ScanState(
+    val filter: GameFilter = GameFilter.AUTO,
+    /** Text read but not yet confirmed by a second frame. */
+    val reading: String? = null,
+    val loading: Boolean = false,
+    val candidates: List<CardCandidate> = emptyList(),
+    val message: String? = null,
+    val addedCount: Int = 0,
+)
+
+class ScanViewModel(private val repo: CardRepository) : ViewModel() {
+    val state = MutableStateFlow(ScanState())
+    private var lastKey: String? = null
+    private var streak = 0
+    private var cooldownKey: String? = null
+    private var cooldownUntil = 0L
+
+    /** Camera frames are only analysed while nothing else is going on. */
+    val scanning get() = state.value.let { !it.loading && it.candidates.isEmpty() }
+
+    fun setFilter(f: GameFilter) = state.update { it.copy(filter = f) }
+
+    fun onLines(lines: List<OcrLine>) {
+        if (!scanning) return
+        val hit = CardTextParser.parse(lines, state.value.filter) ?: return
+        // Require two consecutive frames to agree before calling the API, to filter OCR misreads.
+        streak = if (hit.key == lastKey) streak + 1 else 1
+        lastKey = hit.key
+        val now = System.currentTimeMillis()
+        if (hit.key == cooldownKey && now < cooldownUntil) return
+        state.update { it.copy(reading = describe(hit)) }
+        if (streak >= 2) resolve(hit)
+    }
+
+    private fun describe(hit: ScanHit) = when (hit) {
+        is ScanHit.OnePiece -> hit.code
+        is ScanHit.Pokemon -> "${hit.number}/${hit.total}" + (hit.nameGuess?.let { " · $it" } ?: "")
+    }
+
+    private fun resolve(hit: ScanHit) {
+        streak = 0
+        state.update { it.copy(loading = true, message = null) }
+        viewModelScope.launch {
+            val result = runCatching { repo.resolve(hit) }
+            val candidates = result.getOrDefault(emptyList())
+            cooldownKey = hit.key
+            cooldownUntil = System.currentTimeMillis() + 2500
+            when {
+                result.isFailure -> state.update { it.copy(loading = false, message = "Lookup failed — check your connection") }
+                candidates.isEmpty() -> state.update { it.copy(loading = false, message = "No card found for ${describe(hit)}") }
+                else -> {
+                    val s = repo.settings.current()
+                    val top = candidates.first()
+                    val confident = candidates.size == 1 || top.score - candidates[1].score >= 0.25
+                    if (s.quickAdd && confident) {
+                        repo.add(top, top.variants.first(), 1, s.defaultCondition)
+                        cooldownUntil = System.currentTimeMillis() + 4000
+                        state.update { it.copy(loading = false, message = "Added ${top.name} (${top.number})", addedCount = it.addedCount + 1) }
+                    } else {
+                        state.update { it.copy(loading = false, candidates = candidates) }
+                    }
+                }
+            }
+        }
+    }
+
+    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String) {
+        viewModelScope.launch {
+            runCatching { repo.add(c, v, qty, condition) }
+                .onSuccess { state.update { s -> s.copy(candidates = emptyList(), message = "Added ${c.name} ×$qty", addedCount = s.addedCount + qty) } }
+                .onFailure { state.update { s -> s.copy(candidates = emptyList(), message = "Could not save: ${it.message}") } }
+            cooldownUntil = System.currentTimeMillis() + 3000
+        }
+    }
+
+    fun dismiss() {
+        cooldownUntil = System.currentTimeMillis() + 3000
+        state.update { it.copy(candidates = emptyList(), reading = null) }
+    }
+}
+
+@Composable
+fun ScanScreen(repo: CardRepository, onManual: () -> Unit) {
+    val context = LocalContext.current
+    val vm: ScanViewModel = viewModel { ScanViewModel(repo) }
+    val state by vm.state.collectAsState()
+    val settings by repo.settings.flow.collectAsState(initial = AppSettings())
+    val scope = rememberCoroutineScope()
+    var granted by remember {
+        mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+    }
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
+
+    if (!granted) {
+        Column(Modifier.fillMaxSize().padding(32.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("The camera is used to read the card number. Images never leave your phone.", textAlign = TextAlign.Center)
+            Spacer(Modifier.height(16.dp))
+            Button(onClick = { launcher.launch(Manifest.permission.CAMERA) }) { Text("Allow camera") }
+        }
+        return
+    }
+
+    var camera by remember { mutableStateOf<Camera?>(null) }
+    var torch by remember { mutableStateOf(false) }
+
+    Box(Modifier.fillMaxSize().background(Color.Black)) {
+        CameraPreview(isEnabled = { vm.scanning }, onLines = vm::onLines, onCamera = { camera = it })
+        CardFrameOverlay()
+
+        Column(Modifier.fillMaxWidth().statusBarsPadding().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                GameFilter.entries.forEach { f ->
+                    FilterChip(
+                        selected = state.filter == f,
+                        onClick = { vm.setFilter(f) },
+                        label = { Text(when (f) { GameFilter.AUTO -> "Auto"; GameFilter.POKEMON -> "Pokémon"; GameFilter.ONE_PIECE -> "One Piece" }) },
+                        colors = FilterChipDefaults.filterChipColors(containerColor = Color.Black.copy(alpha = 0.5f), labelColor = Color.White),
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                FilledTonalIconButton(onClick = { torch = !torch; camera?.cameraControl?.enableTorch(torch) }) {
+                    Icon(if (torch) Icons.Default.FlashOff else Icons.Default.FlashOn, "Torch")
+                }
+            }
+            FilterChip(
+                selected = settings.quickAdd,
+                onClick = { scope.launch { repo.settings.setQuickAdd(!settings.quickAdd) } },
+                label = { Text(if (settings.quickAdd) "Quick add ON — cards are added automatically" else "Quick add OFF — confirm each card") },
+                colors = FilterChipDefaults.filterChipColors(containerColor = Color.Black.copy(alpha = 0.5f), labelColor = Color.White),
+            )
+        }
+
+        Column(
+            Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Color.Black.copy(alpha = 0.6f)).padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            if (state.loading) CircularProgressIndicator(Modifier.size(28.dp), color = Color.White)
+            Text(
+                state.message ?: state.reading?.let { "Reading $it…" } ?: "Fill the frame with the card. Keep the number at the bottom sharp and well lit.",
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            if (state.addedCount > 0) Text("${state.addedCount} added this session", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
+            Button(onClick = onManual) {
+                Icon(Icons.Default.Keyboard, null)
+                Spacer(Modifier.size(8.dp))
+                Text("Type it in")
+            }
+        }
+    }
+
+    AddCardSheet(state.candidates, settings, onAdd = vm::add, onDismiss = vm::dismiss)
+}
+
+@Composable
+private fun CameraPreview(isEnabled: () -> Boolean, onLines: (List<OcrLine>) -> Unit, onCamera: (Camera) -> Unit) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val enabled by rememberUpdatedState(isEnabled)
+    val callback by rememberUpdatedState(onLines)
+    val executor = remember { Executors.newSingleThreadExecutor() }
+    val analyzer = remember { TextAnalyzer({ enabled() }, { lines -> callback(lines) }) }
+    val analysisRef = remember { arrayOfNulls<ImageAnalysis>(1) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            analysisRef[0]?.clearAnalyzer()
+            analyzer.close()
+            executor.shutdown()
+        }
+    }
+
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { ctx ->
+            val view = PreviewView(ctx).apply { scaleType = PreviewView.ScaleType.FILL_CENTER }
+            val future = ProcessCameraProvider.getInstance(ctx)
+            future.addListener({
+                val provider = future.get()
+                val preview = Preview.Builder().build().also { it.setSurfaceProvider(view.surfaceProvider) }
+                val analysis = ImageAnalysis.Builder()
+                    .setResolutionSelector(
+                        ResolutionSelector.Builder()
+                            .setResolutionStrategy(ResolutionStrategy(Size(1920, 1080), ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER))
+                            .build(),
+                    )
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                    .also { it.setAnalyzer(executor, analyzer); analysisRef[0] = it }
+                runCatching {
+                    provider.unbindAll()
+                    onCamera(provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis))
+                }
+            }, ContextCompat.getMainExecutor(context))
+            view
+        },
+    )
+}
+
+/** Draws a card-shaped guide (63×88 mm) in the middle of the preview. */
+@Composable
+private fun CardFrameOverlay() {
+    Canvas(Modifier.fillMaxSize()) {
+        val w = size.width * 0.8f
+        val h = (w * 88f / 63f).coerceAtMost(size.height * 0.7f)
+        val cw = h * 63f / 88f
+        val topLeft = Offset((size.width - cw) / 2, (size.height - h) / 2)
+        drawRoundRect(Color.White.copy(alpha = 0.9f), topLeft, GSize(cw, h), CornerRadius(24f), style = Stroke(width = 3.dp.toPx()))
+        // Highlight where the numbers are printed.
+        val band = h * 0.12f
+        drawRoundRect(Color(0x553D5AFE), Offset(topLeft.x, topLeft.y + h - band), GSize(cw, band), CornerRadius(24f))
+    }
+}

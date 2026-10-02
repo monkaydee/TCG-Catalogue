@@ -1,0 +1,110 @@
+package com.monkaydee.tcgcatalogue.ui
+
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Collections
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.monkaydee.tcgcatalogue.data.CardRepository
+import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.ui.screens.CardScreen
+import com.monkaydee.tcgcatalogue.ui.screens.HomeScreen
+import com.monkaydee.tcgcatalogue.ui.screens.ScanScreen
+import com.monkaydee.tcgcatalogue.ui.screens.SearchScreen
+import com.monkaydee.tcgcatalogue.ui.screens.SetScreen
+import com.monkaydee.tcgcatalogue.ui.screens.SettingsScreen
+import com.monkaydee.tcgcatalogue.work.PriceRefreshWorker
+import kotlinx.coroutines.flow.map
+
+private data class Tab(val route: String, val label: String, val icon: ImageVector)
+
+private val tabs = listOf(
+    Tab("home", "Collection", Icons.Default.Collections),
+    Tab("scan", "Scan", Icons.Default.CameraAlt),
+    Tab("settings", "Settings", Icons.Default.Settings),
+)
+
+@Composable
+fun AppNav(repo: CardRepository) {
+    val nav = rememberNavController()
+    val context = LocalContext.current
+    val entry by nav.currentBackStackEntryAsState()
+    val route = entry?.destination?.route
+    val refreshState by remember { PriceRefreshWorker.observeNow(context).map { it.firstOrNull()?.state } }.collectAsState(initial = null)
+    val refresh = { PriceRefreshWorker.runNow(context) }
+
+    fun goTab(r: String) = nav.navigate(r) {
+        popUpTo(nav.graph.findStartDestination().id) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
+    }
+
+    Scaffold(
+        bottomBar = {
+            if (route in tabs.map { it.route }) {
+                NavigationBar {
+                    tabs.forEach { t ->
+                        NavigationBarItem(
+                            selected = route == t.route,
+                            onClick = { goTab(t.route) },
+                            icon = { Icon(t.icon, null) },
+                            label = { Text(t.label) },
+                        )
+                    }
+                }
+            }
+        },
+    ) { padding ->
+        NavHost(nav, startDestination = "home", modifier = Modifier.padding(bottom = padding.calculateBottomPadding()).consumeWindowInsets(padding)) {
+            composable("home") {
+                HomeScreen(
+                    repo = repo,
+                    refreshState = refreshState,
+                    onRefresh = refresh,
+                    onOpenSet = { g, id -> nav.navigate("set/${g.name}/${android.net.Uri.encode(id)}") },
+                    onOpenCard = { nav.navigate("card/$it") },
+                    onSearch = { nav.navigate("search") },
+                    onScan = { goTab("scan") },
+                )
+            }
+            composable("scan") { ScanScreen(repo, onManual = { nav.navigate("search") }) }
+            composable("settings") { SettingsScreen(repo, onRefresh = refresh) }
+            composable("search") { SearchScreen(repo, onBack = { nav.popBackStack() }) }
+            composable(
+                "set/{game}/{setId}",
+                arguments = listOf(navArgument("game") { type = NavType.StringType }, navArgument("setId") { type = NavType.StringType }),
+            ) { e ->
+                SetScreen(
+                    repo = repo,
+                    game = Game.valueOf(e.arguments!!.getString("game")!!),
+                    setId = e.arguments!!.getString("setId")!!,
+                    onBack = { nav.popBackStack() },
+                    onOpenCard = { nav.navigate("card/$it") },
+                )
+            }
+            composable("card/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->
+                CardScreen(repo, e.arguments!!.getLong("id"), onBack = { nav.popBackStack() })
+            }
+        }
+    }
+}
