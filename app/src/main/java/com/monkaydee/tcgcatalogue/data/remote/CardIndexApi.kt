@@ -60,6 +60,9 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         index
     }
 
+    /** Raw index entries for [code] (used to find One Piece's TCGplayer products). */
+    suspend fun entries(game: Game, code: String): List<Entry> = index(game)?.byNumber?.get(code).orEmpty()
+
     suspend fun lookup(game: Game, code: String): List<CardCandidate> {
         val index = index(game) ?: return emptyList()
         return index.byNumber[code].orEmpty().map { candidate(index, it) }
@@ -82,8 +85,8 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     private fun candidate(index: Index, e: Entry): CardCandidate {
         val group = index.groups[e.groupId]
         val variants = e.prices.entries.map { (subType, price) ->
-            Variant(subType, subType, mapOf(PriceSource.TCGPLAYER to price))
-        }.ifEmpty { listOf(Variant("Normal", "Normal", emptyMap())) }
+            Variant(subType, subType, mapOf(PriceSource.TCGPLAYER to price), tcgplayerId = e.productId, tcgplayerPrinting = subType)
+        }.ifEmpty { listOf(Variant("Normal", "Normal", emptyMap(), tcgplayerId = e.productId, tcgplayerPrinting = "Normal")) }
         return CardCandidate(
             game = index.game,
             cardId = e.productId.toString(),

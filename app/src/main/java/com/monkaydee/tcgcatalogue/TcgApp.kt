@@ -8,6 +8,7 @@ import com.monkaydee.tcgcatalogue.data.remote.CardIndexApi
 import com.monkaydee.tcgcatalogue.data.remote.FxApi
 import com.monkaydee.tcgcatalogue.data.remote.PriceChartingApi
 import com.monkaydee.tcgcatalogue.data.remote.ScryfallApi
+import com.monkaydee.tcgcatalogue.data.remote.TcgPlayerApi
 import com.monkaydee.tcgcatalogue.data.remote.Http
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.TcgDexApi
@@ -27,6 +28,7 @@ class TcgApp : Application() {
             scryfall = ScryfallApi(http),
             cardIndex = CardIndexApi(http, java.io.File(filesDir, "card-index")),
             priceCharting = PriceChartingApi(http),
+            tcgplayer = TcgPlayerApi(http),
             fx = FxApi(http),
             settings = SettingsStore(this),
         )

@@ -15,6 +15,7 @@ import com.monkaydee.tcgcatalogue.data.remote.PriceChartingApi
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.data.remote.Pricing
 import com.monkaydee.tcgcatalogue.data.remote.ScryfallApi
+import com.monkaydee.tcgcatalogue.data.remote.TcgPlayerApi
 import com.monkaydee.tcgcatalogue.data.remote.TcgDexApi
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.data.remote.toBrief
@@ -43,6 +44,7 @@ class CardRepository(
     private val scryfall: ScryfallApi,
     private val cardIndex: CardIndexApi,
     private val priceCharting: PriceChartingApi,
+    private val tcgplayer: TcgPlayerApi,
     private val fx: FxApi,
     val settings: SettingsStore,
 ) {
@@ -145,9 +147,34 @@ class CardRepository(
         return Price(amount, PriceSource.PRICECHARTING, note)
     }
 
-    /** Graded price if available, otherwise the raw price with a note. */
-    private suspend fun priceFor(card: CardCandidate, variant: Variant, grade: GradeInfo?, s: AppSettings): Price? {
-        if (grade?.grader == null || grade.grade == null) return rawPrice(card, variant, s)
+    /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
+    suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings): Price? {
+        val base = rawPrice(card, variant, s)
+        if (condition == "NM") return base
+        val table = runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull()
+        return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) })
+    }
+
+    /**
+     * The TCGplayer product of a printing. One Piece's API doesn't link to TCGplayer, so its
+     * printing is matched in the One Piece card index by number and closest price (the API's
+     * prices come from TCGplayer, so the right product has the same price).
+     */
+    private suspend fun tcgplayerProduct(card: CardCandidate, variant: Variant): Long? {
+        variant.tcgplayerId?.let { return it }
+        if (card.game != Game.ONE_PIECE) return null
+        val entries = cardIndex.entries(Game.ONE_PIECE, card.number)
+        if (entries.size <= 1) return entries.firstOrNull()?.productId
+        val target = variant.prices[PriceSource.TCGPLAYER] ?: return null
+        fun distance(e: CardIndexApi.Entry) =
+            e.prices.values.minOfOrNull { kotlin.math.abs(kotlin.math.ln(it.coerceAtLeast(0.01) / target)) } ?: Double.MAX_VALUE
+        // Only trust a match within ±25 % of the price; otherwise the printing isn't in the index.
+        return entries.minByOrNull(::distance)?.takeIf { distance(it) < kotlin.math.ln(1.25) }?.productId
+    }
+
+    /** Graded price if available, otherwise the price for the [condition]. */
+    private suspend fun priceFor(card: CardCandidate, variant: Variant, grade: GradeInfo?, condition: String, s: AppSettings): Price? {
+        if (grade?.grader == null || grade.grade == null) return conditionPrice(card, variant, condition, s)
         return gradedPrice(card, variant, grade)
             ?: rawPrice(card, variant, s)?.copy(note = "No graded sales found for this card; showing the raw price")
     }
@@ -157,7 +184,7 @@ class CardRepository(
     suspend fun add(candidate: CardCandidate, variant: Variant, quantity: Int, condition: String, grade: GradeInfo? = null): Long {
         val s = settings.current()
         val graded = grade?.grader != null && grade.grade != null
-        val price = runCatching { priceFor(candidate, variant, grade, s) }.getOrNull()
+        val price = runCatching { priceFor(candidate, variant, grade, condition, s) }.getOrNull()
         val id = db.cards().addOrIncrement(
             OwnedCard(
                 game = candidate.game,
@@ -190,6 +217,40 @@ class CardRepository(
 
     suspend fun update(card: OwnedCard) {
         if (card.quantity <= 0) db.cards().delete(card) else db.cards().update(card)
+        runCatching { snapshot() }
+    }
+
+    /**
+     * Changes the condition of a raw card and re-prices it for that condition. Merges into an
+     * existing row when the same card is already owned in that condition.
+     */
+    suspend fun changeCondition(card: OwnedCard, condition: String) {
+        if (card.graded || card.condition == condition) return
+        val existing = db.cards().find(card.game, card.cardId, card.variant, condition)
+        if (existing != null) {
+            db.cards().update(existing.copy(quantity = existing.quantity + card.quantity))
+            db.cards().delete(card)
+            runCatching { snapshot() }
+            return
+        }
+        val s = settings.current()
+        val fresh = runCatching { fetch(card.game, card.cardId) }.getOrNull()
+        val variant = fresh?.variants?.firstOrNull { it.key == card.variant }
+        val price = if (fresh != null && variant != null) runCatching { conditionPrice(fresh, variant, condition, s) }.getOrNull() else null
+        db.cards().update(
+            if (price == null) {
+                card.copy(condition = condition)
+            } else {
+                card.copy(
+                    condition = condition,
+                    price = price.amount,
+                    priceCurrency = price.currency,
+                    priceSource = price.source.label,
+                    priceNote = price.note,
+                    priceUpdatedAt = System.currentTimeMillis(),
+                )
+            },
+        )
         runCatching { snapshot() }
     }
 
@@ -241,7 +302,7 @@ class CardRepository(
                         for (row in rows) {
                             val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: continue
                             val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
-                            val price = runCatching { priceFor(fresh, variant, grade, s) }.getOrNull() ?: continue
+                            val price = runCatching { priceFor(fresh, variant, grade, row.condition, s) }.getOrNull() ?: continue
                             db.cards().update(
                                 row.copy(
                                     price = price.amount,

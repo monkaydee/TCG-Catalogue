@@ -94,6 +94,18 @@ fun AddCardSheet(
     val gradeInfo = GradeInfo(grader, grade, qualifier.takeIf { grade == "10" && it in qualifiersFor(grader) }, cert.ifBlank { null })
 
     val raw = repo.rawPrice(card, variant, settings)
+    // Price for the chosen condition (NM is the market price itself; the others are looked up).
+    var conditionQuote by remember { mutableStateOf<Price?>(null) }
+    var conditionLoading by remember { mutableStateOf(false) }
+    LaunchedEffect(card, variant, condition, graded) {
+        if (graded || condition == "NM") {
+            conditionQuote = raw
+            return@LaunchedEffect
+        }
+        conditionLoading = true
+        conditionQuote = runCatching { repo.conditionPrice(card, variant, condition, settings) }.getOrNull() ?: raw
+        conditionLoading = false
+    }
     var gradedQuote by remember { mutableStateOf<Price?>(null) }
     var gradedLoading by remember { mutableStateOf(false) }
     LaunchedEffect(card, variant, graded, gradeInfo.grader, gradeInfo.grade, gradeInfo.qualifier) {
@@ -102,7 +114,8 @@ fun AddCardSheet(
         gradedQuote = runCatching { repo.gradedPrice(card, variant, gradeInfo) }.getOrNull()
         gradedLoading = false
     }
-    val shown = if (graded) gradedQuote else raw
+    val shown = if (graded) gradedQuote else conditionQuote ?: raw
+    val loading = if (graded) gradedLoading else conditionLoading
     val note = if (graded && !gradedLoading && gradedQuote == null) "No graded sales on PriceCharting; the raw price will be used" else shown?.note
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
@@ -137,12 +150,12 @@ fun AddCardSheet(
                     Text("${card.number}${card.rarity?.let { " · $it" } ?: ""}", style = MaterialTheme.typography.bodySmall)
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        if (graded && gradedLoading) "…" else shown.display(settings),
+                        if (loading) "…" else shown.display(settings),
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text(
-                        if (graded) "${gradeInfo.label} · ${shown?.source?.label ?: "PriceCharting"}" else "per copy · ${variant.label} · ${raw?.source?.label.orEmpty()}",
+                        if (graded) "${gradeInfo.label} · ${shown?.source?.label ?: "PriceCharting"}" else "per copy · ${variant.label} · $condition · ${shown?.source?.label.orEmpty()}",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     note?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
@@ -155,7 +168,7 @@ fun AddCardSheet(
                         FilterChip(
                             selected = v.key == variant.key,
                             onClick = { variantKey = v.key },
-                            label = { Text("${v.label} · ${repo.rawPrice(card, v, settings).display(settings)}") },
+                            label = { Text("${v.label} · ${repo.rawPrice(card, v, settings).display(settings)} NM") },
                         )
                     }
                 }

@@ -46,6 +46,8 @@ class ScryfallApi(private val http: Http) {
                     eur.str()?.toDoubleOrNull()?.let { put(PriceSource.CARDMARKET, it) }
                     usd.str()?.toDoubleOrNull()?.let { put(PriceSource.TCGPLAYER, it) }
                 },
+                tcgplayerId = (if (f == "etched") c["tcgplayer_etched_id"] else c["tcgplayer_id"]).str()?.toLongOrNull(),
+                tcgplayerPrinting = if (f == "nonfoil") "Normal" else "Foil",
             )
         }
         val image = c["image_uris"]["normal"].str() ?: c["card_faces"].arr()?.firstOrNull()?.get("image_uris")?.get("normal").str()

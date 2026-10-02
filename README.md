@@ -47,6 +47,14 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   one of them is linked to the wrong card (e.g. TCGdex gives the gold Zekrom 115/113 the price of the
   regular Zekrom). The app then uses the other market and shows a note on the card. Displayed in EUR or USD using ECB rates. Prices
   refresh daily in the background, which also records the portfolio history.
+- **Prices by condition**: NM, LP, MP, HP and DMG copies are priced separately, from TCGplayer's
+  market prices per condition (its sales history):
+  - TCGplayer as the source: the real market price for that condition.
+  - Cardmarket as the source: Cardmarket has no per-condition prices, so its price is multiplied
+    by TCGplayer's ratio for the same card (e.g. LP = 66 % of NM).
+  - No sales for a condition: a typical discount (LP 85 %, MP 70 %, HP 50 %, DMG 35 %), marked as
+    an estimate.
+  - A worse condition is never valued above a better one.
 - **Printing, condition, quantity** per card (normal / holo / reverse / 1st edition;
   NM–DMG).
 - **Backup**: export / import the collection as JSON. Data lives only on the phone.

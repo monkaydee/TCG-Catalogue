@@ -111,7 +111,7 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit) {
                 FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     CONDITIONS.forEach { cond ->
                         FilterChip(cond == c.condition, {
-                            scope.launch { runCatching { repo.update(c.copy(condition = cond)) } }
+                            scope.launch { runCatching { repo.changeCondition(c, cond) } }
                         }, { Text(cond) })
                     }
                 }

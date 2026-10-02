@@ -101,14 +101,26 @@ class TcgDexApi(private val http: Http) {
             "reverse" -> listOf("reverse-holofoil", "reverseHolofoil")
             else -> listOf("normal", "holofoil")
         }
-        val tcgPrice = tcgKeys.firstNotNullOfOrNull { k -> tcg[k]["marketPrice"].dbl() ?: tcg[k]["midPrice"].dbl() }
+        val tcgKey = tcgKeys.firstOrNull { k -> tcg[k]["marketPrice"].dbl() != null || tcg[k]["midPrice"].dbl() != null }
+        val tcgPrice = tcgKey?.let { k -> tcg[k]["marketPrice"].dbl() ?: tcg[k]["midPrice"].dbl() }
         // Cardmarket lists one product per card; its "-holo" fields are the reverse holo printing.
         val cmPrice = if (key == "reverse") {
             cm["trend-holo"].dbl()?.takeIf { it > 0 } ?: cm["avg-holo"].dbl()?.takeIf { it > 0 }
         } else {
             cm["trend"].dbl()?.takeIf { it > 0 } ?: cm["avg"].dbl()?.takeIf { it > 0 }
         }
-        return Variant(key, label, prices(cmPrice, tcgPrice))
+        val productId = (tcgKey ?: tcgKeys.firstOrNull { tcg[it] != null })?.let { tcg[it]["productId"].str()?.toLongOrNull() }
+        return Variant(key, label, prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = tcgKey?.let(::printingName))
+    }
+
+    /** TCGdex's TCGplayer price keys as TCGplayer names the printings. */
+    private fun printingName(key: String) = when (key) {
+        "holofoil" -> "Holofoil"
+        "reverse-holofoil", "reverseHolofoil" -> "Reverse Holofoil"
+        "1stEditionHolofoil" -> "1st Edition Holofoil"
+        "1stEditionNormal", "1stEdition" -> "1st Edition"
+        "unlimitedHolofoil" -> "Unlimited Holofoil"
+        else -> "Normal"
     }
 
     private fun firstEdition(c: kotlinx.serialization.json.JsonElement, pricing: kotlinx.serialization.json.JsonElement?): Variant {
@@ -120,7 +132,9 @@ class TcgDexApi(private val http: Http) {
         val tcgPrice = listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition", "holofoil", "normal")
             .firstNotNullOfOrNull { k -> tcg[k]["marketPrice"].dbl() }
         val cmPrice = p["cardmarket"]["trend"].dbl()?.takeIf { it > 0 } ?: p["cardmarket"]["avg"].dbl()?.takeIf { it > 0 }
-        return Variant("firstEdition", "1st Edition", prices(cmPrice, tcgPrice))
+        val productId = detailed["thirdParty"]["tcgplayer"].str()?.toLongOrNull()
+            ?: tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal").firstNotNullOfOrNull { t[it]["productId"].str()?.toLongOrNull() } }
+        return Variant("firstEdition", "1st Edition", prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = "1st Edition Holofoil")
     }
 
     private fun prices(cm: Double?, tcg: Double?) = buildMap {

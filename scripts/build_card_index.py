@@ -22,6 +22,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 GAMES = {
+    # One Piece is recognised via optcgapi.com; its index only supplies TCGplayer product ids.
+    "ONE_PIECE": 68,
     "WEISS_SCHWARZ": 20,
     "DRAGON_BALL_SUPER": 27,
     "DRAGON_BALL_FW": 80,

@@ -19,6 +19,10 @@ data class Variant(
     val prices: Map<PriceSource, Double>,
     /** Overrides the card image when the variant looks different (One Piece alt arts). */
     val imageUrl: String? = null,
+    /** TCGplayer product of this printing, for per-condition prices. */
+    val tcgplayerId: Long? = null,
+    /** TCGplayer's name for the printing: "Normal", "Holofoil", "Reverse Holofoil", "Foil", ... */
+    val tcgplayerPrinting: String? = null,
 ) {
     /** The price from [preferred] if known, otherwise any other source. See [Pricing] for the checked version. */
     fun price(preferred: PriceSource): Price? =
