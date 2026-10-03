@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Paid
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.runtime.remember
@@ -146,12 +147,15 @@ fun HomeScreen(
     onWishlist: () -> Unit = {},
     onTradeList: () -> Unit = {},
     onSold: () -> Unit = {},
+    onSealed: () -> Unit = {},
 ) {
     val vm: HomeViewModel = viewModel { HomeViewModel(repo) }
     val state by vm.state.collectAsState()
     val wishCount by remember { repo.wishlist.map { it.size } }.collectAsState(initial = 0)
     val soldCount by remember { repo.sold.map { it.size } }.collectAsState(initial = 0)
     val tradeCount = state.cards.count { it.forTrade }
+    val sealedItems by repo.sealed.collectAsState(initial = emptyList())
+    val sealedCount = sealedItems.sumOf { it.quantity }
     var gameFilter by rememberSaveable { mutableStateOf<Game?>(null) }
     var sort by rememberSaveable { mutableStateOf(SetSort.VALUE) }
     var range by rememberSaveable { mutableStateOf(Range.M3) }
@@ -182,12 +186,14 @@ fun HomeScreen(
     ) { padding ->
         if (state.loaded && state.cards.isEmpty()) {
             // Sold everything or only wishing so far: the lists stay reachable above the empty state.
-            if (wishCount + soldCount > 0) ListsRow(wishCount, tradeCount, soldCount, onWishlist, onTradeList, onSold, Modifier.padding(padding).padding(16.dp))
+            if (wishCount + soldCount + sealedCount > 0) ListsRow(wishCount, tradeCount, soldCount, sealedCount, onWishlist, onTradeList, onSold, onSealed, Modifier.padding(padding).padding(16.dp))
             EmptyState(Modifier.padding(padding), onScan, onPhotos)
             return@Scaffold
         }
         val cards = state.cards.filter { gameFilter == null || it.game == gameFilter }
-        val total = cards.sumOf { Money.value(it, s.currency, s.usdToEur) }
+        // Sealed products count towards the whole portfolio (not towards a single game's value).
+        val total = cards.sumOf { Money.value(it, s.currency, s.usdToEur) } +
+            if (gameFilter == null) sealedItems.sumOf { Money.sealedValue(it, s.currency, s.usdToEur) } else 0.0
         val sets = state.sets.filter { gameFilter == null || it.game == gameFilter }.let { list ->
             when (sort) {
                 SetSort.VALUE -> list.sortedByDescending { it.value }
@@ -256,7 +262,7 @@ fun HomeScreen(
                     }
                 }
             }
-            item { ListsRow(wishCount, tradeCount, soldCount, onWishlist, onTradeList, onSold) }
+            item { ListsRow(wishCount, tradeCount, soldCount, sealedCount, onWishlist, onTradeList, onSold, onSealed) }
             item {
                 val owned = state.cards.map { it.game }.toSet()
                 GameChips(gameFilter, { gameFilter = it }, Game.entries.filter { it in owned }, nullLabel = stringResource(R.string.home_all_games))
@@ -324,9 +330,11 @@ private fun ListsRow(
     wishCount: Int,
     tradeCount: Int,
     soldCount: Int,
+    sealedCount: Int,
     onWishlist: () -> Unit,
     onTradeList: () -> Unit,
     onSold: () -> Unit,
+    onSealed: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -334,7 +342,10 @@ private fun ListsRow(
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ListShortcut(Icons.Default.Favorite, stringResource(R.string.wish_title), wishCount, onWishlist, Modifier.weight(1f))
             ListShortcut(Icons.Default.SwapHoriz, stringResource(R.string.trade_title), tradeCount, onTradeList, Modifier.weight(1f))
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ListShortcut(Icons.Default.Paid, stringResource(R.string.sold_title), soldCount, onSold, Modifier.weight(1f))
+            ListShortcut(Icons.Default.Inventory2, stringResource(R.string.sealed_title), sealedCount, onSealed, Modifier.weight(1f))
         }
     }
 }

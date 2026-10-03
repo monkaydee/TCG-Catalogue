@@ -35,4 +35,11 @@
     <string name="sealed_no_price">no price</string>
     <string name="sealed_search_hint">Product name or set, e.g. “151 booster box”</string>
     <string name="sealed_no_results">No sealed products found</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Sorry, the app crashed</string>
+    <string name="crash_text">A technical report was kept (app and Android version, phone model and the error — none of your cards). You can send it to help fix the problem.</string>
+    <string name="crash_report_github">Report on GitHub</string>
+    <string name="crash_share">Share</string>
+    <string name="crash_dismiss">Not now</string>
 </resources>

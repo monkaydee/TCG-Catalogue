@@ -25,6 +25,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -70,6 +72,28 @@ fun AppNav(repo: CardRepository) {
     val route = entry?.destination?.route
     val refreshState by remember { PriceRefreshWorker.observeNow(context).map { it.firstOrNull()?.state } }.collectAsState(initial = null)
     val refresh = { PriceRefreshWorker.runNow(context) }
+
+    // The app crashed last time: offer to report it (nothing is sent unless the user chooses to).
+    var crash by remember { mutableStateOf(com.monkaydee.tcgcatalogue.CrashReporter.pending(context)) }
+    crash?.let { report ->
+        val close = { com.monkaydee.tcgcatalogue.CrashReporter.clear(context); crash = null }
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = close,
+            title = { Text(stringResource(R.string.crash_title)) },
+            text = { Text(stringResource(R.string.crash_text)) },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { com.monkaydee.tcgcatalogue.CrashReporter.openIssue(context, report); close() }) {
+                    Text(stringResource(R.string.crash_report_github))
+                }
+            },
+            dismissButton = {
+                androidx.compose.foundation.layout.Row {
+                    androidx.compose.material3.TextButton(onClick = { com.monkaydee.tcgcatalogue.CrashReporter.share(context, report); close() }) { Text(stringResource(R.string.crash_share)) }
+                    androidx.compose.material3.TextButton(onClick = close) { Text(stringResource(R.string.crash_dismiss)) }
+                }
+            },
+        )
+    }
 
     // Photos shared from another app open the import screen, which picks them up.
     val shared by SharedPhotos.pending.collectAsState()
@@ -128,6 +152,7 @@ fun AppNav(repo: CardRepository) {
                     onWishlist = { nav.navigate("wishlist") },
                     onTradeList = { nav.navigate("trade") },
                     onSold = { nav.navigate("sold") },
+                    onSealed = { nav.navigate("sealed") },
                 )
             }
             composable("wishlist") { WishlistScreen(repo, onBack = { nav.popBackStack() }) }
@@ -135,6 +160,7 @@ fun AppNav(repo: CardRepository) {
                 TradeListScreen(repo, onBack = { nav.popBackStack() }, onOpenCard = { nav.navigate("card/$it") })
             }
             composable("sold") { SoldScreen(repo, onBack = { nav.popBackStack() }) }
+            composable("sealed") { com.monkaydee.tcgcatalogue.ui.screens.SealedScreen(repo, onBack = { nav.popBackStack() }) }
             composable("binder") {
                 BinderScreen(repo, onBack = { nav.popBackStack() }, onOpenCard = { ids, id -> CardBrowse.open(ids, id) { nav.navigate("card/$it") } })
             }
