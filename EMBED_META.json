@@ -1,0 +1,20 @@
+{
+ "model": "https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_large/float32/latest/mobilenet_v3_large.tflite",
+ "input": 224,
+ "dims": 256,
+ "art": [
+  0.08,
+  0.1,
+  0.92,
+  0.55
+ ],
+ "games": {
+  "POKEMON": 21979,
+  "ONE_PIECE": 4279,
+  "DRAGON_BALL_FW": 4270,
+  "DRAGON_BALL_SUPER": 10218,
+  "UNION_ARENA": 6930,
+  "WEISS_SCHWARZ": 22104
+ },
+ "updated": "2026-10-03T23:20:49Z"
+}
