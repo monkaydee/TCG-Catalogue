@@ -50,7 +50,7 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 - **All prices**: the card page's "All prices" panel shows every number the sources publish for
   that printing: Cardmarket (trend, lowest offer, 1/7/30-day averages, or the chosen One Piece
   listing), TCGplayer (market, lowest listing …), TCGplayer sales per condition, PriceCharting raw
-  and graded prices, and for slabs the eBay sold average. A source that can't be reached says why.
+  and graded prices. A source that can't be reached says why.
 - **Edit cards**: the pencil on a card's page reopens the add sheet with everything filled in:
   printing, Cardmarket listing, condition, raw/graded with company, grade and cert, quantity and
   purchase price (the card page then shows the gain or loss). "Wrong card?" searches for the right
