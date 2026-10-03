@@ -1,7 +1,7 @@
 name: Deploy price server
 
 # Run by hand from the Actions tab (works from the GitHub phone app too), or by a push below.
-# Needs repo secrets CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID and APP_KEY; the provider keys
+# Needs repo secrets CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID (exactly these names) and APP_KEY; the provider keys
 # are optional. See docs/CLOUDFLARE.md.
 #
 # It also runs on pushes that change the server (any branch), so it can be started before the
