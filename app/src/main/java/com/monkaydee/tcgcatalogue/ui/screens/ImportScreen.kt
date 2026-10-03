@@ -1,6 +1,7 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
 import android.content.Context
+import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -270,6 +271,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = appBarColors(),
                 title = { Text(stringResource(R.string.import_title)) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.import_back)) } },
                 actions = { IconButton(onClick = pick) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.import_add_photos)) } },

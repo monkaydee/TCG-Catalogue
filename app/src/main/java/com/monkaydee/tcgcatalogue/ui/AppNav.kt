@@ -14,6 +14,10 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.ui.res.stringResource
+import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.ui.theme.LocalLook
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,12 +50,12 @@ import com.monkaydee.tcgcatalogue.ui.screens.SettingsScreen
 import com.monkaydee.tcgcatalogue.work.PriceRefreshWorker
 import kotlinx.coroutines.flow.map
 
-private data class Tab(val route: String, val label: String, val icon: ImageVector)
+private data class Tab(val route: String, @androidx.annotation.StringRes val label: Int, val icon: ImageVector)
 
 private val tabs = listOf(
-    Tab("home", "Collection", Icons.Default.Collections),
-    Tab("scan", "Scan", Icons.Default.CameraAlt),
-    Tab("settings", "Settings", Icons.Default.Settings),
+    Tab("home", R.string.nav_collection, Icons.Default.Collections),
+    Tab("scan", R.string.nav_scan, Icons.Default.CameraAlt),
+    Tab("settings", R.string.nav_settings, Icons.Default.Settings),
 )
 
 @Composable
@@ -78,13 +82,19 @@ fun AppNav(repo: CardRepository) {
     Scaffold(
         bottomBar = {
             if (route in tabs.map { it.route }) {
-                NavigationBar {
+                val look = LocalLook.current
+                NavigationBar(containerColor = look.bottomBar, contentColor = look.onBottomBar) {
                     tabs.forEach { t ->
                         NavigationBarItem(
                             selected = route == t.route,
                             onClick = { goTab(t.route) },
                             icon = { Icon(t.icon, null) },
-                            label = { Text(t.label) },
+                            label = { Text(stringResource(t.label)) },
+                            colors = NavigationBarItemDefaults.colors(
+                                unselectedIconColor = look.onBottomBar.copy(alpha = 0.75f),
+                                unselectedTextColor = look.onBottomBar.copy(alpha = 0.75f),
+                                selectedTextColor = look.onBottomBar,
+                            ),
                         )
                     }
                 }

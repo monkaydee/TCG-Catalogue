@@ -1,6 +1,7 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -115,6 +116,7 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = appBarColors(),
                 title = {
                     Column {
                         Text(current?.name.orEmpty(), maxLines = 1, overflow = TextOverflow.Ellipsis)

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -35,6 +36,41 @@ data class AppSettings(
     val binderSetOrder: SetOrder = SetOrder.NUMBER,
     /** Turn the binder's pages like real pages instead of sliding them. */
     val binderAnimation: Boolean = true,
+    val look: Look = Look(),
+)
+
+enum class ThemeMode { SYSTEM, LIGHT, DARK }
+
+/** Colour themes: the phone's wallpaper colours (Android 12+), presets, or the user's own accent. */
+enum class Palette(val seed: Long) {
+    DYNAMIC(0xFF3D5AFE),
+    INDIGO(0xFF3D5AFE),
+    OCEAN(0xFF0277BD),
+    TEAL(0xFF00897B),
+    FOREST(0xFF2E7D32),
+    GOLD(0xFFB8860B),
+    SUNSET(0xFFF4511E),
+    ROSE(0xFFD81B60),
+    GRAPE(0xFF7B1FA2),
+    GRAPHITE(0xFF546E7A),
+    CUSTOM(0xFF3D5AFE),
+}
+
+/** Parts of the app whose colour can be set on its own. */
+enum class Area { ACCENT, BACKGROUND, CARDS, TOP_BAR, BOTTOM_BAR, BINDER_PAGE }
+
+/**
+ * How the app looks: light/dark, the colour theme, colours set per [Area] (ARGB, missing = the
+ * theme's), and the user's own background pictures (files in the app's storage) with how much
+ * they are dimmed so text stays readable.
+ */
+data class Look(
+    val mode: ThemeMode = ThemeMode.SYSTEM,
+    val palette: Palette = Palette.DYNAMIC,
+    val colors: Map<Area, Long> = emptyMap(),
+    val homeImage: String? = null,
+    val binderImage: String? = null,
+    val imageDim: Float = 0.45f,
 )
 
 private val Context.dataStore by preferencesDataStore("settings")
@@ -53,6 +89,12 @@ class SettingsStore(private val context: Context) {
         val binderSort = stringPreferencesKey("binder_sort")
         val binderSetOrder = stringPreferencesKey("binder_set_order")
         val binderAnimation = booleanPreferencesKey("binder_animation")
+        val themeMode = stringPreferencesKey("theme_mode")
+        val palette = stringPreferencesKey("palette")
+        val homeImage = stringPreferencesKey("home_image")
+        val binderImage = stringPreferencesKey("binder_image")
+        val imageDim = floatPreferencesKey("image_dim")
+        fun color(a: Area) = longPreferencesKey("color_${a.name.lowercase()}")
     }
 
     val flow: Flow<AppSettings> = context.dataStore.data.map { p ->
@@ -69,6 +111,14 @@ class SettingsStore(private val context: Context) {
             binderSort = p[Keys.binderSort]?.let { runCatching { BinderSort.valueOf(it) }.getOrNull() } ?: d.binderSort,
             binderSetOrder = p[Keys.binderSetOrder]?.let { runCatching { SetOrder.valueOf(it) }.getOrNull() } ?: d.binderSetOrder,
             binderAnimation = p[Keys.binderAnimation] ?: d.binderAnimation,
+            look = Look(
+                mode = p[Keys.themeMode]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() } ?: ThemeMode.SYSTEM,
+                palette = p[Keys.palette]?.let { runCatching { Palette.valueOf(it) }.getOrNull() } ?: Palette.DYNAMIC,
+                colors = Area.entries.mapNotNull { a -> p[Keys.color(a)]?.let { a to it } }.toMap(),
+                homeImage = p[Keys.homeImage],
+                binderImage = p[Keys.binderImage],
+                imageDim = p[Keys.imageDim] ?: Look().imageDim,
+            ),
             enabledGames = p[Keys.games]?.mapNotNull { n -> Game.entries.firstOrNull { it.name == n } }?.toSet() ?: d.enabledGames,
         )
     }
@@ -86,5 +136,14 @@ class SettingsStore(private val context: Context) {
     suspend fun setBinderSort(v: BinderSort) = context.dataStore.edit { it[Keys.binderSort] = v.name }
     suspend fun setBinderSetOrder(v: SetOrder) = context.dataStore.edit { it[Keys.binderSetOrder] = v.name }
     suspend fun setBinderAnimation(v: Boolean) = context.dataStore.edit { it[Keys.binderAnimation] = v }
+    suspend fun setThemeMode(v: ThemeMode) = context.dataStore.edit { it[Keys.themeMode] = v.name }
+    suspend fun setPalette(v: Palette) = context.dataStore.edit { it[Keys.palette] = v.name }
+
+    /** Sets the colour of [area]; null goes back to the theme's colour. */
+    suspend fun setColor(area: Area, argb: Long?) = context.dataStore.edit { if (argb == null) it.remove(Keys.color(area)) else it[Keys.color(area)] = argb }
+    suspend fun resetColors() = context.dataStore.edit { p -> Area.entries.forEach { p.remove(Keys.color(it)) } }
+    suspend fun setHomeImage(path: String?) = context.dataStore.edit { if (path == null) it.remove(Keys.homeImage) else it[Keys.homeImage] = path }
+    suspend fun setBinderImage(path: String?) = context.dataStore.edit { if (path == null) it.remove(Keys.binderImage) else it[Keys.binderImage] = path }
+    suspend fun setImageDim(v: Float) = context.dataStore.edit { it[Keys.imageDim] = v }
     suspend fun setEnabledGames(v: Set<Game>) = context.dataStore.edit { it[Keys.games] = v.map { g -> g.name }.toSet() }
 }

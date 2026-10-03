@@ -1,5 +1,11 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.res.stringResource
+import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.ui.components.Backdrop
+import com.monkaydee.tcgcatalogue.ui.components.appBarColors
+import com.monkaydee.tcgcatalogue.ui.theme.LocalLook
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -75,9 +81,6 @@ import com.monkaydee.tcgcatalogue.ui.components.slabStyle
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-private val PageColor = Color(0xFF2B2D33)
-private val PageEdge = Color(0xFF3A3D45)
-private val PocketColor = Color(0x1FFFFFFF)
 
 /**
  * The collection as a virtual binder: pages of 3×3, 6×6 or 9×9 pockets, sorted by value, name or
@@ -93,11 +96,15 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
     var game by rememberSaveable { mutableStateOf<Game?>(null) }
     val scope = rememberCoroutineScope()
 
+    val picture = LocalLook.current.binderImage
+    Backdrop(picture) {
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Binder") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                colors = appBarColors(overPicture = picture != null),
+                title = { Text(stringResource(R.string.binder_title)) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.binder_back)) } },
             )
         },
     ) { padding ->
@@ -129,7 +136,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
             Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 val games = Game.entries.filter { g -> cards.any { it.game == g } }
                 if (games.size > 1) {
-                    GameChips(selected = game, onSelect = { game = it; restart = true }, games = games, nullLabel = "All")
+                    GameChips(selected = game, onSelect = { game = it; restart = true }, games = games, nullLabel = stringResource(R.string.home_all_games))
                 }
                 Row(
                     Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
@@ -142,23 +149,23 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                             scope.launch { repo.settings.setBinderGrid(g) }
                         }, { Text("$g×$g") })
                     }
-                    Menu(Icons.AutoMirrored.Filled.Sort, s.binderSort.label, BinderSort.entries, { it.label }) {
+                    Menu(Icons.AutoMirrored.Filled.Sort, stringResource(s.binderSort.label), BinderSort.entries, { stringResource(it.label) }) {
                         restart = true
                         scope.launch { repo.settings.setBinderSort(it) }
                     }
                     if (s.binderSort == BinderSort.SET) {
-                        Menu(null, "In set: ${s.binderSetOrder.label}", SetOrder.entries, { it.label }) {
+                        Menu(null, stringResource(R.string.binder_in_set, stringResource(s.binderSetOrder.label)), SetOrder.entries, { stringResource(it.label) }) {
                             restart = true
                             scope.launch { repo.settings.setBinderSetOrder(it) }
                         }
                     }
-                    FilterChip(s.binderAnimation, { scope.launch { repo.settings.setBinderAnimation(!s.binderAnimation) } }, { Text("Page-turn animation") })
+                    FilterChip(s.binderAnimation, { scope.launch { repo.settings.setBinderAnimation(!s.binderAnimation) } }, { Text(stringResource(R.string.binder_animation)) })
                 }
             }
 
             if (pages.isEmpty()) {
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("No cards yet — scan some to fill your binder.", style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.binder_empty), style = MaterialTheme.typography.bodyMedium)
                 }
                 return@Column
             }
@@ -180,10 +187,10 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                 val page = turner.page.coerceIn(pages.indices)
                 IconButton(onClick = {
                     if (s.binderAnimation) turner.previous(scope) else scope.launch { pager.animateScrollToPage(page - 1) }
-                }, enabled = page > 0) { Icon(Icons.Default.ChevronLeft, "Previous page") }
+                }, enabled = page > 0) { Icon(Icons.Default.ChevronLeft, stringResource(R.string.binder_previous)) }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        "Page ${page + 1} of ${pages.size} · ${Money.format(pages[page].cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency)}",
+                        stringResource(R.string.binder_page, page + 1, pages.size, Money.format(pages[page].cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency)),
                         style = MaterialTheme.typography.labelLarge,
                     )
                     if (pages.size > 2) {
@@ -197,14 +204,15 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                 }
                 IconButton(onClick = {
                     if (s.binderAnimation) turner.next(scope) else scope.launch { pager.animateScrollToPage(page + 1) }
-                }, enabled = page < pages.size - 1) { Icon(Icons.Default.ChevronRight, "Next page") }
+                }, enabled = page < pages.size - 1) { Icon(Icons.Default.ChevronRight, stringResource(R.string.binder_next)) }
             }
         }
+    }
     }
 }
 
 @Composable
-private fun <T> Menu(icon: androidx.compose.ui.graphics.vector.ImageVector?, label: String, options: List<T>, name: (T) -> String, onPick: (T) -> Unit) {
+private fun <T> Menu(icon: androidx.compose.ui.graphics.vector.ImageVector?, label: String, options: List<T>, name: @Composable (T) -> String, onPick: (T) -> Unit) {
     var open by remember { mutableStateOf(false) }
     Box {
         TextButton(onClick = { open = true }) {
@@ -223,12 +231,15 @@ private fun <T> Menu(icon: androidx.compose.ui.graphics.vector.ImageVector?, lab
  */
 @Composable
 internal fun BinderSheet(page: BinderPage?, grid: Int, s: AppSettings, onOpen: (OwnedCard) -> Unit) {
+    val look = LocalLook.current
+    val pageColor = look.binderPage
+    val ink = look.onBinderPage
     Row(
         Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 14.dp, bottomEnd = 14.dp))
-            .background(Brush.horizontalGradient(listOf(Color(0xFF1F2025), PageColor, PageColor, Color(0xFF30333A))))
-            .border(1.dp, PageEdge, RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 14.dp, bottomEnd = 14.dp)),
+            .background(Brush.horizontalGradient(listOf(lerp(pageColor, Color.Black, 0.25f), pageColor, pageColor, lerp(pageColor, Color.White, 0.06f))))
+            .border(1.dp, lerp(pageColor, ink, 0.12f), RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 14.dp, bottomEnd = 14.dp)),
     ) {
         // The punched holes where the binder rings go through.
         Column(
@@ -244,7 +255,7 @@ internal fun BinderSheet(page: BinderPage?, grid: Int, s: AppSettings, onOpen: (
             Text(
                 page?.title.orEmpty(),
                 style = MaterialTheme.typography.labelMedium,
-                color = Color.White.copy(alpha = 0.75f),
+                color = ink.copy(alpha = 0.75f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(bottom = 4.dp),
@@ -275,8 +286,8 @@ private fun Pocket(card: OwnedCard?, width: Dp, grid: Int, s: AppSettings, onOpe
         Modifier
             .size(width, width * (88f / 63f))
             .clip(shape)
-            .background(PocketColor)
-            .border(0.5.dp, Color.White.copy(alpha = 0.12f), shape)
+            .background(LocalLook.current.onBinderPage.copy(alpha = 0.12f))
+            .border(0.5.dp, LocalLook.current.onBinderPage.copy(alpha = 0.12f), shape)
             .then(if (card != null) Modifier.clickable { onOpen(card) } else Modifier),
     ) {
         if (card == null) return@Box

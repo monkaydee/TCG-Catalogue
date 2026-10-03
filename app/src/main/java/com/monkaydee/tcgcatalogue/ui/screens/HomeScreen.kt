@@ -1,5 +1,14 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import androidx.annotation.StringRes
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.ui.components.Backdrop
+import com.monkaydee.tcgcatalogue.ui.components.appBarColors
+import com.monkaydee.tcgcatalogue.ui.theme.LocalLook
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -110,8 +119,8 @@ class HomeViewModel(repo: CardRepository) : ViewModel() {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeState())
 }
 
-private enum class SetSort(val label: String) { VALUE("Value"), NAME("Name"), RECENT("Recent") }
-private enum class Range(val label: String, val days: Long?) { M1("1M", 30), M3("3M", 90), Y1("1Y", 365), ALL("All", null) }
+private enum class SetSort(@StringRes val label: Int) { VALUE(R.string.home_sort_value), NAME(R.string.home_sort_name), RECENT(R.string.home_sort_recent) }
+private enum class Range(@StringRes val label: Int, val days: Long?) { M1(R.string.home_range_1m, 30), M3(R.string.home_range_3m, 90), Y1(R.string.home_range_1y, 365), ALL(R.string.home_range_all, null) }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,19 +143,23 @@ fun HomeScreen(
     val s = state.settings
     val refreshing = refreshState == WorkInfo.State.RUNNING || refreshState == WorkInfo.State.ENQUEUED
 
+    val picture = LocalLook.current.homeImage
+    Backdrop(picture) {
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("TCG Catalogue") },
+                colors = appBarColors(overPicture = picture != null),
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
-                    IconButton(onClick = onBinder) { Icon(Icons.AutoMirrored.Filled.MenuBook, "Binder") }
-                    IconButton(onClick = onPhotos) { Icon(Icons.Default.AddPhotoAlternate, "Import photos") }
-                    IconButton(onClick = onSearch) { Icon(Icons.Default.Search, "Search cards") }
+                    IconButton(onClick = onBinder) { Icon(Icons.AutoMirrored.Filled.MenuBook, stringResource(R.string.home_binder)) }
+                    IconButton(onClick = onPhotos) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.home_import_photos)) }
+                    IconButton(onClick = onSearch) { Icon(Icons.Default.Search, stringResource(R.string.home_search)) }
                     if (refreshing) {
                         CircularProgressIndicator(Modifier.size(24.dp).padding(2.dp), strokeWidth = 2.dp)
                         Spacer(Modifier.width(12.dp))
                     } else {
-                        IconButton(onClick = onRefresh) { Icon(Icons.Default.Refresh, "Refresh prices") }
+                        IconButton(onClick = onRefresh) { Icon(Icons.Default.Refresh, stringResource(R.string.home_refresh)) }
                     }
                 },
             )
@@ -177,36 +190,49 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                Card(Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(16.dp)) {
-                        Text(if (gameFilter == null) "Portfolio value" else "${gameFilter!!.label} value", style = MaterialTheme.typography.labelLarge)
+                Card(
+                    Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer),
+                ) {
+                    Column(Modifier.padding(20.dp)) {
+                        Text(
+                            if (gameFilter == null) stringResource(R.string.home_portfolio_value) else stringResource(R.string.home_game_value, gameFilter!!.label),
+                            style = MaterialTheme.typography.labelLarge,
+                        )
                         Text(Money.format(total, s.currency), style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
                         if (gameFilter == null && history.size >= 2) {
                             val change = history.last() - history.first()
                             val pct = if (history.first() > 0) change / history.first() * 100 else 0.0
                             Text(
-                                "%s%s (%+.1f%%) · %s".format(if (change >= 0) "+" else "", Money.format(change, s.currency), pct, range.label),
+                                stringResource(R.string.home_change, (if (change >= 0) "+" else "") + Money.format(change, s.currency), pct, stringResource(range.label)),
                                 color = if (change >= 0) Gain else Loss,
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
-                        Text("${cards.sumOf { it.quantity }} cards · ${cards.size} unique", style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            stringResource(
+                                R.string.home_counts,
+                                pluralStringResource(R.plurals.home_cards, cards.sumOf { it.quantity }, cards.sumOf { it.quantity }),
+                                pluralStringResource(R.plurals.home_unique, cards.size, cards.size),
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                         FilledTonalButton(onClick = onBinder, modifier = Modifier.padding(top = 8.dp)) {
                             Icon(Icons.AutoMirrored.Filled.MenuBook, null, Modifier.size(18.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Open binder")
+                            Text(stringResource(R.string.home_open_binder))
                         }
                         if (gameFilter == null) {
                             Spacer(Modifier.height(12.dp))
                             if (history.size >= 2) ValueChart(history)
-                            else Text("The value chart fills in as prices are refreshed each day.", style = MaterialTheme.typography.bodySmall)
+                            else Text(stringResource(R.string.home_chart_empty), style = MaterialTheme.typography.bodySmall)
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Range.entries.forEach { r -> FilterChip(r == range, { range = r }, { Text(r.label) }) }
+                                Range.entries.forEach { r -> FilterChip(r == range, { range = r }, { Text(stringResource(r.label)) }) }
                             }
                         }
                         if (s.lastPriceRefresh > 0) {
                             Text(
-                                "Prices updated ${android.text.format.DateUtils.getRelativeTimeSpanString(s.lastPriceRefresh)}",
+                                stringResource(R.string.home_prices_updated, android.text.format.DateUtils.getRelativeTimeSpanString(s.lastPriceRefresh)),
                                 style = MaterialTheme.typography.labelSmall,
                             )
                         }
@@ -215,10 +241,10 @@ fun HomeScreen(
             }
             item {
                 val owned = state.cards.map { it.game }.toSet()
-                GameChips(gameFilter, { gameFilter = it }, Game.entries.filter { it in owned }, nullLabel = "All")
+                GameChips(gameFilter, { gameFilter = it }, Game.entries.filter { it in owned }, nullLabel = stringResource(R.string.home_all_games))
             }
             if (top.isNotEmpty()) {
-                item { Text("Most valuable", style = MaterialTheme.typography.titleMedium) }
+                item { Text(stringResource(R.string.home_most_valuable), style = MaterialTheme.typography.titleMedium) }
                 item {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(top, key = { it.id }) { c ->
@@ -233,14 +259,15 @@ fun HomeScreen(
             }
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Sets (${sets.size})", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.home_sets, sets.size), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                     SetSort.entries.forEach { o ->
-                        FilterChip(o == sort, { sort = o }, { Text(o.label) }, modifier = Modifier.padding(start = 4.dp))
+                        FilterChip(o == sort, { sort = o }, { Text(stringResource(o.label)) }, modifier = Modifier.padding(start = 4.dp))
                     }
                 }
             }
             items(sets, key = { "${it.game}/${it.setId}" }) { set -> SetRow(set, s.currency) { onOpenSet(set.game, set.setId) } }
         }
+    }
     }
 }
 
@@ -256,7 +283,7 @@ private fun SetRow(set: SetSummaryUi, currency: String, onClick: () -> Unit) {
             Column(Modifier.weight(1f)) {
                 Text(set.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    "${set.game.short} · " + if (set.total > 0) "${set.owned}/${set.total} cards" else "${set.owned} cards",
+                    if (set.total > 0) stringResource(R.string.home_set_progress, set.game.short, set.owned, set.total) else stringResource(R.string.home_set_owned, set.game.short, set.owned),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 if (set.total > 0) {
@@ -267,7 +294,7 @@ private fun SetRow(set: SetSummaryUi, currency: String, onClick: () -> Unit) {
             Spacer(Modifier.width(12.dp))
             Column(horizontalAlignment = Alignment.End) {
                 Text(Money.format(set.value, currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Text("${set.copies} copies", style = MaterialTheme.typography.labelSmall)
+                Text(pluralStringResource(R.plurals.home_copies, set.copies, set.copies), style = MaterialTheme.typography.labelSmall)
             }
         }
     }
@@ -280,25 +307,20 @@ private fun EmptyState(modifier: Modifier, onScan: () -> Unit, onPhotos: () -> U
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Your collection is empty", style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.home_empty_title), style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(8.dp))
-        Text(
-            "Scan a card from Pokémon, One Piece, Magic, Dragon Ball, Union Arena, Weiss Schwarz or Naruto. " +
-                "The app reads the number printed on the card (e.g. 025/165, OP05-060, FB01-139) and looks up the card and its market price. " +
-                "Graded slabs are recognised too.",
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        Text(stringResource(R.string.home_empty_text), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(16.dp))
         Button(onClick = onScan) {
             Icon(Icons.Default.CameraAlt, null)
             Spacer(Modifier.width(8.dp))
-            Text("Scan a card")
+            Text(stringResource(R.string.home_scan_card))
         }
         Spacer(Modifier.height(8.dp))
         OutlinedButton(onClick = onPhotos) {
             Icon(Icons.Default.AddPhotoAlternate, null)
             Spacer(Modifier.width(8.dp))
-            Text("Import photos")
+            Text(stringResource(R.string.home_import_photos))
         }
     }
 }

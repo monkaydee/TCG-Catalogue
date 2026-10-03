@@ -18,7 +18,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.ui.AppNav
+import com.monkaydee.tcgcatalogue.ui.theme.LocalLook
 import com.monkaydee.tcgcatalogue.ui.theme.TcgTheme
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +41,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
         setContent {
-            TcgTheme {
+            val settings by repository.settings.flow.collectAsState(initial = null)
+            // Wait for the stored look, so the app doesn't flash in the default theme first.
+            val look = settings?.look ?: return@setContent
+            TcgTheme(look) {
+                val dark = LocalLook.current.dark
+                SideEffect {
+                    WindowCompat.getInsetsController(window, window.decorView).apply {
+                        isAppearanceLightStatusBars = !dark
+                        isAppearanceLightNavigationBars = !dark
+                    }
+                }
                 AppNav(repository)
             }
         }

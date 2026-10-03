@@ -1,6 +1,7 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
 import androidx.compose.foundation.clickable
+import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -145,6 +146,7 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit, replaceId: Long? = nu
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = appBarColors(),
                 title = { Text(if (replaceId != null) stringResource(R.string.search_title_replace) else stringResource(R.string.search_title_add)) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.search_back)) } },
             )

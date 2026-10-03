@@ -1,6 +1,7 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
 import androidx.compose.foundation.clickable
+import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -64,6 +65,7 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = appBarColors(),
                 title = { Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.set_back)) } },
             )

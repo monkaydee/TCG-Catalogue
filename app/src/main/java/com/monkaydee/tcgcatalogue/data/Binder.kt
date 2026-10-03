@@ -1,25 +1,27 @@
 package com.monkaydee.tcgcatalogue.data
 
+import androidx.annotation.StringRes
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.CardSet
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 
 /** How the cards are ordered in the virtual binder. */
-enum class BinderSort(val label: String) {
-    VALUE_DESC("Value · highest first"),
-    VALUE_ASC("Value · lowest first"),
-    NAME_ASC("Name · A–Z"),
-    NAME_DESC("Name · Z–A"),
-    SET("By set"),
+enum class BinderSort(@StringRes val label: Int) {
+    VALUE_DESC(R.string.binder_sort_value_desc),
+    VALUE_ASC(R.string.binder_sort_value_asc),
+    NAME_ASC(R.string.binder_sort_name_asc),
+    NAME_DESC(R.string.binder_sort_name_desc),
+    SET(R.string.binder_sort_set),
 }
 
 /** Order of the cards within a set when the binder is sorted by set. */
-enum class SetOrder(val label: String) {
-    NUMBER("Card number"),
-    VALUE_DESC("Value · highest first"),
-    VALUE_ASC("Value · lowest first"),
-    NAME_ASC("Name · A–Z"),
-    NAME_DESC("Name · Z–A"),
+enum class SetOrder(@StringRes val label: Int) {
+    NUMBER(R.string.binder_order_number),
+    VALUE_DESC(R.string.binder_sort_value_desc),
+    VALUE_ASC(R.string.binder_sort_value_asc),
+    NAME_ASC(R.string.binder_sort_name_asc),
+    NAME_DESC(R.string.binder_sort_name_desc),
 }
 
 /** One binder page: its cards (at most rows × columns) and, sorted by set, the set it shows. */
