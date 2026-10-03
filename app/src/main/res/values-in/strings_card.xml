@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">Gagal memuat data kartu — periksa koneksi Anda</string>
+    <string name="card_pager_position">%1$d / %2$d · geser untuk lainnya</string>
+    <string name="card_back">Kembali</string>
+    <string name="card_edit">Ubah kartu</string>
+    <string name="card_remove_from_collection">Hapus dari koleksi</string>
+    <string name="card_save">Simpan</string>
+    <string name="card_remove_title">Hapus kartu?</string>
+    <plurals name="card_remove_message">
+        <item quantity="other">Ini akan menghapus %1$d salinan %2$s dari koleksi Anda.</item>
+    </plurals>
+    <string name="card_remove">Hapus</string>
+    <string name="card_cancel">Batal</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s per kartu (%2$s di %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s per kartu (%2$s di pasar)</string>
+    <string name="card_price_updated">Diperbarui %1$s</string>
+    <string name="card_no_market_price">Harga pasar tidak tersedia</string>
+    <string name="card_own_value">Nilai Anda sendiri: %1$s per kartu</string>
+    <string name="card_own_value_with_market">Nilai Anda sendiri: %1$s per kartu · pasar %2$s</string>
+    <string name="card_bought_for_with_percent">Dibeli seharga %1$s per kartu · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Dibeli seharga %1$s per kartu · %2$s</string>
+    <string name="card_cert">Cert #%1$s</string>
+    <string name="card_graded_hint">Kartu graded memakai nilai Anda sendiri — cek penjualan terbaru lewat tautan di bawah.</string>
+    <string name="card_raw_hint">Harga pasar kartu Raw (belum di-grade) untuk kondisi ini.</string>
+    <string name="card_quantity">Jumlah</string>
+    <string name="card_cardmarket_listing">Listing Cardmarket</string>
+    <string name="card_condition">Kondisi</string>
+    <string name="card_all_prices">Semua harga</string>
+    <string name="card_show">Tampilkan</string>
+    <string name="card_refresh">Segarkan</string>
+    <string name="card_check_prices">Cek harga online</string>
+    <string name="set_back">Kembali</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="other">%1$d dari %2$d kartu (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="other">%d kartu</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="other">%d salinan</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">Menurut nilai</string>
+    <string name="set_sort_number">Menurut nomor</string>
+    <string name="set_no_price">tanpa harga</string>
+    <string name="common_auto">Otomatis</string>
+    <string name="common_less">Kurangi</string>
+    <string name="common_more">Tambah</string>
+    <string name="links_ebay_sold">Terjual di eBay</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Der Name auf der gescannten Karte passt nicht zu dieser Karte — die Nummer wurde vielleicht falsch gelesen. Prüfe sie oder brich ab und gib sie manuell ein.</string>
+    <string name="data_graded">Graded</string>
+    <string name="data_graded_grade">Graded %1$s</string>
+    <string name="data_graded_choose_grader">Grading-Unternehmen wählen</string>
+    <string name="data_graded_choose_grade">Note wählen</string>
+    <string name="data_graded_no_source">keine Quelle für Graded-Preise — gib deinen eigenen Wert ein oder nutze die Preislinks auf der Kartenseite</string>
+    <string name="data_variant_normal">Normal</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1. Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched Foil</string>
+    <string name="data_variant_standard">Standard</string>
+    <string name="data_variant_numbered">Variante %1$d</string>
+    <string name="data_overview_prices">Preise</string>
+    <string name="data_overview_no_card_data">Kartendaten konnten nicht geladen werden — Verbindung prüfen</string>
+    <string name="data_overview_no_cardmarket">keine Cardmarket-Preise für diese Karte</string>
+    <string name="data_overview_no_tcgplayer">keine TCGplayer-Preise für diese Karte</string>
+    <string name="data_overview_by_condition">TCGplayer nach Zustand (Verkäufe)</string>
+    <string name="data_overview_no_condition_sales">keine Verkäufe nach Zustand</string>
+    <string name="price_label_trend">Trend</string>
+    <string name="price_label_lowest_offer">Niedrigstes Angebot</string>
+    <string name="price_label_average_sold">Ø Verkaufspreis</string>
+    <string name="price_label_avg1">1-Tages-Schnitt</string>
+    <string name="price_label_avg7">7-Tages-Schnitt</string>
+    <string name="price_label_avg30">30-Tages-Schnitt</string>
+    <string name="price_label_market">Markt</string>
+    <string name="price_label_lowest_listing">Niedrigstes Listing</string>
+    <string name="price_label_mid">Mittel</string>
+    <string name="price_label_highest_listing">Höchstes Listing</string>
+    <string name="price_label_direct_low">Direct Low</string>
+    <string name="price_note_raw_no_graded_source">Raw-Preis wird angezeigt — keine Quelle für Graded-Preise — gib deinen eigenen Wert ein oder nutze die Preislinks auf der Kartenseite</string>
+    <string name="price_note_markets_disagree">%1$s-Listing passte nicht zu dieser Karte (%2$dx Abweichung); es wird %3$s verwendet</string>
+    <string name="price_note_capped">%1$s wie %2$s bewertet (die Verkaufsdaten lagen höher)</string>
+    <string name="price_note_tcgplayer_sales">%1$s-Preis aus TCGplayer-Verkäufen</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% von NM (TCGplayer-Verkäufe)</string>
+    <string name="price_note_estimated_share">%1$s geschätzt auf %2$d%% von NM (keine Verkaufsdaten)</string>
+    <string name="data_http_error">HTTP %1$d für %2$s</string>
+</resources>

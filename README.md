@@ -26,10 +26,13 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
     preselected. If it's still unclear, you choose from the matches with images.
   - One Piece: `OP05-060`, `ST01-001`, `EB01-012`, `PRB01-001`, `P-001`, including all
     alternate arts / SP / manga printings.
-  - **Alt arts by picture**: the scanned card's picture is compared with the image of every
-    match and printing, so the right alt art / parallel / SP comes preselected (also for the
-    indexed games and photo imports). When printings look alike (e.g. a reprint with the same
-    art), you pick; quick add then waits for you instead of guessing.
+  - **Alt arts by picture**: the photo (or the area around the camera guide) is searched for
+    the card, and the card found is compared with the image of every match and printing —
+    colour layout first, fine detail for close calls (e.g. Parallel vs Manga backgrounds). An
+    alt art / parallel / SP is only preselected when the picture really shows it. Printings
+    with the very same art (reprints) can't be told apart by a photo: the original print is
+    taken, and only when those printings differ clearly in price is the card marked "check the
+    printing" (and not quick-added). The photo import list shows the chosen printing.
   - Magic: the set code and collector number at the bottom left (`DMU • EN`, `0107 M`);
     falls back to the card name.
   - Dragon Ball Fusion World / Super, Union Arena, Weiss Schwarz, Naruto: the card code
@@ -69,6 +72,14 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   card and swaps it in, keeping quantity, grade and purchase price.
 - **Full screen**: status and navigation bars are hidden (swipe from the edge to show them);
   can be turned off in Settings.
+- **Appearance**: light, dark or follow the phone; colour themes (your wallpaper's colours on
+  Android 12+, or Indigo, Ocean, Teal, Forest, Gold, Sunset, Rose, Grape, Graphite); your own
+  colour for the accent, background, panels, top bar, bottom bar and binder pages; your own
+  background pictures for the collection and the binder (dimmed so text stays readable).
+- **Languages**: English, Deutsch, Español, Français, Italiano, Português (Brasil), Nederlands,
+  Polski, Svenska, Türkçe, Русский, Українська, العربية, हिन्दी, ไทย, Tiếng Việt, Bahasa
+  Indonesia, 日本語, 한국어, 简体中文, 繁體中文. The app follows the phone's language, or pick one
+  in Settings → Language (on Android 13+ also in the system's per-app language setting).
 - **Card view**: swipe left/right to go through the cards in the order of the list you opened
   them from (a set, or your whole collection by value from "Most valuable").
 - **Prices**: Pokémon and Magic from Cardmarket (EUR, trend) or TCGplayer (USD, market). Choose
@@ -153,6 +164,10 @@ Requires JDK 17+ and the Android SDK (platform 35).
 ./gradlew testDebugUnitTest   # parser unit tests
 ./gradlew assembleRelease     # app/build/outputs/apk/release/app-release.apk
 ```
+
+## Roadmap
+
+Ideas for what comes next, all free: see [ROADMAP.md](ROADMAP.md).
 
 ## Notes and limitations
 

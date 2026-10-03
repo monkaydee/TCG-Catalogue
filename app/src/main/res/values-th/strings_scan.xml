@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">ไม่มีราคา</string>
+    <string name="add_grader_other">อื่น ๆ</string>
+    <string name="add_confirm">เพิ่ม</string>
+    <string name="add_graded_missing">ไม่พบราคาการ์ดเกรด (%1$s) ระบบจะใช้ราคา Raw เว้นแต่คุณกรอกมูลค่าเองด้านล่าง</string>
+    <string name="add_no_sales_found">ไม่พบยอดขาย</string>
+    <plurals name="add_possible_matches">
+        <item quantity="other">พบรายการที่อาจตรงกัน %d รายการ — แตะอันที่ถูกต้อง</item>
+    </plurals>
+    <string name="add_raw_price">ราคา Raw</string>
+    <string name="add_looking_up_sales">กำลังค้นหายอดขาย…</string>
+    <string name="add_price_details">ต่อใบ · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">เวอร์ชันการพิมพ์ — โปรดตรวจสอบ: สแกนแยกจากเวอร์ชันอื่นไม่ได้</string>
+    <string name="add_printing_recognised">เวอร์ชันการพิมพ์ — จดจำจากการสแกน</string>
+    <string name="add_printing">เวอร์ชันการพิมพ์</string>
+    <string name="add_cardmarket_listing">รายการบน Cardmarket (เลือกเวอร์ชันที่คุณมีให้ตรง)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">เกรดแล้ว</string>
+    <string name="add_grading_company">บริษัทเกรดการ์ด</string>
+    <string name="add_grade">เกรด</string>
+    <string name="add_cert_number">เลขใบรับรอง (ไม่บังคับ)</string>
+    <string name="add_condition">สภาพ</string>
+    <string name="add_purchase_price">ราคาซื้อต่อใบ (%1$s, ไม่บังคับ)</string>
+    <string name="add_my_value">มูลค่าของฉันต่อใบ (%1$s, ไม่บังคับ — ใช้แทนราคาตลาด)</string>
+    <string name="add_wrong_card">การ์ดผิดใบ? ค้นหาใบที่ถูกต้อง</string>
+    <string name="add_cancel">ยกเลิก</string>
+    <string name="import_could_not_open_photo">เปิดรูปภาพไม่ได้</string>
+    <string name="import_lookup_failed">ค้นหาไม่สำเร็จ — ตรวจสอบการเชื่อมต่อ</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">นำเข้ารูปภาพ</string>
+    <string name="import_back">กลับ</string>
+    <string name="import_add_photos">เพิ่มรูปภาพ</string>
+    <string name="import_intro">ถ่ายรูปการ์ดไว้ตอนอยู่ข้างนอกใช่ไหม นำเข้ามาที่นี่ได้เลย แล้วแอปจะจดจำให้เหมือนสแกนสด\n\n• ถ่ายการ์ดใบเดียวต่อรูปจะได้ผลดีที่สุด ส่วนหน้าอัลบั้มใช้ได้ถ้าหมายเลขคมชัด\n• ตรวจสอบให้แน่ใจว่าอ่านหมายเลขที่ด้านล่างการ์ดได้\n• คุณยังแชร์รูปไปยัง TCG Catalogue จากแกลเลอรีหรือแอปแชตได้ด้วย</string>
+    <string name="import_choose_photos">เลือกรูปภาพ</string>
+    <plurals name="import_count_added">
+        <item quantity="other">เพิ่มแล้ว %d</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="other">รอตรวจสอบ %d</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="other">กำลังดำเนินการ %d</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="other">ไม่รู้จัก %d</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="other">เพิ่มผลที่ตรงที่สุดสำหรับทั้ง %d ใบ</item>
+    </plurals>
+    <string name="import_reading_photo">กำลังอ่านรูปภาพ…</string>
+    <string name="import_looking_up">กำลังค้นหา %1$s…</string>
+    <string name="import_check_printing">ตรวจสอบเวอร์ชันการพิมพ์ — แยกจากเวอร์ชันอื่นไม่ได้</string>
+    <plurals name="import_possible_matches">
+        <item quantity="other">อาจตรงกัน %d รายการ · แตะเพื่อเลือก</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · แตะเพื่อเพิ่ม</string>
+    <string name="import_added">เพิ่มแล้ว</string>
+    <string name="import_no_card_found">ไม่พบการ์ดสำหรับ %1$s</string>
+    <string name="import_no_number">ไม่พบหมายเลขการ์ดในรูปนี้</string>
+    <string name="import_something_wrong">เกิดข้อผิดพลาด</string>
+    <string name="import_type_it_in">พิมพ์เอง</string>
+    <string name="import_retry">ลองอีกครั้ง</string>
+    <string name="import_dismiss">ลบออก</string>
+    <string name="scan_lookup_failed">ค้นหาไม่สำเร็จ — ตรวจสอบการเชื่อมต่อ</string>
+    <string name="scan_no_card_found">ไม่พบการ์ดสำหรับ %1$s</string>
+    <string name="scan_added_auto">เพิ่ม %1$s (%2$s) แล้ว</string>
+    <string name="scan_added_auto_graded">เพิ่ม %1$s (%2$s) · %3$s แล้ว</string>
+    <string name="scan_added_qty">เพิ่ม %1$s ×%2$d แล้ว</string>
+    <string name="scan_could_not_save">บันทึกไม่ได้: %1$s</string>
+    <string name="scan_camera_rationale">แอปใช้กล้องเพื่ออ่านหมายเลขการ์ด ภาพจะไม่ออกจากโทรศัพท์ของคุณ</string>
+    <string name="scan_allow_camera">อนุญาตกล้อง</string>
+    <string name="scan_import_instead">นำเข้ารูปภาพแทน</string>
+    <string name="scan_torch">ไฟฉาย</string>
+    <string name="scan_quick_add_on">เพิ่มด่วนเปิดอยู่ — เพิ่มการ์ดอัตโนมัติ</string>
+    <string name="scan_quick_add_off">เพิ่มด่วนปิดอยู่ — ยืนยันทีละใบ</string>
+    <string name="scan_reading">กำลังอ่าน %1$s…</string>
+    <string name="scan_hint">วางการ์ดให้เต็มกรอบ ให้หมายเลขด้านล่างคมชัดและมีแสงพอ — แตะหน้าจอเพื่อโฟกัส</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="other">เพิ่มในรอบนี้ %d</item>
+    </plurals>
+    <string name="scan_from_photos">จากรูปภาพ</string>
+    <string name="scan_type_it_in">พิมพ์เอง</string>
+    <string name="search_no_card">ไม่พบการ์ด %1$s</string>
+    <string name="search_nothing_found">ไม่พบผลลัพธ์สำหรับ “%1$s”</string>
+    <string name="search_failed">ค้นหาไม่สำเร็จ: %1$s</string>
+    <string name="search_could_not_load">โหลดการ์ดไม่ได้</string>
+    <string name="search_added_qty">เพิ่ม %1$s ×%2$d แล้ว</string>
+    <string name="search_could_not_save">บันทึกไม่ได้: %1$s</string>
+    <string name="search_hint_pokemon">ชื่อหรือหมายเลข (เช่น Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">รหัสการ์ด (เช่น OP05-060)</string>
+    <string name="search_hint_magic">ชื่อ หรือเซ็ต + หมายเลข (เช่น Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">รหัสหรือชื่อ (เช่น FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">รหัสหรือชื่อ (เช่น BT1-031)</string>
+    <string name="search_hint_union_arena">รหัสหรือชื่อ (เช่น UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">รหัสหรือชื่อ (เช่น HOL/W91-001)</string>
+    <string name="search_hint_naruto">รหัสหรือชื่อ</string>
+    <string name="search_title_replace">ค้นหาการ์ดที่ถูกต้อง</string>
+    <string name="search_title_add">เพิ่มการ์ด</string>
+    <string name="search_back">กลับ</string>
+    <string name="search_search">ค้นหา</string>
+    <string name="search_replace">แทนที่</string>
+</resources>

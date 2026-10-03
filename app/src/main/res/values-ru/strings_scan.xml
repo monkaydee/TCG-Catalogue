@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">нет цены</string>
+    <string name="add_grader_other">Другая</string>
+    <string name="add_confirm">Добавить</string>
+    <string name="add_graded_missing">Цена с грейдом не найдена (%1$s). Используется цена без грейда, если ниже не указана своя оценка.</string>
+    <string name="add_no_sales_found">продажи не найдены</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d возможное совпадение — выберите нужное</item>
+        <item quantity="few">%d возможных совпадения — выберите нужное</item>
+        <item quantity="many">%d возможных совпадений — выберите нужное</item>
+        <item quantity="other">%d возможных совпадений — выберите нужное</item>
+    </plurals>
+    <string name="add_raw_price">цена без грейда</string>
+    <string name="add_looking_up_sales">поиск продаж…</string>
+    <string name="add_price_details">за копию · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">Версия — проверьте: по скану не удалось отличить её от другой версии</string>
+    <string name="add_printing_recognised">Версия — распознана по скану</string>
+    <string name="add_printing">Версия</string>
+    <string name="add_cardmarket_listing">Товар на Cardmarket (выберите именно ваше издание)</string>
+    <string name="add_raw">Без грейда</string>
+    <string name="add_graded">С грейдом</string>
+    <string name="add_grading_company">Грейдинговая компания</string>
+    <string name="add_grade">Грейд</string>
+    <string name="add_cert_number">Номер сертификата (необязательно)</string>
+    <string name="add_condition">Состояние</string>
+    <string name="add_purchase_price">Цена покупки за копию (%1$s, необязательно)</string>
+    <string name="add_my_value">Своя оценка за копию (%1$s, необязательно — заменяет рыночную цену)</string>
+    <string name="add_wrong_card">Не та карта? Найдите нужную</string>
+    <string name="add_cancel">Отмена</string>
+
+    <string name="import_could_not_open_photo">Не удалось открыть фото</string>
+    <string name="import_lookup_failed">Ошибка поиска — проверьте подключение</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Импорт фото</string>
+    <string name="import_back">Назад</string>
+    <string name="import_add_photos">Добавить фото</string>
+    <string name="import_intro">Сфотографировали карты вне дома? Импортируйте фото сюда — они распознаются так же, как при сканировании камерой.\n\n• Лучше всего — одна карта на фото; страницы альбома тоже подойдут, если номера чёткие\n• Номер внизу карты должен читаться\n• Можно также отправить фото в TCG Catalogue из галереи или мессенджера</string>
+    <string name="import_choose_photos">Выбрать фото</string>
+    <plurals name="import_count_added">
+        <item quantity="one">добавлено: %d</item>
+        <item quantity="few">добавлено: %d</item>
+        <item quantity="many">добавлено: %d</item>
+        <item quantity="other">добавлено: %d</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">к проверке: %d</item>
+        <item quantity="few">к проверке: %d</item>
+        <item quantity="many">к проверке: %d</item>
+        <item quantity="other">к проверке: %d</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">в обработке: %d</item>
+        <item quantity="few">в обработке: %d</item>
+        <item quantity="many">в обработке: %d</item>
+        <item quantity="other">в обработке: %d</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">не распознано: %d</item>
+        <item quantity="few">не распознано: %d</item>
+        <item quantity="many">не распознано: %d</item>
+        <item quantity="other">не распознано: %d</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="one">Добавить лучшее совпадение для %d карты</item>
+        <item quantity="few">Добавить лучшие совпадения для всех %d карт</item>
+        <item quantity="many">Добавить лучшие совпадения для всех %d карт</item>
+        <item quantity="other">Добавить лучшие совпадения для всех %d карт</item>
+    </plurals>
+    <string name="import_reading_photo">Чтение фото…</string>
+    <string name="import_looking_up">Поиск %1$s…</string>
+    <string name="import_check_printing">Проверьте версию — её не удалось отличить от другой</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d возможное совпадение · нажмите, чтобы выбрать</item>
+        <item quantity="few">%d возможных совпадения · нажмите, чтобы выбрать</item>
+        <item quantity="many">%d возможных совпадений · нажмите, чтобы выбрать</item>
+        <item quantity="other">%d возможных совпадений · нажмите, чтобы выбрать</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · нажмите, чтобы добавить</string>
+    <string name="import_added">Добавлено</string>
+    <string name="import_no_card_found">Карта %1$s не найдена</string>
+    <string name="import_no_number">На фото не найден номер карты</string>
+    <string name="import_something_wrong">Что-то пошло не так</string>
+    <string name="import_type_it_in">Ввести вручную</string>
+    <string name="import_retry">Повторить</string>
+    <string name="import_dismiss">Скрыть</string>
+
+    <string name="scan_lookup_failed">Ошибка поиска — проверьте подключение</string>
+    <string name="scan_no_card_found">Карта %1$s не найдена</string>
+    <string name="scan_added_auto">Добавлено: %1$s (%2$s)</string>
+    <string name="scan_added_auto_graded">Добавлено: %1$s (%2$s) · %3$s</string>
+    <string name="scan_added_qty">Добавлено: %1$s ×%2$d</string>
+    <string name="scan_could_not_save">Не удалось сохранить: %1$s</string>
+    <string name="scan_camera_rationale">Камера нужна, чтобы считывать номер карты. Изображения не покидают ваш телефон.</string>
+    <string name="scan_allow_camera">Разрешить камеру</string>
+    <string name="scan_import_instead">Импортировать фото</string>
+    <string name="scan_torch">Фонарик</string>
+    <string name="scan_quick_add_on">Быстрое добавление ВКЛ — карты добавляются автоматически</string>
+    <string name="scan_quick_add_off">Быстрое добавление ВЫКЛ — подтверждайте каждую карту</string>
+    <string name="scan_reading">Считывание %1$s…</string>
+    <string name="scan_hint">Заполните рамку картой. Номер внизу должен быть чётким и хорошо освещённым — коснитесь экрана для фокусировки.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">Добавлено за сеанс: %d</item>
+        <item quantity="few">Добавлено за сеанс: %d</item>
+        <item quantity="many">Добавлено за сеанс: %d</item>
+        <item quantity="other">Добавлено за сеанс: %d</item>
+    </plurals>
+    <string name="scan_from_photos">Из фото</string>
+    <string name="scan_type_it_in">Ввести вручную</string>
+
+    <string name="search_no_card">Нет карты %1$s</string>
+    <string name="search_nothing_found">По запросу «%1$s» ничего не найдено</string>
+    <string name="search_failed">Ошибка поиска: %1$s</string>
+    <string name="search_could_not_load">Не удалось загрузить карту</string>
+    <string name="search_added_qty">Добавлено: %1$s ×%2$d</string>
+    <string name="search_could_not_save">Не удалось сохранить: %1$s</string>
+    <string name="search_hint_pokemon">Название или номер (напр. Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Код карты (напр. OP05-060)</string>
+    <string name="search_hint_magic">Название или сет + номер (напр. Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Код или название (напр. FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Код или название (напр. BT1-031)</string>
+    <string name="search_hint_union_arena">Код или название (напр. UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Код или название (напр. HOL/W91-001)</string>
+    <string name="search_hint_naruto">Код или название</string>
+    <string name="search_title_replace">Найти нужную карту</string>
+    <string name="search_title_add">Добавить карту</string>
+    <string name="search_back">Назад</string>
+    <string name="search_search">Найти</string>
+    <string name="search_replace">Заменить</string>
+</resources>

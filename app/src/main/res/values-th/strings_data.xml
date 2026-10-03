@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">ชื่อบนการ์ดที่สแกนไม่ตรงกับการ์ดใบนี้ — อาจอ่านหมายเลขผิด ตรวจสอบอีกครั้ง หรือยกเลิกแล้วพิมพ์เอง</string>
+    <string name="data_graded">เกรดแล้ว</string>
+    <string name="data_graded_grade">เกรดแล้ว %1$s</string>
+    <string name="data_graded_choose_grader">เลือกบริษัทเกรด</string>
+    <string name="data_graded_choose_grade">เลือกเกรด</string>
+    <string name="data_graded_no_source">ไม่มีแหล่งราคาการ์ดเกรด — ตั้งมูลค่าเอง หรือดูลิงก์ราคาในหน้าการ์ด</string>
+    <string name="data_variant_normal">ปกติ</string>
+    <string name="data_variant_holo">โฮโล</string>
+    <string name="data_variant_reverse_holo">รีเวิร์สโฮโล</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">ฟอยล์</string>
+    <string name="data_variant_etched_foil">เอ็ตช์ฟอยล์</string>
+    <string name="data_variant_standard">มาตรฐาน</string>
+    <string name="data_variant_numbered">แบบ %1$d</string>
+    <string name="data_overview_prices">ราคา</string>
+    <string name="data_overview_no_card_data">โหลดข้อมูลการ์ดไม่ได้ — ตรวจสอบการเชื่อมต่อ</string>
+    <string name="data_overview_no_cardmarket">ไม่มีราคา Cardmarket สำหรับการ์ดใบนี้</string>
+    <string name="data_overview_no_tcgplayer">ไม่มีราคา TCGplayer สำหรับการ์ดใบนี้</string>
+    <string name="data_overview_by_condition">TCGplayer ตามสภาพ (ยอดขาย)</string>
+    <string name="data_overview_no_condition_sales">ไม่มียอดขายตามสภาพ</string>
+    <string name="price_label_trend">แนวโน้ม</string>
+    <string name="price_label_lowest_offer">ข้อเสนอต่ำสุด</string>
+    <string name="price_label_average_sold">ราคาขายเฉลี่ย</string>
+    <string name="price_label_avg1">เฉลี่ย 1 วัน</string>
+    <string name="price_label_avg7">เฉลี่ย 7 วัน</string>
+    <string name="price_label_avg30">เฉลี่ย 30 วัน</string>
+    <string name="price_label_market">ตลาด</string>
+    <string name="price_label_lowest_listing">ประกาศขายต่ำสุด</string>
+    <string name="price_label_mid">กลาง</string>
+    <string name="price_label_highest_listing">ประกาศขายสูงสุด</string>
+    <string name="price_label_direct_low">Direct ต่ำสุด</string>
+    <string name="price_note_raw_no_graded_source">แสดงราคา Raw — ไม่มีแหล่งราคาการ์ดเกรด — ตั้งมูลค่าเอง หรือดูลิงก์ราคาในหน้าการ์ด</string>
+    <string name="price_note_markets_disagree">รายการบน %1$s ไม่ตรงกับการ์ดใบนี้ (ต่างกัน %2$d เท่า) จึงใช้ %3$s</string>
+    <string name="price_note_capped">%1$s ตีมูลค่าเท่ากับ %2$s (ข้อมูลยอดขายสูงกว่า)</string>
+    <string name="price_note_tcgplayer_sales">ราคา %1$s จากยอดขาย TCGplayer</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% ของ NM (ยอดขาย TCGplayer)</string>
+    <string name="price_note_estimated_share">%1$s ประมาณ %2$d%% ของ NM (ไม่มีข้อมูลยอดขาย)</string>
+    <string name="data_http_error">HTTP %1$d สำหรับ %2$s</string>
+</resources>

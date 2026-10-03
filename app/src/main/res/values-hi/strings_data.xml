@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">स्कैन किए गए कार्ड का नाम इस कार्ड से मेल नहीं खाता — हो सकता है नंबर गलत पढ़ा गया हो। उसे जाँचें, या रद्द करके खुद टाइप करें।</string>
+    <string name="data_graded">ग्रेडेड</string>
+    <string name="data_graded_grade">ग्रेडेड %1$s</string>
+    <string name="data_graded_choose_grader">ग्रेडिंग कंपनी चुनें</string>
+    <string name="data_graded_choose_grade">ग्रेड चुनें</string>
+    <string name="data_graded_no_source">ग्रेडेड कीमत का कोई स्रोत नहीं — अपनी वैल्यू सेट करें, या कार्ड पेज पर दिए प्राइस लिंक देखें</string>
+    <string name="data_variant_normal">Normal</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Standard</string>
+    <string name="data_variant_numbered">वेरिएंट %1$d</string>
+    <string name="data_overview_prices">कीमतें</string>
+    <string name="data_overview_no_card_data">कार्ड का डेटा लोड नहीं हो सका — अपना कनेक्शन जाँचें</string>
+    <string name="data_overview_no_cardmarket">इस कार्ड के लिए Cardmarket कीमतें नहीं हैं</string>
+    <string name="data_overview_no_tcgplayer">इस कार्ड के लिए TCGplayer कीमतें नहीं हैं</string>
+    <string name="data_overview_by_condition">कंडीशन के अनुसार TCGplayer (बिक्री)</string>
+    <string name="data_overview_no_condition_sales">कंडीशन के अनुसार कोई बिक्री नहीं</string>
+    <string name="price_label_trend">ट्रेंड</string>
+    <string name="price_label_lowest_offer">सबसे कम ऑफ़र</string>
+    <string name="price_label_average_sold">औसत बिक्री मूल्य</string>
+    <string name="price_label_avg1">1-दिन का औसत</string>
+    <string name="price_label_avg7">7-दिन का औसत</string>
+    <string name="price_label_avg30">30-दिन का औसत</string>
+    <string name="price_label_market">बाज़ार भाव</string>
+    <string name="price_label_lowest_listing">सबसे कम लिस्टिंग</string>
+    <string name="price_label_mid">मध्य</string>
+    <string name="price_label_highest_listing">सबसे ज़्यादा लिस्टिंग</string>
+    <string name="price_label_direct_low">Direct न्यूनतम</string>
+    <string name="price_note_raw_no_graded_source">Raw कीमत दिखाई जा रही है — ग्रेडेड कीमत का कोई स्रोत नहीं — अपनी वैल्यू सेट करें, या कार्ड पेज पर दिए प्राइस लिंक देखें</string>
+    <string name="price_note_markets_disagree">%1$s लिस्टिंग इस कार्ड से मेल नहीं खाई (%2$dx का अंतर); %3$s इस्तेमाल हो रहा है</string>
+    <string name="price_note_capped">%1$s को %2$s जैसी वैल्यू दी गई (इसका बिक्री डेटा ज़्यादा था)</string>
+    <string name="price_note_tcgplayer_sales">%1$s कीमत TCGplayer की बिक्री से</string>
+    <string name="price_note_sales_share">%1$s = NM का %2$d%% (TCGplayer बिक्री)</string>
+    <string name="price_note_estimated_share">%1$s का अनुमान NM का %2$d%% (बिक्री डेटा नहीं)</string>
+    <string name="data_http_error">%2$s के लिए HTTP %1$d</string>
+</resources>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">sem preço</string>
+    <string name="add_grader_other">Outra</string>
+    <string name="add_confirm">Adicionar</string>
+    <string name="add_graded_missing">Nenhum preço gradeado encontrado (%1$s). O preço sem gradação é usado, a menos que você informe seu próprio valor abaixo.</string>
+    <string name="add_no_sales_found">nenhuma venda encontrada</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d possível correspondência — toque na certa</item>
+        <item quantity="many">%d possíveis correspondências — toque na certa</item>
+        <item quantity="other">%d possíveis correspondências — toque na certa</item>
+    </plurals>
+    <string name="add_raw_price">preço sem gradação</string>
+    <string name="add_looking_up_sales">buscando vendas…</string>
+    <string name="add_price_details">por cópia · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">Versão — confira: o scan não conseguiu diferenciá-la de outra versão</string>
+    <string name="add_printing_recognised">Versão — reconhecida pelo scan</string>
+    <string name="add_printing">Versão</string>
+    <string name="add_cardmarket_listing">Anúncio do Cardmarket (escolha a versão exata que você tem)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">Gradeada</string>
+    <string name="add_grading_company">Empresa de gradação</string>
+    <string name="add_grade">Nota</string>
+    <string name="add_cert_number">Número do certificado (opcional)</string>
+    <string name="add_condition">Condição</string>
+    <string name="add_purchase_price">Preço de compra por cópia (%1$s, opcional)</string>
+    <string name="add_my_value">Meu valor por cópia (%1$s, opcional — substitui o preço de mercado)</string>
+    <string name="add_wrong_card">Carta errada? Procure a certa</string>
+    <string name="add_cancel">Cancelar</string>
+    <string name="import_could_not_open_photo">Não foi possível abrir a foto</string>
+    <string name="import_lookup_failed">Falha na busca — verifique sua conexão</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Importar fotos</string>
+    <string name="import_back">Voltar</string>
+    <string name="import_add_photos">Adicionar fotos</string>
+    <string name="import_intro">Tirou fotos de cartas por aí? Importe aqui e elas serão reconhecidas como em um scan ao vivo.\n\n• Uma carta por foto funciona melhor; páginas de fichário funcionam se os números estiverem nítidos\n• Confira se o número na parte de baixo da carta está legível\n• Você também pode compartilhar fotos com o TCG Catalogue pela galeria ou por um app de mensagens</string>
+    <string name="import_choose_photos">Escolher fotos</string>
+    <plurals name="import_count_added">
+        <item quantity="one">%d adicionada</item>
+        <item quantity="many">%d adicionadas</item>
+        <item quantity="other">%d adicionadas</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">%d para revisar</item>
+        <item quantity="many">%d para revisar</item>
+        <item quantity="other">%d para revisar</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">%d em andamento</item>
+        <item quantity="many">%d em andamento</item>
+        <item quantity="other">%d em andamento</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">%d não reconhecida</item>
+        <item quantity="many">%d não reconhecidas</item>
+        <item quantity="other">%d não reconhecidas</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="one">Adicionar a melhor correspondência para %d carta</item>
+        <item quantity="many">Adicionar a melhor correspondência para todas as %d cartas</item>
+        <item quantity="other">Adicionar a melhor correspondência para todas as %d cartas</item>
+    </plurals>
+    <string name="import_reading_photo">Lendo foto…</string>
+    <string name="import_looking_up">Buscando %1$s…</string>
+    <string name="import_check_printing">Confira a versão — não foi possível diferenciá-la de outra</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d possível correspondência · toque para escolher</item>
+        <item quantity="many">%d possíveis correspondências · toque para escolher</item>
+        <item quantity="other">%d possíveis correspondências · toque para escolher</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · toque para adicionar</string>
+    <string name="import_added">Adicionada</string>
+    <string name="import_no_card_found">Nenhuma carta encontrada para %1$s</string>
+    <string name="import_no_number">Nenhum número de carta encontrado nesta foto</string>
+    <string name="import_something_wrong">Algo deu errado</string>
+    <string name="import_type_it_in">Digitar</string>
+    <string name="import_retry">Tentar de novo</string>
+    <string name="import_dismiss">Dispensar</string>
+    <string name="scan_lookup_failed">Falha na busca — verifique sua conexão</string>
+    <string name="scan_no_card_found">Nenhuma carta encontrada para %1$s</string>
+    <string name="scan_added_auto">Adicionado: %1$s (%2$s)</string>
+    <string name="scan_added_auto_graded">Adicionado: %1$s (%2$s) · %3$s</string>
+    <string name="scan_added_qty">Adicionado: %1$s ×%2$d</string>
+    <string name="scan_could_not_save">Não foi possível salvar: %1$s</string>
+    <string name="scan_camera_rationale">A câmera é usada para ler o número da carta. As imagens nunca saem do seu celular.</string>
+    <string name="scan_allow_camera">Permitir câmera</string>
+    <string name="scan_import_instead">Importar fotos em vez disso</string>
+    <string name="scan_torch">Lanterna</string>
+    <string name="scan_quick_add_on">Adição rápida ATIVADA — as cartas são adicionadas automaticamente</string>
+    <string name="scan_quick_add_off">Adição rápida DESATIVADA — confirme cada carta</string>
+    <string name="scan_reading">Lendo %1$s…</string>
+    <string name="scan_hint">Enquadre a carta na tela. Mantenha o número da parte de baixo nítido e bem iluminado — toque na tela para focar.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">%d adicionada nesta sessão</item>
+        <item quantity="many">%d adicionadas nesta sessão</item>
+        <item quantity="other">%d adicionadas nesta sessão</item>
+    </plurals>
+    <string name="scan_from_photos">De fotos</string>
+    <string name="scan_type_it_in">Digitar</string>
+    <string name="search_no_card">Nenhuma carta %1$s</string>
+    <string name="search_nothing_found">Nada encontrado para “%1$s”</string>
+    <string name="search_failed">Falha na busca: %1$s</string>
+    <string name="search_could_not_load">Não foi possível carregar a carta</string>
+    <string name="search_added_qty">Adicionado: %1$s ×%2$d</string>
+    <string name="search_could_not_save">Não foi possível salvar: %1$s</string>
+    <string name="search_hint_pokemon">Nome ou número (ex.: Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Código da carta (ex.: OP05-060)</string>
+    <string name="search_hint_magic">Nome ou set + número (ex.: Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Código ou nome (ex.: FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Código ou nome (ex.: BT1-031)</string>
+    <string name="search_hint_union_arena">Código ou nome (ex.: UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Código ou nome (ex.: HOL/W91-001)</string>
+    <string name="search_hint_naruto">Código ou nome</string>
+    <string name="search_title_replace">Encontre a carta certa</string>
+    <string name="search_title_add">Adicionar uma carta</string>
+    <string name="search_back">Voltar</string>
+    <string name="search_search">Buscar</string>
+    <string name="search_replace">Substituir</string>
+</resources>

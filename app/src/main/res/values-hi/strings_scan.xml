@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">कीमत नहीं</string>
+    <string name="add_grader_other">अन्य</string>
+    <string name="add_confirm">जोड़ें</string>
+    <string name="add_graded_missing">ग्रेडेड कीमत नहीं मिली (%1$s)। जब तक आप नीचे अपनी वैल्यू नहीं डालते, Raw कीमत इस्तेमाल होगी।</string>
+    <string name="add_no_sales_found">कोई बिक्री नहीं मिली</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d संभावित मैच — सही वाले पर टैप करें</item>
+        <item quantity="other">%d संभावित मैच — सही वाले पर टैप करें</item>
+    </plurals>
+    <string name="add_raw_price">Raw कीमत</string>
+    <string name="add_looking_up_sales">बिक्री खोजी जा रही है…</string>
+    <string name="add_price_details">प्रति कॉपी · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">प्रिंटिंग — कृपया जाँचें: स्कैन इसे दूसरी प्रिंटिंग से अलग नहीं पहचान सका</string>
+    <string name="add_printing_recognised">प्रिंटिंग — स्कैन से पहचानी गई</string>
+    <string name="add_printing">प्रिंटिंग</string>
+    <string name="add_cardmarket_listing">Cardmarket लिस्टिंग (अपनी सही प्रिंट चुनें)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">ग्रेडेड</string>
+    <string name="add_grading_company">ग्रेडिंग कंपनी</string>
+    <string name="add_grade">ग्रेड</string>
+    <string name="add_cert_number">सर्टिफ़िकेट नंबर (वैकल्पिक)</string>
+    <string name="add_condition">कंडीशन</string>
+    <string name="add_purchase_price">प्रति कॉपी खरीद मूल्य (%1$s, वैकल्पिक)</string>
+    <string name="add_my_value">प्रति कॉपी मेरी वैल्यू (%1$s, वैकल्पिक — बाज़ार भाव की जगह लेगी)</string>
+    <string name="add_wrong_card">गलत कार्ड? सही कार्ड खोजें</string>
+    <string name="add_cancel">रद्द करें</string>
+    <string name="import_could_not_open_photo">फ़ोटो नहीं खुल सकी</string>
+    <string name="import_lookup_failed">खोज विफल रही — अपना कनेक्शन जाँचें</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">फ़ोटो इंपोर्ट करें</string>
+    <string name="import_back">वापस</string>
+    <string name="import_add_photos">फ़ोटो जोड़ें</string>
+    <string name="import_intro">बाहर रहते हुए कार्ड की फ़ोटो खींची थीं? उन्हें यहाँ इंपोर्ट करें, उन्हें लाइव स्कैन की तरह ही पहचाना जाएगा।\n\n• हर फ़ोटो में एक कार्ड हो तो सबसे अच्छा रहता है; बाइंडर के पेज भी चलते हैं अगर नंबर साफ़ दिखें\n• पक्का करें कि कार्ड के नीचे का नंबर पढ़ने लायक हो\n• आप अपनी गैलरी या चैट ऐप से फ़ोटो सीधे TCG Catalogue में शेयर भी कर सकते हैं</string>
+    <string name="import_choose_photos">फ़ोटो चुनें</string>
+    <plurals name="import_count_added">
+        <item quantity="one">%d जोड़ा गया</item>
+        <item quantity="other">%d जोड़े गए</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">%d की समीक्षा बाकी</item>
+        <item quantity="other">%d की समीक्षा बाकी</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">%d प्रोसेस हो रहा है</item>
+        <item quantity="other">%d प्रोसेस हो रहे हैं</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">%d पहचाना नहीं गया</item>
+        <item quantity="other">%d पहचाने नहीं गए</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="one">%d कार्ड के लिए सबसे अच्छा मैच जोड़ें</item>
+        <item quantity="other">सभी %d कार्ड के लिए सबसे अच्छा मैच जोड़ें</item>
+    </plurals>
+    <string name="import_reading_photo">फ़ोटो पढ़ी जा रही है…</string>
+    <string name="import_looking_up">%1$s खोजा जा रहा है…</string>
+    <string name="import_check_printing">प्रिंटिंग जाँचें — इसे दूसरी प्रिंटिंग से अलग नहीं पहचाना जा सका</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d संभावित मैच · चुनने के लिए टैप करें</item>
+        <item quantity="other">%d संभावित मैच · चुनने के लिए टैप करें</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · जोड़ने के लिए टैप करें</string>
+    <string name="import_added">जोड़ा गया</string>
+    <string name="import_no_card_found">%1$s के लिए कोई कार्ड नहीं मिला</string>
+    <string name="import_no_number">इस फ़ोटो में कार्ड नंबर नहीं मिला</string>
+    <string name="import_something_wrong">कुछ गड़बड़ हो गई</string>
+    <string name="import_type_it_in">खुद टाइप करें</string>
+    <string name="import_retry">दोबारा कोशिश करें</string>
+    <string name="import_dismiss">हटाएँ</string>
+    <string name="scan_lookup_failed">खोज विफल रही — अपना कनेक्शन जाँचें</string>
+    <string name="scan_no_card_found">%1$s के लिए कोई कार्ड नहीं मिला</string>
+    <string name="scan_added_auto">%1$s (%2$s) जोड़ा गया</string>
+    <string name="scan_added_auto_graded">%1$s (%2$s) जोड़ा गया · %3$s</string>
+    <string name="scan_added_qty">%1$s ×%2$d जोड़ा गया</string>
+    <string name="scan_could_not_save">सेव नहीं हो सका: %1$s</string>
+    <string name="scan_camera_rationale">कैमरे का इस्तेमाल कार्ड नंबर पढ़ने के लिए होता है। तस्वीरें आपके फ़ोन से बाहर कभी नहीं जातीं।</string>
+    <string name="scan_allow_camera">कैमरे की अनुमति दें</string>
+    <string name="scan_import_instead">इसके बजाय फ़ोटो इंपोर्ट करें</string>
+    <string name="scan_torch">टॉर्च</string>
+    <string name="scan_quick_add_on">Quick add चालू — कार्ड अपने आप जुड़ते हैं</string>
+    <string name="scan_quick_add_off">Quick add बंद — हर कार्ड की पुष्टि करें</string>
+    <string name="scan_reading">%1$s पढ़ा जा रहा है…</string>
+    <string name="scan_hint">कार्ड को फ़्रेम में पूरा भरें। नीचे का नंबर साफ़ और अच्छी रोशनी में रखें — फ़ोकस के लिए स्क्रीन पर टैप करें।</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">इस सत्र में %d जोड़ा गया</item>
+        <item quantity="other">इस सत्र में %d जोड़े गए</item>
+    </plurals>
+    <string name="scan_from_photos">फ़ोटो से</string>
+    <string name="scan_type_it_in">खुद टाइप करें</string>
+    <string name="search_no_card">कार्ड %1$s नहीं मिला</string>
+    <string name="search_nothing_found">\"%1$s\" के लिए कुछ नहीं मिला</string>
+    <string name="search_failed">खोज विफल रही: %1$s</string>
+    <string name="search_could_not_load">कार्ड लोड नहीं हो सका</string>
+    <string name="search_added_qty">%1$s ×%2$d जोड़ा गया</string>
+    <string name="search_could_not_save">सेव नहीं हो सका: %1$s</string>
+    <string name="search_hint_pokemon">नाम या नंबर (जैसे Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">कार्ड कोड (जैसे OP05-060)</string>
+    <string name="search_hint_magic">नाम, या सेट + नंबर (जैसे Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">कोड या नाम (जैसे FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">कोड या नाम (जैसे BT1-031)</string>
+    <string name="search_hint_union_arena">कोड या नाम (जैसे UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">कोड या नाम (जैसे HOL/W91-001)</string>
+    <string name="search_hint_naruto">कोड या नाम</string>
+    <string name="search_title_replace">सही कार्ड खोजें</string>
+    <string name="search_title_add">कार्ड जोड़ें</string>
+    <string name="search_back">वापस</string>
+    <string name="search_search">खोजें</string>
+    <string name="search_replace">बदलें</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Il nome sulla carta scansionata non corrisponde a questa carta — il numero potrebbe essere stato letto male. Controllalo, oppure annulla e inseriscilo a mano.</string>
+    <string name="data_graded">Gradata</string>
+    <string name="data_graded_grade">Gradata %1$s</string>
+    <string name="data_graded_choose_grader">scegli la società di grading</string>
+    <string name="data_graded_choose_grade">scegli il voto</string>
+    <string name="data_graded_no_source">nessuna fonte di prezzi per carte gradate — imposta il tuo valore o controlla i link dei prezzi nella pagina della carta</string>
+    <string name="data_variant_normal">Normale</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1ª edizione</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Standard</string>
+    <string name="data_variant_numbered">Variante %1$d</string>
+    <string name="data_overview_prices">Prezzi</string>
+    <string name="data_overview_no_card_data">impossibile caricare i dati della carta — controlla la connessione</string>
+    <string name="data_overview_no_cardmarket">nessun prezzo Cardmarket per questa carta</string>
+    <string name="data_overview_no_tcgplayer">nessun prezzo TCGplayer per questa carta</string>
+    <string name="data_overview_by_condition">TCGplayer per condizione (vendite)</string>
+    <string name="data_overview_no_condition_sales">nessuna vendita per condizione</string>
+    <string name="price_label_trend">Tendenza</string>
+    <string name="price_label_lowest_offer">Offerta più bassa</string>
+    <string name="price_label_average_sold">Media venduto</string>
+    <string name="price_label_avg1">Media 1 giorno</string>
+    <string name="price_label_avg7">Media 7 giorni</string>
+    <string name="price_label_avg30">Media 30 giorni</string>
+    <string name="price_label_market">Mercato</string>
+    <string name="price_label_lowest_listing">Inserzione più bassa</string>
+    <string name="price_label_mid">Medio</string>
+    <string name="price_label_highest_listing">Inserzione più alta</string>
+    <string name="price_label_direct_low">Direct min.</string>
+    <string name="price_note_raw_no_graded_source">Mostrato il prezzo della carta non gradata — nessuna fonte di prezzi gradati — imposta il tuo valore o controlla i link dei prezzi nella pagina della carta</string>
+    <string name="price_note_markets_disagree">L\'inserzione %1$s non corrispondeva a questa carta (differenza di %2$d×); uso %3$s</string>
+    <string name="price_note_capped">%1$s valutato come %2$s (i suoi dati di vendita erano più alti)</string>
+    <string name="price_note_tcgplayer_sales">Prezzo %1$s dalle vendite TCGplayer</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% di NM (vendite TCGplayer)</string>
+    <string name="price_note_estimated_share">%1$s stimato al %2$d%% di NM (nessun dato di vendita)</string>
+    <string name="data_http_error">HTTP %1$d per %2$s</string>
+</resources>

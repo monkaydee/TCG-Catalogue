@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">Không tải được dữ liệu thẻ — hãy kiểm tra kết nối</string>
+    <string name="card_pager_position">%1$d / %2$d · vuốt để xem thêm</string>
+    <string name="card_back">Quay lại</string>
+    <string name="card_edit">Sửa thẻ</string>
+    <string name="card_remove_from_collection">Xóa khỏi bộ sưu tập</string>
+    <string name="card_save">Lưu</string>
+    <string name="card_remove_title">Xóa thẻ?</string>
+    <plurals name="card_remove_message">
+        <item quantity="other">Thao tác này sẽ xóa %1$d bản của %2$s khỏi bộ sưu tập của bạn.</item>
+    </plurals>
+    <string name="card_remove">Xóa</string>
+    <string name="card_cancel">Hủy</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s mỗi bản (%2$s trên %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s mỗi bản (%2$s trên thị trường)</string>
+    <string name="card_price_updated">Cập nhật %1$s</string>
+    <string name="card_no_market_price">Chưa có giá thị trường</string>
+    <string name="card_own_value">Giá trị bạn đặt: %1$s mỗi bản</string>
+    <string name="card_own_value_with_market">Giá trị bạn đặt: %1$s mỗi bản · thị trường %2$s</string>
+    <string name="card_bought_for_with_percent">Mua với giá %1$s/bản · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Mua với giá %1$s/bản · %2$s</string>
+    <string name="card_cert">Cert #%1$s</string>
+    <string name="card_graded_hint">Thẻ đã grade dùng giá trị bạn đặt — xem các giao dịch gần đây qua liên kết bên dưới.</string>
+    <string name="card_raw_hint">Giá thị trường của thẻ Raw (chưa grade) ở tình trạng này.</string>
+    <string name="card_quantity">Số lượng</string>
+    <string name="card_cardmarket_listing">Mục trên Cardmarket</string>
+    <string name="card_condition">Tình trạng</string>
+    <string name="card_all_prices">Tất cả giá</string>
+    <string name="card_show">Hiện</string>
+    <string name="card_refresh">Làm mới</string>
+    <string name="card_check_prices">Xem giá trực tuyến</string>
+    <string name="set_back">Quay lại</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="other">%1$d/%2$d thẻ (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="other">%d thẻ</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="other">%d bản</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">Theo giá trị</string>
+    <string name="set_sort_number">Theo số thẻ</string>
+    <string name="set_no_price">chưa có giá</string>
+    <string name="common_auto">Tự động</string>
+    <string name="common_less">Giảm</string>
+    <string name="common_more">Tăng</string>
+    <string name="links_ebay_sold">eBay đã bán</string>
+</resources>

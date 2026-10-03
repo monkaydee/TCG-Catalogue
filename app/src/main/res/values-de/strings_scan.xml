@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">kein Preis</string>
+    <string name="add_grader_other">Andere</string>
+    <string name="add_confirm">Hinzufügen</string>
+    <string name="add_graded_missing">Kein Graded-Preis gefunden (%1$s). Es wird der Raw-Preis verwendet, sofern du unten keinen eigenen Wert eingibst.</string>
+    <string name="add_no_sales_found">keine Verkäufe gefunden</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d möglicher Treffer — tippe auf den richtigen</item>
+        <item quantity="other">%d mögliche Treffer — tippe auf den richtigen</item>
+    </plurals>
+    <string name="add_raw_price">Raw-Preis</string>
+    <string name="add_looking_up_sales">Verkäufe werden gesucht…</string>
+    <string name="add_price_details">pro Exemplar · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">Variante — bitte prüfen: Der Scan konnte sie nicht von einer anderen Variante unterscheiden</string>
+    <string name="add_printing_recognised">Variante — aus dem Scan erkannt</string>
+    <string name="add_printing">Variante</string>
+    <string name="add_cardmarket_listing">Cardmarket-Eintrag (wähle die genaue Ausgabe, die du besitzt)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">Graded</string>
+    <string name="add_grading_company">Grading-Unternehmen</string>
+    <string name="add_grade">Note</string>
+    <string name="add_cert_number">Zertifikatsnummer (optional)</string>
+    <string name="add_condition">Zustand</string>
+    <string name="add_purchase_price">Kaufpreis pro Exemplar (%1$s, optional)</string>
+    <string name="add_my_value">Mein Wert pro Exemplar (%1$s, optional — ersetzt den Marktpreis)</string>
+    <string name="add_wrong_card">Falsche Karte? Such die richtige</string>
+    <string name="add_cancel">Abbrechen</string>
+    <string name="import_could_not_open_photo">Das Foto konnte nicht geöffnet werden</string>
+    <string name="import_lookup_failed">Suche fehlgeschlagen — Verbindung prüfen</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Fotos importieren</string>
+    <string name="import_back">Zurück</string>
+    <string name="import_add_photos">Fotos hinzufügen</string>
+    <string name="import_intro">Du hast unterwegs Karten fotografiert? Importiere die Fotos hier — sie werden genauso erkannt wie bei einem Live-Scan.\n\n• Eine Karte pro Foto funktioniert am besten; Binder-Seiten klappen, wenn die Nummern scharf sind\n• Achte darauf, dass die Nummer unten auf der Karte lesbar ist\n• Du kannst Fotos auch aus deiner Galerie oder einer Chat-App mit TCG Catalogue teilen</string>
+    <string name="import_choose_photos">Fotos auswählen</string>
+    <plurals name="import_count_added">
+        <item quantity="one">%d hinzugefügt</item>
+        <item quantity="other">%d hinzugefügt</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">%d zu prüfen</item>
+        <item quantity="other">%d zu prüfen</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">%d in Bearbeitung</item>
+        <item quantity="other">%d in Bearbeitung</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">%d nicht erkannt</item>
+        <item quantity="other">%d nicht erkannt</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="one">Besten Treffer für %d Karte hinzufügen</item>
+        <item quantity="other">Besten Treffer für alle %d Karten hinzufügen</item>
+    </plurals>
+    <string name="import_reading_photo">Foto wird gelesen…</string>
+    <string name="import_looking_up">%1$s wird gesucht…</string>
+    <string name="import_check_printing">Variante prüfen — sie konnte nicht von einer anderen unterschieden werden</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d möglicher Treffer · zum Auswählen tippen</item>
+        <item quantity="other">%d mögliche Treffer · zum Auswählen tippen</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · zum Hinzufügen tippen</string>
+    <string name="import_added">Hinzugefügt</string>
+    <string name="import_no_card_found">Keine Karte für %1$s gefunden</string>
+    <string name="import_no_number">Keine Kartennummer auf diesem Foto gefunden</string>
+    <string name="import_something_wrong">Etwas ist schiefgelaufen</string>
+    <string name="import_type_it_in">Manuell eingeben</string>
+    <string name="import_retry">Erneut versuchen</string>
+    <string name="import_dismiss">Verwerfen</string>
+    <string name="scan_lookup_failed">Suche fehlgeschlagen — Verbindung prüfen</string>
+    <string name="scan_no_card_found">Keine Karte für %1$s gefunden</string>
+    <string name="scan_added_auto">%1$s (%2$s) hinzugefügt</string>
+    <string name="scan_added_auto_graded">%1$s (%2$s) hinzugefügt · %3$s</string>
+    <string name="scan_added_qty">%1$s ×%2$d hinzugefügt</string>
+    <string name="scan_could_not_save">Speichern nicht möglich: %1$s</string>
+    <string name="scan_camera_rationale">Die Kamera wird zum Lesen der Kartennummer verwendet. Bilder verlassen niemals dein Smartphone.</string>
+    <string name="scan_allow_camera">Kamera erlauben</string>
+    <string name="scan_import_instead">Stattdessen Fotos importieren</string>
+    <string name="scan_torch">Taschenlampe</string>
+    <string name="scan_quick_add_on">Schnell hinzufügen AN — Karten werden automatisch hinzugefügt</string>
+    <string name="scan_quick_add_off">Schnell hinzufügen AUS — jede Karte bestätigen</string>
+    <string name="scan_reading">%1$s wird gelesen…</string>
+    <string name="scan_hint">Die Karte soll den Rahmen ausfüllen. Halte die Nummer unten scharf und gut beleuchtet — tippe zum Fokussieren auf den Bildschirm.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">%d in dieser Sitzung hinzugefügt</item>
+        <item quantity="other">%d in dieser Sitzung hinzugefügt</item>
+    </plurals>
+    <string name="scan_from_photos">Aus Fotos</string>
+    <string name="scan_type_it_in">Manuell eingeben</string>
+    <string name="search_no_card">Keine Karte %1$s</string>
+    <string name="search_nothing_found">Nichts gefunden für „%1$s“</string>
+    <string name="search_failed">Suche fehlgeschlagen: %1$s</string>
+    <string name="search_could_not_load">Karte konnte nicht geladen werden</string>
+    <string name="search_added_qty">%1$s ×%2$d hinzugefügt</string>
+    <string name="search_could_not_save">Speichern nicht möglich: %1$s</string>
+    <string name="search_hint_pokemon">Name oder Nummer (z. B. Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Kartencode (z. B. OP05-060)</string>
+    <string name="search_hint_magic">Name oder Set + Nummer (z. B. Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Code oder Name (z. B. FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Code oder Name (z. B. BT1-031)</string>
+    <string name="search_hint_union_arena">Code oder Name (z. B. UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Code oder Name (z. B. HOL/W91-001)</string>
+    <string name="search_hint_naruto">Code oder Name</string>
+    <string name="search_title_replace">Richtige Karte finden</string>
+    <string name="search_title_add">Karte hinzufügen</string>
+    <string name="search_back">Zurück</string>
+    <string name="search_search">Suchen</string>
+    <string name="search_replace">Ersetzen</string>
+</resources>

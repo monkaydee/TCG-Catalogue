@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">geen prijs</string>
+    <string name="add_grader_other">Overig</string>
+    <string name="add_confirm">Toevoegen</string>
+    <string name="add_graded_missing">Geen graded prijs gevonden (%1$s). De raw-prijs wordt gebruikt, tenzij je hieronder je eigen waarde invult.</string>
+    <string name="add_no_sales_found">geen verkopen gevonden</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d mogelijke match — tik op de juiste</item>
+        <item quantity="other">%d mogelijke matches — tik op de juiste</item>
+    </plurals>
+    <string name="add_raw_price">raw-prijs</string>
+    <string name="add_looking_up_sales">verkopen opzoeken…</string>
+    <string name="add_price_details">per exemplaar · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">Uitvoering — controleer even: de scan kon deze niet onderscheiden van een andere uitvoering</string>
+    <string name="add_printing_recognised">Uitvoering — herkend uit de scan</string>
+    <string name="add_printing">Uitvoering</string>
+    <string name="add_cardmarket_listing">Cardmarket-vermelding (kies de exacte uitvoering die je hebt)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">Graded</string>
+    <string name="add_grading_company">Gradingbedrijf</string>
+    <string name="add_grade">Grade</string>
+    <string name="add_cert_number">Certificaatnummer (optioneel)</string>
+    <string name="add_condition">Conditie</string>
+    <string name="add_purchase_price">Aankoopprijs per exemplaar (%1$s, optioneel)</string>
+    <string name="add_my_value">Mijn waarde per exemplaar (%1$s, optioneel — vervangt de marktprijs)</string>
+    <string name="add_wrong_card">Verkeerde kaart? Zoek de juiste</string>
+    <string name="add_cancel">Annuleren</string>
+    <string name="import_could_not_open_photo">De foto kon niet worden geopend</string>
+    <string name="import_lookup_failed">Opzoeken mislukt — controleer je verbinding</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Foto\'s importeren</string>
+    <string name="import_back">Terug</string>
+    <string name="import_add_photos">Foto\'s toevoegen</string>
+    <string name="import_intro">Onderweg foto\'s van kaarten gemaakt? Importeer ze hier en ze worden net zo herkend als bij een live scan.\n\n• Eén kaart per foto werkt het best; binderpagina\'s lukken als de nummers scherp zijn\n• Zorg dat het nummer onderaan de kaart leesbaar is\n• Je kunt foto\'s ook vanuit je galerij of een chat-app delen met TCG Catalogue</string>
+    <string name="import_choose_photos">Foto\'s kiezen</string>
+    <plurals name="import_count_added">
+        <item quantity="one">%d toegevoegd</item>
+        <item quantity="other">%d toegevoegd</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">%d te controleren</item>
+        <item quantity="other">%d te controleren</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">%d bezig</item>
+        <item quantity="other">%d bezig</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">%d niet herkend</item>
+        <item quantity="other">%d niet herkend</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="one">Beste match voor %d kaart toevoegen</item>
+        <item quantity="other">Beste match voor alle %d kaarten toevoegen</item>
+    </plurals>
+    <string name="import_reading_photo">Foto lezen…</string>
+    <string name="import_looking_up">%1$s opzoeken…</string>
+    <string name="import_check_printing">Controleer de uitvoering — die kon niet van een andere worden onderscheiden</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d mogelijke match · tik om te kiezen</item>
+        <item quantity="other">%d mogelijke matches · tik om te kiezen</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · tik om toe te voegen</string>
+    <string name="import_added">Toegevoegd</string>
+    <string name="import_no_card_found">Geen kaart gevonden voor %1$s</string>
+    <string name="import_no_number">Geen kaartnummer gevonden op deze foto</string>
+    <string name="import_something_wrong">Er is iets misgegaan</string>
+    <string name="import_type_it_in">Zelf invoeren</string>
+    <string name="import_retry">Opnieuw</string>
+    <string name="import_dismiss">Sluiten</string>
+    <string name="scan_lookup_failed">Opzoeken mislukt — controleer je verbinding</string>
+    <string name="scan_no_card_found">Geen kaart gevonden voor %1$s</string>
+    <string name="scan_added_auto">%1$s (%2$s) toegevoegd</string>
+    <string name="scan_added_auto_graded">%1$s (%2$s) toegevoegd · %3$s</string>
+    <string name="scan_added_qty">%1$s ×%2$d toegevoegd</string>
+    <string name="scan_could_not_save">Opslaan mislukt: %1$s</string>
+    <string name="scan_camera_rationale">De camera wordt gebruikt om het kaartnummer te lezen. Beelden verlaten je telefoon nooit.</string>
+    <string name="scan_allow_camera">Camera toestaan</string>
+    <string name="scan_import_instead">Foto\'s importeren</string>
+    <string name="scan_torch">Zaklamp</string>
+    <string name="scan_quick_add_on">Snel toevoegen AAN — kaarten worden automatisch toegevoegd</string>
+    <string name="scan_quick_add_off">Snel toevoegen UIT — bevestig elke kaart</string>
+    <string name="scan_reading">%1$s lezen…</string>
+    <string name="scan_hint">Laat de kaart het kader vullen. Houd het nummer onderaan scherp en goed verlicht — tik op het scherm om scherp te stellen.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">%d toegevoegd in deze sessie</item>
+        <item quantity="other">%d toegevoegd in deze sessie</item>
+    </plurals>
+    <string name="scan_from_photos">Uit foto\'s</string>
+    <string name="scan_type_it_in">Zelf invoeren</string>
+    <string name="search_no_card">Geen kaart %1$s</string>
+    <string name="search_nothing_found">Niets gevonden voor „%1$s”</string>
+    <string name="search_failed">Zoeken mislukt: %1$s</string>
+    <string name="search_could_not_load">Kaart laden mislukt</string>
+    <string name="search_added_qty">%1$s ×%2$d toegevoegd</string>
+    <string name="search_could_not_save">Opslaan mislukt: %1$s</string>
+    <string name="search_hint_pokemon">Naam of nummer (bijv. Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Kaartcode (bijv. OP05-060)</string>
+    <string name="search_hint_magic">Naam of set + nummer (bijv. Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Code of naam (bijv. FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Code of naam (bijv. BT1-031)</string>
+    <string name="search_hint_union_arena">Code of naam (bijv. UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Code of naam (bijv. HOL/W91-001)</string>
+    <string name="search_hint_naruto">Code of naam</string>
+    <string name="search_title_replace">Zoek de juiste kaart</string>
+    <string name="search_title_add">Kaart toevoegen</string>
+    <string name="search_back">Terug</string>
+    <string name="search_search">Zoeken</string>
+    <string name="search_replace">Vervangen</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Taranan kartın adı bu kartla eşleşmiyor — numara yanlış okunmuş olabilir. Kontrol edin veya iptal edip elle girin.</string>
+    <string name="data_graded">Derecelendirilmiş</string>
+    <string name="data_graded_grade">Derecelendirilmiş %1$s</string>
+    <string name="data_graded_choose_grader">derecelendirme şirketini seçin</string>
+    <string name="data_graded_choose_grade">notu seçin</string>
+    <string name="data_graded_no_source">derecelendirilmiş kart fiyat kaynağı yok — kendi değerinizi girin veya kart sayfasındaki fiyat bağlantılarına bakın</string>
+    <string name="data_variant_normal">Normal</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Standart</string>
+    <string name="data_variant_numbered">Varyant %1$d</string>
+    <string name="data_overview_prices">Fiyatlar</string>
+    <string name="data_overview_no_card_data">kart verileri yüklenemedi — bağlantınızı kontrol edin</string>
+    <string name="data_overview_no_cardmarket">bu kart için Cardmarket fiyatı yok</string>
+    <string name="data_overview_no_tcgplayer">bu kart için TCGplayer fiyatı yok</string>
+    <string name="data_overview_by_condition">Duruma göre TCGplayer (satışlar)</string>
+    <string name="data_overview_no_condition_sales">duruma göre satış yok</string>
+    <string name="price_label_trend">Trend</string>
+    <string name="price_label_lowest_offer">En düşük teklif</string>
+    <string name="price_label_average_sold">Ort. satış</string>
+    <string name="price_label_avg1">1 günlük ortalama</string>
+    <string name="price_label_avg7">7 günlük ortalama</string>
+    <string name="price_label_avg30">30 günlük ortalama</string>
+    <string name="price_label_market">Piyasa</string>
+    <string name="price_label_lowest_listing">En düşük ilan</string>
+    <string name="price_label_mid">Orta</string>
+    <string name="price_label_highest_listing">En yüksek ilan</string>
+    <string name="price_label_direct_low">Direct en düşük</string>
+    <string name="price_note_raw_no_graded_source">Derecelendirilmemiş (raw) fiyat gösteriliyor — derecelendirilmiş kart fiyat kaynağı yok — kendi değerinizi girin veya kart sayfasındaki fiyat bağlantılarına bakın</string>
+    <string name="price_note_markets_disagree">%1$s ilanı bu kartla eşleşmedi (%2$d kat fark); %3$s kullanılıyor</string>
+    <string name="price_note_capped">%1$s, %2$s gibi değerlendirildi (satış verileri daha yüksekti)</string>
+    <string name="price_note_tcgplayer_sales">%1$s fiyatı TCGplayer satışlarından</string>
+    <string name="price_note_sales_share">%1$s = NM fiyatının %%%2$d düzeyinde (TCGplayer satışları)</string>
+    <string name="price_note_estimated_share">%1$s, NM fiyatının %%%2$d düzeyinde tahmin edildi (satış verisi yok)</string>
+    <string name="data_http_error">%2$s için HTTP %1$d</string>
+</resources>

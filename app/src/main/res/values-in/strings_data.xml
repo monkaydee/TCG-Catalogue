@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Nama pada kartu yang dipindai tidak cocok dengan kartu ini — nomornya mungkin salah terbaca. Periksa kembali, atau batalkan lalu ketik manual.</string>
+    <string name="data_graded">Graded</string>
+    <string name="data_graded_grade">Graded %1$s</string>
+    <string name="data_graded_choose_grader">pilih perusahaan grading</string>
+    <string name="data_graded_choose_grade">pilih grade</string>
+    <string name="data_graded_no_source">tidak ada sumber harga graded — atur nilai Anda sendiri, atau cek tautan harga di halaman kartu</string>
+    <string name="data_variant_normal">Normal</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Standar</string>
+    <string name="data_variant_numbered">Varian %1$d</string>
+    <string name="data_overview_prices">Harga</string>
+    <string name="data_overview_no_card_data">gagal memuat data kartu — periksa koneksi Anda</string>
+    <string name="data_overview_no_cardmarket">tidak ada harga Cardmarket untuk kartu ini</string>
+    <string name="data_overview_no_tcgplayer">tidak ada harga TCGplayer untuk kartu ini</string>
+    <string name="data_overview_by_condition">TCGplayer menurut kondisi (penjualan)</string>
+    <string name="data_overview_no_condition_sales">tidak ada penjualan menurut kondisi</string>
+    <string name="price_label_trend">Tren</string>
+    <string name="price_label_lowest_offer">Penawaran terendah</string>
+    <string name="price_label_average_sold">Rata-rata terjual</string>
+    <string name="price_label_avg1">Rata-rata 1 hari</string>
+    <string name="price_label_avg7">Rata-rata 7 hari</string>
+    <string name="price_label_avg30">Rata-rata 30 hari</string>
+    <string name="price_label_market">Pasar</string>
+    <string name="price_label_lowest_listing">Listing terendah</string>
+    <string name="price_label_mid">Tengah</string>
+    <string name="price_label_highest_listing">Listing tertinggi</string>
+    <string name="price_label_direct_low">Direct terendah</string>
+    <string name="price_note_raw_no_graded_source">Menampilkan harga Raw — tidak ada sumber harga graded — atur nilai Anda sendiri, atau cek tautan harga di halaman kartu</string>
+    <string name="price_note_markets_disagree">Listing %1$s tidak cocok dengan kartu ini (selisih %2$d kali); memakai %3$s</string>
+    <string name="price_note_capped">%1$s dinilai seperti %2$s (data penjualannya lebih tinggi)</string>
+    <string name="price_note_tcgplayer_sales">Harga %1$s dari penjualan TCGplayer</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% dari NM (penjualan TCGplayer)</string>
+    <string name="price_note_estimated_share">%1$s diperkirakan %2$d%% dari NM (tanpa data penjualan)</string>
+    <string name="data_http_error">HTTP %1$d untuk %2$s</string>
+</resources>

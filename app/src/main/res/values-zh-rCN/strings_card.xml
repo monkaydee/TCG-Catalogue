@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">无法加载卡片数据，请检查网络连接</string>
+    <string name="card_pager_position">%1$d / %2$d · 滑动查看更多</string>
+    <string name="card_back">返回</string>
+    <string name="card_edit">编辑卡片</string>
+    <string name="card_remove_from_collection">从收藏中移除</string>
+    <string name="card_save">保存</string>
+    <string name="card_remove_title">移除这张卡？</string>
+    <plurals name="card_remove_message">
+        <item quantity="other">此操作将从你的收藏中移除 %2$s 的全部 %1$d 张。</item>
+    </plurals>
+    <string name="card_remove">移除</string>
+    <string name="card_cancel">取消</string>
+    <string name="card_cardmarket_label">Cardmarket：%1$s</string>
+    <string name="card_unit_price_on_source">每张 %1$s（%3$s 上为 %2$s）</string>
+    <string name="card_unit_price_on_market">每张 %1$s（市场上为 %2$s）</string>
+    <string name="card_price_updated">%1$s更新</string>
+    <string name="card_no_market_price">暂无市场价</string>
+    <string name="card_own_value">自定价值：每张 %1$s</string>
+    <string name="card_own_value_with_market">自定价值：每张 %1$s · 市场价 %2$s</string>
+    <string name="card_bought_for_with_percent">每张买入价 %1$s · %2$s（%3$+.0f%%）</string>
+    <string name="card_bought_for">每张买入价 %1$s · %2$s</string>
+    <string name="card_cert">认证编号 #%1$s</string>
+    <string name="card_graded_hint">评级卡以你的自定价值计算，可通过下方链接查看近期成交。</string>
+    <string name="card_raw_hint">该品相裸卡的市场价。</string>
+    <string name="card_quantity">数量</string>
+    <string name="card_cardmarket_listing">Cardmarket 商品</string>
+    <string name="card_condition">品相</string>
+    <string name="card_all_prices">全部价格</string>
+    <string name="card_show">显示</string>
+    <string name="card_refresh">刷新</string>
+    <string name="card_check_prices">在线查看价格</string>
+    <string name="set_back">返回</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="other">%2$d 张中已有 %1$d 张（%3$d%%）</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="other">%d 张卡</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="other">%d 张</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">按价值</string>
+    <string name="set_sort_number">按编号</string>
+    <string name="set_no_price">无价格</string>
+    <string name="common_auto">自动</string>
+    <string name="common_less">减少</string>
+    <string name="common_more">增加</string>
+    <string name="links_ebay_sold">eBay 已售</string>
+</resources>
