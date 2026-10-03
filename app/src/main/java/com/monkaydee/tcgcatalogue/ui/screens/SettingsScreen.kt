@@ -146,6 +146,8 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             Modifier.padding(padding).padding(horizontal = 16.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            CloudPendingCard()
+
             Section(stringResource(R.string.appearance_title)) {
                 Label(stringResource(R.string.appearance_mode))
                 SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
@@ -312,6 +314,7 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                     OutlinedButton(onClick = { exportLauncher.launch("tcg-catalogue-${LocalDate.now()}.json") }) { Text(stringResource(R.string.settings_export)) }
                     OutlinedButton(onClick = { importLauncher.launch(arrayOf("application/json", "*/*")) }) { Text(stringResource(R.string.settings_import)) }
                 }
+                CloudBackupSection()
             }
 
             Section(stringResource(R.string.settings_about_title)) {
