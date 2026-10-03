@@ -179,7 +179,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
             Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 val page = turner.page.coerceIn(pages.indices)
                 IconButton(onClick = {
-                    scope.launch { if (s.binderAnimation) turner.previous() else pager.animateScrollToPage(page - 1) }
+                    if (s.binderAnimation) turner.previous(scope) else scope.launch { pager.animateScrollToPage(page - 1) }
                 }, enabled = page > 0) { Icon(Icons.Default.ChevronLeft, "Previous page") }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -196,7 +196,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                     }
                 }
                 IconButton(onClick = {
-                    scope.launch { if (s.binderAnimation) turner.next() else pager.animateScrollToPage(page + 1) }
+                    if (s.binderAnimation) turner.next(scope) else scope.launch { pager.animateScrollToPage(page + 1) }
                 }, enabled = page < pages.size - 1) { Icon(Icons.Default.ChevronRight, "Next page") }
             }
         }
