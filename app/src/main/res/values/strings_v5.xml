@@ -7,4 +7,16 @@
     <string name="alert_below">Now %1$s — below your alert at %2$s</string>
     <!-- A card on the wishlist reached the price the user wants to pay -->
     <string name="alert_wish">On your wishlist: now %1$s — at or below your target of %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Stack mode</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — check it later in the strip below</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d card to check — tap it</item>
+        <item quantity="other">%d cards to check — tap them</item>
+    </plurals>
+    <string name="stack_tap_to_review">Tap to check</string>
+    <string name="stack_undo">Undo</string>
+    <string name="stack_discard">Discard</string>
 </resources>

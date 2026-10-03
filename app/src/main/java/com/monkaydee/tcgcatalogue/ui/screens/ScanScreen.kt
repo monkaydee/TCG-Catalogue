@@ -1,5 +1,11 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.clickable
 import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Size
@@ -104,7 +110,25 @@ data class ScanState(
     val candidates: List<CardCandidate> = emptyList(),
     val message: String? = null,
     val addedCount: Int = 0,
+    /** Stack mode: scan card after card; clear ones are added at once, unclear ones wait in [session] for review. */
+    val stack: Boolean = false,
+    val session: List<SessionItem> = emptyList(),
+    /** Bumped for every card added in stack mode, for a haptic tick. */
+    val ticks: Int = 0,
 )
+
+/** A card scanned in stack mode: added (with its collection row, for undo) or waiting for review. */
+data class SessionItem(
+    val key: Long,
+    val name: String,
+    val number: String,
+    val imageUrl: String?,
+    val rowId: Long? = null,
+    val candidates: List<CardCandidate> = emptyList(),
+    val grade: GradeInfo? = null,
+) {
+    val needsReview: Boolean get() = rowId == null
+}
 
 class ScanViewModel(private val repo: CardRepository, private val context: android.content.Context) : ViewModel() {
     val state = MutableStateFlow(ScanState())
@@ -118,6 +142,14 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
 
     /** Camera frames are only analysed while nothing else is going on. */
     val scanning get() = state.value.let { !it.loading && it.candidates.isEmpty() }
+
+    // Stack mode: the same card is only added again after it left the frame (no double adds while it is held up).
+    private var lastAddedKey: String? = null
+    private var gapSinceAdd = true
+    private var nextSessionKey = 0L
+    private var reviewKey: Long? = null
+
+    fun setStack(on: Boolean) = state.update { it.copy(stack = on, message = null) }
 
     private var enabled: Set<Game> = Game.entries.toSet()
 
@@ -136,7 +168,10 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         if (!scanning) return
         val filter = state.value.filter
         val hit = CardTextParser.parse(frame.cardLines, filter, repo.indexMatchers(enabled))
-            ?.takeIf { filter != null || it.game in enabled } ?: return
+            ?.takeIf { filter != null || it.game in enabled }
+        if (hit == null || hit.key != lastAddedKey) gapSinceAdd = true
+        if (hit == null) return
+        if (state.value.stack && hit.key == lastAddedKey && !gapSinceAdd) return
         frame.card?.let { lastPicture = it }
         // A slab label is read with the card (it sits above it); keep it while the same card stays in view.
         val grade = CardTextParser.parseGrade(frame.allLines)
@@ -168,7 +203,9 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
                     val s = repo.settings.current()
                     val top = candidates.first()
                     val grade = state.value.grade?.takeIf { it.grader != null && it.grade != null }
-                    if (s.quickAdd && repo.isConfident(candidates)) {
+                    if (state.value.stack) {
+                        stackResult(hit, candidates, grade, s.defaultCondition)
+                    } else if (s.quickAdd && repo.isConfident(candidates)) {
                         repo.add(top, top.defaultVariant, 1, s.defaultCondition, grade)
                         cooldownUntil = System.currentTimeMillis() + 4000
                         state.update {
@@ -182,10 +219,70 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         }
     }
 
+    /** Stack mode: add a clear match at once, park an unclear one for review, and keep scanning. */
+    private suspend fun stackResult(hit: ScanHit, candidates: List<CardCandidate>, grade: GradeInfo?, condition: String) {
+        val top = candidates.first()
+        val item = SessionItem(nextSessionKey++, top.name, top.number, top.defaultVariant.imageUrl ?: top.imageUrl, grade = grade)
+        lastAddedKey = hit.key
+        gapSinceAdd = false
+        if (repo.isConfident(candidates)) {
+            val row = runCatching { repo.add(top, top.defaultVariant, 1, condition, grade) }.getOrNull()
+            state.update {
+                it.copy(
+                    loading = false, grade = null, reading = null,
+                    session = listOf(item.copy(rowId = row, candidates = if (row == null) candidates else emptyList())) + it.session,
+                    addedCount = it.addedCount + if (row != null) 1 else 0,
+                    ticks = it.ticks + 1,
+                    message = AppStrings.get(R.string.scan_added_auto, top.name, top.number),
+                )
+            }
+        } else {
+            state.update {
+                it.copy(
+                    loading = false, grade = null, reading = null,
+                    session = listOf(item.copy(candidates = candidates)) + it.session,
+                    ticks = it.ticks + 1,
+                    message = AppStrings.get(R.string.stack_review_later, top.name),
+                )
+            }
+        }
+    }
+
+    /** Takes back one copy of a card added in stack mode. */
+    fun undo(item: SessionItem) {
+        val row = item.rowId ?: return removeFromSession(item)
+        viewModelScope.launch {
+            repo.card(row)?.let { repo.update(it.copy(quantity = it.quantity - 1)) }
+            state.update { s -> s.copy(session = s.session.filterNot { it.key == item.key }, addedCount = (s.addedCount - 1).coerceAtLeast(0)) }
+        }
+    }
+
+    fun removeFromSession(item: SessionItem) = state.update { s -> s.copy(session = s.session.filterNot { it.key == item.key }) }
+
+    /** Opens the add sheet for a card waiting for review. */
+    fun review(item: SessionItem) {
+        reviewKey = item.key
+        state.update { it.copy(candidates = item.candidates, grade = item.grade) }
+    }
+
     fun add(r: AddRequest) {
         val c = r.card
         val qty = r.quantity
+        val reviewed = reviewKey
+        reviewKey = null
         viewModelScope.launch {
+            if (reviewed != null) {
+                val row = runCatching { repo.add(r) }.getOrNull()
+                state.update { s ->
+                    s.copy(
+                        candidates = emptyList(), grade = null,
+                        session = s.session.map { if (it.key == reviewed) it.copy(rowId = row, name = c.name, number = c.number, candidates = emptyList()) else it },
+                        addedCount = s.addedCount + if (row != null) qty else 0,
+                    )
+                }
+                cooldownUntil = System.currentTimeMillis() + 3000
+                return@launch
+            }
             runCatching { repo.add(r) }
                 .onSuccess { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = AppStrings.get(R.string.scan_added_qty, c.name, qty), addedCount = s.addedCount + qty) } }
                 .onFailure { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = AppStrings.get(R.string.scan_could_not_save, it.message.toString())) } }
@@ -194,6 +291,7 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
     }
 
     fun dismiss() {
+        reviewKey = null
         cooldownUntil = System.currentTimeMillis() + 3000
         state.update { it.copy(candidates = emptyList(), reading = null, grade = null) }
     }
@@ -232,6 +330,11 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
 
     var camera by remember { mutableStateOf<Camera?>(null) }
     var torch by remember { mutableStateOf(false) }
+    // A light tick for every card taken in stack mode, so you can keep your eyes on the cards.
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
+    LaunchedEffect(state.ticks) {
+        if (state.ticks > 0) haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+    }
 
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         CameraPreview(isEnabled = { vm.scanning }, onFrame = vm::onFrame, onCamera = { camera = it })
@@ -251,12 +354,22 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
                     Icon(if (torch) Icons.Default.FlashOff else Icons.Default.FlashOn, stringResource(R.string.scan_torch))
                 }
             }
-            FilterChip(
-                selected = settings.quickAdd,
-                onClick = { scope.launch { repo.settings.setQuickAdd(!settings.quickAdd) } },
-                label = { Text(if (settings.quickAdd) stringResource(R.string.scan_quick_add_on) else stringResource(R.string.scan_quick_add_off)) },
-                colors = FilterChipDefaults.filterChipColors(containerColor = Color.Black.copy(alpha = 0.5f), labelColor = Color.White),
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(
+                    selected = state.stack,
+                    onClick = { vm.setStack(!state.stack) },
+                    label = { Text(stringResource(R.string.stack_mode)) },
+                    colors = FilterChipDefaults.filterChipColors(containerColor = Color.Black.copy(alpha = 0.5f), labelColor = Color.White),
+                )
+                if (!state.stack) {
+                    FilterChip(
+                        selected = settings.quickAdd,
+                        onClick = { scope.launch { repo.settings.setQuickAdd(!settings.quickAdd) } },
+                        label = { Text(if (settings.quickAdd) stringResource(R.string.scan_quick_add_on) else stringResource(R.string.scan_quick_add_off)) },
+                        colors = FilterChipDefaults.filterChipColors(containerColor = Color.Black.copy(alpha = 0.5f), labelColor = Color.White),
+                    )
+                }
+            }
         }
 
         Column(
@@ -272,6 +385,7 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
                 style = MaterialTheme.typography.bodyMedium,
             )
             if (state.addedCount > 0) Text(pluralStringResource(R.plurals.scan_added_this_session, state.addedCount, state.addedCount), color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
+            if (state.stack && state.session.isNotEmpty()) StackStrip(state.session, onUndo = vm::undo, onReview = vm::review)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = onPhotos) {
                     Icon(Icons.Default.PhotoLibrary, null)
@@ -370,5 +484,40 @@ private fun CardFrameOverlay() {
         // Highlight where the numbers are printed.
         val band = h * 0.12f
         drawRoundRect(Color(0x553D5AFE), Offset(topLeft.x, topLeft.y + h - band), GSize(cw, band), CornerRadius(24f))
+    }
+}
+
+/** The cards taken in stack mode, newest first: added ones can be undone, unclear ones reviewed. */
+@Composable
+private fun StackStrip(items: List<SessionItem>, onUndo: (SessionItem) -> Unit, onReview: (SessionItem) -> Unit) {
+    val review = items.count { it.needsReview }
+    if (review > 0) {
+        Text(pluralStringResource(R.plurals.stack_to_review, review, review), color = Color(0xFFFFD54F), style = MaterialTheme.typography.labelMedium)
+    }
+    androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(items.size, key = { items[it].key }) { i ->
+            val item = items[i]
+            Box(Modifier.size(width = 64.dp, height = 104.dp)) {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (item.needsReview) Color(0x55FFD54F) else Color.White.copy(alpha = 0.12f))
+                        .then(if (item.needsReview) Modifier.clickable { onReview(item) } else Modifier)
+                        .padding(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    com.monkaydee.tcgcatalogue.ui.components.CardImage(item.imageUrl, Modifier.width(48.dp), thumb = true)
+                    Text(item.name, color = Color.White, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text(
+                        if (item.needsReview) stringResource(R.string.stack_tap_to_review) else item.number,
+                        color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall, maxLines = 1,
+                    )
+                }
+                IconButton(onClick = { onUndo(item) }, modifier = Modifier.align(Alignment.TopEnd).size(24.dp)) {
+                    Icon(Icons.Default.Close, stringResource(if (item.needsReview) R.string.stack_discard else R.string.stack_undo), tint = Color.White, modifier = Modifier.size(16.dp))
+                }
+            }
+        }
     }
 }
