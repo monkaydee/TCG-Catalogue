@@ -21,8 +21,22 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Unit tests
+      # Robolectric downloads an Android runtime for the screenshot tests; keep it between runs.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-4.14.1-sdk34
+
+      - name: Unit and screenshot tests
         run: ./gradlew --no-daemon testDebugUnitTest
+
+      # The screens rendered by the screenshot tests, to review visual changes as images.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: app/build/screenshots/*.png
+          if-no-files-found: ignore
 
       - name: Build APK
         run: ./gradlew --no-daemon assembleRelease

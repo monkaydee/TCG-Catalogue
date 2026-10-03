@@ -8,6 +8,7 @@ plugins {
 
 android {
     namespace = "com.monkaydee.tcgcatalogue"
+    testOptions { unitTests { isIncludeAndroidResources = true } }
     // Lists the app's languages for Android 13+'s per-app language setting.
     androidResources { generateLocaleConfig = true }
     compileSdk = 35
@@ -94,4 +95,9 @@ dependencies {
     implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
+    // Screenshot tests: screens rendered on the JVM (Robolectric native graphics), saved as PNGs.
+    testImplementation(platform(libs.compose.bom))
+    testImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
+    testImplementation(libs.robolectric)
 }
