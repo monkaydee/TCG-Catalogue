@@ -15,6 +15,9 @@ data class Price(val amount: Double, val source: PriceSource, val note: String? 
     val currency: String get() = source.currency
 }
 
+/** One number a market publishes for a card ("Cardmarket · 30-day avg"), for the price overview. */
+data class PricePoint(val source: PriceSource, val label: String, val amount: Double)
+
 /** A printing of a card (normal / holo / reverse / alt art ...) with its market prices. */
 data class Variant(
     val key: String,
@@ -26,6 +29,8 @@ data class Variant(
     val tcgplayerId: Long? = null,
     /** TCGplayer's name for the printing: "Normal", "Holofoil", "Reverse Holofoil", "Foil", ... */
     val tcgplayerPrinting: String? = null,
+    /** Everything the markets publish for this printing (trend, averages, lowest offer ...). */
+    val details: List<PricePoint> = emptyList(),
 ) {
     /** The price from [preferred] if known, otherwise any other source. See [Pricing] for the checked version. */
     fun price(preferred: PriceSource): Price? =

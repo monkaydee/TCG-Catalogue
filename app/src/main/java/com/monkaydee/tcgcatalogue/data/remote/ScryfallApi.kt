@@ -48,6 +48,10 @@ class ScryfallApi(private val http: Http) {
                 },
                 tcgplayerId = (if (f == "etched") c["tcgplayer_etched_id"] else c["tcgplayer_id"]).str()?.toLongOrNull(),
                 tcgplayerPrinting = if (f == "nonfoil") "Normal" else "Foil",
+                details = listOfNotNull(
+                    eur.str()?.toDoubleOrNull()?.let { PricePoint(PriceSource.CARDMARKET, "Trend", it) },
+                    usd.str()?.toDoubleOrNull()?.let { PricePoint(PriceSource.TCGPLAYER, "Market", it) },
+                ),
             )
         }
         val image = c["image_uris"]["normal"].str() ?: c["card_faces"].arr()?.firstOrNull()?.get("image_uris")?.get("normal").str()

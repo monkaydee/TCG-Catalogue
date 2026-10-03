@@ -47,6 +47,10 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 - **Virtual slabs**: graded cards are shown inside a slab with their company's label (PSA, BGS
   incl. gold and Black Label, CGC, SGC, TAG, ACE, …), the grade words (GEM MT 10, MINT 9, …) and
   the cert number, so graded and raw cards are told apart at a glance.
+- **All prices**: the card page's "All prices" panel shows every number the sources publish for
+  that printing: Cardmarket (trend, lowest offer, 1/7/30-day averages, or the chosen One Piece
+  listing), TCGplayer (market, lowest listing …), TCGplayer sales per condition, PriceCharting raw
+  and graded prices, and for slabs the eBay sold average. A source that can't be reached says why.
 - **Edit cards**: the pencil on a card's page reopens the add sheet with everything filled in:
   printing, Cardmarket listing, condition, raw/graded with company, grade and cert, quantity and
   purchase price (the card page then shows the gain or loss). "Wrong card?" searches for the right

@@ -46,11 +46,16 @@ class OnePieceApi(private val http: Http) {
             val label = variantLabel(r["card_name"].str().orEmpty())
                 .ifBlank { if (imageId == code || i == 0) "Standard" else "Variant ${i + 1}" }
             val price = r["market_price"].dbl()?.takeIf { it > 0 } ?: r["inventory_price"].dbl()?.takeIf { it > 0 }
+            val details = listOfNotNull(
+                r["market_price"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, "Market", it) },
+                r["inventory_price"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, "Lowest listing", it) },
+            )
             Variant(
                 key = imageId ?: "$code#$i",
                 label = label,
                 prices = buildMap { price?.let { put(PriceSource.TCGPLAYER, it) } },
                 imageUrl = r["card_image"].str(),
+                details = details,
             )
         }.distinctBy { it.key }
         return CardCandidate(

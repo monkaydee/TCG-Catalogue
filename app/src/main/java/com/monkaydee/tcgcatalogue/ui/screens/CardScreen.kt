@@ -25,6 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Card
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -233,6 +236,7 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 Text("Raw-card market price for this condition.", style = MaterialTheme.typography.labelSmall)
             }
         }
+        PriceOverview(c, s, repo)
         Text("Quantity", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
         QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
         if (c.game == Game.ONE_PIECE && s.pokemonSource == PriceSource.CARDMARKET) {
@@ -257,6 +261,49 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                         scope.launch { runCatching { repo.changeCondition(c, cond) } }
                     }, { Text(cond) })
                 }
+            }
+        }
+    }
+}
+
+/** All prices from all sources for this card, loaded on request (it queries several sites). */
+@Composable
+private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
+    var groups by remember(c.id) { mutableStateOf<List<CardRepository.PriceGroup>?>(null) }
+    var loading by remember(c.id) { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("All prices", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                if (loading) {
+                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    TextButton(onClick = {
+                        loading = true
+                        scope.launch {
+                            groups = repo.priceOverview(c)
+                            loading = false
+                        }
+                    }) { Text(if (groups == null) "Show" else "Refresh") }
+                }
+            }
+            groups?.forEach { g ->
+                HorizontalDivider()
+                Text(g.title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                g.lines.forEach { p ->
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(p.label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
+                        val converted = Money.convert(p.amount, p.source.currency, s.currency, s.usdToEur)
+                        Text(
+                            Money.format(converted, s.currency) +
+                                if (p.source.currency != s.currency) "  (${Money.format(p.amount, p.source.currency)})" else "",
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
+                }
+                g.problem?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
             }
         }
     }

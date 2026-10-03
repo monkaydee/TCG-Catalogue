@@ -13,6 +13,7 @@ import com.monkaydee.tcgcatalogue.data.remote.EbayApi
 import com.monkaydee.tcgcatalogue.data.remote.FxApi
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.Price
+import com.monkaydee.tcgcatalogue.data.remote.PricePoint
 import com.monkaydee.tcgcatalogue.data.remote.PriceChartingApi
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.data.remote.Pricing
@@ -428,6 +429,77 @@ class CardRepository(
             ),
         )
         runCatching { snapshot() }
+    }
+
+    /** A block of the price overview, e.g. "TCGplayer by condition", or why it is empty. */
+    data class PriceGroup(val title: String, val lines: List<PricePoint>, val problem: String? = null)
+
+    /**
+     * Every price the app can find for a card in the collection, from all sources, for the card
+     * page's price overview. Each source fails on its own without hiding the others.
+     */
+    suspend fun priceOverview(card: OwnedCard): List<PriceGroup> = coroutineScope {
+        val fresh = attempt { fetch(card.game, card.cardId) }.getOrNull() ?: return@coroutineScope listOf(
+            PriceGroup("Prices", emptyList(), "couldn't load the card data — check your connection"),
+        )
+        val variant = fresh.variants.firstOrNull { it.key == card.variant } ?: fresh.variants.first()
+        val listing = async { attempt { listingOf(card) }.getOrNull() }
+        val conditions = async {
+            attempt { tcgplayerProduct(fresh, variant)?.let { tcgplayer.conditionPrices(it) } }
+                .getOrNull()?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }
+        }
+        val graded = async { attempt { priceCharting.lookup(fresh, variant) }.getOrElse { PriceChartingApi.Lookup(null, it.message) } }
+        val sold = if (card.graded) {
+            async {
+                attempt { ebay.gradedAverage(fresh, card.grader!!, card.grade!!, card.gradeQualifier, settings.current().currency == "EUR") }
+            }
+        } else {
+            null
+        }
+
+        val groups = mutableListOf<PriceGroup>()
+        val cm = variant.details.filter { it.source == PriceSource.CARDMARKET }
+        val l = listing.await()
+        val cmLines = if (l != null) {
+            listOfNotNull(
+                l.trend?.let { PricePoint(PriceSource.CARDMARKET, "Trend", it) },
+                l.low?.let { PricePoint(PriceSource.CARDMARKET, "Lowest offer", it) },
+                l.avg7?.let { PricePoint(PriceSource.CARDMARKET, "7-day average", it) },
+                l.avg30?.let { PricePoint(PriceSource.CARDMARKET, "30-day average", it) },
+            )
+        } else {
+            cm
+        }
+        groups += PriceGroup(
+            "Cardmarket" + (l?.let { " · ${it.label}" } ?: ""),
+            cmLines,
+            if (cmLines.isEmpty()) "no Cardmarket prices for this card" else null,
+        )
+        val tcg = variant.details.filter { it.source == PriceSource.TCGPLAYER }
+        groups += PriceGroup("TCGplayer", tcg, if (tcg.isEmpty()) "no TCGplayer prices for this card" else null)
+        val byCondition = conditions.await()
+        groups += PriceGroup(
+            "TCGplayer by condition (sales)",
+            TcgPlayerApi.CONDITION_NAMES.mapNotNull { (code, name) -> byCondition?.get(name)?.let { PricePoint(PriceSource.TCGPLAYER, code, it) } },
+            if (byCondition.isNullOrEmpty()) "no sales by condition" else null,
+        )
+        val pc = graded.await()
+        val pcSource = if (pc.table?.currency == "EUR") PriceSource.PRICECHARTING_EUR else PriceSource.PRICECHARTING
+        groups += PriceGroup(
+            "PriceCharting (raw & graded sales)",
+            pc.table?.prices?.map { (label, amount) -> PricePoint(pcSource, label, amount) }.orEmpty(),
+            pc.problem,
+        )
+        sold?.await()?.let { result ->
+            val q = result.getOrNull()
+            val label = GradeInfo(card.grader, card.grade, card.gradeQualifier).label
+            groups += PriceGroup(
+                "eBay sold · $label",
+                listOfNotNull(q?.let { PricePoint(if (it.currency == "EUR") PriceSource.EBAY_DE else PriceSource.EBAY_US, "Average of last ${it.count}", it.average) }),
+                result.exceptionOrNull()?.message ?: if (q == null) "no $label sales" else null,
+            )
+        }
+        groups
     }
 
     /** Cardmarket listings for a card in the collection (One Piece only). */

@@ -102,7 +102,10 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     private fun candidate(index: Index, e: Entry): CardCandidate {
         val group = index.groups[e.groupId]
         val variants = e.prices.entries.map { (subType, price) ->
-            Variant(subType, subType, mapOf(PriceSource.TCGPLAYER to price), tcgplayerId = e.productId, tcgplayerPrinting = subType)
+            Variant(
+                subType, subType, mapOf(PriceSource.TCGPLAYER to price), tcgplayerId = e.productId, tcgplayerPrinting = subType,
+                details = listOf(PricePoint(PriceSource.TCGPLAYER, "Market", price)),
+            )
         }.ifEmpty { listOf(Variant("Normal", "Normal", emptyMap(), tcgplayerId = e.productId, tcgplayerPrinting = "Normal")) }
         return CardCandidate(
             game = index.game,
