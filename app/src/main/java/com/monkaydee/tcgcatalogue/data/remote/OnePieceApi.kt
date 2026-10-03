@@ -1,6 +1,8 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import kotlinx.serialization.json.JsonElement
 
 /** One Piece card data and TCGplayer prices from https://optcgapi.com. */
@@ -44,11 +46,11 @@ class OnePieceApi(private val http: Http) {
         val variants = ordered.mapIndexed { i, r ->
             val imageId = r["card_image_id"].str()
             val label = variantLabel(r["card_name"].str().orEmpty())
-                .ifBlank { if (imageId == code || i == 0) "Standard" else "Variant ${i + 1}" }
+                .ifBlank { if (imageId == code || i == 0) AppStrings.get(R.string.data_variant_standard) else AppStrings.get(R.string.data_variant_numbered, i + 1) }
             val price = r["market_price"].dbl()?.takeIf { it > 0 } ?: r["inventory_price"].dbl()?.takeIf { it > 0 }
             val details = listOfNotNull(
-                r["market_price"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, "Market", it) },
-                r["inventory_price"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, "Lowest listing", it) },
+                r["market_price"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, AppStrings.get(R.string.price_label_market), it) },
+                r["inventory_price"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, AppStrings.get(R.string.price_label_lowest_listing), it) },
             )
             Variant(
                 key = imageId ?: "$code#$i",

@@ -1,5 +1,7 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -66,8 +68,11 @@ class CardmarketPokemon(private val files: CardIndexApi, private val http: Http,
         if (v.key == "firstEdition") return v // priced from its own product by TCGdex
         val f = if (v.key == "reverse") row.holo else row.normal
         val price = f[0]?.takeIf { it > 0 } ?: f[2]?.takeIf { it > 0 }
-        val labels = listOf("Trend", "Lowest offer", "Average sold", "1-day average", "7-day average", "30-day average")
-        val cm = labels.indices.mapNotNull { i -> f[i]?.takeIf { it > 0 }?.let { PricePoint(PriceSource.CARDMARKET, labels[i], it) } }
+        val labels = listOf(
+            R.string.price_label_trend, R.string.price_label_lowest_offer, R.string.price_label_average_sold,
+            R.string.price_label_avg1, R.string.price_label_avg7, R.string.price_label_avg30,
+        )
+        val cm = labels.indices.mapNotNull { i -> f[i]?.takeIf { it > 0 }?.let { PricePoint(PriceSource.CARDMARKET, AppStrings.get(labels[i]), it) } }
         val prices = v.prices.toMutableMap().apply { if (price != null) put(PriceSource.CARDMARKET, price) else remove(PriceSource.CARDMARKET) }
         return v.copy(prices = prices, details = cm + v.details.filter { it.source != PriceSource.CARDMARKET })
     }

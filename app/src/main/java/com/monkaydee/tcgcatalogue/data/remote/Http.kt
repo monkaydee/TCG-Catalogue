@@ -1,5 +1,7 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -35,7 +37,8 @@ class Http(
             val request = Request.Builder().url(url).header("User-Agent", userAgent).header("Accept", accept).build()
             client.newCall(request).execute().use { response ->
                 if (response.code == 404) return@withContext null
-                if (!response.isSuccessful) throw HttpException(response.code, "HTTP ${response.code} for $url")
+                // The message is shown to the user when a search fails.
+                if (!response.isSuccessful) throw HttpException(response.code, AppStrings.get(R.string.data_http_error, response.code, url))
                 response.body?.string().orEmpty()
             }
         }

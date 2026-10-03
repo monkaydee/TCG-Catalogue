@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Texts made by the data layer (repository, market APIs, price notes) that the screens show.
+    Brand names (Cardmarket, TCGplayer) and condition codes (NM, LP, MP, HP, DMG) stay as they are.
+-->
+<resources>
+    <!-- ==== Scanner ==== -->
+
+    <!-- Warning in the add sheet when the card number read by the camera points to a card with a different name. -->
+    <string name="data_scan_name_mismatch">The name on the scanned card doesn\'t match this card — the number may have been misread. Check it, or cancel and type it in.</string>
+
+    <!-- Shown for a graded card (in a grading company's plastic case, a "slab") whose grading company couldn't be read. -->
+    <string name="data_graded">Graded</string>
+    <!-- Same, with the grade that was read, e.g. "Graded 9" or "Graded 9.5". %1$s = the grade. -->
+    <string name="data_graded_grade">Graded %1$s</string>
+
+    <!-- ==== Graded prices (why there is none); shown in brackets after "No graded price found" ==== -->
+
+    <string name="data_graded_choose_grader">choose the grading company</string>
+    <string name="data_graded_choose_grade">choose the grade</string>
+    <string name="data_graded_no_source">no graded price source — set your own value, or check the price links on the card page</string>
+
+    <!-- ==== Printings of a card (shown next to the card, e.g. "Holo") ==== -->
+
+    <string name="data_variant_normal">Normal</string>
+    <!-- Holographic (shiny) printing of a trading card. -->
+    <string name="data_variant_holo">Holo</string>
+    <!-- Printing where the card body except the picture is holographic. -->
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <!-- Printing from the first print run, marked with a "1st Edition" stamp. -->
+    <string name="data_variant_first_edition">1st Edition</string>
+    <!-- Shiny (foil) printing of a Magic card. -->
+    <string name="data_variant_foil">Foil</string>
+    <!-- Magic printing with an etched foil finish. -->
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <!-- The regular printing of a One Piece card, as opposed to its alternate arts. -->
+    <string name="data_variant_standard">Standard</string>
+    <!-- An unnamed alternate printing of a One Piece card, numbered: "Variant 2", "Variant 3" … -->
+    <string name="data_variant_numbered">Variant %1$d</string>
+
+    <!-- ==== Price overview on the card page ==== -->
+
+    <!-- Title of the price overview when the card couldn't be loaded. -->
+    <string name="data_overview_prices">Prices</string>
+    <string name="data_overview_no_card_data">couldn\'t load the card data — check your connection</string>
+    <string name="data_overview_no_cardmarket">no Cardmarket prices for this card</string>
+    <string name="data_overview_no_tcgplayer">no TCGplayer prices for this card</string>
+    <!-- Title: TCGplayer's market prices per card condition, from recent sales. -->
+    <string name="data_overview_by_condition">TCGplayer by condition (sales)</string>
+    <string name="data_overview_no_condition_sales">no sales by condition</string>
+
+    <!-- Names of the prices a market publishes for a card, listed in the price overview. -->
+    <!-- Cardmarket's price trend (a smoothed recent sale price). -->
+    <string name="price_label_trend">Trend</string>
+    <!-- The cheapest offer currently on the marketplace. -->
+    <string name="price_label_lowest_offer">Lowest offer</string>
+    <!-- The average price the card sold for. -->
+    <string name="price_label_average_sold">Average sold</string>
+    <string name="price_label_avg1">1-day average</string>
+    <string name="price_label_avg7">7-day average</string>
+    <string name="price_label_avg30">30-day average</string>
+    <!-- TCGplayer's market price (based on recent sales). -->
+    <string name="price_label_market">Market</string>
+    <!-- "Listing" = an offer on the marketplace. -->
+    <string name="price_label_lowest_listing">Lowest listing</string>
+    <!-- The middle of the listing prices. -->
+    <string name="price_label_mid">Mid</string>
+    <string name="price_label_highest_listing">Highest listing</string>
+    <!-- TCGplayer's lowest price among sellers in its "Direct" shipping program. -->
+    <string name="price_label_direct_low">Direct low</string>
+
+    <!-- ==== Notes saved with a card's price, explaining where it comes from ==== -->
+
+    <!-- "Raw" = the price of an ungraded card, used because there is no price for the graded copy. -->
+    <string name="price_note_raw_no_graded_source">Showing the raw price — no graded price source — set your own value, or check the price links on the card page</string>
+    <!-- The two markets' prices are far apart, so one market linked the wrong card. "Listing" = the market's entry for the card.
+         %1$s = market not used (e.g. Cardmarket), %2$d = how many times one price is the other, %3$s = market used. -->
+    <string name="price_note_markets_disagree">%1$s listing didn\'t match this card (%2$dx apart); using %3$s</string>
+    <!-- A worse condition is never priced above a better one. %1$s, %2$s = condition codes (e.g. HP, MP). -->
+    <string name="price_note_capped">%1$s valued like %2$s (its sales data was higher)</string>
+    <!-- %1$s = condition code (e.g. LP). -->
+    <string name="price_note_tcgplayer_sales">%1$s price from TCGplayer sales</string>
+    <!-- %1$s = condition code (e.g. MP), %2$d = percentage of the Near Mint (NM) price. -->
+    <string name="price_note_sales_share">%1$s = %2$d%% of NM (TCGplayer sales)</string>
+    <!-- %1$s = condition code (e.g. HP), %2$d = typical percentage of the Near Mint (NM) price. -->
+    <string name="price_note_estimated_share">%1$s estimated at %2$d%% of NM (no sales data)</string>
+
+    <!-- ==== Errors ==== -->
+
+    <!-- A server answered with an error. %1$d = HTTP status code, %2$s = web address. -->
+    <string name="data_http_error">HTTP %1$d for %2$s</string>
+</resources>

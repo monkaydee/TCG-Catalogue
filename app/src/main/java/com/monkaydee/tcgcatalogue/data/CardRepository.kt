@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.data
 
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.AppDatabase
 import com.monkaydee.tcgcatalogue.data.db.CardSet
 import com.monkaydee.tcgcatalogue.data.db.Game
@@ -15,6 +16,7 @@ import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.Price
 import com.monkaydee.tcgcatalogue.data.remote.PricePoint
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
+import com.monkaydee.tcgcatalogue.data.remote.PriceTexts
 import com.monkaydee.tcgcatalogue.data.remote.Pricing
 import com.monkaydee.tcgcatalogue.data.remote.ScryfallApi
 import com.monkaydee.tcgcatalogue.data.remote.TcgPlayerApi
@@ -25,6 +27,7 @@ import com.monkaydee.tcgcatalogue.data.remote.toBrief
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
 import com.monkaydee.tcgcatalogue.scan.ScanHit
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import com.monkaydee.tcgcatalogue.ui.components.AddRequest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -98,7 +101,7 @@ class CardRepository(
             .flatMap { alt -> runCatching { load(alt) }.getOrDefault(emptyList()) }
             .filter { CardTextParser.nameOnCard(it.name, texts) }
             .map { it.copy(score = 0.9) }
-        val warning = "The name on the scanned card doesn't match this card — the number may have been misread. Check it, or cancel and type it in."
+        val warning = AppStrings.get(R.string.data_scan_name_mismatch)
         return alternatives + direct.map { it.copy(score = 0.3, warning = warning) }
     }
 
@@ -197,7 +200,7 @@ class CardRepository(
      */
     fun rawPrice(card: CardCandidate, variant: Variant, s: AppSettings, listing: CardmarketApi.Listing? = null): Price? {
         if (s.pokemonSource == PriceSource.CARDMARKET) listing?.price?.let { return Price(it, PriceSource.CARDMARKET) }
-        return Pricing.pick(variant, card.rarity, Pricing.sourceFor(card.game, s.pokemonSource), s.usdToEur)
+        return Pricing.pick(variant, card.rarity, Pricing.sourceFor(card.game, s.pokemonSource), s.usdToEur, PriceTexts.App)
     }
 
     /** Cardmarket's listings (every print) of a One Piece card, empty for other games. */
@@ -227,9 +230,9 @@ class CardRepository(
      */
     @Suppress("UNUSED_PARAMETER")
     suspend fun gradedLookup(card: CardCandidate, variant: Variant, grade: GradeInfo): GradedResult {
-        grade.grader ?: return GradedResult(null, "choose the grading company")
-        grade.grade ?: return GradedResult(null, "choose the grade")
-        return GradedResult(null, "no graded price source — set your own value, or check the price links on the card page")
+        grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
+        grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
+        return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
     }
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
@@ -237,7 +240,7 @@ class CardRepository(
         val base = rawPrice(card, variant, s, listing)
         if (condition == "NM") return base
         val table = runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull()
-        return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) })
+        return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }, PriceTexts.App)
     }
 
     /**
@@ -268,7 +271,8 @@ class CardRepository(
     ): Price? {
         if (grade?.grader == null || grade.grade == null) return conditionPrice(card, variant, condition, s, listing)
         val result = gradedLookup(card, variant, grade)
-        return result.price ?: rawPrice(card, variant, s, listing)?.copy(note = "Showing the raw price — ${result.problem}")
+        // Grader and grade are set here, so a missing graded price means there is no graded price source.
+        return result.price ?: rawPrice(card, variant, s, listing)?.copy(note = AppStrings.get(R.string.price_note_raw_no_graded_source))
     }
 
     private suspend fun listingOf(card: OwnedCard): CardmarketApi.Listing? =
@@ -450,7 +454,7 @@ class CardRepository(
      */
     suspend fun priceOverview(card: OwnedCard): List<PriceGroup> = coroutineScope {
         val fresh = attempt { fetch(card.game, card.cardId) }.getOrNull() ?: return@coroutineScope listOf(
-            PriceGroup("Prices", emptyList(), "couldn't load the card data — check your connection"),
+            PriceGroup(AppStrings.get(R.string.data_overview_prices), emptyList(), AppStrings.get(R.string.data_overview_no_card_data)),
         )
         val variant = fresh.variants.firstOrNull { it.key == card.variant } ?: fresh.variants.first()
         val listing = async { attempt { listingOf(card) }.getOrNull() }
@@ -464,10 +468,10 @@ class CardRepository(
         val l = listing.await()
         val cmLines = if (l != null) {
             listOfNotNull(
-                l.trend?.let { PricePoint(PriceSource.CARDMARKET, "Trend", it) },
-                l.low?.let { PricePoint(PriceSource.CARDMARKET, "Lowest offer", it) },
-                l.avg7?.let { PricePoint(PriceSource.CARDMARKET, "7-day average", it) },
-                l.avg30?.let { PricePoint(PriceSource.CARDMARKET, "30-day average", it) },
+                l.trend?.let { PricePoint(PriceSource.CARDMARKET, AppStrings.get(R.string.price_label_trend), it) },
+                l.low?.let { PricePoint(PriceSource.CARDMARKET, AppStrings.get(R.string.price_label_lowest_offer), it) },
+                l.avg7?.let { PricePoint(PriceSource.CARDMARKET, AppStrings.get(R.string.price_label_avg7), it) },
+                l.avg30?.let { PricePoint(PriceSource.CARDMARKET, AppStrings.get(R.string.price_label_avg30), it) },
             )
         } else {
             cm
@@ -475,15 +479,15 @@ class CardRepository(
         groups += PriceGroup(
             "Cardmarket" + (l?.let { " · ${it.label}" } ?: ""),
             cmLines,
-            if (cmLines.isEmpty()) "no Cardmarket prices for this card" else null,
+            if (cmLines.isEmpty()) AppStrings.get(R.string.data_overview_no_cardmarket) else null,
         )
         val tcg = variant.details.filter { it.source == PriceSource.TCGPLAYER }
-        groups += PriceGroup("TCGplayer", tcg, if (tcg.isEmpty()) "no TCGplayer prices for this card" else null)
+        groups += PriceGroup("TCGplayer", tcg, if (tcg.isEmpty()) AppStrings.get(R.string.data_overview_no_tcgplayer) else null)
         val byCondition = conditions.await()
         groups += PriceGroup(
-            "TCGplayer by condition (sales)",
+            AppStrings.get(R.string.data_overview_by_condition),
             TcgPlayerApi.CONDITION_NAMES.mapNotNull { (code, name) -> byCondition?.get(name)?.let { PricePoint(PriceSource.TCGPLAYER, code, it) } },
-            if (byCondition.isNullOrEmpty()) "no sales by condition" else null,
+            if (byCondition.isNullOrEmpty()) AppStrings.get(R.string.data_overview_no_condition_sales) else null,
         )
         groups
     }

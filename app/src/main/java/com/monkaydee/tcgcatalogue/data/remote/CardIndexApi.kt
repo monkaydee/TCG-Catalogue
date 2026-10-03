@@ -1,6 +1,8 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -104,9 +106,9 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         val variants = e.prices.entries.map { (subType, price) ->
             Variant(
                 subType, subType, mapOf(PriceSource.TCGPLAYER to price), tcgplayerId = e.productId, tcgplayerPrinting = subType,
-                details = listOf(PricePoint(PriceSource.TCGPLAYER, "Market", price)),
+                details = listOf(PricePoint(PriceSource.TCGPLAYER, AppStrings.get(R.string.price_label_market), price)),
             )
-        }.ifEmpty { listOf(Variant("Normal", "Normal", emptyMap(), tcgplayerId = e.productId, tcgplayerPrinting = "Normal")) }
+        }.ifEmpty { listOf(Variant("Normal", AppStrings.get(R.string.data_variant_normal), emptyMap(), tcgplayerId = e.productId, tcgplayerPrinting = "Normal")) }
         return CardCandidate(
             game = index.game,
             cardId = e.productId.toString(),

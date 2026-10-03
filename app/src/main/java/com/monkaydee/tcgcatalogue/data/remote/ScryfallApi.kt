@@ -1,6 +1,8 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import kotlinx.serialization.json.JsonElement
 import java.net.URLEncoder
 
@@ -41,7 +43,7 @@ class ScryfallApi(private val http: Http) {
             }
             Variant(
                 key = f,
-                label = when (f) { "foil" -> "Foil"; "etched" -> "Etched foil"; else -> "Normal" },
+                label = AppStrings.get(when (f) { "foil" -> R.string.data_variant_foil; "etched" -> R.string.data_variant_etched_foil; else -> R.string.data_variant_normal }),
                 prices = buildMap {
                     eur.str()?.toDoubleOrNull()?.let { put(PriceSource.CARDMARKET, it) }
                     usd.str()?.toDoubleOrNull()?.let { put(PriceSource.TCGPLAYER, it) }
@@ -49,8 +51,8 @@ class ScryfallApi(private val http: Http) {
                 tcgplayerId = (if (f == "etched") c["tcgplayer_etched_id"] else c["tcgplayer_id"]).str()?.toLongOrNull(),
                 tcgplayerPrinting = if (f == "nonfoil") "Normal" else "Foil",
                 details = listOfNotNull(
-                    eur.str()?.toDoubleOrNull()?.let { PricePoint(PriceSource.CARDMARKET, "Trend", it) },
-                    usd.str()?.toDoubleOrNull()?.let { PricePoint(PriceSource.TCGPLAYER, "Market", it) },
+                    eur.str()?.toDoubleOrNull()?.let { PricePoint(PriceSource.CARDMARKET, AppStrings.get(R.string.price_label_trend), it) },
+                    usd.str()?.toDoubleOrNull()?.let { PricePoint(PriceSource.TCGPLAYER, AppStrings.get(R.string.price_label_market), it) },
                 ),
             )
         }
