@@ -96,7 +96,13 @@ jobs:
       - name: Deploy
         id: deploy
         run: |
-          npx wrangler deploy | tee deploy.log
+          set -o pipefail
+          if ! npx wrangler deploy 2>&1 | tee deploy.log; then
+            if grep -q "No access" deploy.log; then
+              echo "::error::Cloudflare refused the upload: the API token needs the permission Workers Scripts = Edit (see docs/CLOUDFLARE.md, step B)."
+            fi
+            exit 1
+          fi
           url=$(grep -oE 'https://[a-zA-Z0-9._-]+\.workers\.dev' deploy.log | head -n1)
           if [ -z "$url" ]; then
             echo "::warning::No workers.dev URL in the output. Open Cloudflare > Workers & Pages once to choose your workers.dev subdomain, then run this again."
