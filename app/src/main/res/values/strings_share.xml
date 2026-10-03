@@ -3,7 +3,7 @@
     Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
     English only for now; the translations follow in values-xx/strings_share.xml.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources>
     <!-- Home-screen widget -->
     <string name="widget_name">Portfolio</string>
     <string name="widget_description">Your collection\'s total value and how it changed in the last 30 days.</string>
@@ -13,7 +13,7 @@
     <string name="widget_change_30d">%1$s in 30 days</string>
     <string name="widget_no_history">No 30-day history yet</string>
     <string name="widget_preview_value" translatable="false">€1,234.50</string>
-    <string name="widget_preview_change">+€48.20 (+4.1%) in 30 days</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) in 30 days</string>
     <string name="widget_preview_cards">312 cards</string>
 
     <!-- Share a binder page -->

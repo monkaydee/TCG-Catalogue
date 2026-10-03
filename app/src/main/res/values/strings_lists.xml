@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Wishlist, trade list, sold cards, set checklist, price alerts and price history. Translations follow later. -->
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources>
     <!-- Common -->
     <string name="lists_back">Back</string>
     <string name="lists_cancel">Cancel</string>
