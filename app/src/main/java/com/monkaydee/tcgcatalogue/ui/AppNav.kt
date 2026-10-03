@@ -41,6 +41,10 @@ import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.ui.screens.BinderScreen
 import com.monkaydee.tcgcatalogue.ui.screens.CardBrowse
 import com.monkaydee.tcgcatalogue.ui.screens.CardScreen
+import com.monkaydee.tcgcatalogue.ui.screens.ChecklistScreen
+import com.monkaydee.tcgcatalogue.ui.screens.SoldScreen
+import com.monkaydee.tcgcatalogue.ui.screens.TradeListScreen
+import com.monkaydee.tcgcatalogue.ui.screens.WishlistScreen
 import com.monkaydee.tcgcatalogue.ui.screens.ImportScreen
 import com.monkaydee.tcgcatalogue.ui.screens.HomeScreen
 import com.monkaydee.tcgcatalogue.ui.screens.ScanScreen
@@ -121,8 +125,16 @@ fun AppNav(repo: CardRepository) {
                     onScan = { goTab("scan") },
                     onPhotos = { nav.navigate("import?pick=true") },
                     onBinder = { nav.navigate("binder") },
+                    onWishlist = { nav.navigate("wishlist") },
+                    onTradeList = { nav.navigate("trade") },
+                    onSold = { nav.navigate("sold") },
                 )
             }
+            composable("wishlist") { WishlistScreen(repo, onBack = { nav.popBackStack() }) }
+            composable("trade") {
+                TradeListScreen(repo, onBack = { nav.popBackStack() }, onOpenCard = { nav.navigate("card/$it") })
+            }
+            composable("sold") { SoldScreen(repo, onBack = { nav.popBackStack() }) }
             composable("binder") {
                 BinderScreen(repo, onBack = { nav.popBackStack() }, onOpenCard = { ids, id -> CardBrowse.open(ids, id) { nav.navigate("card/$it") } })
             }
@@ -149,6 +161,19 @@ fun AppNav(repo: CardRepository) {
                 arguments = listOf(navArgument("game") { type = NavType.StringType }, navArgument("setId") { type = NavType.StringType }),
             ) { e ->
                 SetScreen(
+                    repo = repo,
+                    game = Game.valueOf(e.arguments!!.getString("game")!!),
+                    setId = e.arguments!!.getString("setId")!!,
+                    onBack = { nav.popBackStack() },
+                    onOpenCard = { nav.navigate("card/$it") },
+                    onChecklist = { nav.navigate("checklist/${e.arguments!!.getString("game")}/${android.net.Uri.encode(e.arguments!!.getString("setId"))}") },
+                )
+            }
+            composable(
+                "checklist/{game}/{setId}",
+                arguments = listOf(navArgument("game") { type = NavType.StringType }, navArgument("setId") { type = NavType.StringType }),
+            ) { e ->
+                ChecklistScreen(
                     repo = repo,
                     game = Game.valueOf(e.arguments!!.getString("game")!!),
                     setId = e.arguments!!.getString("setId")!!,

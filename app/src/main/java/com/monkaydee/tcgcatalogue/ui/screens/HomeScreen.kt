@@ -31,6 +31,12 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Paid
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.coroutines.flow.map
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -134,9 +140,15 @@ fun HomeScreen(
     onScan: () -> Unit,
     onPhotos: () -> Unit,
     onBinder: () -> Unit = {},
+    onWishlist: () -> Unit = {},
+    onTradeList: () -> Unit = {},
+    onSold: () -> Unit = {},
 ) {
     val vm: HomeViewModel = viewModel { HomeViewModel(repo) }
     val state by vm.state.collectAsState()
+    val wishCount by remember { repo.wishlist.map { it.size } }.collectAsState(initial = 0)
+    val soldCount by remember { repo.sold.map { it.size } }.collectAsState(initial = 0)
+    val tradeCount = state.cards.count { it.forTrade }
     var gameFilter by rememberSaveable { mutableStateOf<Game?>(null) }
     var sort by rememberSaveable { mutableStateOf(SetSort.VALUE) }
     var range by rememberSaveable { mutableStateOf(Range.M3) }
@@ -166,6 +178,8 @@ fun HomeScreen(
         },
     ) { padding ->
         if (state.loaded && state.cards.isEmpty()) {
+            // Sold everything or only wishing so far: the lists stay reachable above the empty state.
+            if (wishCount + soldCount > 0) ListsRow(wishCount, tradeCount, soldCount, onWishlist, onTradeList, onSold, Modifier.padding(padding).padding(16.dp))
             EmptyState(Modifier.padding(padding), onScan, onPhotos)
             return@Scaffold
         }
@@ -239,6 +253,7 @@ fun HomeScreen(
                     }
                 }
             }
+            item { ListsRow(wishCount, tradeCount, soldCount, onWishlist, onTradeList, onSold) }
             item {
                 val owned = state.cards.map { it.game }.toSet()
                 GameChips(gameFilter, { gameFilter = it }, Game.entries.filter { it in owned }, nullLabel = stringResource(R.string.home_all_games))
@@ -295,6 +310,41 @@ private fun SetRow(set: SetSummaryUi, currency: String, onClick: () -> Unit) {
             Column(horizontalAlignment = Alignment.End) {
                 Text(Money.format(set.value, currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text(pluralStringResource(R.plurals.home_copies, set.copies, set.copies), style = MaterialTheme.typography.labelSmall)
+            }
+        }
+    }
+}
+
+/** Shortcuts to the wishlist, trade list and sold cards, with their counts. */
+@Composable
+private fun ListsRow(
+    wishCount: Int,
+    tradeCount: Int,
+    soldCount: Int,
+    onWishlist: () -> Unit,
+    onTradeList: () -> Unit,
+    onSold: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.lists_title), style = MaterialTheme.typography.titleMedium)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            ListShortcut(Icons.Default.Favorite, stringResource(R.string.wish_title), wishCount, onWishlist, Modifier.weight(1f))
+            ListShortcut(Icons.Default.SwapHoriz, stringResource(R.string.trade_title), tradeCount, onTradeList, Modifier.weight(1f))
+            ListShortcut(Icons.Default.Paid, stringResource(R.string.sold_title), soldCount, onSold, Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun ListShortcut(icon: ImageVector, label: String, count: Int, onClick: () -> Unit, modifier: Modifier) {
+    Card(modifier.clickable(onClick = onClick)) {
+        Row(Modifier.padding(horizontal = 10.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(icon, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+            Spacer(Modifier.width(8.dp))
+            Column(Modifier.weight(1f)) {
+                Text("$count", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1)
+                Text(label, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
