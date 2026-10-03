@@ -53,6 +53,9 @@ class PageTurnState(initialPage: Int) {
     /** -1..1; read only while drawing, so a turn redraws the pages without rebuilding them. */
     internal var progress by mutableFloatStateOf(0f)
     internal var pageCount = 0
+
+    /** Called once when a turn has finished and the page really changed. */
+    internal var onPageChanged: (() -> Unit)? = null
     private var job: Job? = null
 
     internal fun stop() {
@@ -66,11 +69,13 @@ class PageTurnState(initialPage: Int) {
         job = scope.launch {
             animate(progress, target, velocity, spec) { value, _ -> progress = value }
             // The new page and the flat turn land in the same frame, so nothing flashes.
+            val before = page
             when (target) {
                 1f -> page += 1
                 -1f -> page -= 1
             }
             progress = 0f
+            if (page != before) onPageChanged?.invoke()
         }
     }
 
@@ -119,6 +124,7 @@ fun PageTurner(
     page: @Composable (Int) -> Unit,
 ) {
     state.pageCount = pageCount
+    state.onPageChanged = rememberTick()
     // Fewer pages after a filter or grid change: stay on the last one.
     LaunchedEffect(pageCount) { if (state.page > pageCount - 1) state.jump(pageCount - 1) }
     val scope = rememberCoroutineScope()

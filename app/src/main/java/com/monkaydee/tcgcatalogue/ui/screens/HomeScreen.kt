@@ -7,6 +7,9 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.ui.components.Backdrop
+import com.monkaydee.tcgcatalogue.ui.components.EmptyIllustration
+import com.monkaydee.tcgcatalogue.ui.components.EmptyKind
+import androidx.compose.foundation.layout.wrapContentSize
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import com.monkaydee.tcgcatalogue.ui.theme.LocalLook
 import androidx.compose.foundation.clickable
@@ -302,25 +305,23 @@ private fun SetRow(set: SetSummaryUi, currency: String, onClick: () -> Unit) {
 
 @Composable
 private fun EmptyState(modifier: Modifier, onScan: () -> Unit, onPhotos: () -> Unit) {
-    Column(
-        modifier.fillMaxSize().padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    EmptyIllustration(
+        kind = EmptyKind.COLLECTION,
+        title = stringResource(R.string.home_empty_title),
+        text = stringResource(R.string.home_empty_text),
+        modifier = modifier.fillMaxSize().padding(32.dp).wrapContentSize(Alignment.Center),
     ) {
-        Text(stringResource(R.string.home_empty_title), style = MaterialTheme.typography.headlineSmall)
-        Spacer(Modifier.height(8.dp))
-        Text(stringResource(R.string.home_empty_text), style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onScan) {
-            Icon(Icons.Default.CameraAlt, null)
-            Spacer(Modifier.width(8.dp))
-            Text(stringResource(R.string.home_scan_card))
-        }
-        Spacer(Modifier.height(8.dp))
-        OutlinedButton(onClick = onPhotos) {
-            Icon(Icons.Default.AddPhotoAlternate, null)
-            Spacer(Modifier.width(8.dp))
-            Text(stringResource(R.string.home_import_photos))
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onScan) {
+                Icon(Icons.Default.CameraAlt, null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.home_scan_card))
+            }
+            OutlinedButton(onClick = onPhotos) {
+                Icon(Icons.Default.AddPhotoAlternate, null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.home_import_photos))
+            }
         }
     }
 }

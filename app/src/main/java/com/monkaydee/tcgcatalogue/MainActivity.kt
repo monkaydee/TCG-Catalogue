@@ -21,11 +21,23 @@ import com.monkaydee.tcgcatalogue.ui.AppNav
 import com.monkaydee.tcgcatalogue.ui.theme.LocalLook
 import com.monkaydee.tcgcatalogue.ui.theme.TcgTheme
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.monkaydee.tcgcatalogue.ui.OnboardingScreen
+import com.monkaydee.tcgcatalogue.ui.isOnboardingDone
+import com.monkaydee.tcgcatalogue.ui.setOnboardingDone
+import androidx.compose.runtime.collectAsState
 
 class MainActivity : AppCompatActivity() {
+    /** The splash screen stays until the stored settings (and so the theme) are loaded. */
+    @Volatile
+    private var ready = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().setKeepOnScreenCondition { !ready }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (savedInstanceState == null) handleShare(intent)
@@ -40,7 +52,9 @@ class MainActivity : AppCompatActivity() {
                 applyFullScreen()
             }
         }
+        val onboardingDone = isOnboardingDone(this)
         setContent {
+            var showOnboarding by rememberSaveable { mutableStateOf(!onboardingDone) }
             val settings by repository.settings.flow.collectAsState(initial = null)
             // Wait for the stored look, so the app doesn't flash in the default theme first.
             val look = settings?.look ?: return@setContent
@@ -52,7 +66,15 @@ class MainActivity : AppCompatActivity() {
                         isAppearanceLightNavigationBars = !dark
                     }
                 }
-                AppNav(repository)
+                SideEffect { ready = true }
+                if (showOnboarding) {
+                    OnboardingScreen(onFinish = {
+                        setOnboardingDone(this@MainActivity)
+                        showOnboarding = false
+                    })
+                } else {
+                    AppNav(repository)
+                }
             }
         }
     }

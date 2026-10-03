@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Two stacked cards. -->
+<!-- A tilted trading card being scanned, with a sparkle. Kept inside the 66dp safe zone. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
     <group android:pivotX="54" android:pivotY="54" android:rotation="-12">
-        <path android:fillColor="#99FFFFFF" android:pathData="M36,30h30a4,4 0 0 1 4,4v42a4,4 0 0 1 -4,4h-30a4,4 0 0 1 -4,-4v-42a4,4 0 0 1 4,-4z" />
+        <!-- Card body -->
+        <path android:fillColor="#FFFFFFFF" android:pathData="M41,30h26a4,4 0 0 1 4,4v40a4,4 0 0 1 -4,4h-26a4,4 0 0 1 -4,-4v-40a4,4 0 0 1 4,-4z" />
+        <!-- Artwork window -->
+        <path android:fillColor="#FFC5CAE9" android:pathData="M43,34h22a2,2 0 0 1 2,2v20a2,2 0 0 1 -2,2h-22a2,2 0 0 1 -2,-2v-20a2,2 0 0 1 2,-2z" />
+        <path android:fillColor="#FF5C6BC0" android:pathData="M41,58v-6l7,-8l6,6l4,-3l9,9v2z" />
+        <path android:fillColor="#FF283593" android:pathData="M58,40.5a2.5,2.5 0 1 1 0,5a2.5,2.5 0 1 1 0,-5z" />
+        <!-- Text lines -->
+        <path android:fillColor="#FF9FA8DA" android:pathData="M42,63h20a1.5,1.5 0 0 1 0,3h-20a1.5,1.5 0 0 1 0,-3z" />
+        <path android:fillColor="#FF9FA8DA" android:pathData="M42,69h12a1.5,1.5 0 0 1 0,3h-12a1.5,1.5 0 0 1 0,-3z" />
+        <!-- Scan line -->
+        <path android:fillColor="#FFFFC107" android:pathData="M34,46.5h40a1.5,1.5 0 0 1 0,3h-40a1.5,1.5 0 0 1 0,-3z" />
     </group>
-    <group android:pivotX="54" android:pivotY="54" android:rotation="8">
-        <path android:fillColor="#FFFFFFFF" android:pathData="M40,28h30a4,4 0 0 1 4,4v42a4,4 0 0 1 -4,4h-30a4,4 0 0 1 -4,-4v-42a4,4 0 0 1 4,-4z" />
-        <path android:fillColor="#FFE53935" android:pathData="M55,42a11,11 0 0 1 11,11h-22a11,11 0 0 1 11,-11z" />
-        <path android:fillColor="#FF3D5AFE" android:pathData="M44,55h22a11,11 0 0 1 -22,0z" />
-        <path android:fillColor="#FFFFFFFF" android:pathData="M55,50.5a3.5,3.5 0 1 1 0,7a3.5,3.5 0 1 1 0,-7z" />
-    </group>
+    <!-- Sparkles -->
+    <path android:fillColor="#FFFFD54F" android:pathData="M75,24C75.8,30.2 80.8,35.2 87,36C80.8,36.8 75.8,41.8 75,48C74.2,41.8 69.2,36.8 63,36C69.2,35.2 74.2,30.2 75,24z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M31,66C31.4,69.4 33.6,71.6 37,72C33.6,72.4 31.4,74.6 31,78C30.6,74.6 28.4,72.4 25,72C28.4,71.6 30.6,69.4 31,66z" />
 </vector>
