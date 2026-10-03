@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Refresh
@@ -27,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -122,6 +124,7 @@ fun HomeScreen(
     onSearch: () -> Unit,
     onScan: () -> Unit,
     onPhotos: () -> Unit,
+    onBinder: () -> Unit = {},
 ) {
     val vm: HomeViewModel = viewModel { HomeViewModel(repo) }
     val state by vm.state.collectAsState()
@@ -136,6 +139,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text("TCG Catalogue") },
                 actions = {
+                    IconButton(onClick = onBinder) { Icon(Icons.AutoMirrored.Filled.MenuBook, "Binder") }
                     IconButton(onClick = onPhotos) { Icon(Icons.Default.AddPhotoAlternate, "Import photos") }
                     IconButton(onClick = onSearch) { Icon(Icons.Default.Search, "Search cards") }
                     if (refreshing) {
@@ -187,6 +191,11 @@ fun HomeScreen(
                             )
                         }
                         Text("${cards.sumOf { it.quantity }} cards · ${cards.size} unique", style = MaterialTheme.typography.bodySmall)
+                        FilledTonalButton(onClick = onBinder, modifier = Modifier.padding(top = 8.dp)) {
+                            Icon(Icons.AutoMirrored.Filled.MenuBook, null, Modifier.size(18.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text("Open binder")
+                        }
                         if (gameFilter == null) {
                             Spacer(Modifier.height(12.dp))
                             if (history.size >= 2) ValueChart(history)

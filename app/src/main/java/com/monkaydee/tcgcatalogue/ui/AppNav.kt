@@ -34,6 +34,8 @@ import androidx.navigation.navArgument
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
+import com.monkaydee.tcgcatalogue.ui.screens.BinderScreen
+import com.monkaydee.tcgcatalogue.ui.screens.CardBrowse
 import com.monkaydee.tcgcatalogue.ui.screens.CardScreen
 import com.monkaydee.tcgcatalogue.ui.screens.ImportScreen
 import com.monkaydee.tcgcatalogue.ui.screens.HomeScreen
@@ -108,7 +110,11 @@ fun AppNav(repo: CardRepository) {
                     onSearch = { nav.navigate("search") },
                     onScan = { goTab("scan") },
                     onPhotos = { nav.navigate("import?pick=true") },
+                    onBinder = { nav.navigate("binder") },
                 )
+            }
+            composable("binder") {
+                BinderScreen(repo, onBack = { nav.popBackStack() }, onOpenCard = { ids, id -> CardBrowse.open(ids, id) { nav.navigate("card/$it") } })
             }
             composable("scan") {
                 ScanScreen(repo, onManual = { nav.navigate("search") }, onPhotos = { nav.navigate("import?pick=true") })

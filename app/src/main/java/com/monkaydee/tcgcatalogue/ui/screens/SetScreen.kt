@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.monkaydee.tcgcatalogue.data.AppSettings
+import com.monkaydee.tcgcatalogue.data.Binder
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.Money
 import com.monkaydee.tcgcatalogue.data.db.Game
@@ -44,12 +45,6 @@ import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import kotlinx.coroutines.flow.map
-
-private fun numberKey(c: OwnedCard): String {
-    val n = c.number.substringBefore('/').substringAfterLast('-')
-    val digits = n.filter { it.isDigit() }.padStart(5, '0')
-    return n.filter { it.isLetter() } + digits
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +54,7 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
         .collectAsState(initial = null)
     val s by repo.settings.flow.collectAsState(initial = AppSettings())
     var byNumber by rememberSaveable { mutableStateOf(false) }
-    val sorted = if (byNumber) cards.sortedBy(::numberKey) else cards.sortedByDescending { Money.value(it, s.currency, s.usdToEur) }
+    val sorted = if (byNumber) cards.sortedBy(Binder::numberKey) else cards.sortedByDescending { Money.value(it, s.currency, s.usdToEur) }
     val name = set?.name ?: cards.firstOrNull()?.setName ?: setId
     val owned = cards.map { it.cardId }.distinct().size
 

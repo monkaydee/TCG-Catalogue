@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
@@ -28,6 +29,12 @@ data class AppSettings(
     val enabledGames: Set<Game> = Game.entries.toSet(),
     /** Hide the status and navigation bars (swipe from the edge to show them). */
     val fullScreen: Boolean = true,
+    /** Virtual binder: pockets per row and column (3, 6 or 9). */
+    val binderGrid: Int = 3,
+    val binderSort: BinderSort = BinderSort.SET,
+    val binderSetOrder: SetOrder = SetOrder.NUMBER,
+    /** Turn the binder's pages like real pages instead of sliding them. */
+    val binderAnimation: Boolean = true,
 )
 
 private val Context.dataStore by preferencesDataStore("settings")
@@ -42,6 +49,10 @@ class SettingsStore(private val context: Context) {
         val condition = stringPreferencesKey("default_condition")
         val games = stringSetPreferencesKey("enabled_games")
         val fullScreen = booleanPreferencesKey("full_screen")
+        val binderGrid = intPreferencesKey("binder_grid")
+        val binderSort = stringPreferencesKey("binder_sort")
+        val binderSetOrder = stringPreferencesKey("binder_set_order")
+        val binderAnimation = booleanPreferencesKey("binder_animation")
     }
 
     val flow: Flow<AppSettings> = context.dataStore.data.map { p ->
@@ -54,6 +65,10 @@ class SettingsStore(private val context: Context) {
             quickAdd = p[Keys.quickAdd] ?: d.quickAdd,
             defaultCondition = p[Keys.condition] ?: d.defaultCondition,
             fullScreen = p[Keys.fullScreen] ?: d.fullScreen,
+            binderGrid = p[Keys.binderGrid]?.takeIf { it in Binder.GRIDS } ?: d.binderGrid,
+            binderSort = p[Keys.binderSort]?.let { runCatching { BinderSort.valueOf(it) }.getOrNull() } ?: d.binderSort,
+            binderSetOrder = p[Keys.binderSetOrder]?.let { runCatching { SetOrder.valueOf(it) }.getOrNull() } ?: d.binderSetOrder,
+            binderAnimation = p[Keys.binderAnimation] ?: d.binderAnimation,
             enabledGames = p[Keys.games]?.mapNotNull { n -> Game.entries.firstOrNull { it.name == n } }?.toSet() ?: d.enabledGames,
         )
     }
@@ -67,5 +82,9 @@ class SettingsStore(private val context: Context) {
     suspend fun setQuickAdd(v: Boolean) = context.dataStore.edit { it[Keys.quickAdd] = v }
     suspend fun setDefaultCondition(v: String) = context.dataStore.edit { it[Keys.condition] = v }
     suspend fun setFullScreen(v: Boolean) = context.dataStore.edit { it[Keys.fullScreen] = v }
+    suspend fun setBinderGrid(v: Int) = context.dataStore.edit { it[Keys.binderGrid] = v }
+    suspend fun setBinderSort(v: BinderSort) = context.dataStore.edit { it[Keys.binderSort] = v.name }
+    suspend fun setBinderSetOrder(v: SetOrder) = context.dataStore.edit { it[Keys.binderSetOrder] = v.name }
+    suspend fun setBinderAnimation(v: Boolean) = context.dataStore.edit { it[Keys.binderAnimation] = v }
     suspend fun setEnabledGames(v: Set<Game>) = context.dataStore.edit { it[Keys.games] = v.map { g -> g.name }.toSet() }
 }
