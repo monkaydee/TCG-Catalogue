@@ -6,7 +6,7 @@ name: Deploy price server
 #
 # It also runs on pushes that change the server (any branch), so it can be started before the
 # workflow is on the default branch (GitHub only shows "Run workflow" for workflows there).
-# Pushed runs skip quietly while the secrets aren't set up yet.
+# Pushed runs skip quietly while the secrets aren't set up yet; with them, a push deploys.
 on:
   workflow_dispatch:
   push:
