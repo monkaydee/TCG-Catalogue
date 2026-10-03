@@ -17,12 +17,19 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 ## Features
 
 - **Scan**: point the camera at a card. The app reads the collector number with on-device OCR
-  (Google ML Kit) and looks the card up:
+  (Google ML Kit) and looks the card up. Only the text inside the card guide is used, the camera
+  reads at high resolution, and tapping the screen focuses there.
   - Pokémon: `025/165`, `TG05/TG30`, `199/165` (secret rares). The set is narrowed down
-    by its printed size, and the name read from the card picks the right one when several
-    sets have the same size. If it's still unclear, you choose from the matches with images.
+    by its printed size; the set code printed since Scarlet & Violet (`PAL`, `MEW` …) and the
+    name read from the card pick the right one when several sets have the same size. A
+    **1st Edition** stamp preselects the 1st Edition printing; otherwise 1st Edition is never
+    preselected. If it's still unclear, you choose from the matches with images.
   - One Piece: `OP05-060`, `ST01-001`, `EB01-012`, `PRB01-001`, `P-001`, including all
-    alternate arts / SP / manga printings as separate choices.
+    alternate arts / SP / manga printings.
+  - **Alt arts by picture**: the scanned card's picture is compared with the image of every
+    match and printing, so the right alt art / parallel / SP comes preselected (also for the
+    indexed games and photo imports). When printings look alike (e.g. a reprint with the same
+    art), you pick; quick add then waits for you instead of guessing.
   - Magic: the set code and collector number at the bottom left (`DMU • EN`, `0107 M`);
     falls back to the card name.
   - Dragon Ball Fusion World / Super, Union Arena, Weiss Schwarz, Naruto: the card code
@@ -30,9 +37,8 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
     index. English prints only (the index comes from TCGplayer).
 - **Graded cards**: the slab label is read too. That covers PSA, BGS/Beckett (including Black Label),
   CGC (including Pristine), SGC, TAG, ACE, AOG, GSG and PI, plus the grade and cert number.
-  Graded copies are priced from PriceCharting's sold prices for that company and grade when its
-  page can be read. PriceCharting often blocks apps with a bot check, so you can also set **your own
-  value** per card. The card page has links that open eBay sold listings, PriceCharting,
+  No free source of graded sales can be read by an app, so graded copies show the raw price until
+  you set **your own value**. The card page has links that open eBay sold listings, PriceCharting,
   Cardmarket and TCGplayer for that exact card and grade in your browser, so you can look it up.
 - **Import photos**: took pictures while you were out? Pick them from the gallery (Scan →
   *From photos*, or the photo icon on the Collection screen), or share them to TCG Catalogue
@@ -44,13 +50,19 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 - **Collection**: portfolio value, value chart (1M / 3M / 1Y / All), most valuable cards, and
   every set with its value, copy count and completion (`12/165`).
 - **Set view**: owned cards sorted by value or by number.
+- **Virtual binder** (book icon or *Open binder* on the Collection screen): your cards in binder
+  pages of 3×3, 6×6 or 9×9 pockets. Sort by value (highest or lowest first), by name (A–Z or Z–A)
+  or by set: sets go oldest first, each set starts on a new page, and within a set the cards
+  sort by number, value or name. With the **page-turn animation** on, you drag a page and it
+  lifts and turns over around the rings like a real binder page (let go half way and it falls
+  back); off, the pages slide. Filter by game; tap a card to open it.
 - **Virtual slabs**: graded cards are shown inside a slab with their company's label (PSA, BGS
   incl. gold and Black Label, CGC, SGC, TAG, ACE, …), the grade words (GEM MT 10, MINT 9, …) and
   the cert number, so graded and raw cards are told apart at a glance.
 - **All prices**: the card page's "All prices" panel shows every number the sources publish for
   that printing: Cardmarket (trend, lowest offer, 1/7/30-day averages, or the chosen One Piece
-  listing), TCGplayer (market, lowest listing …), TCGplayer sales per condition, PriceCharting raw
-  and graded prices. A source that can't be reached says why.
+  listing), TCGplayer (market, lowest listing …) and TCGplayer sales per condition. A source that
+  can't be reached says why.
 - **Edit cards**: the pencil on a card's page reopens the add sheet with everything filled in:
   printing, Cardmarket listing, condition, raw/graded with company, grade and cert, quantity and
   purchase price (the card page then shows the gain or loss). "Wrong card?" searches for the right
@@ -95,12 +107,15 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 CameraX frame ──▶ ML Kit text recognition (on-device)
                     │
                     ▼
-              CardTextParser  ── "OP05-060" / "025/165" + name guess
+              CardTextParser  ── "OP05-060" / "025/165" + name, set code, 1st Ed. stamp
                     │  (same reading in 2 frames in a row)
                     ▼
               CardRepository.resolve()
                 ├─ Pokémon:   TCGdex  /sets (match printed total) → /sets/{set}/{number}
                 └─ One Piece: optcgapi /sets|decks|promos/card/{code}
+                    │
+                    ▼
+              VisualMatcher  ── card picture vs. each match / printing image (alt arts)
                     │
                     ▼
               Room database (owned cards, sets, daily snapshots)
@@ -120,7 +135,7 @@ CameraX frame ──▶ ML Kit text recognition (on-device)
 | One Piece data     | [OPTCG API](https://optcgapi.com) (TCGplayer prices) |
 | Magic data         | [Scryfall](https://scryfall.com) (Cardmarket + TCGplayer prices) |
 | Other games        | [TCGCSV](https://tcgcsv.com) (TCGplayer) → daily index on the `data` branch |
-| Graded prices      | [PriceCharting](https://www.pricecharting.com) when reachable, otherwise your own value |
+| Graded prices      | Your own value, with links to eBay sold listings, PriceCharting, Cardmarket, TCGplayer |
 | Exchange rates     | [Frankfurter](https://frankfurter.dev) (ECB)        |
 
 ## Card index
@@ -143,9 +158,9 @@ Requires JDK 17+ and the Android SDK (platform 35).
 
 - APKs are signed with the key in `app/signing/debug.keystore`. It's checked in so that CI builds
   can update each other. Don't publish the app to the Play Store with this key.
-- Graded prices come from PriceCharting's public card pages. Smaller graders (AOG, GSG, PI, …)
-  have no separate 10 prices there, so their 10s are estimated from the general Grade 9.5 price,
-  and the card says so.
+- Graded prices are not fetched: PriceCharting and eBay block apps. Set your own value for slabs.
+- Telling printings apart by picture needs the card's image to load; offline, or when printings
+  share the same art, you choose the printing yourself.
 - Recognition relies on the printed number. Very old Pokémon cards without numbers, and cards
   that are badly worn or shot at an angle, may need the manual search.
 - Free community APIs are used. If one goes down or changes, lookups for that game fail until
