@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = %2$d%% von NM (TCGplayer-Verkäufe)</string>
     <string name="price_note_estimated_share">%1$s geschätzt auf %2$d%% von NM (keine Verkaufsdaten)</string>
     <string name="data_http_error">HTTP %1$d für %2$s</string>
+    <string name="data_service_unavailable">Der Kartendienst (%1$s) antwortet gerade nicht. Bitte versuche es in einer Minute erneut.</string>
 </resources>

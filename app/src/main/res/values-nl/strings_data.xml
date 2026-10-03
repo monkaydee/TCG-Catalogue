@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = %2$d%% van NM (TCGplayer-verkopen)</string>
     <string name="price_note_estimated_share">%1$s geschat op %2$d%% van NM (geen verkoopdata)</string>
     <string name="data_http_error">HTTP %1$d voor %2$s</string>
+    <string name="data_service_unavailable">De kaartenservice (%1$s) reageert op dit moment niet. Probeer het over een minuut opnieuw.</string>
 </resources>

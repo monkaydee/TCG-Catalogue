@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">Portfolio</string>
+    <string name="widget_description">De totale waarde van je collectie en hoe die de afgelopen 30 dagen is veranderd.</string>
+    <string name="widget_title">Collectiewaarde</string>
+    <string name="widget_cards">%1$d kaarten</string>
+    <string name="widget_updated">Bijgewerkt %1$s</string>
+    <string name="widget_change_30d">%1$s in 30 dagen</string>
+    <string name="widget_no_history">Nog geen geschiedenis van 30 dagen</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) in 30 dagen</string>
+    <string name="widget_preview_cards">312 kaarten</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Pagina delen</string>
+    <string name="share_chooser_title">Binderpagina delen</string>
+    <string name="share_failed">Kon de pagina niet delen: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Cloud-back-up</string>
+    <string name="cloud_hint">Bewaar een kopie van je collectie in een bestand op Google Drive, Dropbox, OneDrive of een andere opslag-app op deze telefoon. Ze wordt opgeslagen wanneer je de app verlaat, en een nieuwere kopie van een andere telefoon wordt aangeboden wanneer je de app opent.</string>
+    <string name="cloud_choose_new">Nieuw bestand</string>
+    <string name="cloud_choose_existing">Bestaand bestand gebruiken</string>
+    <string name="cloud_file">Bestand: %1$s</string>
+    <string name="cloud_last_saved">Laatst opgeslagen: %1$s</string>
+    <string name="cloud_never_saved">Nog niet opgeslagen</string>
+    <string name="cloud_backup_now">Nu back-uppen</string>
+    <string name="cloud_stop">Stoppen</string>
+    <string name="cloud_saved">Back-up opgeslagen</string>
+    <string name="cloud_unchanged">Niets gewijzigd sinds de laatste back-up</string>
+    <string name="cloud_stopped">Cloud-back-up gestopt</string>
+    <string name="cloud_error">Probleem met cloud-back-up: %1$s</string>
+    <string name="cloud_error_permission">De toegang tot het bestand is ingetrokken. Kies het bestand opnieuw.</string>
+    <string name="cloud_error_not_backup">Het bestand is geen TCG Catalogue-back-up en is daarom ongemoeid gelaten.</string>
+    <string name="cloud_error_blocked">Er wacht een nieuwere collectie van een andere telefoon. Laad of voeg die eerst samen, of negeer haar.</string>
+    <string name="cloud_error_unknown">onbekende fout</string>
+    <string name="cloud_pending_title">Nieuwere collectie van een andere telefoon</string>
+    <string name="cloud_pending_text">Het back-upbestand bevat een collectie met %1$d kaarten, opgeslagen %2$s.</string>
+    <string name="cloud_load">Laden (vervangen)</string>
+    <string name="cloud_merge">Samenvoegen</string>
+    <string name="cloud_ignore">Negeren</string>
+    <string name="cloud_loaded">Collectie geladen uit het back-upbestand</string>
+    <string name="cloud_merged">Collecties samengevoegd</string>
+    <string name="cloud_load_confirm_title">Je collectie vervangen?</string>
+    <string name="cloud_load_confirm_text">Alles op deze telefoon wordt vervangen door de collectie in het back-upbestand.</string>
+    <string name="cloud_load_confirm_button">Vervangen</string>
+</resources>

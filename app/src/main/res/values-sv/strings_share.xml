@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">Portfölj</string>
+    <string name="widget_description">Din samlings totala värde och hur det har förändrats de senaste 30 dagarna.</string>
+    <string name="widget_title">Samlingsvärde</string>
+    <string name="widget_cards">%1$d kort</string>
+    <string name="widget_updated">Uppdaterad %1$s</string>
+    <string name="widget_change_30d">%1$s på 30 dagar</string>
+    <string name="widget_no_history">Ingen 30-dagarshistorik ännu</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) på 30 dagar</string>
+    <string name="widget_preview_cards">312 kort</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Dela sida</string>
+    <string name="share_chooser_title">Dela binder-sida</string>
+    <string name="share_failed">Sidan kunde inte delas: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Molnsäkerhetskopia</string>
+    <string name="cloud_hint">Spara en kopia av din samling i en fil på Google Drive, Dropbox, OneDrive eller någon annan lagringsapp på den här telefonen. Den sparas när du lämnar appen, och en nyare kopia från en annan telefon erbjuds när du öppnar den.</string>
+    <string name="cloud_choose_new">Ny fil</string>
+    <string name="cloud_choose_existing">Använd befintlig fil</string>
+    <string name="cloud_file">Fil: %1$s</string>
+    <string name="cloud_last_saved">Senast sparad: %1$s</string>
+    <string name="cloud_never_saved">Inte sparad ännu</string>
+    <string name="cloud_backup_now">Säkerhetskopiera nu</string>
+    <string name="cloud_stop">Stoppa</string>
+    <string name="cloud_saved">Säkerhetskopia sparad</string>
+    <string name="cloud_unchanged">Inget har ändrats sedan den senaste säkerhetskopian</string>
+    <string name="cloud_stopped">Molnsäkerhetskopieringen stoppades</string>
+    <string name="cloud_error">Problem med molnsäkerhetskopian: %1$s</string>
+    <string name="cloud_error_permission">Åtkomsten till filen drogs tillbaka. Välj filen igen.</string>
+    <string name="cloud_error_not_backup">Filen är ingen TCG Catalogue-säkerhetskopia och lämnades därför orörd.</string>
+    <string name="cloud_error_blocked">En nyare samling från en annan telefon väntar. Läs in den, slå ihop den eller ignorera den först.</string>
+    <string name="cloud_error_unknown">okänt fel</string>
+    <string name="cloud_pending_title">Nyare samling från en annan telefon</string>
+    <string name="cloud_pending_text">Säkerhetskopian innehåller en samling med %1$d kort, sparad %2$s.</string>
+    <string name="cloud_load">Läs in (ersätt)</string>
+    <string name="cloud_merge">Slå ihop</string>
+    <string name="cloud_ignore">Ignorera</string>
+    <string name="cloud_loaded">Samlingen lästes in från säkerhetskopian</string>
+    <string name="cloud_merged">Samlingarna slogs ihop</string>
+    <string name="cloud_load_confirm_title">Ersätta din samling?</string>
+    <string name="cloud_load_confirm_text">Allt på den här telefonen ersätts av samlingen i säkerhetskopian.</string>
+    <string name="cloud_load_confirm_button">Ersätt</string>
+</resources>
