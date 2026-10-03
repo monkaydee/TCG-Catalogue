@@ -47,6 +47,12 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
 - **Virtual slabs**: graded cards are shown inside a slab with their company's label (PSA, BGS
   incl. gold and Black Label, CGC, SGC, TAG, ACE, …), the grade words (GEM MT 10, MINT 9, …) and
   the cert number, so graded and raw cards are told apart at a glance.
+- **Edit cards**: the pencil on a card's page reopens the add sheet with everything filled in:
+  printing, Cardmarket listing, condition, raw/graded with company, grade and cert, quantity and
+  purchase price (the card page then shows the gain or loss). "Wrong card?" searches for the right
+  card and swaps it in, keeping quantity, grade and purchase price.
+- **Full screen**: status and navigation bars are hidden (swipe from the edge to show them);
+  can be turned off in Settings.
 - **Card view**: swipe left/right to go through the cards in the order of the list you opened
   them from (a set, or your whole collection by value from "Most valuable").
 - **Prices**: Pokémon and Magic from Cardmarket (EUR, trend) or TCGplayer (USD, market). Choose

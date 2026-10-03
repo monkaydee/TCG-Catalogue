@@ -26,6 +26,8 @@ data class AppSettings(
     val defaultCondition: String = "NM",
     /** Games the scanner looks for; indexed games download their card list when enabled. */
     val enabledGames: Set<Game> = Game.entries.toSet(),
+    /** Hide the status and navigation bars (swipe from the edge to show them). */
+    val fullScreen: Boolean = true,
 )
 
 private val Context.dataStore by preferencesDataStore("settings")
@@ -39,6 +41,7 @@ class SettingsStore(private val context: Context) {
         val quickAdd = booleanPreferencesKey("quick_add")
         val condition = stringPreferencesKey("default_condition")
         val games = stringSetPreferencesKey("enabled_games")
+        val fullScreen = booleanPreferencesKey("full_screen")
     }
 
     val flow: Flow<AppSettings> = context.dataStore.data.map { p ->
@@ -50,6 +53,7 @@ class SettingsStore(private val context: Context) {
             lastPriceRefresh = p[Keys.lastRefresh] ?: d.lastPriceRefresh,
             quickAdd = p[Keys.quickAdd] ?: d.quickAdd,
             defaultCondition = p[Keys.condition] ?: d.defaultCondition,
+            fullScreen = p[Keys.fullScreen] ?: d.fullScreen,
             enabledGames = p[Keys.games]?.mapNotNull { n -> Game.entries.firstOrNull { it.name == n } }?.toSet() ?: d.enabledGames,
         )
     }
@@ -62,5 +66,6 @@ class SettingsStore(private val context: Context) {
     suspend fun setLastRefresh(v: Long) = context.dataStore.edit { it[Keys.lastRefresh] = v }
     suspend fun setQuickAdd(v: Boolean) = context.dataStore.edit { it[Keys.quickAdd] = v }
     suspend fun setDefaultCondition(v: String) = context.dataStore.edit { it[Keys.condition] = v }
+    suspend fun setFullScreen(v: Boolean) = context.dataStore.edit { it[Keys.fullScreen] = v }
     suspend fun setEnabledGames(v: Set<Game>) = context.dataStore.edit { it[Keys.games] = v.map { g -> g.name }.toSet() }
 }

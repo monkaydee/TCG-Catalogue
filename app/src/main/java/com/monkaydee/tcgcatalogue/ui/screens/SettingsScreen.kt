@@ -129,6 +129,15 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             }
 
             HorizontalDivider()
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Full screen", style = MaterialTheme.typography.titleSmall)
+                    Text("Hides the status and navigation bars. Swipe from the top or bottom edge to show them.", style = MaterialTheme.typography.bodySmall)
+                }
+                Switch(s.fullScreen, { v -> scope.launch { repo.settings.setFullScreen(v) } })
+            }
+
+            HorizontalDivider()
             Text("Prices", style = MaterialTheme.typography.titleSmall)
             Text("Prices refresh automatically once a day, which also records the value history.", style = MaterialTheme.typography.bodySmall)
             Button(onClick = onRefresh) { Text("Refresh prices now") }

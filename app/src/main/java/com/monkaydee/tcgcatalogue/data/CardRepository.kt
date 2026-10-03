@@ -18,12 +18,14 @@ import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.data.remote.Pricing
 import com.monkaydee.tcgcatalogue.data.remote.ScryfallApi
 import com.monkaydee.tcgcatalogue.data.remote.TcgPlayerApi
+import com.monkaydee.tcgcatalogue.data.remote.attempt
 import com.monkaydee.tcgcatalogue.data.remote.TcgDexApi
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.data.remote.toBrief
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
 import com.monkaydee.tcgcatalogue.scan.ScanHit
+import com.monkaydee.tcgcatalogue.ui.components.AddRequest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
@@ -97,7 +99,8 @@ class CardRepository(
             .flatMap { alt -> runCatching { load(alt) }.getOrDefault(emptyList()) }
             .filter { CardTextParser.nameOnCard(it.name, texts) }
             .map { it.copy(score = 0.9) }
-        return alternatives + direct.map { it.copy(score = 0.3) }
+        val warning = "The name on the scanned card doesn't match this card — the number may have been misread. Check it, or cancel and type it in."
+        return alternatives + direct.map { it.copy(score = 0.3, warning = warning) }
     }
 
     private suspend fun resolveMagic(hit: ScanHit.Magic): List<CardCandidate> {
@@ -131,7 +134,8 @@ class CardRepository(
     /** True when the best match is clearly the right card, so it can be added without asking. */
     fun isConfident(candidates: List<CardCandidate>): Boolean {
         val top = candidates.firstOrNull() ?: return false
-        if (top.score < 0.6) return false
+        // Never add a card automatically when the scan's name contradicts it.
+        if (top.warning != null) return false
         return candidates.size == 1 || candidates[0].score - candidates[1].score >= 0.25
     }
 
@@ -212,12 +216,12 @@ class CardRepository(
             else -> null
         }
         val euro = settings.current().currency == "EUR"
-        val sold = runCatching { ebay.gradedAverage(card, grader, g, grade.qualifier, euro) }
+        val sold = attempt { ebay.gradedAverage(card, grader, g, grade.qualifier, euro) }
         sold.getOrNull()?.let {
             val source = if (it.currency == "EUR") PriceSource.EBAY_DE else PriceSource.EBAY_US
             return GradedResult(Price(it.average, source, "Average of the last ${it.count} $label sales on ${it.site}"), null)
         }
-        val ebayProblem = if (sold.isFailure) "eBay: couldn't load (${sold.exceptionOrNull()?.message})" else "eBay: no $label sales"
+        val ebayProblem = if (sold.isFailure) "eBay: ${sold.exceptionOrNull()?.message}" else "eBay: no $label sales"
         pc?.let { (amount, note) -> return GradedResult(Price(amount, pcSource, note), null) }
         return GradedResult(null, listOfNotNull(pcProblem, ebayProblem).joinToString(" · "))
     }
@@ -273,6 +277,7 @@ class CardRepository(
         condition: String,
         grade: GradeInfo? = null,
         listing: CardmarketApi.Listing? = null,
+        purchasePrice: Double? = null,
     ): Long {
         val s = settings.current()
         val graded = grade?.grader != null && grade.grade != null
@@ -303,12 +308,67 @@ class CardRepository(
                 priceNote = price?.note,
                 marketProductId = chosen?.productId,
                 marketLabel = chosen?.label,
+                purchasePrice = purchasePrice?.let { Money.convert(it, s.currency, price?.currency ?: s.currency, s.usdToEur) },
             ),
         )
         runCatching { ensureSet(candidate) }
         runCatching { snapshot() }
         return id
     }
+
+    suspend fun add(r: AddRequest): Long = add(r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice)
+
+    /** Current data of a card in the collection, for editing it (null when offline). */
+    suspend fun candidateFor(card: OwnedCard): CardCandidate? = runCatching { fetch(card.game, card.cardId) }.getOrNull()
+
+    /**
+     * Saves an edited card in place: printing, condition or grade, Cardmarket listing, quantity,
+     * purchase price, or even a different card. If the result is the same as another row of the
+     * collection, the two are merged.
+     */
+    suspend fun saveEdit(original: OwnedCard, r: AddRequest) {
+        val s = settings.current()
+        val graded = r.grade?.grader != null && r.grade.grade != null
+        val condition = if (graded) r.grade!!.label else r.condition
+        val price = runCatching { priceFor(r.card, r.variant, r.grade, r.condition, s, r.listing) }.getOrNull()
+        val edited = original.copy(
+            game = r.card.game,
+            cardId = r.card.cardId,
+            variant = r.variant.key,
+            variantLabel = r.variant.label,
+            name = r.card.name,
+            number = r.card.number,
+            setId = r.card.setId,
+            setName = r.card.setName,
+            rarity = r.card.rarity,
+            imageUrl = r.variant.imageUrl ?: r.card.imageUrl,
+            quantity = r.quantity,
+            condition = condition,
+            price = price?.amount ?: original.price,
+            priceCurrency = price?.currency ?: original.priceCurrency,
+            priceSource = price?.source?.label ?: original.priceSource,
+            priceNote = price?.note,
+            priceUpdatedAt = System.currentTimeMillis(),
+            grader = r.grade?.grader.takeIf { graded },
+            grade = r.grade?.grade.takeIf { graded },
+            gradeQualifier = r.grade?.qualifier.takeIf { graded },
+            certNumber = r.grade?.cert?.takeIf { graded },
+            marketProductId = r.listing?.productId,
+            marketLabel = r.listing?.label,
+            purchasePrice = r.purchasePrice?.let { Money.convert(it, s.currency, price?.currency ?: original.priceCurrency, s.usdToEur) },
+        )
+        val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition)?.takeIf { it.id != original.id }
+        if (clash != null) {
+            db.cards().update(clash.copy(quantity = clash.quantity + edited.quantity))
+            db.cards().delete(original)
+        } else {
+            db.cards().update(edited)
+        }
+        runCatching { ensureSet(r.card) }
+        runCatching { snapshot() }
+    }
+
+    suspend fun card(id: Long): OwnedCard? = db.cards().get(id)
 
     suspend fun update(card: OwnedCard) {
         if (card.quantity <= 0) db.cards().delete(card) else db.cards().update(card)

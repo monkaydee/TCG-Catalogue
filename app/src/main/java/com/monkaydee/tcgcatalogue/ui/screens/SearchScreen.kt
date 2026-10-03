@@ -27,6 +27,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +53,7 @@ import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.scan.OcrLine
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
+import com.monkaydee.tcgcatalogue.ui.components.AddRequest
 import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -102,9 +106,11 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
         }
     }
 
-    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing?) {
+    fun add(r: AddRequest) {
+        val c = r.card
+        val qty = r.quantity
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade, listing) }
+            runCatching { repo.add(r) }
                 .onSuccess { state.update { it.copy(candidates = emptyList(), message = "Added ${c.name} ×$qty") } }
                 .onFailure { e -> state.update { it.copy(candidates = emptyList(), message = "Could not save: ${e.message}") } }
         }
@@ -126,7 +132,7 @@ private fun searchHint(game: Game) = when (game) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(repo: CardRepository, onBack: () -> Unit) {
+fun SearchScreen(repo: CardRepository, onBack: () -> Unit, replaceId: Long? = null) {
     val vm: SearchViewModel = viewModel { SearchViewModel(repo) }
     val state by vm.state.collectAsState()
     val settings by repo.settings.flow.collectAsState(initial = AppSettings())
@@ -136,7 +142,7 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add a card") },
+                title = { Text(if (replaceId != null) "Find the right card" else "Add a card") },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
             )
         },
@@ -172,5 +178,28 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit) {
         }
     }
 
-    AddCardSheet(state.candidates, settings, repo, onAdd = vm::add, onDismiss = vm::dismiss)
+    // Replace mode ("Wrong card?" on a card in the collection): the chosen card takes its place.
+    var replacing by remember { mutableStateOf<com.monkaydee.tcgcatalogue.data.db.OwnedCard?>(null) }
+    LaunchedEffect(replaceId) { replacing = replaceId?.let { repo.card(it) } }
+    val scope = rememberCoroutineScope()
+    val original = replacing
+    if (replaceId != null && original != null) {
+        AddCardSheet(
+            state.candidates,
+            settings,
+            repo,
+            initial = original,
+            confirmLabel = "Replace",
+            onAdd = { r ->
+                vm.dismiss()
+                scope.launch {
+                    repo.saveEdit(original, r)
+                    onBack()
+                }
+            },
+            onDismiss = vm::dismiss,
+        )
+    } else {
+        AddCardSheet(state.candidates, settings, repo, onAdd = vm::add, onDismiss = vm::dismiss)
+    }
 }

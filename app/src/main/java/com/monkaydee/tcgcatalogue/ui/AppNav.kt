@@ -1,6 +1,11 @@
 package com.monkaydee.tcgcatalogue.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
@@ -84,7 +89,15 @@ fun AppNav(repo: CardRepository) {
             }
         },
     ) { padding ->
-        NavHost(nav, startDestination = "home", modifier = Modifier.padding(bottom = padding.calculateBottomPadding()).consumeWindowInsets(padding)) {
+        NavHost(
+            nav,
+            startDestination = "home",
+            modifier = Modifier
+                .padding(bottom = padding.calculateBottomPadding())
+                .consumeWindowInsets(padding)
+                // In full screen the bars are hidden; still keep text away from the camera hole.
+                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Top)),
+        ) {
             composable("home") {
                 HomeScreen(
                     repo = repo,
@@ -109,7 +122,12 @@ fun AppNav(repo: CardRepository) {
                 )
             }
             composable("settings") { SettingsScreen(repo, onRefresh = refresh) }
-            composable("search") { SearchScreen(repo, onBack = { nav.popBackStack() }) }
+            composable(
+                "search?replace={replace}",
+                arguments = listOf(navArgument("replace") { type = NavType.LongType; defaultValue = -1L }),
+            ) { e ->
+                SearchScreen(repo, replaceId = e.arguments?.getLong("replace")?.takeIf { it >= 0 }, onBack = { nav.popBackStack() })
+            }
             composable(
                 "set/{game}/{setId}",
                 arguments = listOf(navArgument("game") { type = NavType.StringType }, navArgument("setId") { type = NavType.StringType }),
@@ -123,7 +141,7 @@ fun AppNav(repo: CardRepository) {
                 )
             }
             composable("card/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->
-                CardScreen(repo, e.arguments!!.getLong("id"), onBack = { nav.popBackStack() })
+                CardScreen(repo, e.arguments!!.getLong("id"), onBack = { nav.popBackStack() }, onReplace = { nav.navigate("search?replace=$it") })
             }
         }
     }

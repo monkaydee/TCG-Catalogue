@@ -3,6 +3,7 @@ package com.monkaydee.tcgcatalogue.data.remote
 import com.monkaydee.tcgcatalogue.data.db.Game
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.net.URLEncoder
 import java.util.concurrent.ConcurrentHashMap
@@ -30,9 +31,15 @@ class EbayApi(private val browser: Browser) {
         val sites = if (preferEuro) listOf("www.ebay.de" to "EUR", "www.ebay.com" to "USD") else listOf("www.ebay.com" to "USD", "www.ebay.de" to "EUR")
         var best: Quote? = null
         var failures = 0
+        var lastProblem: String? = null
         for ((site, currency) in sites) {
-            val blocks = runCatching { results(site, query) }.getOrNull()
-            if (blocks == null) { failures++; continue }
+            val loaded = attempt { results(site, query) }
+            val blocks = loaded.getOrNull()
+            if (blocks == null) {
+                failures++
+                lastProblem = loaded.exceptionOrNull()?.message ?: "couldn't load ${site.removePrefix("www.")}"
+                continue
+            }
             val sales = parseSales(blocks)
                 .filter { it.currency == currency && matches(it.text, number, grader, grade, qualifier) }
                 .take(take)
@@ -43,21 +50,32 @@ class EbayApi(private val browser: Browser) {
         }
         // Don't remember a failure to load eBay, only real answers.
         if (failures < sites.size) cache[key] = Cached(best, System.currentTimeMillis())
+        if (best == null && failures == sites.size) throw java.io.IOException(lastProblem ?: "couldn't load eBay")
         return best
     }
 
-    /** Text of every result card on the sold-listings page, newest sale first. */
-    private suspend fun results(site: String, query: String): List<String>? {
+    /**
+     * Text of every result card on the sold-listings page, newest sale first. A page that is
+     * neither results nor "no results" (captcha, "Pardon our interruption") is an error.
+     */
+    private suspend fun results(site: String, query: String): List<String> {
         val url = "https://$site/sch/i.html?_nkw=${URLEncoder.encode(query, "UTF-8")}&LH_Sold=1&LH_Complete=1&_sop=13&_ipg=60"
-        val json = browser.evaluate(url, SCRIPT, READY) ?: return null
-        return (Json.parseToJsonElement(json) as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.content }
+        val json = browser.evaluate(url, SCRIPT, READY) ?: throw java.io.IOException("${site.removePrefix("www.")} didn't load")
+        val root = Json.parseToJsonElement(json) as? JsonObject ?: throw java.io.IOException("unexpected page")
+        val items = (root["items"] as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.content }.orEmpty()
+        val isResultsPage = (root["results"] as? JsonPrimitive)?.content == "true"
+        if (!isResultsPage) {
+            val title = (root["title"] as? JsonPrimitive)?.content.orEmpty()
+            throw java.io.IOException("${site.removePrefix("www.")} blocked (\"${title.take(60)}\")")
+        }
+        return items
     }
 
     companion object {
         private const val TTL = 12 * 60 * 60 * 1000L
 
         /** Each result's visible text; class names change often, the text doesn't. */
-        private const val SCRIPT = """JSON.stringify(Array.from(new Set(document.querySelectorAll('ul.srp-results > li, li.s-item, li.s-card'))).map(function(li){return (li.innerText||'').trim();}).filter(function(t){return t.length>0;}))"""
+        private const val SCRIPT = """JSON.stringify({title: document.title, results: String(!!document.querySelector('ul.srp-results, .srp-river-results, .srp-save-null-search, li.s-item, li.s-card, .srp-controls')), items: Array.from(new Set(document.querySelectorAll('ul.srp-results > li, li.s-item, li.s-card'))).map(function(li){return (li.innerText||'').trim();}).filter(function(t){return t.length>0;})})"""
         private const val READY = """document.readyState === 'complete' && !!document.querySelector('ul.srp-results, .srp-river-results, .srp-save-null-search, li.s-item, li.s-card')"""
 
         private val soldMarker = Regex("""(?i)\b(sold|verkauft)\b""")

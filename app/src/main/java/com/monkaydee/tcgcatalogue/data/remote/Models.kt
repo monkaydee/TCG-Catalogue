@@ -47,6 +47,8 @@ data class CardCandidate(
     val variants: List<Variant>,
     /** How well this candidate matches what the camera read, higher is better. */
     val score: Double = 0.0,
+    /** Shown in the add sheet, e.g. when the name on the scan doesn't match this card. */
+    val warning: String? = null,
 )
 
 /** Brief search result; details are fetched when the user picks it unless already known ([candidate]). */

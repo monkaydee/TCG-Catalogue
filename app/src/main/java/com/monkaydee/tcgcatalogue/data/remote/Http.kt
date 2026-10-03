@@ -41,6 +41,15 @@ class Http(
         }
 }
 
+/** Like runCatching, but lets coroutine cancellation through instead of treating it as a failure. */
+inline fun <T> attempt(block: () -> T): Result<T> = try {
+    Result.success(block())
+} catch (e: kotlinx.coroutines.CancellationException) {
+    throw e
+} catch (e: Throwable) {
+    Result.failure(e)
+}
+
 // Small helpers for navigating loosely-typed API responses.
 fun JsonElement?.obj(): JsonObject? = this as? JsonObject
 fun JsonElement?.arr(): JsonArray? = this as? JsonArray

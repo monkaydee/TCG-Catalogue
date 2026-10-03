@@ -79,6 +79,7 @@ import com.monkaydee.tcgcatalogue.scan.OcrLine
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.TextAnalyzer
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
+import com.monkaydee.tcgcatalogue.ui.components.AddRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -168,9 +169,11 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
         }
     }
 
-    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing?) {
+    fun add(r: AddRequest) {
+        val c = r.card
+        val qty = r.quantity
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade, listing) }
+            runCatching { repo.add(r) }
                 .onSuccess { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Added ${c.name} ×$qty", addedCount = s.addedCount + qty) } }
                 .onFailure { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Could not save: ${it.message}") } }
             cooldownUntil = System.currentTimeMillis() + 3000

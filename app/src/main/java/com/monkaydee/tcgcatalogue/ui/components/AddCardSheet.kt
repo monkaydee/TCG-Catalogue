@@ -30,6 +30,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,9 +47,11 @@ import androidx.compose.ui.unit.dp
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.Money
+import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
+import com.monkaydee.tcgcatalogue.data.remote.attempt
 import com.monkaydee.tcgcatalogue.data.remote.Price
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
@@ -67,9 +70,23 @@ fun qualifiersFor(grader: String?): List<String> = when (grader) {
     else -> emptyList()
 }
 
+/** Everything chosen in the add / edit sheet. */
+data class AddRequest(
+    val card: CardCandidate,
+    val variant: Variant,
+    val quantity: Int,
+    val condition: String,
+    val grade: GradeInfo?,
+    val listing: CardmarketApi.Listing?,
+    /** Price paid per copy, in the display currency, if entered. */
+    val purchasePrice: Double?,
+)
+
 /**
  * Lets the user confirm the recognised card and pick the printing, condition (or grading
  * company and grade for a slab) and quantity. [initialGrade] pre-fills what was read from a slab label.
+ * With [initial] it edits a card already in the collection ([confirmLabel] "Save"), and
+ * [onChangeCard] offers to replace it with a different card.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -78,29 +95,45 @@ fun AddCardSheet(
     settings: AppSettings,
     repo: CardRepository,
     initialGrade: GradeInfo? = null,
-    onAdd: (CardCandidate, Variant, Int, String, GradeInfo?, CardmarketApi.Listing?) -> Unit,
+    initial: OwnedCard? = null,
+    confirmLabel: String = "Add",
+    onChangeCard: (() -> Unit)? = null,
+    onAdd: (AddRequest) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val startGrade = initialGrade ?: initial?.takeIf { it.graded }?.let { GradeInfo(it.grader, it.grade, it.gradeQualifier, it.certNumber) }
     if (candidates.isEmpty()) return
     var selected by remember(candidates) { mutableIntStateOf(0) }
     val card = candidates[selected.coerceIn(candidates.indices)]
-    var variantKey by remember(card) { mutableStateOf(card.variants.first().key) }
+    var variantKey by remember(card) {
+        mutableStateOf(initial?.variant?.takeIf { k -> card.variants.any { it.key == k } } ?: card.variants.first().key)
+    }
     val variant = card.variants.firstOrNull { it.key == variantKey } ?: card.variants.first()
-    var quantity by remember(card) { mutableIntStateOf(1) }
-    var condition by remember { mutableStateOf(settings.defaultCondition) }
-    var graded by remember(initialGrade) { mutableStateOf(initialGrade != null) }
+    var quantity by remember(card) { mutableIntStateOf(initial?.quantity ?: 1) }
+    var condition by remember { mutableStateOf(initial?.condition?.takeIf { it in CONDITIONS } ?: settings.defaultCondition) }
+    var graded by remember(startGrade) { mutableStateOf(startGrade != null) }
     // A slab whose company couldn't be read starts on "Other" so the user picks the company.
-    var grader by remember(initialGrade) { mutableStateOf(initialGrade?.let { it.grader ?: "Other" } ?: "PSA") }
-    var grade by remember(initialGrade) { mutableStateOf(initialGrade?.grade ?: "10") }
-    var qualifier by remember(initialGrade) { mutableStateOf(initialGrade?.qualifier) }
-    var cert by remember(initialGrade) { mutableStateOf(initialGrade?.cert.orEmpty()) }
+    var grader by remember(startGrade) { mutableStateOf(startGrade?.let { it.grader ?: "Other" } ?: "PSA") }
+    var grade by remember(startGrade) { mutableStateOf(startGrade?.grade ?: "10") }
+    var qualifier by remember(startGrade) { mutableStateOf(startGrade?.qualifier) }
+    var cert by remember(startGrade) { mutableStateOf(startGrade?.cert.orEmpty()) }
+    // Stored in the card's price currency, edited in the display currency.
+    var paid by remember {
+        mutableStateOf(
+            initial?.purchasePrice?.let { "%.2f".format(Money.convert(it, initial.priceCurrency, settings.currency, settings.usdToEur)) }.orEmpty(),
+        )
+    }
     val gradeInfo = GradeInfo(grader, grade, qualifier.takeIf { grade == "10" && it in qualifiersFor(grader) }, cert.ifBlank { null })
 
     // One Piece: Cardmarket's listing of the exact print (original, reprint, alt art, ...).
     var listings by remember(card) { mutableStateOf<List<CardmarketApi.Listing>>(emptyList()) }
     var listing by remember(card) { mutableStateOf<CardmarketApi.Listing?>(null) }
     var listingPicked by remember(card) { mutableStateOf(false) }
-    LaunchedEffect(card) { listings = repo.cardmarketListings(card) }
+    LaunchedEffect(card) {
+        listings = repo.cardmarketListings(card)
+        // Editing: keep the listing the card already has.
+        initial?.marketProductId?.let { id -> listings.firstOrNull { it.productId == id } }?.let { listing = it; listingPicked = true }
+    }
     LaunchedEffect(listings, variant) {
         if (!listingPicked) listing = repo.defaultListing(listings, variant, settings)
     }
@@ -114,7 +147,7 @@ fun AddCardSheet(
             return@LaunchedEffect
         }
         conditionLoading = true
-        conditionQuote = runCatching { repo.conditionPrice(card, variant, condition, settings, listing) }.getOrNull() ?: raw
+        conditionQuote = attempt { repo.conditionPrice(card, variant, condition, settings, listing) }.getOrNull() ?: raw
         conditionLoading = false
     }
     var gradedQuote by remember { mutableStateOf<Price?>(null) }
@@ -123,7 +156,10 @@ fun AddCardSheet(
     LaunchedEffect(card, variant, graded, gradeInfo.grader, gradeInfo.grade, gradeInfo.qualifier) {
         if (!graded) return@LaunchedEffect
         gradedLoading = true
-        val result = runCatching { repo.gradedLookup(card, variant, gradeInfo) }
+        gradedQuote = null
+        gradedProblem = null
+        // attempt() lets cancellation through, so a lookup for the previous grade can't overwrite this one.
+        val result = attempt { repo.gradedLookup(card, variant, gradeInfo) }
         gradedQuote = result.getOrNull()?.price
         gradedProblem = result.getOrNull()?.problem ?: result.exceptionOrNull()?.message
         gradedLoading = false
@@ -183,12 +219,8 @@ fun AddCardSheet(
                     note?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
                 }
             }
-            if (card.score < 0.6) {
-                Text(
-                    "The name on the scanned card doesn't match this card — the number may have been misread. Check it, or cancel and type it in.",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.error,
-                )
+            card.warning?.let {
+                Text(it, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.error)
             }
             if (card.variants.size > 1) {
                 Text("Printing", style = MaterialTheme.typography.labelLarge)
@@ -248,11 +280,25 @@ fun AddCardSheet(
                     CONDITIONS.forEach { c -> FilterChip(selected = c == condition, onClick = { condition = c }, label = { Text(c) }) }
                 }
             }
+            OutlinedTextField(
+                value = paid,
+                onValueChange = { paid = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.take(10) },
+                label = { Text("Purchase price per copy (${settings.currency}, optional)") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            if (onChangeCard != null) {
+                TextButton(onClick = onChangeCard) { Text("Wrong card? Search for the right one") }
+            }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 QuantityStepper(quantity, { quantity = it })
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onDismiss) { Text("Cancel") }
-                    Button(onClick = { onAdd(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing) }) { Text("Add") }
+                    Button(onClick = {
+                        val price = paid.replace(',', '.').toDoubleOrNull()
+                        onAdd(AddRequest(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing, price))
+                    }) { Text(confirmLabel) }
                 }
             }
         }

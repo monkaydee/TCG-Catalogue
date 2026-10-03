@@ -203,10 +203,10 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     fun closeReview() = state.update { it.copy(reviewing = null) }
     fun remove(item: ImportItem) = state.update { s -> s.copy(items = s.items.filterNot { it.key == item.key }) }
 
-    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing? = null) {
+    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing? = null, paid: Double? = null) {
         state.update { it.copy(reviewing = null) }
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade, listing) }.onSuccess {
+            runCatching { repo.add(c, v, qty, condition, grade, listing, paid) }.onSuccess {
                 state.value.items.firstOrNull { it.key == key }?.let { item ->
                     val extra = listOfNotNull(grade?.label, "×$qty".takeIf { qty > 1 })
                     replace(key, listOf(item.copy(status = ImportStatus.ADDED, note = (listOf("${c.name} · ${c.setName}") + extra).joinToString(" · "))))
@@ -329,7 +329,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
             settings,
             repo,
             initialGrade = reviewing.grade,
-            onAdd = { c, v, q, cond, g, l -> vm.add(reviewing.key, c, v, q, cond, g, l) },
+            onAdd = { r -> vm.add(reviewing.key, r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice) },
             onDismiss = vm::closeReview,
         )
     }

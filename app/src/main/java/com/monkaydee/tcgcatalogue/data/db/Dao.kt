@@ -24,6 +24,9 @@ interface CardDao {
     @Query("SELECT * FROM owned_cards WHERE id = :id")
     fun observe(id: Long): Flow<OwnedCard?>
 
+    @Query("SELECT * FROM owned_cards WHERE id = :id")
+    suspend fun get(id: Long): OwnedCard?
+
     @Query("SELECT * FROM owned_cards WHERE game = :game AND cardId = :cardId AND variant = :variant AND condition = :condition LIMIT 1")
     suspend fun find(game: Game, cardId: String, variant: String, condition: String): OwnedCard?
 

@@ -26,7 +26,7 @@ class PriceChartingApi(private val http: Http, private val browser: Browser? = n
         val key = "${card.game}/${card.cardId}/${variant?.key}"
         cache[key]?.takeIf { System.currentTimeMillis() - it.at < (if (it.table == null) NOT_FOUND_TTL else DAY) }
             ?.let { return Lookup(it.table, if (it.table == null) "not listed" else null) }
-        val result = runCatching { find(card, variant) }
+        val result = attempt { find(card, variant) }
         // Only remember real answers; a failed request is retried next time.
         if (result.isSuccess) cache[key] = Cached(result.getOrNull(), System.currentTimeMillis())
         return result.fold(
@@ -57,17 +57,25 @@ class PriceChartingApi(private val http: Http, private val browser: Browser? = n
         return page(best.url)?.let { parseTable(best.url, it) }
     }
 
-    /** Fetches a page directly, or through the browser when PriceCharting blocks the request. */
+    /**
+     * Fetches a page directly, or through the browser when PriceCharting answers with something
+     * else (bot check, block or consent page). That case is an error, never "not listed".
+     */
     private suspend fun page(url: String): String? {
-        val direct = runCatching { http.getText(url, accept = "text/html", userAgent = BROWSER) }
+        val direct = attempt { http.getText(url, accept = "text/html", userAgent = BROWSER) }
         direct.getOrNull()?.takeIf { looksReal(it) }?.let { return it }
         if (direct.isSuccess && direct.getOrNull() == null) return null // 404
-        val viaBrowser = browser?.html(url)?.takeIf { looksReal(it) }
-        return viaBrowser ?: throw (direct.exceptionOrNull() ?: java.io.IOException("PriceCharting blocked the request"))
+        val viaBrowser = browser?.html(url)
+        viaBrowser?.takeIf { looksReal(it) }?.let { return it }
+        val seen = (viaBrowser ?: direct.getOrNull())?.let { pageTitle.find(it)?.groupValues?.get(1)?.trim() }
+        throw java.io.IOException(
+            "blocked" + (seen?.takeIf { it.isNotBlank() }?.let { " (\"${it.take(60)}\")" } ?: direct.exceptionOrNull()?.message?.let { " ($it)" } ?: ""),
+        )
     }
 
-    /** A bot check ("Just a moment...") instead of the page. */
-    private fun looksReal(html: String) = html.contains("pricecharting", ignoreCase = true) && !html.contains("Just a moment", ignoreCase = true)
+    /** A real search result, card page or "no results" page, not a bot check or block page. */
+    private fun looksReal(html: String) =
+        html.contains("id=\"games_table\"") || html.contains("id=\"full-prices\"") || html.contains("No results for", ignoreCase = true)
 
     internal data class Result(val url: String, val title: String, val console: String)
 

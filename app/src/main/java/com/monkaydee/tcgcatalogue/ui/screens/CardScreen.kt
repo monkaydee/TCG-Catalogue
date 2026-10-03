@@ -42,7 +42,14 @@ import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.Money
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
+import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
+import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
+import android.widget.Toast
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.platform.LocalContext
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.ui.components.CONDITIONS
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
@@ -66,7 +73,7 @@ object CardBrowse {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit) {
+fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (Long) -> Unit = {}) {
     val all by repo.cards.collectAsState(initial = null)
     val s by repo.settings.flow.collectAsState(initial = AppSettings())
     val scope = rememberCoroutineScope()
@@ -74,6 +81,21 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit) {
     // Cards removed meanwhile drop out of the pager.
     val cards = all?.associateBy { it.id }?.let { byId -> order.mapNotNull { byId[it] } }.orEmpty()
     var confirmDelete by remember { mutableStateOf(false) }
+    // Edit: the card's current data from the API, so printings and prices can be changed.
+    var editing by remember { mutableStateOf<OwnedCard?>(null) }
+    var editCandidate by remember { mutableStateOf<CardCandidate?>(null) }
+    var editLoading by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    LaunchedEffect(editing) {
+        val card = editing ?: return@LaunchedEffect
+        editLoading = true
+        editCandidate = repo.candidateFor(card)
+        editLoading = false
+        if (editCandidate == null) {
+            Toast.makeText(context, "Couldn't load the card data — check your connection", Toast.LENGTH_LONG).show()
+            editing = null
+        }
+    }
 
     LaunchedEffect(all, cards.size) {
         if (all != null && cards.isEmpty()) onBack()
@@ -93,7 +115,14 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit) {
                     }
                 },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
-                actions = { IconButton(onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, "Remove from collection") } },
+                actions = {
+                    if (editLoading) {
+                        CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
+                    } else {
+                        IconButton(onClick = { editing = current }) { Icon(Icons.Default.Edit, "Edit card") }
+                    }
+                    IconButton(onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, "Remove from collection") }
+                },
             )
         },
     ) { padding ->
@@ -106,6 +135,29 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit) {
         ) { page ->
             CardDetail(cards[page], s, repo)
         }
+    }
+
+    val toEdit = editing
+    val candidate = editCandidate
+    if (toEdit != null && candidate != null) {
+        AddCardSheet(
+            candidates = listOf(candidate),
+            settings = s,
+            repo = repo,
+            initial = toEdit,
+            confirmLabel = "Save",
+            onChangeCard = {
+                editing = null
+                editCandidate = null
+                onReplace(toEdit.id)
+            },
+            onAdd = { r ->
+                editing = null
+                editCandidate = null
+                scope.launch { repo.saveEdit(toEdit, r) }
+            },
+            onDismiss = { editing = null; editCandidate = null },
+        )
     }
 
     if (confirmDelete && current != null) {
@@ -158,6 +210,18 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 Text("No market price available", style = MaterialTheme.typography.bodySmall)
             }
             c.priceNote?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
+            c.purchasePrice?.let { paid ->
+                val paidShown = Money.convert(paid, c.priceCurrency, s.currency, s.usdToEur)
+                val now = Money.unit(c, s.currency, s.usdToEur)
+                val diff = now - paidShown
+                Text(
+                    "Bought for ${Money.format(paidShown, s.currency)} each · " +
+                        (if (diff >= 0) "+" else "") + Money.format(diff, s.currency) +
+                        (if (paidShown > 0) " (%+.0f%%)".format(diff / paidShown * 100) else ""),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (diff >= 0) com.monkaydee.tcgcatalogue.ui.theme.Gain else com.monkaydee.tcgcatalogue.ui.theme.Loss,
+                )
+            }
             if (c.graded) {
                 Text(
                     listOfNotNull(c.condition, c.certNumber?.let { "Cert #$it" }).joinToString(" · "),
