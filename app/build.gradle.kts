@@ -19,6 +19,11 @@ android {
         targetSdk = 35
         versionCode = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
         versionName = "0.1.${System.getenv("GITHUB_RUN_NUMBER") ?: "0"}"
+        // The app's price server (docs/CLOUDFLARE.md), from repository secrets in CI builds. The app
+        // key is not a real secret (anyone can read it from the APK); it only keeps casual callers out.
+        fun env(name: String) = System.getenv(name).orEmpty().trim().filter { it.isLetterOrDigit() || it in ":/._-~" }
+        buildConfigField("String", "PRICE_SERVER_URL", "\"${env("PRICE_SERVER_URL")}\"")
+        buildConfigField("String", "PRICE_SERVER_KEY", "\"${env("PRICE_SERVER_KEY")}\"")
         // Phones only; drops the emulator (x86) native libraries that ML Kit ships.
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }

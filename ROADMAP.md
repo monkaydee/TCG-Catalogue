@@ -11,7 +11,8 @@ Two rules apply to everything here:
 ## Done
 
 - **Recognition:**
-  - image-only identification (*Find by picture*: on-device, weekly picture index on the `embeddings` branch);
+  - image-only identification for all games (*Find by picture*: on-device, weekly picture index on the `embeddings` branch), with card outline search in photos and automatic fallback when no number is read;
+  - Japanese Union Arena codes (UA…) matched to the English prints;
   - Japanese Pokémon cards;
   - stack scan mode.
 - **Prices and collection:**
@@ -33,6 +34,7 @@ Two rules apply to everything here:
   - haptics;
   - predictive back;
   - right-to-left layout.
+- **Price server:** free Cloudflare Worker with the provider keys, shared cache and per-provider budgets (`worker/`, docs/CLOUDFLARE.md); graded prices on the card page and in the collection value; PSA cert check; optional online identification (Ximilar).
 - **Engineering:**
   - screenshot tests in CI;
   - crash reports through GitHub issue / share;
@@ -46,7 +48,7 @@ Two rules apply to everything here:
 
 | Source | What it gives | Free tier | Verdict |
 |---|---|---|---|
-| [PokemonPriceTracker API](https://www.pokemonpricetracker.com/api-reference) | Pokémon raw prices (TCGplayer, eBay) and **graded PSA / CGC / BGS / SGC from eBay sales**, also Japanese cards | 100 credits/day (1 credit per card, +1 for graded, +1 for history), hobby use only; paid $9.99/month for 20,000 credits/day with commercial use | **Best graded source for Pokémon.** Use it now with the user's own key; later through our Worker on the $9.99 plan. |
+| [PokemonPriceTracker API](https://www.pokemonpricetracker.com/api-reference) | Pokémon raw prices (TCGplayer, eBay) and **graded PSA / CGC / BGS / SGC from eBay sales**, also Japanese cards | 100 credits/day (1 credit per card, +1 for graded, +1 for history), hobby use only; paid $9.99/month for 20,000 credits/day with commercial use (that plan covers **PSA grades only**, which is fine for now) | **Best graded source for Pokémon.** Use it now with the user's own key; later through our Worker on the $9.99 plan. |
 | [JustTCG](https://justtcg.com/) | 20 games incl. One Piece, Magic, Pokémon; prices **per condition and per printing** (alt arts as separate rows), from online marketplaces plus 65 game stores; graded PSA / BGS / CGC in v2 beta | 1,000 calls/month, 100/day, 20 cards per call, non-commercial only; commercial from $19/month | **Good second source**, especially for One Piece conditions and graded One Piece once v2 is stable. Same plan: own key now, Worker later. |
 | [PokeTrace](https://poketrace.com/developers) | Pokémon TCGplayer, eBay, Cardmarket; graded values | Free tier is US raw prices only; EU and graded need Pro | Not useful for free; skip unless Pro becomes worth it. |
 | [pokemonprice.com](https://pokemonprice.com/) | Website with raw and PSA prices, population, "PSA difficulty" | No public API | **Link only** (like the eBay/PriceCharting links today). Scraping the site isn't allowed. |

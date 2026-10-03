@@ -38,6 +38,9 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   - Dragon Ball Fusion World / Super, Union Arena, Weiss Schwarz, Naruto: the card code
     (`FB01-139`, `BT1-031`, `UE01BT/BLC-1-001`, `HOL/W91-E001`), matched against a daily card
     index. English prints only (the index comes from TCGplayer).
+- **Graded prices** (with the price server, see below): the card page shows graded prices per
+  company and grade, and a graded copy is valued at the price for its grade when there are sales.
+  PSA slabs can have their cert checked (card, grade, population).
 - **Graded cards**: the slab label is read too. That covers PSA, BGS/Beckett (including Black Label),
   CGC (including Pristine), SGC, TAG, ACE, AOG, GSG and PI, plus the grade and cert number.
   No free source of graded sales can be read by an app, so graded copies show the raw price until
@@ -51,9 +54,16 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   running list at the bottom of the camera screen (with a light tick), with undo per card and a
   review before everything is added. Cards that are clearly recognised are added without asking.
 - **Find by picture**: for cards whose number can't be read (old, worn, Japanese, in a toploader
-  at an angle) the *Find by picture* button compares the card's picture with every Pokémon and
-  One Piece card, entirely on the phone. A small free image model (MobileNetV3, ~10 MB) and the
-  picture index (~6.5 MB) are downloaded once and refreshed weekly; nothing is uploaded.
+  at an angle) the card is found by its picture alone, entirely on the phone, for **all games**.
+  It runs automatically when no number is read in a photo, or when the number leads to no card;
+  on the camera screen there is a *Find by picture* button. The photo is first searched for the
+  card's outline (so a small or off-centre card works), and a name read on the card moves the
+  right match to the top. A small free image model (MobileNetV3, ~10 MB) and the picture index
+  are downloaded once and refreshed weekly; nothing is uploaded. Matches found by picture are
+  always shown for review, never added on their own.
+- **Identify online** (optional, needs the price server): when even the picture search fails,
+  one tap sends that photo to the price server's image recognition (Ximilar). Only on request;
+  the photo isn't stored.
 - **Japanese Pokémon cards**: the set code printed next to the number (`SV2a`, `S12a`, `SM11b` …)
   is read, and the card is looked up in TCGdex's Japanese data.
 - **Manual add**: search Pokémon by name or number, One Piece by code.
@@ -181,6 +191,14 @@ CameraX frame ──▶ ML Kit text recognition (on-device)
 compact JSON file per game (`{"groups": …, "cards": [[code, name, set, rarity, productId, prices]]}`).
 `.github/workflows/card-index.yml` runs it every day and force-pushes the files to the `data`
 branch. The app downloads the files of the enabled games from there, at most once a day. Sealed products are written to `SEALED_<GAME>.json` the same way.
+
+## Price server (optional, free)
+
+A tiny Cloudflare Worker (`worker/`) holds the API keys of the price providers that need one
+(JustTCG, TCG API, PokeTrace, PSA, RapidAPI, Ximilar, later PokemonPriceTracker), so no key is ever
+inside the app. It shares every answer between all users through a cache and keeps every provider
+within its free limits, so the cost depends on how many different cards people own, not on how
+many people use the app. Setup from a phone in about 15 minutes: [docs/CLOUDFLARE.md](docs/CLOUDFLARE.md).
 
 ## Picture index
 

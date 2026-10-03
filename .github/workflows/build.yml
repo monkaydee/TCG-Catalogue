@@ -38,8 +38,12 @@ jobs:
           path: app/build/screenshots/*.png
           if-no-files-found: ignore
 
+      # The price server's address and app key (docs/CLOUDFLARE.md); empty when not set up.
       - name: Build APK
         run: ./gradlew --no-daemon assembleRelease
+        env:
+          PRICE_SERVER_URL: ${{ secrets.PRICE_SERVER_URL }}
+          PRICE_SERVER_KEY: ${{ secrets.APP_KEY }}
 
       - name: Rename APK
         run: cp app/build/outputs/apk/release/app-release.apk tcg-catalogue-${{ github.run_number }}.apk

@@ -1,6 +1,6 @@
 # Privacy policy — TCG Catalogue
 
-_Last updated: 3 October 2026_
+_Last updated: 4 October 2026_
 
 TCG Catalogue is an app to scan, catalogue and price trading cards. It is built so that your
 collection stays yours.
@@ -8,7 +8,8 @@ collection stays yours.
 ## What the app stores
 
 - **Your collection** (cards, sealed products, wishlist, sold cards, price history, settings) is
-  stored **only on your phone**. There is no account and no server of ours.
+  stored **only on your phone**. There is no account, and your collection is never sent to a
+  server of ours.
 - If you turn on **cloud backup**, the app writes a backup file to the place *you* pick with
   Android's file picker (for example your own Google Drive, Dropbox or OneDrive). Only you have
   access to that file; we never see it.
@@ -18,7 +19,10 @@ collection stays yours.
 
 - The camera and the photos you import are used **on the phone only**, to read the card number
   (Google ML Kit text recognition runs on the device) and to compare the card with card images.
-- Camera pictures and photos are **not uploaded** anywhere.
+- Camera pictures and photos are **not uploaded** anywhere, with one exception you choose: when
+  the phone can't recognise a card, you can tap **Identify online**. Only then is that one photo
+  sent to the app's price server, which passes it to Ximilar (ximilar.com) for image recognition.
+  The price server does not store or log the photo.
 
 ## Network requests
 
@@ -32,6 +36,11 @@ your IP address:
 - TCGplayer (tcgplayer-cdn.tcgplayer.com, infinite-api.tcgplayer.com) — card images, prices by condition
 - GitHub (raw.githubusercontent.com) — the daily card and sealed-product lists
 - Frankfurter (api.frankfurter.dev) — exchange rates
+- The app's price server (a Cloudflare Worker, *.workers.dev), when set up — graded prices and
+  PSA cert checks. It receives the card's name, set, number and TCGplayer id, or the cert number,
+  and keeps only a shared price cache and daily counters (your IP address only as a salted,
+  daily-changing hash for the per-phone request limit). It passes lookups on to price providers
+  (JustTCG, TCG API, PokeTrace, PSA, RapidAPI, PokemonPriceTracker) without anything about you.
 
 When you tap a price link, your browser opens eBay, PriceCharting, Cardmarket or TCGplayer; their
 own privacy policies apply there.

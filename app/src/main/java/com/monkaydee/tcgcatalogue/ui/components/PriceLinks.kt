@@ -37,6 +37,10 @@ object PriceLinks {
         val tcgplayerId = c.cardId.toLongOrNull()?.takeIf { c.game.indexed }
         links += "TCGplayer" to (tcgplayerId?.let { "https://www.tcgplayer.com/product/$it" }
             ?: "https://www.tcgplayer.com/search/all/product?q=${enc("$name $number")}")
+        // PSA's own page for the slab: the card, grade and population.
+        c.certNumber?.filter(Char::isDigit)?.takeIf { c.grader == "PSA" && it.isNotEmpty() }?.let {
+            links += AppStrings.get(R.string.links_psa_cert) to "https://www.psacard.com/cert/$it"
+        }
         return links
     }
 

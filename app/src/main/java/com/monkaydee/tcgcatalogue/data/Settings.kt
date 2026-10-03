@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.monkaydee.tcgcatalogue.BuildConfig
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +38,15 @@ data class AppSettings(
     /** Turn the binder's pages like real pages instead of sliding them. */
     val binderAnimation: Boolean = true,
     val look: Look = Look(),
-)
+    /**
+     * The app's price server (docs/CLOUDFLARE.md) and its app key. Builds made by GitHub Actions
+     * have them built in; they can be changed in Settings. Empty = no server.
+     */
+    val serverUrl: String = BuildConfig.PRICE_SERVER_URL,
+    val serverKey: String = BuildConfig.PRICE_SERVER_KEY,
+) {
+    val hasServer: Boolean get() = serverUrl.startsWith("https://") && serverKey.isNotBlank()
+}
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
@@ -94,6 +103,8 @@ class SettingsStore(private val context: Context) {
         val homeImage = stringPreferencesKey("home_image")
         val binderImage = stringPreferencesKey("binder_image")
         val imageDim = floatPreferencesKey("image_dim")
+        val serverUrl = stringPreferencesKey("server_url")
+        val serverKey = stringPreferencesKey("server_key")
         fun color(a: Area) = longPreferencesKey("color_${a.name.lowercase()}")
     }
 
@@ -120,6 +131,8 @@ class SettingsStore(private val context: Context) {
                 imageDim = p[Keys.imageDim] ?: Look().imageDim,
             ),
             enabledGames = p[Keys.games]?.mapNotNull { n -> Game.entries.firstOrNull { it.name == n } }?.toSet() ?: d.enabledGames,
+            serverUrl = p[Keys.serverUrl] ?: d.serverUrl,
+            serverKey = p[Keys.serverKey] ?: d.serverKey,
         )
     }
 
@@ -145,5 +158,10 @@ class SettingsStore(private val context: Context) {
     suspend fun setHomeImage(path: String?) = context.dataStore.edit { if (path == null) it.remove(Keys.homeImage) else it[Keys.homeImage] = path }
     suspend fun setBinderImage(path: String?) = context.dataStore.edit { if (path == null) it.remove(Keys.binderImage) else it[Keys.binderImage] = path }
     suspend fun setImageDim(v: Float) = context.dataStore.edit { it[Keys.imageDim] = v }
+    /** Sets the price server; blank values go back to the built-in ones. */
+    suspend fun setServer(url: String, key: String) = context.dataStore.edit {
+        if (url.isBlank()) it.remove(Keys.serverUrl) else it[Keys.serverUrl] = url.trim()
+        if (key.isBlank()) it.remove(Keys.serverKey) else it[Keys.serverKey] = key.trim()
+    }
     suspend fun setEnabledGames(v: Set<Game>) = context.dataStore.edit { it[Keys.games] = v.map { g -> g.name }.toSet() }
 }

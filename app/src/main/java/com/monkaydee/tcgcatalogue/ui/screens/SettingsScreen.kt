@@ -72,6 +72,7 @@ import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.Area
 import com.monkaydee.tcgcatalogue.data.Backup
 import com.monkaydee.tcgcatalogue.data.CardRepository
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import com.monkaydee.tcgcatalogue.data.Palette
 import com.monkaydee.tcgcatalogue.data.ThemeMode
 import com.monkaydee.tcgcatalogue.data.db.Game
@@ -317,6 +318,10 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                 CloudBackupSection()
             }
 
+            Section(stringResource(R.string.settings_server_title)) {
+                ServerSettings(repo, s)
+            }
+
             Section(stringResource(R.string.settings_about_title)) {
                 Hint(stringResource(R.string.settings_about, BuildConfig.VERSION_NAME))
             }
@@ -410,6 +415,42 @@ private fun Section(title: String, content: @Composable ColumnScope.() -> Unit) 
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = content)
         }
     }
+}
+
+/** The price server's address and app key, with a test of the connection. */
+@Composable
+private fun ServerSettings(repo: CardRepository, s: AppSettings) {
+    val scope = rememberCoroutineScope()
+    var url by remember(s.serverUrl) { mutableStateOf(s.serverUrl) }
+    var key by remember(s.serverKey) { mutableStateOf(s.serverKey) }
+    var result by remember { mutableStateOf<String?>(null) }
+    var testing by remember { mutableStateOf(false) }
+    Hint(stringResource(R.string.settings_server_summary))
+    androidx.compose.material3.OutlinedTextField(
+        value = url, onValueChange = { url = it; result = null }, singleLine = true,
+        label = { Text(stringResource(R.string.settings_server_url)) }, modifier = Modifier.fillMaxWidth(),
+    )
+    androidx.compose.material3.OutlinedTextField(
+        value = key, onValueChange = { key = it; result = null }, singleLine = true,
+        label = { Text(stringResource(R.string.settings_server_key)) }, modifier = Modifier.fillMaxWidth(),
+        visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
+    )
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(onClick = { scope.launch { repo.settings.setServer(url, key) } }, enabled = url != s.serverUrl || key != s.serverKey) {
+            Text(stringResource(R.string.settings_server_save))
+        }
+        if (BuildConfig.PRICE_SERVER_URL.isNotEmpty()) {
+            OutlinedButton(onClick = { scope.launch { repo.settings.setServer("", "") } }) { Text(stringResource(R.string.settings_server_reset)) }
+        }
+        OutlinedButton(onClick = {
+            testing = true
+            scope.launch {
+                result = AppStrings.get(if (repo.server.reachable()) R.string.settings_server_ok else R.string.settings_server_bad)
+                testing = false
+            }
+        }, enabled = !testing && s.hasServer) { Text(stringResource(R.string.settings_server_test)) }
+    }
+    Hint(result ?: if (!s.hasServer) stringResource(R.string.settings_server_off) else "")
 }
 
 @Composable

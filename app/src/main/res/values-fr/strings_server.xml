@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">aucune vente récente de %1$s trouvée — indiquez votre propre valeur, ou consultez les liens de prix</string>
+    <string name="data_graded_server_error">le serveur de prix est injoignable pour le moment</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="one">%1$d vente</item>
+        <item quantity="many">%1$d de ventes</item>
+        <item quantity="other">%1$d ventes</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Prix des cartes gradées</string>
+    <string name="graded_none">Aucune vente de carte gradée trouvée pour cette carte.</string>
+    <string name="graded_failed">Le serveur de prix est injoignable pour le moment.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">votre note</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Vérifier le certificat auprès de PSA</string>
+    <string name="cert_unknown">PSA n\'a aucune carte avec ce numéro de certificat.</string>
+    <string name="cert_failed">PSA est injoignable pour le moment. Réessayez plus tard.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">Note PSA : %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Population : %1$d avec cette note, %2$d supérieures</string>
+    <string name="cert_mismatch">La note du dossier PSA diffère de celle enregistrée pour cette carte.</string>
+    <string name="links_psa_cert">Certificat PSA</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Identifier en ligne</string>
+    <string name="identify_hint">Envoie cette photo au serveur de prix de l\'appli pour la reconnaissance d\'image (Ximilar). La photo n\'est pas conservée.</string>
+    <string name="identify_searching">Identification en ligne…</string>
+    <string name="identify_none">Pas reconnue en ligne non plus. Essayez une photo plus nette, ou saisissez la carte à la main.</string>
+    <string name="identify_failed">L\'identification en ligne n\'est pas disponible pour le moment (limite quotidienne atteinte ou pas de connexion).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Serveur de prix</string>
+    <string name="settings_server_summary">Le serveur gratuit de l\'appli pour les prix des cartes gradées, la vérification des certificats PSA et l\'identification en ligne. Les versions issues de GitHub l\'intègrent ; consultez docs/CLOUDFLARE.md pour installer le vôtre.</string>
+    <string name="settings_server_url">Adresse du serveur (https://…)</string>
+    <string name="settings_server_key">Clé de l\'appli</string>
+    <string name="settings_server_save">Enregistrer</string>
+    <string name="settings_server_reset">Utiliser l\'intégré</string>
+    <string name="settings_server_test">Tester</string>
+    <string name="settings_server_ok">Connecté au serveur de prix.</string>
+    <string name="settings_server_bad">Le serveur de prix n\'a pas répondu. Vérifiez l\'adresse et la clé de l\'appli.</string>
+    <string name="settings_server_off">Aucun serveur de prix configuré : les prix des cartes gradées utilisent votre propre valeur.</string>
+</resources>

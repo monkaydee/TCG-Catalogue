@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">%1$s için yakın zamanda satış bulunamadı — kendi değerinizi girin veya fiyat bağlantılarına bakın</string>
+    <string name="data_graded_server_error">fiyat sunucusuna şu anda ulaşılamıyor</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="one">%1$d satış</item>
+        <item quantity="other">%1$d satış</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Dereceli fiyatlar</string>
+    <string name="graded_none">Bu kart için dereceli satış bulunamadı.</string>
+    <string name="graded_failed">Fiyat sunucusuna şu anda ulaşılamıyor.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">sizin dereceniz</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Sertifikayı PSA ile kontrol et</string>
+    <string name="cert_unknown">PSA\'da bu sertifika numarasına sahip bir kart yok.</string>
+    <string name="cert_failed">PSA\'ya şu anda ulaşılamıyor. Daha sonra tekrar deneyin.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">PSA derecesi: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Popülasyon: bu dereceye sahip %1$d, daha yüksek %2$d</string>
+    <string name="cert_mismatch">PSA kaydındaki derece, bu kart için kaydedilen dereceden farklı.</string>
+    <string name="links_psa_cert">PSA sertifikası</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Çevrimiçi tanımla</string>
+    <string name="identify_hint">Bu fotoğrafı görüntü tanıma için uygulamanın fiyat sunucusuna gönderir (Ximilar). Fotoğraf saklanmaz.</string>
+    <string name="identify_searching">Çevrimiçi tanımlanıyor…</string>
+    <string name="identify_none">Çevrimiçi de tanınamadı. Daha net bir fotoğraf deneyin veya kartı elle girin.</string>
+    <string name="identify_failed">Çevrimiçi tanımlama şu anda kullanılamıyor (günlük sınıra ulaşıldı veya bağlantı yok).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Fiyat sunucusu</string>
+    <string name="settings_server_summary">Dereceli fiyatlar, PSA sertifika kontrolleri ve çevrimiçi tanımlama için uygulamanın kendi ücretsiz sunucusu. GitHub\'daki sürümlerde yerleşik olarak gelir; kendi sunucunuzu kurmak için docs/CLOUDFLARE.md dosyasına bakın.</string>
+    <string name="settings_server_url">Sunucu adresi (https://…)</string>
+    <string name="settings_server_key">Uygulama anahtarı</string>
+    <string name="settings_server_save">Kaydet</string>
+    <string name="settings_server_reset">Yerleşiği kullan</string>
+    <string name="settings_server_test">Test et</string>
+    <string name="settings_server_ok">Fiyat sunucusuna bağlanıldı.</string>
+    <string name="settings_server_bad">Fiyat sunucusu yanıt vermedi. Adresi ve uygulama anahtarını kontrol edin.</string>
+    <string name="settings_server_off">Fiyat sunucusu kurulmamış: dereceli fiyatlar kendi değerinizi kullanır.</string>
+</resources>

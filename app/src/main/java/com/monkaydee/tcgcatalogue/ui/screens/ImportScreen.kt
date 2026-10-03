@@ -72,6 +72,7 @@ import com.monkaydee.tcgcatalogue.scan.GradeInfo
 import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.ui.components.display
 import com.monkaydee.tcgcatalogue.scan.PhotoRecognizer
+import com.monkaydee.tcgcatalogue.scan.PictureSearch
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.scan.VisualMatcher
@@ -159,7 +160,9 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         }
         val found = result.getOrThrow()
         if (found.hits.isEmpty()) {
-            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.NO_NUMBER)))
+            // No number could be read: look the card up by its picture straight away.
+            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.LOOKING_UP)))
+            replace(placeholder.key, listOf(byPicture(placeholder, found.texts)))
             return
         }
         val items = found.hits.mapIndexed { i, hit ->
@@ -175,7 +178,8 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         val candidates = result.getOrDefault(emptyList())
         val updated = when {
             result.isFailure -> item.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_lookup_failed))
-            candidates.isEmpty() -> item.copy(status = ImportStatus.NOT_FOUND)
+            // The number led nowhere (misread, or a print the databases don't have): try the picture.
+            candidates.isEmpty() -> byPicture(item, emptyList()).let { if (it.candidates.isEmpty()) item.copy(status = ImportStatus.NOT_FOUND) else it }
             repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
                 val grade = item.grade?.takeIf { it.grader != null && it.grade != null }
@@ -200,20 +204,50 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     /** A photo without a readable number: look the card up by its picture alone. */
     fun findByPicture(item: ImportItem) {
         replace(item.key, listOf(item.copy(status = ImportStatus.LOOKING_UP, note = null)))
+        viewModelScope.launch { replace(item.key, listOf(byPicture(item, emptyList()))) }
+    }
+
+    /**
+     * [item] looked up by its picture: matches are always shown for review (never added on their
+     * own), as a picture can't tell reprints with the same art apart. [texts] is what could be read.
+     */
+    private suspend fun byPicture(item: ImportItem, texts: List<String>): ImportItem {
+        val games = state.value.filter?.let { setOf(it) } ?: repo.settings.current().enabledGames
+        val result = com.monkaydee.tcgcatalogue.data.remote.attempt {
+            val photo = PhotoRecognizer.loadSmall(context, item.photo)
+            val crops = PictureSearch.crops(photo, fromCamera = false)
+            repo.candidatesFromPicture(PictureSearch.find(context, crops, games), texts)
+        }
+        val found = result.getOrDefault(emptyList())
+        return when {
+            result.isFailure -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_unavailable))
+            found.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_none))
+            else -> item.copy(status = ImportStatus.REVIEW, candidates = found, note = null)
+        }
+    }
+
+    /**
+     * Asks the price server's image recognition (only when the user taps the button: the photo
+     * leaves the phone, and the server has a small daily limit).
+     */
+    fun identifyOnline(item: ImportItem) {
+        replace(item.key, listOf(item.copy(status = ImportStatus.LOOKING_UP, note = null)))
         viewModelScope.launch {
             val games = state.value.filter?.let { setOf(it) } ?: repo.settings.current().enabledGames
             val result = com.monkaydee.tcgcatalogue.data.remote.attempt {
-                val photo = PhotoRecognizer.loadSmall(context, item.photo)
-                val crop = com.monkaydee.tcgcatalogue.scan.PictureSearch.cardCrop(photo, fromCamera = false)
-                repo.candidatesFromPicture(com.monkaydee.tcgcatalogue.scan.PictureSearch.find(context, crop, games))
+                val jpeg = withContext(Dispatchers.Default) {
+                    val photo = PhotoRecognizer.loadSmall(context, item.photo, maxSide = 1400)
+                    java.io.ByteArrayOutputStream().also { photo.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, it) }.toByteArray()
+                }
+                repo.identifyOnline(jpeg, games)
             }
             val found = result.getOrDefault(emptyList())
             replace(
                 item.key,
                 listOf(
                     when {
-                        result.isFailure -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_unavailable))
-                        found.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_none))
+                        result.isFailure -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.identify_failed))
+                        found.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.identify_none))
                         else -> item.copy(status = ImportStatus.REVIEW, candidates = found, note = null)
                     },
                 ),
@@ -346,7 +380,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                     }
                 }
                 items(state.items, key = { it.key }) { item ->
-                    ImportRow(item, settings, repo, onReview = { vm.review(item) }, onRetry = { vm.retry(item) }, onRemove = { vm.remove(item) }, onManual = onManual, onPicture = { vm.findByPicture(item) })
+                    ImportRow(item, settings, repo, onReview = { vm.review(item) }, onRetry = { vm.retry(item) }, onRemove = { vm.remove(item) }, onManual = onManual, onPicture = { vm.findByPicture(item) }, onIdentify = { vm.identifyOnline(item) })
                 }
             }
         }
@@ -367,8 +401,9 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
 
 private fun ScanHit.label() = describeHit(this)
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
-private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardRepository, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit, onPicture: () -> Unit = {}) {
+private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardRepository, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit, onPicture: () -> Unit = {}, onIdentify: () -> Unit = {}) {
     val top = item.candidates.firstOrNull()
     Card(Modifier.fillMaxWidth().clickable(enabled = item.status == ImportStatus.REVIEW, onClick = onReview)) {
         Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -422,11 +457,14 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
                     ImportStatus.ERROR -> Text(item.note ?: stringResource(R.string.import_something_wrong), style = MaterialTheme.typography.bodyMedium)
                 }
                 when (item.status) {
-                    ImportStatus.NO_NUMBER -> androidx.compose.foundation.layout.Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedButton(onClick = onPicture) { Text(stringResource(R.string.picture_find)) }
-                        OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
+                    ImportStatus.NO_NUMBER, ImportStatus.NOT_FOUND -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (item.status == ImportStatus.NO_NUMBER) OutlinedButton(onClick = onPicture) { Text(stringResource(R.string.picture_find)) }
+                            if (settings.hasServer) OutlinedButton(onClick = onIdentify) { Text(stringResource(R.string.identify_online)) }
+                            OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
+                        }
+                        if (settings.hasServer) Text(stringResource(R.string.identify_hint), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    ImportStatus.NOT_FOUND -> OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
                     ImportStatus.ERROR -> OutlinedButton(onClick = onRetry) { Text(stringResource(R.string.import_retry)) }
                     else -> Unit
                 }

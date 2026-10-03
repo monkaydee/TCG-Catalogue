@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">%1$s की कोई हाल की बिक्री नहीं मिली — अपना मूल्य सेट करें, या कीमत के लिंक देखें</string>
+    <string name="data_graded_server_error">प्राइस सर्वर से अभी संपर्क नहीं हो पा रहा है</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="one">%1$d बिक्री</item>
+        <item quantity="other">%1$d बिक्री</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">ग्रेडेड कीमतें</string>
+    <string name="graded_none">इस कार्ड की कोई ग्रेडेड बिक्री नहीं मिली।</string>
+    <string name="graded_failed">प्राइस सर्वर से अभी संपर्क नहीं हो पा रहा है।</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">आपका ग्रेड</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">PSA से सर्टिफ़िकेट जाँचें</string>
+    <string name="cert_unknown">PSA के पास इस सर्टिफ़िकेट नंबर का कोई कार्ड नहीं है।</string>
+    <string name="cert_failed">PSA से अभी संपर्क नहीं हो पा रहा है। बाद में फिर कोशिश करें।</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">PSA ग्रेड: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">पॉपुलेशन: इस ग्रेड के %1$d, इससे ऊँचे %2$d</string>
+    <string name="cert_mismatch">PSA के रिकॉर्ड का ग्रेड इस कार्ड के लिए सहेजे गए ग्रेड से अलग है।</string>
+    <string name="links_psa_cert">PSA सर्टिफ़िकेट</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">ऑनलाइन पहचानें</string>
+    <string name="identify_hint">इमेज पहचान के लिए यह फ़ोटो ऐप के प्राइस सर्वर को भेजता है (Ximilar)। फ़ोटो सहेजी नहीं जाती।</string>
+    <string name="identify_searching">ऑनलाइन पहचान हो रही है…</string>
+    <string name="identify_none">ऑनलाइन भी नहीं पहचाना गया। ज़्यादा साफ़ फ़ोटो आज़माएँ, या कार्ड खुद टाइप करें।</string>
+    <string name="identify_failed">ऑनलाइन पहचान अभी उपलब्ध नहीं है (रोज़ की सीमा पूरी हो गई या कनेक्शन नहीं है)।</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">प्राइस सर्वर</string>
+    <string name="settings_server_summary">ग्रेडेड कीमतों, PSA सर्टिफ़िकेट जाँच और ऑनलाइन पहचान के लिए ऐप का अपना मुफ़्त सर्वर। GitHub के बिल्ड में यह पहले से शामिल है; अपना सर्वर सेट करने के लिए docs/CLOUDFLARE.md देखें।</string>
+    <string name="settings_server_url">सर्वर का पता (https://…)</string>
+    <string name="settings_server_key">ऐप की</string>
+    <string name="settings_server_save">सहेजें</string>
+    <string name="settings_server_reset">बिल्ट-इन इस्तेमाल करें</string>
+    <string name="settings_server_test">टेस्ट करें</string>
+    <string name="settings_server_ok">प्राइस सर्वर से कनेक्ट हो गया।</string>
+    <string name="settings_server_bad">प्राइस सर्वर ने जवाब नहीं दिया। पता और ऐप की जाँचें।</string>
+    <string name="settings_server_off">कोई प्राइस सर्वर सेट नहीं है: ग्रेडेड कीमतों के लिए आपका अपना मूल्य इस्तेमाल होता है।</string>
+</resources>

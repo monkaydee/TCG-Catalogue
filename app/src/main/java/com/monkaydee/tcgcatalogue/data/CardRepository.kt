@@ -20,6 +20,7 @@ import com.monkaydee.tcgcatalogue.data.remote.FxApi
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.Price
 import com.monkaydee.tcgcatalogue.data.remote.PricePoint
+import com.monkaydee.tcgcatalogue.data.remote.PriceServerApi
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.data.remote.PriceTexts
 import com.monkaydee.tcgcatalogue.data.remote.Pricing
@@ -73,6 +74,9 @@ class CardRepository(
     /** Japanese Pokémon cards (ids prefixed "ja:"). */
     private val tcgdexJa: TcgDexApi = tcgdex.forLanguage("ja"),
 ) {
+    /** The app's price server (graded prices, PSA certs, online identification); off until set up. */
+    val server = PriceServerApi { settings.current().takeIf { it.hasServer }?.let { it.serverUrl to it.serverKey } }
+
     /** The TCGdex client for a Pokémon card or set id (Japanese ids start with "ja:"). */
     private fun pokemonApi(id: String) = if (id.startsWith(tcgdexJa.idPrefix)) tcgdexJa else tcgdex
     val cards = db.cards().observeAll()
@@ -265,15 +269,77 @@ class CardRepository(
     suspend fun gradedPrice(card: CardCandidate, variant: Variant, grade: GradeInfo): Price? = gradedLookup(card, variant, grade).price
 
     /**
-     * Price of a graded copy. No free source publishes graded sales the app can read (PriceCharting
-     * and eBay block apps), so graded copies carry the user's own value, helped by the price links.
+     * Price of a graded copy, from the app's price server (graded sales collected by its providers).
+     * Without a server, or when nobody sold that grade, graded copies carry the user's own value,
+     * helped by the price links on the card page.
      */
-    @Suppress("UNUSED_PARAMETER")
     suspend fun gradedLookup(card: CardCandidate, variant: Variant, grade: GradeInfo): GradedResult {
-        grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
-        grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
-        return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
+        val grader = grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
+        val value = grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
+        if (!server.isSetUp()) return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
+        // A Black Label or Pristine 10 sells far above a plain 10: never priced as one.
+        if (grade.qualifier != null) return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
+        val prices = attempt { gradedPrices(card, variant) }.getOrElse { return GradedResult(null, AppStrings.get(R.string.data_graded_server_error)) }
+        val match = prices.firstOrNull { it.grader.equals(grader, ignoreCase = true) && sameGrade(it.grade, value) && it.currency == "USD" }
+            ?: return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
+        return GradedResult(Price(match.price, PriceSource.GRADED, note = gradedNote(match)), null)
     }
+
+    /** All graded prices the price server has for a printing (every company and grade). */
+    suspend fun gradedPrices(card: CardCandidate, variant: Variant): List<PriceServerApi.Graded> =
+        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant))
+
+    /** Graded prices for a card in the collection, for its card page. */
+    suspend fun gradedPricesFor(row: OwnedCard): List<PriceServerApi.Graded> {
+        if (!server.isSetUp()) return emptyList()
+        val card = fetch(row.game, row.cardId) ?: return emptyList()
+        val variant = card.variants.firstOrNull { it.key == row.variant } ?: card.defaultVariant
+        return gradedPrices(card, variant)
+    }
+
+    /** PSA's record of a cert number (card, grade, population), through the price server. */
+    suspend fun verifyCert(number: String): PriceServerApi.Cert? = server.cert(number)
+
+    /**
+     * Cards the price server's image recognition finds in [jpeg] (one card), as candidates of the
+     * app's own sources. Only used when the user asks for it: the photo leaves the phone.
+     */
+    suspend fun identifyOnline(jpeg: ByteArray, games: Set<Game>): List<CardCandidate> = coroutineScope {
+        val warning = AppStrings.get(R.string.picture_check)
+        val found = server.identify(jpeg, games.singleOrNull()).filter { it.game == null || it.game in games }
+        found.take(5).map { m -> async { attempt { candidatesFor(m) }.getOrDefault(emptyList()) } }
+            .flatMap { it.await() }
+            .distinctBy { it.game to it.cardId }
+            .map { it.copy(warning = warning) }
+    }
+
+    private suspend fun candidatesFor(m: PriceServerApi.Identified): List<CardCandidate> {
+        val game = m.game ?: return emptyList()
+        val number = m.number?.trim()?.takeIf { it.isNotEmpty() }
+        return when (game) {
+            Game.POKEMON -> {
+                val total = m.outOf?.filter(Char::isDigit)?.toIntOrNull()
+                if (number != null && total != null) resolvePokemon(ScanHit.Pokemon(number, total, m.name)) else emptyList()
+            }
+            Game.ONE_PIECE -> number?.let { resolve(ScanHit.OnePiece(it.uppercase())) }.orEmpty()
+            Game.MAGIC -> resolveMagic(ScanHit.Magic(m.setCode?.lowercase(), number, m.name))
+            else -> m.tcgplayerId?.let { listOfNotNull(cardIndex.byProduct(game, it)) }
+                ?: number?.let { cardIndex.lookup(game, it.uppercase()) }.orEmpty()
+        }
+    }
+
+    private fun sameGrade(a: String, b: String): Boolean {
+        val x = a.trim().replace(',', '.').toDoubleOrNull()
+        val y = b.trim().replace(',', '.').toDoubleOrNull()
+        return if (x != null && y != null) x == y else a.trim().equals(b.trim(), ignoreCase = true)
+    }
+
+    private fun gradedNote(g: PriceServerApi.Graded) = listOfNotNull(
+        "${g.grader} ${g.grade}",
+        g.source.takeIf { it.isNotBlank() },
+        g.sales?.let { AppStrings.context().resources.getQuantityString(R.plurals.data_graded_sales_count, it, it) },
+        g.date?.take(10),
+    ).joinToString(" · ")
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
     suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings, listing: CardmarketApi.Listing? = null): Price? {
@@ -841,15 +907,21 @@ class CardRepository(
     // ---- Find by picture ----
 
     /** The cards behind picture matches, best first, marked to be checked (never added on their own). */
-    suspend fun candidatesFromPicture(found: List<com.monkaydee.tcgcatalogue.scan.PictureSearch.Found>): List<CardCandidate> = coroutineScope {
+    /**
+     * The cards found by picture, best first. Cards whose name could be read on the scan ([texts])
+     * move to the top: the picture finds the right card or a look-alike, the name settles it.
+     */
+    suspend fun candidatesFromPicture(found: List<com.monkaydee.tcgcatalogue.scan.PictureSearch.Found>, texts: List<String> = emptyList()): List<CardCandidate> = coroutineScope {
         val warning = com.monkaydee.tcgcatalogue.ui.AppStrings.get(R.string.picture_check)
-        found.distinctBy { it.game to it.cardId }.map { f ->
+        val cards = found.distinctBy { it.game to it.cardId }.map { f ->
             async {
                 attempt { fetch(f.game, f.cardId) }.getOrNull()?.let { c ->
                     c.copy(score = f.score.toDouble(), warning = warning, preferredVariant = f.printing?.takeIf { p -> c.variants.any { it.key == p } } ?: c.preferredVariant)
                 }
             }
         }.mapNotNull { it.await() }
+        val readable = texts.filter { t -> t.count(Char::isLetter) >= 3 }
+        if (readable.isEmpty()) cards else cards.sortedByDescending { CardTextParser.nameOnCard(it.name, readable) && it.name.length >= 3 }
     }
 
     private companion object {

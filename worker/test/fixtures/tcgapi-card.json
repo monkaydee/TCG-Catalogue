@@ -1,0 +1,14 @@
+{
+  "data": {
+    "id": 8812,
+    "name": "Monkey.D.Luffy",
+    "number": "OP01-024",
+    "tcgplayer_id": 453000,
+    "game_slug": "one-piece-card-game",
+    "prices": [
+      { "card_id": 8812, "printing": "Normal", "market_price": 2.47, "low_price": 1.9, "median_price": 2.5, "market_price_as_of": "2026-10-02", "last_updated_at": "2026-10-02T06:00:00Z" },
+      { "card_id": 8812, "printing": "Foil", "market_price": 31.2, "low_price": 28, "median_price": null, "market_price_as_of": "2026-10-02", "last_updated_at": "2026-10-02T06:00:00Z" }
+    ]
+  },
+  "rate_limit": { "daily_limit": 100, "daily_remaining": 99, "daily_reset": "2026-10-04T00:00:00Z" }
+}

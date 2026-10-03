@@ -320,6 +320,7 @@ private fun CardDetail(
         PriceHistoryCard(history, s)
         PriceLinks(c, s)
         PriceOverview(c, s, repo)
+        if (s.hasServer) GradedPanel(c, s, repo)
         Text(stringResource(R.string.card_quantity), style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
         QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
         if (c.game == Game.ONE_PIECE && s.pokemonSource == PriceSource.CARDMARKET) {
@@ -387,6 +388,91 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                     }
                 }
                 g.problem?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
+            }
+        }
+    }
+}
+
+/**
+ * Graded prices of this card from the app's price server (every company and grade it knows),
+ * loaded on request; the copy's own grade is marked. Slabs from PSA can have their cert checked.
+ */
+@Composable
+private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
+    var prices by remember(c.id) { mutableStateOf<List<com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.Graded>?>(null) }
+    var failed by remember(c.id) { mutableStateOf(false) }
+    var loading by remember(c.id) { mutableStateOf(false) }
+    var cert by remember(c.id) { mutableStateOf<String?>(null) }
+    var certLoading by remember(c.id) { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.graded_title), style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                if (loading) {
+                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    TextButton(onClick = {
+                        loading = true
+                        scope.launch {
+                            val r = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.gradedPricesFor(c) }
+                            failed = r.isFailure
+                            prices = r.getOrNull()
+                            loading = false
+                        }
+                    }) { Text(stringResource(if (prices == null) R.string.card_show else R.string.card_refresh)) }
+                }
+            }
+            when {
+                failed -> Text(stringResource(R.string.graded_failed), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
+                prices?.isEmpty() == true -> Text(stringResource(R.string.graded_none), style = MaterialTheme.typography.bodySmall)
+            }
+            prices.orEmpty().sortedWith(compareBy({ it.grader }, { -(it.grade.toDoubleOrNull() ?: 0.0) })).forEach { g ->
+                val mine = c.graded && g.grader.equals(c.grader, ignoreCase = true) && g.grade.toDoubleOrNull() == c.grade?.toDoubleOrNull() && c.gradeQualifier == null
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        stringResource(R.string.graded_row_source, "${g.grader} ${g.grade}", g.source) + if (mine) " · " + stringResource(R.string.graded_yours) else "",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = if (mine) FontWeight.Bold else FontWeight.Normal,
+                        modifier = Modifier.weight(1f),
+                    )
+                    val converted = Money.convert(g.price, g.currency, s.currency, s.usdToEur)
+                    Text(
+                        Money.format(converted, s.currency) + if (g.currency != s.currency) "  (${Money.format(g.price, g.currency)})" else "",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Medium,
+                    )
+                }
+            }
+            val certNumber = c.certNumber?.filter(Char::isDigit)?.takeIf { it.isNotEmpty() && c.grader == "PSA" }
+            if (certNumber != null) {
+                HorizontalDivider()
+                if (certLoading) {
+                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    TextButton(onClick = {
+                        certLoading = true
+                        scope.launch {
+                            val r = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.verifyCert(certNumber) }
+                            val found = r.getOrNull()
+                            cert = when {
+                                r.isFailure -> AppStrings.get(R.string.cert_failed)
+                                found == null -> AppStrings.get(R.string.cert_unknown)
+                                else -> listOfNotNull(
+                                    listOfNotNull(found.year, found.set, found.description, found.cardNumber?.let { "#$it" }).joinToString(" "),
+                                    found.grade?.let { AppStrings.get(R.string.cert_grade, it) },
+                                    found.population?.let { p -> AppStrings.get(R.string.cert_population, p, found.higher ?: 0) },
+                                    AppStrings.get(R.string.cert_mismatch).takeIf {
+                                        val psaGrade = found.grade?.let { g -> Regex("""\d+(\.\d)?""").findAll(g).lastOrNull()?.value }
+                                        psaGrade != null && c.grade != null && psaGrade.toDoubleOrNull() != c.grade.toDoubleOrNull()
+                                    },
+                                ).joinToString("\n")
+                            }
+                            certLoading = false
+                        }
+                    }) { Text(stringResource(R.string.cert_check)) }
+                }
+                cert?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
             }
         }
     }

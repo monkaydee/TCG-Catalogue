@@ -1,0 +1,54 @@
+# Cloudflare Worker settings for the TCG Catalogue price server.
+# Everything here fits the FREE Workers plan. Secrets (API keys) are NOT in this file:
+# they are uploaded with `wrangler secret bulk` (see docs/CLOUDFLARE.md).
+
+name = "tcg-price-server"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+# Daily clean-up of old cache rows and counters (03:17 UTC).
+[triggers]
+crons = ["17 3 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tcg-price-cache"
+# The deploy workflow fills this in automatically. From a computer, paste the id printed by
+# `npx wrangler d1 create tcg-price-cache`.
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[vars]
+# How long results are reused before asking a provider again.
+RAW_TTL_HOURS = "24"
+GRADED_TTL_HOURS = "72"
+NOT_FOUND_TTL_HOURS = "72"
+CERT_TTL_DAYS = "30"
+POP_TTL_DAYS = "7"
+
+# Fairness: requests per caller (IP) per day, and provider calls per app request.
+IP_DAILY_LIMIT = "500"
+MAX_PROVIDER_CALLS_PER_REQUEST = "20"
+
+# Provider budgets in calls (free tier minus a 10% safety margin). MONTHLY = 0 means none.
+# Monthly budgets are spread over the month: at most (left this month / days left) per day.
+BUDGET_JUSTTCG_DAILY = "90"      # free: 100/day
+BUDGET_JUSTTCG_MONTHLY = "900"   # free: 1,000/month (one call = up to 20 cards)
+BUDGET_TCGAPI_DAILY = "90"       # free: 100/day
+BUDGET_TCGAPI_MONTHLY = "0"
+BUDGET_POKETRACE_DAILY = "225"   # free: 250/day
+BUDGET_POKETRACE_MONTHLY = "0"
+BUDGET_RAPIDAPI_DAILY = "5"      # free: 50/month shared by both RapidAPI APIs
+BUDGET_RAPIDAPI_MONTHLY = "45"
+BUDGET_PPT_DAILY = "9000"        # paid Pro: 20,000 credits/day, 2 credits per graded lookup
+BUDGET_PPT_MONTHLY = "0"
+BUDGET_PSA_DAILY = "90"          # free token: 100/day (PSA may have lowered this)
+BUDGET_PSA_MONTHLY = "0"
+BUDGET_XIMILAR_DAILY = "10"      # free: 1,000 credits/month, 10 per identification
+BUDGET_XIMILAR_MONTHLY = "90"
+
+# RapidAPI hosts. The PSA population host is empty (off) until you copy it from the API's
+# RapidAPI page; without it, /v1/pop uses the PSA API instead.
+RAPIDAPI_TCG_HOST = "tcgplayer-price-data.p.rapidapi.com"
+RAPIDAPI_POP_HOST = ""
+RAPIDAPI_POP_PATH = "/psa/pop"

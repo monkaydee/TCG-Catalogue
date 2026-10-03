@@ -1,0 +1,27 @@
+{
+  "data": [
+    {
+      "id": "0b7c1f4e-1111-4c1a-9a51-9f1f7a2b0c01",
+      "name": "Charizard",
+      "game": { "id": "pokemon", "name": "Pokemon" },
+      "external_ids": { "tcgplayer": "42382" },
+      "variants": [
+        { "id": "g1", "type": "graded", "condition": null, "printing": "Holofoil", "language": null,
+          "grading": { "company": "PSA", "grade": 10, "grade_label": null, "qualifier": null, "canonical": "PSA 10" },
+          "markets": [{ "region": "NA", "currency": "USD", "price": 12500, "updated_at": 1780936262 }] },
+        { "id": "g2", "type": "graded", "printing": "Holofoil",
+          "grading": { "company": "BGS", "grade": 9.5, "grade_label": null, "qualifier": null, "canonical": "BGS 9.5" },
+          "markets": [{ "region": "NA", "currency": "USD", "price": 4100.4, "updated_at": 1780936262 }] },
+        { "id": "g3", "type": "graded", "printing": "Holofoil",
+          "grading": { "company": "PSA", "grade": 9, "qualifier": "OC", "canonical": "PSA 9 OC" },
+          "markets": [{ "region": "NA", "currency": "USD", "price": 900 }] },
+        { "id": "g4", "type": "graded", "printing": "Holofoil",
+          "grading": { "company": "CGC", "grade": 10, "grade_label": "Pristine", "canonical": "CGC 10 Pristine" },
+          "markets": [{ "region": "NA", "currency": "USD", "price": null }] },
+        { "id": "r1", "type": "raw", "condition": "Near Mint", "printing": "Holofoil", "grading": null,
+          "markets": [{ "region": "NA", "currency": "USD", "price": 420 }] }
+      ]
+    }
+  ],
+  "meta": { "count": 1, "total": 1, "limit": 20, "has_more": false }
+}
