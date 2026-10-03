@@ -1,4 +1,5 @@
 [versions]
+litert = "1.4.0"
 robolectric = "4.14.1"
 appcompat = "1.7.0"
 agp = "8.7.3"
@@ -22,6 +23,7 @@ junit = "4.13.2"
 glance = "1.1.1"
 
 [libraries]
+litert = { module = "com.google.ai.edge.litert:litert", version.ref = "litert" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }

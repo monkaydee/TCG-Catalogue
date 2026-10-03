@@ -197,6 +197,30 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         if (i < 0) s else s.copy(items = s.items.take(i) + with + s.items.drop(i + 1))
     }
 
+    /** A photo without a readable number: look the card up by its picture alone. */
+    fun findByPicture(item: ImportItem) {
+        replace(item.key, listOf(item.copy(status = ImportStatus.LOOKING_UP, note = null)))
+        viewModelScope.launch {
+            val games = state.value.filter?.let { setOf(it) } ?: repo.settings.current().enabledGames
+            val result = com.monkaydee.tcgcatalogue.data.remote.attempt {
+                val photo = PhotoRecognizer.loadSmall(context, item.photo)
+                val crop = com.monkaydee.tcgcatalogue.scan.PictureSearch.cardCrop(photo, fromCamera = false)
+                repo.candidatesFromPicture(com.monkaydee.tcgcatalogue.scan.PictureSearch.find(context, crop, games))
+            }
+            val found = result.getOrDefault(emptyList())
+            replace(
+                item.key,
+                listOf(
+                    when {
+                        result.isFailure -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_unavailable))
+                        found.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_none))
+                        else -> item.copy(status = ImportStatus.REVIEW, candidates = found, note = null)
+                    },
+                ),
+            )
+        }
+    }
+
     fun retry(item: ImportItem) {
         if (item.hit == null) {
             replace(item.key, listOf(item.copy(status = ImportStatus.READING, note = null)))
@@ -322,7 +346,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                     }
                 }
                 items(state.items, key = { it.key }) { item ->
-                    ImportRow(item, settings, repo, onReview = { vm.review(item) }, onRetry = { vm.retry(item) }, onRemove = { vm.remove(item) }, onManual = onManual)
+                    ImportRow(item, settings, repo, onReview = { vm.review(item) }, onRetry = { vm.retry(item) }, onRemove = { vm.remove(item) }, onManual = onManual, onPicture = { vm.findByPicture(item) })
                 }
             }
         }
@@ -344,7 +368,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
 private fun ScanHit.label() = describeHit(this)
 
 @Composable
-private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardRepository, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit) {
+private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardRepository, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit, onPicture: () -> Unit = {}) {
     val top = item.candidates.firstOrNull()
     Card(Modifier.fillMaxWidth().clickable(enabled = item.status == ImportStatus.REVIEW, onClick = onReview)) {
         Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -391,11 +415,18 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
                         item.note?.let { Text(it, style = MaterialTheme.typography.bodySmall, maxLines = 2) }
                     }
                     ImportStatus.NOT_FOUND -> Text(stringResource(R.string.import_no_card_found, item.hit?.label().toString()), style = MaterialTheme.typography.bodyMedium)
-                    ImportStatus.NO_NUMBER -> Text(stringResource(R.string.import_no_number), style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.NO_NUMBER -> {
+                        Text(stringResource(R.string.import_no_number), style = MaterialTheme.typography.bodyMedium)
+                        item.note?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    }
                     ImportStatus.ERROR -> Text(item.note ?: stringResource(R.string.import_something_wrong), style = MaterialTheme.typography.bodyMedium)
                 }
                 when (item.status) {
-                    ImportStatus.NO_NUMBER, ImportStatus.NOT_FOUND -> OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
+                    ImportStatus.NO_NUMBER -> androidx.compose.foundation.layout.Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = onPicture) { Text(stringResource(R.string.picture_find)) }
+                        OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
+                    }
+                    ImportStatus.NOT_FOUND -> OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
                     ImportStatus.ERROR -> OutlinedButton(onClick = onRetry) { Text(stringResource(R.string.import_retry)) }
                     else -> Unit
                 }

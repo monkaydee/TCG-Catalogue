@@ -61,7 +61,6 @@ class TextAnalyzer(
                     val box = line.boundingBox ?: return@mapNotNull null
                     line.text to box
                 }
-                if (all.isEmpty()) return@addOnSuccessListener
                 // Lines of the card: inside the guide, with some room for a card held a bit too close.
                 val near = RectF(guide).apply { inset(-guide.width() * 0.15f, -guide.height() * 0.2f) }
                 val cardLines = all.filter { (_, b) -> near.contains(b.exactCenterX(), b.exactCenterY()) }.map { (t, b) ->

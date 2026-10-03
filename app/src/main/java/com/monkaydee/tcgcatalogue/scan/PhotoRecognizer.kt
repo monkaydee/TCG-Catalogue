@@ -62,6 +62,13 @@ object PhotoRecognizer {
         return Bitmap.createBitmap(photo, 0, 0, photo.width, photo.height, Matrix().apply { postScale(scale, scale); postRotate(rotation.toFloat()) }, true)
     }
 
+    /** A photo, upright and at most 900 pixels on its longest side, for finding a card by its picture. */
+    suspend fun loadSmall(context: Context, uri: Uri): Bitmap = withContext(Dispatchers.IO) {
+        val full = decode(context, uri)
+        val scale = 900f / max(full.width, full.height)
+        if (scale >= 1f) full else Bitmap.createScaledBitmap(full, (full.width * scale).toInt(), (full.height * scale).toInt(), true).also { full.recycle() }
+    }
+
     private fun decode(context: Context, uri: Uri): Bitmap {
         val resolver = context.contentResolver
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

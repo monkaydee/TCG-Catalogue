@@ -838,6 +838,20 @@ class CardRepository(
         }
     }
 
+    // ---- Find by picture ----
+
+    /** The cards behind picture matches, best first, marked to be checked (never added on their own). */
+    suspend fun candidatesFromPicture(found: List<com.monkaydee.tcgcatalogue.scan.PictureSearch.Found>): List<CardCandidate> = coroutineScope {
+        val warning = com.monkaydee.tcgcatalogue.ui.AppStrings.get(R.string.picture_check)
+        found.distinctBy { it.game to it.cardId }.map { f ->
+            async {
+                attempt { fetch(f.game, f.cardId) }.getOrNull()?.let { c ->
+                    c.copy(score = f.score.toDouble(), warning = warning, preferredVariant = f.printing?.takeIf { p -> c.variants.any { it.key == p } } ?: c.preferredVariant)
+                }
+            }
+        }.mapNotNull { it.await() }
+    }
+
     private companion object {
         val JAPANESE = setOf(Character.UnicodeScript.HIRAGANA, Character.UnicodeScript.KATAKANA, Character.UnicodeScript.HAN)
     }

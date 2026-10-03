@@ -1,0 +1,55 @@
+name: Picture index
+
+# Builds the picture index for "find by picture" (scripts/build_embeddings.py) and publishes it
+# on the `embeddings` branch, where the app downloads it from. New cards appear with new sets, so
+# a weekly run is enough; earlier embeddings are cached between runs.
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build_embeddings.py
+      - .github/workflows/embeddings.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: embeddings
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: pip install numpy pillow ai-edge-litert
+
+      - name: Restore embeddings of earlier runs
+        uses: actions/cache@v4
+        with:
+          path: embed-cache.npz
+          key: embed-cache-${{ github.run_id }}
+          restore-keys: embed-cache-
+
+      - name: Build picture index
+        run: python scripts/build_embeddings.py out embed-cache.npz
+
+      # A single orphan commit, replaced on every run, so the branch never grows.
+      - name: Publish to the embeddings branch
+        working-directory: out
+        run: |
+          git init -q -b embeddings
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Picture index $(date -u +%F)"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" embeddings

@@ -75,6 +75,15 @@ class Http(
             null as String?
         }
 
+    /** GET [url] as bytes (for model and index files); throws on any failure. */
+    suspend fun getBytes(url: String): ByteArray = withContext(Dispatchers.IO) {
+        val request = Request.Builder().url(url).header("User-Agent", "TCG-Catalogue-Android/1.0").build()
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw HttpException(response.code, AppStrings.get(R.string.data_service_unavailable, request.url.host))
+            response.body?.bytes() ?: ByteArray(0)
+        }
+    }
+
     private sealed interface Fetched {
         data class Text(val body: String) : Fetched
         data object Missing : Fetched

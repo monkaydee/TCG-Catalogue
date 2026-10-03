@@ -88,6 +88,8 @@ dependencies {
     implementation(libs.camerax.lifecycle)
     implementation(libs.camerax.view)
     implementation(libs.mlkit.text)
+    // On-device image model for "find by picture" (the model itself is downloaded on first use).
+    implementation(libs.litert)
 
     implementation(libs.work.runtime)
     implementation(libs.datastore.preferences)

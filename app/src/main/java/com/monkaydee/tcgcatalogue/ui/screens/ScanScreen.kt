@@ -1,5 +1,9 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material3.FilledTonalButton
+import com.monkaydee.tcgcatalogue.data.remote.attempt
+import com.monkaydee.tcgcatalogue.scan.PictureSearch
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.IconButton
@@ -115,6 +119,8 @@ data class ScanState(
     val session: List<SessionItem> = emptyList(),
     /** Bumped for every card added in stack mode, for a haptic tick. */
     val ticks: Int = 0,
+    /** A card is in view but no number could be read for a while: offer to find it by its picture. */
+    val canFindByPicture: Boolean = false,
 )
 
 /** A card scanned in stack mode: added (with its collection row, for undo) or waiting for review. */
@@ -164,12 +170,21 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
 
     fun setFilter(f: Game?) = state.update { it.copy(filter = f) }
 
+    private var lastHitAt = 0L
+    private var lastAnyPicture: android.graphics.Bitmap? = null
+
     fun onFrame(frame: ScanFrame) {
         if (!scanning) return
+        frame.card?.let { lastAnyPicture = it }
         val filter = state.value.filter
         val hit = CardTextParser.parse(frame.cardLines, filter, repo.indexMatchers(enabled))
             ?.takeIf { filter != null || it.game in enabled }
         if (hit == null || hit.key != lastAddedKey) gapSinceAdd = true
+        val now0 = System.currentTimeMillis()
+        if (hit != null) lastHitAt = now0
+        val offer = hit == null && now0 - lastHitAt > 2500 && frame.card != null &&
+            (filter?.let { it in PictureSearch.GAMES } ?: enabled.any { it in PictureSearch.GAMES })
+        if (offer != state.value.canFindByPicture) state.update { it.copy(canFindByPicture = offer) }
         if (hit == null) return
         if (state.value.stack && hit.key == lastAddedKey && !gapSinceAdd) return
         frame.card?.let { lastPicture = it }
@@ -244,6 +259,33 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
                     ticks = it.ticks + 1,
                     message = AppStrings.get(R.string.stack_review_later, top.name),
                 )
+            }
+        }
+    }
+
+    /** Looks the card in the guide up by its picture alone (for cards whose number can't be read). */
+    fun findByPicture() {
+        val picture = lastAnyPicture ?: return
+        val games = state.value.filter?.let { setOf(it) } ?: enabled
+        state.update {
+            it.copy(
+                loading = true, canFindByPicture = false,
+                message = AppStrings.get(if (PictureSearch.isReady(context)) R.string.picture_searching else R.string.picture_preparing),
+            )
+        }
+        viewModelScope.launch {
+            val result = attempt {
+                val crop = PictureSearch.cardCrop(picture, fromCamera = true)
+                repo.candidatesFromPicture(PictureSearch.find(context, crop, games))
+            }
+            cooldownUntil = System.currentTimeMillis() + 2500
+            val found = result.getOrDefault(emptyList())
+            state.update {
+                when {
+                    result.isFailure -> it.copy(loading = false, message = AppStrings.get(R.string.picture_unavailable))
+                    found.isEmpty() -> it.copy(loading = false, message = AppStrings.get(R.string.picture_none))
+                    else -> it.copy(loading = false, message = null, candidates = found)
+                }
             }
         }
     }
@@ -386,6 +428,13 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
             )
             if (state.addedCount > 0) Text(pluralStringResource(R.plurals.scan_added_this_session, state.addedCount, state.addedCount), color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
             if (state.stack && state.session.isNotEmpty()) StackStrip(state.session, onUndo = vm::undo, onReview = vm::review)
+            if (state.canFindByPicture && !state.loading) {
+                FilledTonalButton(onClick = vm::findByPicture) {
+                    Icon(Icons.Default.ImageSearch, null)
+                    Spacer(Modifier.size(8.dp))
+                    Text(stringResource(R.string.picture_find))
+                }
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = onPhotos) {
                     Icon(Icons.Default.PhotoLibrary, null)

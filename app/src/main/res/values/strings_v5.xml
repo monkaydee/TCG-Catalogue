@@ -46,4 +46,12 @@
     <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
     <string name="home_cloud_newer_title">A newer collection from another phone</string>
     <string name="home_cloud_newer_text">Your cloud backup was updated on another phone. Tap to load or merge it in Settings.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Find by picture</string>
+    <string name="picture_preparing">Preparing picture search — a one-time download of about 20 MB…</string>
+    <string name="picture_searching">Looking for the card by its picture…</string>
+    <string name="picture_none">No card found by its picture — try typing it in.</string>
+    <string name="picture_unavailable">Picture search isn\'t available right now — check your connection.</string>
+    <string name="picture_check">Found by its picture — please check it\'s the right card.</string>
 </resources>
