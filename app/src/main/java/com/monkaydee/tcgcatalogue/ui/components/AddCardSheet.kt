@@ -231,8 +231,13 @@ fun AddCardSheet(
             }
             if (card.variants.size > 1) {
                 Text(
-                    if (initial == null && card.preferredVariant != null) "Printing — recognised from the scan, change it if needed" else "Printing",
+                    when {
+                        initial == null && card.printingCheck -> "Printing — please check: the scan couldn't tell it apart from another printing"
+                        initial == null && card.preferredVariant != null -> "Printing — recognised from the scan"
+                        else -> "Printing"
+                    },
                     style = MaterialTheme.typography.labelLarge,
+                    color = if (initial == null && card.printingCheck) MaterialTheme.colorScheme.error else androidx.compose.ui.graphics.Color.Unspecified,
                 )
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     card.variants.forEach { v ->

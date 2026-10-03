@@ -14,7 +14,7 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 /**
  * What one camera frame shows: [cardLines] are the lines inside the card guide, positioned in
  * fractions of the guide (0 = its top), [allLines] everything (a slab label sits above the card),
- * and [card] a small picture of the card for telling alt arts apart.
+ * and [card] a small picture of the area around the guide, for telling alt arts apart.
  */
 class ScanFrame(val cardLines: List<OcrLine>, val allLines: List<OcrLine>, val card: Bitmap?)
 
@@ -68,7 +68,7 @@ class TextAnalyzer(
                     OcrLine(t, (b.top - guide.top) / guide.height(), b.height() / guide.height())
                 }
                 val allLines = all.map { (t, b) -> OcrLine(t, b.top / upright.height.toFloat(), b.height() / upright.height.toFloat()) }
-                onFrame(ScanFrame(cardLines, allLines, thumbnail(upright, guide)))
+                onFrame(ScanFrame(cardLines, allLines, thumbnail(upright, near)))
             }
             .addOnCompleteListener {
                 upright.recycle()
@@ -92,10 +92,11 @@ class TextAnalyzer(
         return out
     }
 
-    private fun thumbnail(frame: Bitmap, guide: RectF): Bitmap? = runCatching {
-        val r = Rect(guide.left.toInt(), guide.top.toInt(), guide.right.toInt(), guide.bottom.toInt())
+    /** The area around the guide (the card is searched in it, so it may sit a bit off), small. */
+    private fun thumbnail(frame: Bitmap, area: RectF): Bitmap? = runCatching {
+        val r = Rect(area.left.toInt(), area.top.toInt(), area.right.toInt(), area.bottom.toInt())
         if (!r.intersect(0, 0, frame.width, frame.height) || r.width() < 20 || r.height() < 20) return null
-        val scale = 180f / r.width()
+        val scale = 320f / r.height()
         Bitmap.createBitmap(frame, r.left, r.top, r.width(), r.height(), Matrix().apply { postScale(scale, scale) }, true)
     }.getOrNull()
 

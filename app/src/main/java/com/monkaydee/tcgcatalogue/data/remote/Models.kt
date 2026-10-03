@@ -56,6 +56,8 @@ data class CardCandidate(
     val attacks: List<String> = emptyList(),
     /** The printing the scan recognised (1st Edition stamp, alt art picture), preselected when adding. */
     val preferredVariant: String? = null,
+    /** The scan couldn't tell for sure which printing it is, and they differ in value: the user should check. */
+    val printingCheck: Boolean = false,
 ) {
     /** The printing to preselect: the recognised one, otherwise the first. */
     val defaultVariant: Variant get() = variants.firstOrNull { it.key == preferredVariant } ?: variants.first()

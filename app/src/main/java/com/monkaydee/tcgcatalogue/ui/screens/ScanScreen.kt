@@ -153,7 +153,7 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         state.update { it.copy(loading = true, message = null) }
         viewModelScope.launch {
             val picture = lastPicture
-            val result = runCatching { VisualMatcher.rank(context, picture, repo.resolve(hit)) }
+            val result = runCatching { VisualMatcher.rank(context, picture, repo.resolve(hit), VisualMatcher.Source.CAMERA) }
             val candidates = result.getOrDefault(emptyList())
             cooldownKey = hit.key
             cooldownUntil = System.currentTimeMillis() + 2500
