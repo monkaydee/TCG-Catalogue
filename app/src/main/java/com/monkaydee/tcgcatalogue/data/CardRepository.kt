@@ -14,7 +14,6 @@ import com.monkaydee.tcgcatalogue.data.remote.FxApi
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.Price
 import com.monkaydee.tcgcatalogue.data.remote.PricePoint
-import com.monkaydee.tcgcatalogue.data.remote.PriceChartingApi
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.data.remote.Pricing
 import com.monkaydee.tcgcatalogue.data.remote.ScryfallApi
@@ -48,7 +47,6 @@ class CardRepository(
     private val onePiece: OnePieceApi,
     private val scryfall: ScryfallApi,
     private val cardIndex: CardIndexApi,
-    private val priceCharting: PriceChartingApi,
     private val tcgplayer: TcgPlayerApi,
     private val cardmarket: CardmarketApi,
     private val cardmarketPokemon: CardmarketPokemon,
@@ -195,32 +193,20 @@ class CardRepository(
         return pool.minByOrNull { kotlin.math.abs(kotlin.math.ln(it.price!!.coerceAtLeast(0.01) / target.coerceAtLeast(0.01))) }
     }
 
-    /** A graded price, or why there is none ("PriceCharting: not listed · eBay: no CGC 10 sales"). */
+    /** A graded price, or why there is none. */
     data class GradedResult(val price: Price?, val problem: String?)
 
     suspend fun gradedPrice(card: CardCandidate, variant: Variant, grade: GradeInfo): Price? = gradedLookup(card, variant, grade).price
 
     /**
-     * Price of a graded copy: PriceCharting's sold prices for that company and grade, otherwise
-     * the average of the last 5 eBay sales of the card in that grade.
+     * Price of a graded copy. No free source publishes graded sales the app can read (PriceCharting
+     * and eBay block apps), so graded copies carry the user's own value, helped by the price links.
      */
+    @Suppress("UNUSED_PARAMETER")
     suspend fun gradedLookup(card: CardCandidate, variant: Variant, grade: GradeInfo): GradedResult {
-        val grader = grade.grader ?: return GradedResult(null, "choose the grading company")
-        val g = grade.grade ?: return GradedResult(null, "choose the grade")
-        val label = GradeInfo(grader, g, grade.qualifier).label
-        val lookup = priceCharting.lookup(card, variant)
-        val table = lookup.table
-        val pcSource = if (table?.currency == "EUR") PriceSource.PRICECHARTING_EUR else PriceSource.PRICECHARTING
-        // PriceCharting's estimates for graders without their own column are a last resort.
-        val pc = table?.let { PriceChartingApi.priceFor(it, grader, g, grade.qualifier) }
-        if (pc != null && pc.second == null) return GradedResult(Price(pc.first, pcSource), null)
-        val pcProblem = when {
-            lookup.problem != null -> "PriceCharting: ${lookup.problem}"
-            pc == null -> "PriceCharting: no $label sales"
-            else -> null
-        }
-        pc?.let { (amount, note) -> return GradedResult(Price(amount, pcSource, note), null) }
-        return GradedResult(null, listOfNotNull(pcProblem, "set your own value, or check the price links on the card page").joinToString(" · "))
+        grade.grader ?: return GradedResult(null, "choose the grading company")
+        grade.grade ?: return GradedResult(null, "choose the grade")
+        return GradedResult(null, "no graded price source — set your own value, or check the price links on the card page")
     }
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
@@ -449,7 +435,6 @@ class CardRepository(
             attempt { tcgplayerProduct(fresh, variant)?.let { tcgplayer.conditionPrices(it) } }
                 .getOrNull()?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }
         }
-        val graded = async { attempt { priceCharting.lookup(fresh, variant) }.getOrElse { PriceChartingApi.Lookup(null, it.message) } }
 
         val groups = mutableListOf<PriceGroup>()
         val cm = variant.details.filter { it.source == PriceSource.CARDMARKET }
@@ -476,13 +461,6 @@ class CardRepository(
             "TCGplayer by condition (sales)",
             TcgPlayerApi.CONDITION_NAMES.mapNotNull { (code, name) -> byCondition?.get(name)?.let { PricePoint(PriceSource.TCGPLAYER, code, it) } },
             if (byCondition.isNullOrEmpty()) "no sales by condition" else null,
-        )
-        val pc = graded.await()
-        val pcSource = if (pc.table?.currency == "EUR") PriceSource.PRICECHARTING_EUR else PriceSource.PRICECHARTING
-        groups += PriceGroup(
-            "PriceCharting (raw & graded sales)",
-            pc.table?.prices?.map { (label, amount) -> PricePoint(pcSource, label, amount) }.orEmpty(),
-            pc.problem,
         )
         groups
     }

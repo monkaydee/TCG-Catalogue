@@ -8,7 +8,6 @@ import com.monkaydee.tcgcatalogue.data.remote.CardIndexApi
 import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
 import com.monkaydee.tcgcatalogue.data.remote.CardmarketPokemon
 import com.monkaydee.tcgcatalogue.data.remote.FxApi
-import com.monkaydee.tcgcatalogue.data.remote.PriceChartingApi
 import com.monkaydee.tcgcatalogue.data.remote.ScryfallApi
 import com.monkaydee.tcgcatalogue.data.remote.TcgPlayerApi
 import com.monkaydee.tcgcatalogue.data.remote.Http
@@ -31,7 +30,6 @@ class TcgApp : Application() {
             onePiece = OnePieceApi(http),
             scryfall = ScryfallApi(http),
             cardIndex = cardIndex,
-            priceCharting = PriceChartingApi(http),
             tcgplayer = TcgPlayerApi(http),
             cardmarket = CardmarketApi(cardIndex, http),
             cardmarketPokemon = CardmarketPokemon(cardIndex, http, tcgdex),

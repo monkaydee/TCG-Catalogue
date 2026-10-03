@@ -5,8 +5,6 @@ import com.monkaydee.tcgcatalogue.data.db.Game
 enum class PriceSource(val label: String, val currency: String) {
     CARDMARKET("Cardmarket", "EUR"),
     TCGPLAYER("TCGplayer", "USD"),
-    PRICECHARTING("PriceCharting", "USD"),
-    PRICECHARTING_EUR("PriceCharting", "EUR"),
 }
 
 data class Price(val amount: Double, val source: PriceSource, val note: String? = null) {

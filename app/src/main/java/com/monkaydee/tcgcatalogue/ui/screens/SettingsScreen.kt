@@ -111,7 +111,7 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             Text(
                 "Cardmarket trend price for European prices, TCGplayer market price for US prices. For One Piece you pick the exact Cardmarket listing (set and V.1/V.2…) of your copy. The other games only have TCGplayer prices. " +
                     "When the two markets disagree by more than 3×, one of them is linked to the wrong card and the app uses the other one (the card shows a note). " +
-                    "Graded cards are priced from PriceCharting's sold listings.",
+                    "Graded cards use your own value; the card page links to recent sales.",
                 style = MaterialTheme.typography.bodySmall,
             )
 
@@ -158,7 +158,6 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                     "One Piece data & prices: OPTCG API (optcgapi.com)\n" +
                     "Magic data & prices: Scryfall (scryfall.com)\n" +
                     "Dragon Ball, Union Arena, Weiss Schwarz, Naruto: TCGplayer via TCGCSV (tcgcsv.com)\n" +
-                    "Graded prices: PriceCharting (pricecharting.com)\n" +
                     "Exchange rates: Frankfurter (ECB)\n" +
                     "Text recognition runs on-device with Google ML Kit.",
                 style = MaterialTheme.typography.bodySmall,

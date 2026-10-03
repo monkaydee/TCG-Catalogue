@@ -242,7 +242,7 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.secondary,
                 )
-                Text("Graded price from sold listings (PriceCharting, otherwise the last 5 eBay sales).", style = MaterialTheme.typography.labelSmall)
+                Text("Graded copies use your own value — check recent sales with the links below.", style = MaterialTheme.typography.labelSmall)
             } else {
                 Text("Raw-card market price for this condition.", style = MaterialTheme.typography.labelSmall)
             }
