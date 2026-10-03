@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = %2$d%% dari NM (penjualan TCGplayer)</string>
     <string name="price_note_estimated_share">%1$s diperkirakan %2$d%% dari NM (tanpa data penjualan)</string>
     <string name="data_http_error">HTTP %1$d untuk %2$s</string>
+    <string name="data_service_unavailable">Layanan kartu (%1$s) sedang tidak merespons. Silakan coba lagi sebentar lagi.</string>
 </resources>

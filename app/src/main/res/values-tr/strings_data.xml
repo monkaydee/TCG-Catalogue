@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = NM fiyatının %%%2$d düzeyinde (TCGplayer satışları)</string>
     <string name="price_note_estimated_share">%1$s, NM fiyatının %%%2$d düzeyinde tahmin edildi (satış verisi yok)</string>
     <string name="data_http_error">%2$s için HTTP %1$d</string>
+    <string name="data_service_unavailable">Kart servisi (%1$s) şu an yanıt vermiyor. Lütfen bir dakika sonra tekrar deneyin.</string>
 </resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">Atla</string>
+    <string name="onboarding_next">İleri</string>
+    <string name="onboarding_get_started">Başla</string>
+    <string name="onboarding_scan_title">Kartlarınızı tarayın</string>
+    <string name="onboarding_scan_text">Kamerayı bir karta doğrultun veya galerinizden fotoğraf içe aktarın. Ad ve numara sizin için okunur.</string>
+    <string name="onboarding_binder_title">Koleksiyonunuz bir binder\'da</string>
+    <string name="onboarding_binder_text">Kartlarınıza sanal bir binder\'da sayfa sayfa göz atın ve gerçeğindeki gibi çevirin.</string>
+    <string name="onboarding_prices_title">Fiyatlar ve değer</string>
+    <string name="onboarding_prices_text">Her kartın değerini görün ve tüm koleksiyonunuzun değerini zaman içinde takip edin.</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">Sayfa %1$d / %2$d</string>
+</resources>

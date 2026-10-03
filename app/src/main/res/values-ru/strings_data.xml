@@ -45,4 +45,5 @@
     <string name="price_note_estimated_share">%1$s: оценка %2$d%% от NM (нет данных о продажах)</string>
 
     <string name="data_http_error">HTTP %1$d для %2$s</string>
+    <string name="data_service_unavailable">Сервис карт (%1$s) сейчас не отвечает. Повторите попытку через минуту.</string>
 </resources>

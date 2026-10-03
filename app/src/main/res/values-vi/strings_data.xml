@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = %2$d%% giá NM (giao dịch TCGplayer)</string>
     <string name="price_note_estimated_share">%1$s ước tính bằng %2$d%% giá NM (không có dữ liệu giao dịch)</string>
     <string name="data_http_error">HTTP %1$d cho %2$s</string>
+    <string name="data_service_unavailable">Dịch vụ dữ liệu thẻ (%1$s) hiện không phản hồi. Vui lòng thử lại sau một phút.</string>
 </resources>

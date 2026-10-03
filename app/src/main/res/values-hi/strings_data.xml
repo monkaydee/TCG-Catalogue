@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = NM का %2$d%% (TCGplayer बिक्री)</string>
     <string name="price_note_estimated_share">%1$s का अनुमान NM का %2$d%% (बिक्री डेटा नहीं)</string>
     <string name="data_http_error">%2$s के लिए HTTP %1$d</string>
+    <string name="data_service_unavailable">कार्ड सेवा (%1$s) अभी जवाब नहीं दे रही है। कृपया एक मिनट बाद फिर कोशिश करें।</string>
 </resources>

@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = %2$d%% ของ NM (ยอดขาย TCGplayer)</string>
     <string name="price_note_estimated_share">%1$s ประมาณ %2$d%% ของ NM (ไม่มีข้อมูลยอดขาย)</string>
     <string name="data_http_error">HTTP %1$d สำหรับ %2$s</string>
+    <string name="data_service_unavailable">บริการข้อมูลการ์ด (%1$s) ไม่ตอบสนองในขณะนี้ โปรดลองอีกครั้งในอีกสักครู่</string>
 </resources>

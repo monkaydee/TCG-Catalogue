@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = %2$d%% від NM (продажі TCGplayer)</string>
     <string name="price_note_estimated_share">%1$s оцінено в %2$d%% від NM (немає даних про продажі)</string>
     <string name="data_http_error">HTTP %1$d для %2$s</string>
+    <string name="data_service_unavailable">Сервіс карток (%1$s) зараз не відповідає. Спробуйте ще раз за хвилину.</string>
 </resources>

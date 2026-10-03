@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Common -->
+    <string name="lists_back">Quay lại</string>
+    <string name="lists_cancel">Hủy</string>
+    <string name="lists_save">Lưu</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">Xóa</string>
+    <string name="lists_remove">Gỡ</string>
+    <string name="lists_retry">Thử lại</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">Danh sách</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">Số tiền (%1$s)</string>
+    <string name="lists_amount_invalid">Nhập số tiền, ví dụ 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">Danh sách kiểm tra</string>
+    <string name="checklist_open">Hiện danh sách kiểm tra</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="other">Đã có %1$d/%2$d thẻ</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">Tất cả · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">Đã có · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">Còn thiếu · %1$d</string>
+    <string name="checklist_loading">Đang tải các thẻ của bộ này…</string>
+    <string name="checklist_empty_title">Không có danh sách kiểm tra cho bộ này</string>
+    <string name="checklist_empty_text">Không tải được danh sách thẻ. Hãy kiểm tra kết nối, hoặc bộ này có thể chưa được liệt kê.</string>
+    <string name="checklist_none_owned">Bạn chưa có thẻ nào của bộ này.</string>
+    <string name="checklist_none_missing">Hoàn thành! Bạn đã có đủ mọi thẻ của bộ này.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">Còn thiếu</string>
+    <string name="checklist_on_wishlist">Trong danh sách mong muốn</string>
+    <string name="checklist_add_collection">Thêm vào bộ sưu tập</string>
+    <string name="checklist_add_wishlist">Thêm vào danh sách mong muốn</string>
+    <string name="checklist_card_loading">Đang tải thẻ…</string>
+    <string name="checklist_card_failed">Không tải được thẻ này — hãy kiểm tra kết nối</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">Đã thêm %1$s vào bộ sưu tập của bạn</string>
+    <string name="checklist_printing">Bản in</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">Danh sách mong muốn</string>
+    <string name="wish_add">Thêm vào danh sách mong muốn</string>
+    <string name="wish_remove">Xóa khỏi danh sách mong muốn</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">Đã thêm %1$s vào danh sách mong muốn</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">Đã xóa %1$s khỏi danh sách mong muốn</string>
+    <string name="wish_add_failed">Không thể thêm thẻ — hãy kiểm tra kết nối</string>
+    <string name="wish_total">Tổng chi phí</string>
+    <plurals name="wish_count">
+        <item quantity="other">%1$d thẻ</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="other">%1$d thẻ bằng hoặc thấp hơn mục tiêu</item>
+    </plurals>
+    <string name="wish_empty_title">Danh sách mong muốn của bạn đang trống</string>
+    <string name="wish_empty_text">Thêm thẻ từ kết quả tìm kiếm hoặc từ các thẻ còn thiếu trong danh sách kiểm tra của bộ.</string>
+    <string name="wish_no_price">Chưa có giá</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">Mục tiêu %1$s</string>
+    <string name="wish_no_target">Chưa đặt giá mục tiêu</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">Đạt mục tiêu</string>
+    <string name="wish_set_target">Đặt giá mục tiêu</string>
+    <string name="wish_target_title">Giá mục tiêu</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">Bạn sẽ nhận được thông báo khi giá giảm xuống mức này hoặc thấp hơn. Hiện tại: %1$s</string>
+    <string name="wish_target_text_no_price">Bạn sẽ nhận được thông báo khi giá giảm xuống mức này hoặc thấp hơn.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">Danh sách trao đổi</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">Để trao đổi</string>
+    <string name="trade_share">Chia sẻ danh sách</string>
+    <string name="trade_remove">Gỡ khỏi danh sách trao đổi</string>
+    <string name="trade_total">Giá trị trao đổi</string>
+    <string name="trade_empty_title">Chưa có gì để trao đổi</string>
+    <string name="trade_empty_text">Mở một thẻ trong bộ sưu tập và chạm “Để trao đổi” để thêm vào đây.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="other">Danh sách trao đổi của tôi (%1$d thẻ)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">Tổng giá trị: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">Chia sẻ từ %1$s</string>
+    <string name="trade_share_subject">Danh sách trao đổi của tôi</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">Bán</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">Bán %1$s</string>
+    <string name="sold_quantity">Số bản đã bán</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">trên %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">Giá mỗi bản (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">Tổng %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">Lãi %1$s</string>
+    <string name="sold_confirm">Bán</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">Đã bán %1$d× %2$s</string>
+    <string name="sold_title">Đã bán</string>
+    <string name="sold_realised">Lợi nhuận thực tế</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">Doanh thu %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="other">%1$d giao dịch bán không có giá mua không được tính</item>
+    </plurals>
+    <string name="sold_empty_title">Chưa có giao dịch bán nào</string>
+    <string name="sold_empty_text">Mở một thẻ trong bộ sưu tập và chạm “Bán” để ghi lại giao dịch tại đây.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">Đã bán %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">Giá mua %1$s mỗi bản</string>
+    <string name="sold_paid_unknown">Chưa rõ giá mua</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">Bán ngày %1$s</string>
+    <string name="sold_delete">Xóa mục này</string>
+    <string name="sold_delete_title">Xóa giao dịch bán này?</string>
+    <string name="sold_delete_text">Mục này sẽ bị xóa khỏi danh sách đã bán và khỏi lợi nhuận thực tế. Thẻ sẽ không quay lại bộ sưu tập của bạn.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">Cảnh báo</string>
+    <string name="alert_ui_title">Cảnh báo giá</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">Nhận thông báo khi giá trị mỗi bản vượt qua một trong các mức này. Hiện tại: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">Báo khi cao hơn (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">Báo khi thấp hơn (%1$s)</string>
+    <string name="alert_ui_order">Mức “cao hơn” phải lớn hơn mức “thấp hơn”</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">Trên %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">Dưới %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">Lịch sử giá</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">Cao nhất %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">Thấp nhất %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">Sửa</string>
+    <string name="lists_card_remove">Gỡ</string>
+</resources>
