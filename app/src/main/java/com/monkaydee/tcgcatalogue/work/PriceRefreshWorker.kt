@@ -11,6 +11,8 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.monkaydee.tcgcatalogue.TcgApp
+import com.monkaydee.tcgcatalogue.data.CloudBackup
+import com.monkaydee.tcgcatalogue.widget.PortfolioWidget
 import java.util.concurrent.TimeUnit
 
 /** Refreshes all prices and records the day's portfolio value. */
@@ -21,6 +23,8 @@ class PriceRefreshWorker(context: Context, params: WorkerParameters) : Coroutine
             .fold(
                 onSuccess = {
                     AlertNotifier.show(applicationContext, repo.lastAlerts)
+                    PortfolioWidget.refresh(applicationContext)
+                    CloudBackup.autoSave()
                     Result.success()
                 },
                 onFailure = { if (runAttemptCount < 3) Result.retry() else Result.failure() },

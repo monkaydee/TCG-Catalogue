@@ -15,6 +15,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -95,6 +104,13 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
     val setList by repo.sets.collectAsState(initial = emptyList())
     var game by rememberSaveable { mutableStateOf<Game?>(null) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    // The shown page is recorded into [layer] while it is drawn, so "Share page" can turn it into a picture.
+    val layer = rememberGraphicsLayer()
+    var shareInfo by remember { mutableStateOf<PageShareInfo?>(null) }
+    var sharing by remember { mutableStateOf(false) }
+    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+    val textColor = MaterialTheme.colorScheme.onBackground.toArgb()
 
     val picture = LocalLook.current.binderImage
     Backdrop(picture) {
@@ -105,6 +121,25 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                 colors = appBarColors(overPicture = picture != null),
                 title = { Text(stringResource(R.string.binder_title)) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.binder_back)) } },
+                actions = {
+                    IconButton(
+                        enabled = shareInfo != null && !sharing,
+                        onClick = {
+                            val info = shareInfo ?: return@IconButton
+                            sharing = true
+                            scope.launch {
+                                runCatching {
+                                    val shot = layer.toImageBitmap().asAndroidBitmap()
+                                    val uri = PageShare.save(context, shot, info.footer, context.getString(R.string.app_name), backgroundColor, textColor)
+                                    PageShare.open(context, uri)
+                                }.onFailure {
+                                    Toast.makeText(context, context.getString(R.string.share_failed, it.message.orEmpty()), Toast.LENGTH_LONG).show()
+                                }
+                                sharing = false
+                            }
+                        },
+                    ) { Icon(Icons.Default.Share, stringResource(R.string.share_page)) }
+                },
             )
         },
     ) { padding ->
@@ -164,13 +199,29 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
             }
 
             if (pages.isEmpty()) {
+                SideEffect { shareInfo = null }
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.binder_empty), style = MaterialTheme.typography.bodyMedium)
                 }
                 return@Column
             }
             val open = { c: OwnedCard -> onOpenCard(order, c.id) }
-            Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp)) {
+            val shownPage = pages[turner.page.coerceIn(pages.indices)]
+            val footer = listOfNotNull(
+                shownPage.title?.takeIf { it.isNotBlank() },
+                Money.format(shownPage.cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency),
+            ).joinToString(" · ")
+            SideEffect { shareInfo = PageShareInfo(footer) }
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 6.dp)
+                    .drawWithContent {
+                        layer.record { this@drawWithContent.drawContent() }
+                        drawLayer(layer)
+                    },
+            ) {
                 if (s.binderAnimation) {
                     PageTurner(
                         state = turner,
