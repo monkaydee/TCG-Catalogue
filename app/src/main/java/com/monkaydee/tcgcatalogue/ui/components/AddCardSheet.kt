@@ -108,7 +108,7 @@ fun AddCardSheet(
     var selected by remember(candidates) { mutableIntStateOf(0) }
     val card = candidates[selected.coerceIn(candidates.indices)]
     var variantKey by remember(card) {
-        mutableStateOf(initial?.variant?.takeIf { k -> card.variants.any { it.key == k } } ?: card.variants.first().key)
+        mutableStateOf(initial?.variant?.takeIf { k -> card.variants.any { it.key == k } } ?: card.defaultVariant.key)
     }
     val variant = card.variants.firstOrNull { it.key == variantKey } ?: card.variants.first()
     var quantity by remember(card) { mutableIntStateOf(initial?.quantity ?: 1) }
@@ -193,7 +193,7 @@ fun AddCardSheet(
                             border = if (i == selected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
                             colors = CardDefaults.cardColors(),
                         ) {
-                            CardImage(c.variants.firstOrNull()?.imageUrl ?: c.imageUrl, thumb = true)
+                            CardImage(c.defaultVariant.imageUrl ?: c.imageUrl, thumb = true)
                             Text(c.name.takeIf { candidates.any { o -> o.name != c.name } } ?: c.setName,
                                 style = MaterialTheme.typography.labelSmall, maxLines = 2, modifier = Modifier.padding(4.dp))
                         }
@@ -230,7 +230,10 @@ fun AddCardSheet(
                 Text(it, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.error)
             }
             if (card.variants.size > 1) {
-                Text("Printing", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    if (initial == null && card.preferredVariant != null) "Printing — recognised from the scan, change it if needed" else "Printing",
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     card.variants.forEach { v ->
                         FilterChip(

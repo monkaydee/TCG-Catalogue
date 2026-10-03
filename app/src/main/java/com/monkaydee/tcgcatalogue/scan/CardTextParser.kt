@@ -23,7 +23,15 @@ sealed interface ScanHit {
      * A Pokémon collector number such as 025/165 or TG05/TG30.
      * [number] keeps the printed prefix ("TG05"); [total] is the printed set size (165).
      */
-    data class Pokemon(val number: String, val total: Int, val nameGuess: String?) : ScanHit {
+    data class Pokemon(
+        val number: String,
+        val total: Int,
+        val nameGuess: String?,
+        /** The set code printed next to the number since Scarlet & Violet ("PAL"), if read. */
+        val setCode: String? = null,
+        /** A "1st Edition" stamp was read on the card. */
+        val firstEdition: Boolean = false,
+    ) : ScanHit {
         override val game get() = Game.POKEMON
         override val key get() = "pkm:$number/$total"
     }
@@ -74,6 +82,13 @@ object CardTextParser {
     // Codes of the indexed games: "FB01-139", "UE01BT/BLC-1-001", "HOL/W91-001SP", "BT1-001".
     private val codeToken = Regex("""[A-Z0-9]+(?:[/\-_][A-Z0-9]+)+""")
 
+    // Scarlet & Violet print "G PAL EN 123/193": regulation mark, set code, language.
+    private val pokemonSetCode = Regex("""(?<![A-Z0-9])([A-Z][A-Z0-9]{1,3})\s+(EN|DE|FR|IT|ES|PT|NL|PL)(?![A-Z])""")
+    private val notSetCodes = setOf("HP", "EX", "GX", "VMAX", "VSTAR", "TERA")
+
+    // The 1st Edition stamp: "EDITION" around a big "1"; some prints spell it out.
+    private val firstEditionStamp = Regex("""\bEDITION\b|\b1ST\s*ED""")
+
     private val nameStopWords = setOf(
         "BASIC", "STAGE", "HP", "TRAINER", "SUPPORTER", "ITEM", "ENERGY", "STADIUM", "EVOLVES",
         "POKEMON", "POKÉMON", "TOOL", "ABILITY", "WEAKNESS", "RESISTANCE", "RETREAT", "ILLUS",
@@ -103,16 +118,29 @@ object CardTextParser {
         }
         if (codes.isNotEmpty() || filter != null && filter != Game.POKEMON) return codes
         val numbers = allPokemonNumbers(lines)
-        val name = if (numbers.size == 1) guessName(lines) else null
-        return numbers.map { (number, total) -> ScanHit.Pokemon(number, total, name) }
+        // Name, set code and stamp can only be tied to the number when there is a single card.
+        if (numbers.size != 1) return numbers.map { (number, total) -> ScanHit.Pokemon(number, total, null) }
+        val (number, total) = numbers.single()
+        return listOf(ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines)))
     }
 
     fun findOnePiece(lines: List<OcrLine>): ScanHit.OnePiece? = allOnePiece(lines).firstOrNull()
 
     fun findPokemon(lines: List<OcrLine>): ScanHit.Pokemon? {
         val (number, total) = allPokemonNumbers(lines).firstOrNull() ?: return null
-        return ScanHit.Pokemon(number, total, guessName(lines))
+        return ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines))
     }
+
+    /** The set code printed in the bottom left of Scarlet & Violet cards ("PAL" from "G PAL EN 123/193"). */
+    fun pokemonSetCode(lines: List<OcrLine>): String? = lines
+        .filter { it.top > 0.75f || it.top == 0f }
+        .sortedByDescending { it.top }
+        .firstNotNullOfOrNull { l ->
+            pokemonSetCode.findAll(l.text.uppercase()).map { it.groupValues[1] }.firstOrNull { it !in notSetCodes }
+        }
+
+    /** True when the 1st Edition stamp (or the words) can be read on the card. */
+    fun firstEdition(lines: List<OcrLine>): Boolean = lines.any { firstEditionStamp.containsMatchIn(it.text.uppercase()) }
 
     private fun allOnePiece(lines: List<OcrLine>): List<ScanHit.OnePiece> {
         val codes = lines.flatMap { line ->

@@ -38,8 +38,18 @@ class TcgDexApi(private val http: Http) {
             official = s["cardCount"]["official"].int() ?: 0,
             total = s["cardCount"]["total"].int() ?: 0,
             logoUrl = s["logo"].str()?.let { "$it.png" },
+            abbreviation = s["abbreviation"]["official"].str(),
         )
         return summary to s["releaseDate"].str()
+    }
+
+    private val abbreviations = java.util.concurrent.ConcurrentHashMap<String, String>()
+
+    /** The set code printed on the cards of [setId] ("" when it has none), cached for the session. */
+    suspend fun abbreviation(setId: String): String = abbreviations[setId] ?: run {
+        val code = setDetails(setId)?.first?.abbreviation?.uppercase().orEmpty()
+        abbreviations[setId] = code
+        code
     }
 
     /** Card by set and printed number, e.g. ("sv03.5", "25") or ("swsh9tg", "TG01"). */

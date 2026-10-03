@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.FocusMeteringAction
+import androidx.camera.core.UseCaseGroup
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.core.resolutionselector.ResolutionSelector
@@ -75,7 +77,9 @@ import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
 import com.monkaydee.tcgcatalogue.ui.components.GameChips
-import com.monkaydee.tcgcatalogue.scan.OcrLine
+import com.monkaydee.tcgcatalogue.scan.CardGuide
+import com.monkaydee.tcgcatalogue.scan.ScanFrame
+import com.monkaydee.tcgcatalogue.scan.VisualMatcher
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.TextAnalyzer
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
@@ -98,12 +102,15 @@ data class ScanState(
     val addedCount: Int = 0,
 )
 
-class ScanViewModel(private val repo: CardRepository) : ViewModel() {
+class ScanViewModel(private val repo: CardRepository, private val context: android.content.Context) : ViewModel() {
     val state = MutableStateFlow(ScanState())
     private var lastKey: String? = null
     private var streak = 0
     private var cooldownKey: String? = null
     private var cooldownUntil = 0L
+
+    /** Picture of the card from the latest frame that read the same card, for telling alt arts apart. */
+    private var lastPicture: android.graphics.Bitmap? = null
 
     /** Camera frames are only analysed while nothing else is going on. */
     val scanning get() = state.value.let { !it.loading && it.candidates.isEmpty() }
@@ -121,13 +128,14 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
 
     fun setFilter(f: Game?) = state.update { it.copy(filter = f) }
 
-    fun onLines(lines: List<OcrLine>) {
+    fun onFrame(frame: ScanFrame) {
         if (!scanning) return
         val filter = state.value.filter
-        val hit = CardTextParser.parse(lines, filter, repo.indexMatchers(enabled))
+        val hit = CardTextParser.parse(frame.cardLines, filter, repo.indexMatchers(enabled))
             ?.takeIf { filter != null || it.game in enabled } ?: return
-        // A slab label is read with the card; keep it while the same card stays in view.
-        val grade = CardTextParser.parseGrade(lines)
+        frame.card?.let { lastPicture = it }
+        // A slab label is read with the card (it sits above it); keep it while the same card stays in view.
+        val grade = CardTextParser.parseGrade(frame.allLines)
         if (hit.key != lastKey || grade != null) state.update { it.copy(grade = grade ?: it.grade.takeIf { hit.key == lastKey }) }
         // Require two consecutive frames to agree before calling the API, to filter OCR misreads.
         streak = if (hit.key == lastKey) streak + 1 else 1
@@ -144,7 +152,8 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
         streak = 0
         state.update { it.copy(loading = true, message = null) }
         viewModelScope.launch {
-            val result = runCatching { repo.resolve(hit) }
+            val picture = lastPicture
+            val result = runCatching { VisualMatcher.rank(context, picture, repo.resolve(hit)) }
             val candidates = result.getOrDefault(emptyList())
             cooldownKey = hit.key
             cooldownUntil = System.currentTimeMillis() + 2500
@@ -156,7 +165,7 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
                     val top = candidates.first()
                     val grade = state.value.grade?.takeIf { it.grader != null && it.grade != null }
                     if (s.quickAdd && repo.isConfident(candidates)) {
-                        repo.add(top, top.variants.first(), 1, s.defaultCondition, grade)
+                        repo.add(top, top.defaultVariant, 1, s.defaultCondition, grade)
                         cooldownUntil = System.currentTimeMillis() + 4000
                         state.update {
                             it.copy(loading = false, grade = null, message = "Added ${top.name} (${top.number})" + (grade?.let { g -> " · ${g.label}" } ?: ""), addedCount = it.addedCount + 1)
@@ -197,7 +206,7 @@ fun describeHit(hit: ScanHit): String = when (hit) {
 @Composable
 fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit) {
     val context = LocalContext.current
-    val vm: ScanViewModel = viewModel { ScanViewModel(repo) }
+    val vm: ScanViewModel = viewModel { ScanViewModel(repo, context.applicationContext) }
     val state by vm.state.collectAsState()
     val settings by repo.settings.flow.collectAsState(initial = AppSettings())
     val scope = rememberCoroutineScope()
@@ -221,7 +230,7 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
     var torch by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize().background(Color.Black)) {
-        CameraPreview(isEnabled = { vm.scanning }, onLines = vm::onLines, onCamera = { camera = it })
+        CameraPreview(isEnabled = { vm.scanning }, onFrame = vm::onFrame, onCamera = { camera = it })
         CardFrameOverlay()
 
         Column(Modifier.fillMaxWidth().statusBarsPadding().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -253,7 +262,7 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
         ) {
             if (state.loading) CircularProgressIndicator(Modifier.size(28.dp), color = Color.White)
             Text(
-                state.message ?: state.reading?.let { "Reading $it…" } ?: "Fill the frame with the card. Keep the number at the bottom sharp and well lit.",
+                state.message ?: state.reading?.let { "Reading $it…" } ?: "Fill the frame with the card. Keep the number at the bottom sharp and well lit — tap the screen to focus.",
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium,
@@ -278,13 +287,13 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
 }
 
 @Composable
-private fun CameraPreview(isEnabled: () -> Boolean, onLines: (List<OcrLine>) -> Unit, onCamera: (Camera) -> Unit) {
+private fun CameraPreview(isEnabled: () -> Boolean, onFrame: (ScanFrame) -> Unit, onCamera: (Camera) -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val enabled by rememberUpdatedState(isEnabled)
-    val callback by rememberUpdatedState(onLines)
+    val callback by rememberUpdatedState(onFrame)
     val executor = remember { Executors.newSingleThreadExecutor() }
-    val analyzer = remember { TextAnalyzer({ enabled() }, { lines -> callback(lines) }) }
+    val analyzer = remember { TextAnalyzer({ enabled() }, { frame -> callback(frame) }) }
     val analysisRef = remember { arrayOfNulls<ImageAnalysis>(1) }
 
     DisposableEffect(Unit) {
@@ -299,14 +308,30 @@ private fun CameraPreview(isEnabled: () -> Boolean, onLines: (List<OcrLine>) -> 
         modifier = Modifier.fillMaxSize(),
         factory = { ctx ->
             val view = PreviewView(ctx).apply { scaleType = PreviewView.ScaleType.FILL_CENTER }
+            var bound: Camera? = null
+            // Tap to focus (and expose) on that spot, like the phone's camera app.
+            view.setOnTouchListener { v, e ->
+                if (e.action == android.view.MotionEvent.ACTION_UP) {
+                    val point = view.meteringPointFactory.createPoint(e.x, e.y)
+                    bound?.cameraControl?.startFocusAndMetering(
+                        FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF or FocusMeteringAction.FLAG_AE)
+                            .setAutoCancelDuration(5, java.util.concurrent.TimeUnit.SECONDS)
+                            .build(),
+                    )
+                    v.performClick()
+                }
+                true
+            }
             val future = ProcessCameraProvider.getInstance(ctx)
-            future.addListener({
+            // Bind once the view is laid out, so the analysis frames can be cropped to what the preview shows.
+            view.post { future.addListener({
                 val provider = future.get()
                 val preview = Preview.Builder().build().also { it.setSurfaceProvider(view.surfaceProvider) }
                 val analysis = ImageAnalysis.Builder()
                     .setResolutionSelector(
                         ResolutionSelector.Builder()
-                            .setResolutionStrategy(ResolutionStrategy(Size(1920, 1080), ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER))
+                            // High resolution so the small collector number and set code stay sharp.
+                            .setResolutionStrategy(ResolutionStrategy(Size(2560, 1440), ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER))
                             .build(),
                     )
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -314,9 +339,16 @@ private fun CameraPreview(isEnabled: () -> Boolean, onLines: (List<OcrLine>) -> 
                     .also { it.setAnalyzer(executor, analyzer); analysisRef[0] = it }
                 runCatching {
                     provider.unbindAll()
-                    onCamera(provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis))
+                    val group = UseCaseGroup.Builder().addUseCase(preview).addUseCase(analysis)
+                    view.viewPort?.let { group.setViewPort(it) }
+                    val camera = provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, group.build())
+                    bound = camera
+                    // Focus on the card guide from the start.
+                    val point = view.meteringPointFactory.createPoint(view.width / 2f, view.height / 2f)
+                    camera.cameraControl.startFocusAndMetering(FocusMeteringAction.Builder(point).build())
+                    onCamera(camera)
                 }
-            }, ContextCompat.getMainExecutor(context))
+            }, ContextCompat.getMainExecutor(context)) }
             view
         },
     )
@@ -326,10 +358,10 @@ private fun CameraPreview(isEnabled: () -> Boolean, onLines: (List<OcrLine>) -> 
 @Composable
 private fun CardFrameOverlay() {
     Canvas(Modifier.fillMaxSize()) {
-        val w = size.width * 0.8f
-        val h = (w * 88f / 63f).coerceAtMost(size.height * 0.7f)
-        val cw = h * 63f / 88f
-        val topLeft = Offset((size.width - cw) / 2, (size.height - h) / 2)
+        val guide = CardGuide.rect(size.width, size.height)
+        val h = guide.height()
+        val cw = guide.width()
+        val topLeft = Offset(guide.left, guide.top)
         drawRoundRect(Color.White.copy(alpha = 0.9f), topLeft, GSize(cw, h), CornerRadius(24f), style = Stroke(width = 3.dp.toPx()))
         // Highlight where the numbers are printed.
         val band = h * 0.12f

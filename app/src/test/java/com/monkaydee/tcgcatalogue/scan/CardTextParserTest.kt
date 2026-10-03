@@ -76,6 +76,24 @@ class CardTextParserTest {
         assertEquals(listOf(ScanHit.Pokemon("025", 165, "Pikachu")), hits)
     }
 
+    @Test fun readsTheSetCodeOfScarletAndViolet() {
+        val hit = CardTextParser.parseAll(listOf(OcrLine("Meowscarada ex", 0.05f, 0.04f), OcrLine("G PAL EN 015/193", 0.95f, 0.01f))).single() as ScanHit.Pokemon
+        assertEquals("PAL", hit.setCode)
+        assertEquals("015", hit.number)
+        assertEquals(193, hit.total)
+    }
+
+    @Test fun noSetCodeOnOlderCards() {
+        val hit = CardTextParser.parseAll(listOf(OcrLine("Zekrom", 0.05f, 0.04f), OcrLine("115/113", 0.95f, 0.01f))).single() as ScanHit.Pokemon
+        assertNull(hit.setCode)
+        assertTrue(!hit.firstEdition)
+    }
+
+    @Test fun readsTheFirstEditionStamp() {
+        val hit = CardTextParser.parseAll(listOf(OcrLine("Charizard", 0.05f, 0.04f), OcrLine("EDITION", 0.55f, 0.01f), OcrLine("4/102", 0.95f, 0.01f))).single() as ScanHit.Pokemon
+        assertTrue(hit.firstEdition)
+    }
+
     @Test fun similarityToleratesOcrErrors() {
         assertTrue(CardTextParser.similarity("Pikachu", "Pikachu") == 1.0)
         assertTrue(CardTextParser.similarity("Pikaehu", "Pikachu") > 0.8)

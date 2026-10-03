@@ -124,10 +124,31 @@ class CardRepository(
                 .take(6)
             briefs.map { async { runCatching { tcgdex.card(it.cardId) }.getOrNull() } }.mapNotNullTo(found) { it.await() }
         }
-        found.map { c ->
+        // Sets that print a code ("PAL") next to the number: a matching code decides between sets of the same size.
+        val codes = if (hit.setCode != null && found.size > 1) {
+            found.map { c -> async { attempt { tcgdex.abbreviation(c.setId) }.getOrDefault("") } }.map { it.await() }
+        } else {
+            found.map { "" }
+        }
+        found.mapIndexed { i, c ->
             val nameScore = hit.nameGuess?.let { CardTextParser.similarity(it, c.name) } ?: 0.5
-            pokemonFixed(c).copy(score = nameScore)
+            val setScore = when {
+                hit.setCode == null || codes[i].isEmpty() -> 0.0
+                codes[i] == hit.setCode -> 0.5
+                CardTextParser.similarity(codes[i], hit.setCode) >= 0.6 -> 0.2
+                else -> -0.3
+            }
+            pokemonFixed(c).copy(score = nameScore + setScore, preferredVariant = printingFor(c, hit.firstEdition))
         }.sortedByDescending { it.score }
+    }
+
+    /**
+     * The printing a scan shows: 1st Edition when the stamp was read, otherwise never 1st Edition
+     * (it is the rare one). The other printings look the same on a photo, so the first stays.
+     */
+    private fun printingFor(c: CardCandidate, firstEdition: Boolean): String? {
+        val first = c.variants.firstOrNull { it.key == "firstEdition" } ?: return null
+        return if (firstEdition) first.key else c.variants.firstOrNull { it.key != first.key }?.key
     }
 
     /** True when the best match is clearly the right card, so it can be added without asking. */
@@ -135,6 +156,8 @@ class CardRepository(
         val top = candidates.firstOrNull() ?: return false
         // Never add a card automatically when the scan's name contradicts it.
         if (top.warning != null) return false
+        // Alt arts share the number: only add on its own when the picture told which one it is.
+        if (com.monkaydee.tcgcatalogue.scan.VisualMatcher.needsChoice(top)) return false
         return candidates.size == 1 || candidates[0].score - candidates[1].score >= 0.25
     }
 

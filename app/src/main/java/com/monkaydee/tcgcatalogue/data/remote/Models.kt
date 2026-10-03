@@ -54,7 +54,12 @@ data class CardCandidate(
     val cardmarketId: Long? = null,
     /** Pokémon: attack names, which tell look-alike cards of a set apart on Cardmarket. */
     val attacks: List<String> = emptyList(),
-)
+    /** The printing the scan recognised (1st Edition stamp, alt art picture), preselected when adding. */
+    val preferredVariant: String? = null,
+) {
+    /** The printing to preselect: the recognised one, otherwise the first. */
+    val defaultVariant: Variant get() = variants.firstOrNull { it.key == preferredVariant } ?: variants.first()
+}
 
 /** Brief search result; details are fetched when the user picks it unless already known ([candidate]). */
 data class CardBrief(
@@ -68,4 +73,12 @@ data class CardBrief(
 
 fun CardCandidate.toBrief() = CardBrief(game, cardId, name, number, imageUrl, this)
 
-data class SetSummary(val id: String, val name: String, val official: Int, val total: Int, val logoUrl: String?)
+data class SetSummary(
+    val id: String,
+    val name: String,
+    val official: Int,
+    val total: Int,
+    val logoUrl: String?,
+    /** The set code printed on the card since Scarlet & Violet ("PAL", "MEW"). */
+    val abbreviation: String? = null,
+)

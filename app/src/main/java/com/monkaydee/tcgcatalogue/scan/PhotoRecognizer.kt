@@ -24,8 +24,11 @@ object PhotoRecognizer {
     /** Big enough to read the small collector number on a binder page, small enough for memory. */
     private const val MAX_SIDE = 4000
 
-    /** Cards found in a photo, and the slab label if the photo shows one graded card. */
-    data class Result(val hits: List<ScanHit>, val grade: GradeInfo?)
+    /**
+     * Cards found in a photo, and the slab label if the photo shows one graded card. With a single
+     * card, [picture] is that card cut out of the photo, for telling alt arts apart.
+     */
+    data class Result(val hits: List<ScanHit>, val grade: GradeInfo?, val picture: Bitmap? = null)
 
     suspend fun recognize(context: Context, uri: Uri, parse: (List<OcrLine>) -> List<ScanHit>): Result {
         val bitmap = withContext(Dispatchers.IO) { decode(context, uri) }
@@ -40,13 +43,43 @@ object PhotoRecognizer {
                     OcrLine(line.text, (box?.top ?: 0) / height, (box?.height() ?: 0) / height)
                 }
                 val hits = parse(lines)
-                if (hits.isNotEmpty()) return Result(hits, CardTextParser.parseGrade(lines).takeIf { hits.size == 1 })
+                if (hits.isNotEmpty()) {
+                    val single = hits.size == 1
+                    val picture = if (single) runCatching { cardPicture(bitmap, rotation, text.textBlocks.flatMap { it.lines }.mapNotNull { it.boundingBox }) }.getOrNull() else null
+                    return Result(hits, CardTextParser.parseGrade(lines).takeIf { single }, picture)
+                }
             }
             return Result(emptyList(), null)
         } finally {
             recognizer.close()
             bitmap.recycle()
         }
+    }
+
+    /**
+     * The card in a photo of a single card: the text on a card spans it from the name to the
+     * number, so the card is the box around all text, widened to a card's shape (63×88).
+     */
+    private fun cardPicture(photo: Bitmap, rotation: Int, boxes: List<android.graphics.Rect>): Bitmap? {
+        if (boxes.isEmpty()) return null
+        val scale = 1200f / max(photo.width, photo.height)
+        val small = Bitmap.createBitmap(photo, 0, 0, photo.width, photo.height, Matrix().apply { postScale(scale, scale); postRotate(rotation.toFloat()) }, true)
+        val left = boxes.minOf { it.left } * scale
+        val top = boxes.minOf { it.top } * scale
+        val right = boxes.maxOf { it.right } * scale
+        val bottom = boxes.maxOf { it.bottom } * scale
+        val h = max((bottom - top) * 1.08f, (right - left) * 1.05f * 88f / 63f)
+        val w = h * 63f / 88f
+        val cx = (left + right) / 2
+        val cy = (top + bottom) / 2
+        val r = android.graphics.Rect((cx - w / 2).toInt(), (cy - h / 2).toInt(), (cx + w / 2).toInt(), (cy + h / 2).toInt())
+        if (!r.intersect(0, 0, small.width, small.height) || r.width() < 20 || r.height() < 20) {
+            small.recycle()
+            return null
+        }
+        val out = Bitmap.createBitmap(small, r.left, r.top, r.width(), r.height())
+        if (out !== small) small.recycle()
+        return out
     }
 
     private fun decode(context: Context, uri: Uri): Bitmap {

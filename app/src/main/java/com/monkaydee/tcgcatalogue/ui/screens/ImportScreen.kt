@@ -70,6 +70,7 @@ import com.monkaydee.tcgcatalogue.ui.components.display
 import com.monkaydee.tcgcatalogue.scan.PhotoRecognizer
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
+import com.monkaydee.tcgcatalogue.scan.VisualMatcher
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.GradedSlab
@@ -90,6 +91,8 @@ data class ImportItem(
     val photo: Uri,
     val hit: ScanHit? = null,
     val grade: GradeInfo? = null,
+    /** The card cut out of the photo, for telling alt arts apart. */
+    val picture: android.graphics.Bitmap? = null,
     val status: ImportStatus,
     val candidates: List<CardCandidate> = emptyList(),
     val note: String? = null,
@@ -155,7 +158,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             return
         }
         val items = found.hits.mapIndexed { i, hit ->
-            ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, found.grade, ImportStatus.LOOKING_UP)
+            ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, found.grade, found.picture, ImportStatus.LOOKING_UP)
         }
         replace(placeholder.key, items)
         items.forEach { lookUp(it) }
@@ -163,7 +166,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     private suspend fun lookUp(item: ImportItem) {
         val hit = item.hit ?: return
-        val result = runCatching { repo.resolve(hit) }
+        val result = runCatching { VisualMatcher.rank(context, item.picture, repo.resolve(hit)) }
         val candidates = result.getOrDefault(emptyList())
         val updated = when {
             result.isFailure -> item.copy(status = ImportStatus.ERROR, note = "Lookup failed — check your connection")
@@ -171,7 +174,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
                 val grade = item.grade?.takeIf { it.grader != null && it.grade != null }
-                runCatching { repo.add(top, top.variants.first(), 1, repo.settings.current().defaultCondition, grade) }
+                runCatching { repo.add(top, top.defaultVariant, 1, repo.settings.current().defaultCondition, grade) }
                     .fold(
                         onSuccess = {
                             item.copy(status = ImportStatus.ADDED, candidates = candidates, note = "${top.name} · ${top.setName}" + (grade?.let { g -> " · ${g.label}" } ?: ""))
@@ -222,7 +225,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             val condition = repo.settings.current().defaultCondition
             s.items.filter { it.status == ImportStatus.REVIEW }.forEach { item ->
                 val top = item.candidates.first()
-                add(item.key, top, top.variants.first(), 1, condition, item.grade?.takeIf { it.grader != null && it.grade != null })
+                add(item.key, top, top.defaultVariant, 1, condition, item.grade?.takeIf { it.grader != null && it.grade != null })
             }
         }
     }
@@ -367,7 +370,7 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
                         item.grade?.let { Text(it.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary) }
                         Text("${top.setName} · ${top.number}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(
-                            if (item.candidates.size > 1) "${item.candidates.size} possible matches · tap to choose" else "${repo.rawPrice(top, top.variants.first(), settings).display(settings)} · tap to add",
+                            if (item.candidates.size > 1) "${item.candidates.size} possible matches · tap to choose" else "${repo.rawPrice(top, top.defaultVariant, settings).display(settings)} · tap to add",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
                         )
