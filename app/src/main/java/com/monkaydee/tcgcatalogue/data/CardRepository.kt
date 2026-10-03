@@ -6,6 +6,11 @@ import com.monkaydee.tcgcatalogue.data.db.CardSet
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.data.db.PortfolioSnapshot
+import com.monkaydee.tcgcatalogue.data.db.PriceHistory
+import com.monkaydee.tcgcatalogue.data.db.SealedItem
+import com.monkaydee.tcgcatalogue.data.db.SoldCard
+import com.monkaydee.tcgcatalogue.data.db.WishCard
+import com.monkaydee.tcgcatalogue.data.remote.ChecklistEntry
 import com.monkaydee.tcgcatalogue.data.remote.CardBrief
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.CardIndexApi
@@ -39,10 +44,20 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @Serializable
 data class Backup(
-    val version: Int = 1,
+    val version: Int = 2,
     val cards: List<OwnedCard>,
     val snapshots: List<com.monkaydee.tcgcatalogue.data.db.PortfolioSnapshot>,
+    val history: List<PriceHistory> = emptyList(),
+    val wishlist: List<WishCard> = emptyList(),
+    val sold: List<SoldCard> = emptyList(),
+    val sealed: List<SealedItem> = emptyList(),
+    /** When and on which install the backup was written (for sync between phones). */
+    val savedAt: Long = 0,
+    val device: String = "",
 )
+
+/** A price alert that went off during a refresh, for a notification. */
+data class PriceAlert(val name: String, val detail: String, val cardRowId: Long? = null)
 
 class CardRepository(
     private val db: AppDatabase,
@@ -59,6 +74,14 @@ class CardRepository(
     val cards = db.cards().observeAll()
     val sets = db.sets().observeAll()
     val snapshots = db.snapshots().observeAll()
+    val wishlist = db.wishlist().observeAll()
+    val sold = db.sold().observeAll()
+    val sealed = db.sealed().observeAll()
+
+    /** Alerts that went off in the last price refresh (the background job shows them as notifications). */
+    @Volatile
+    var lastAlerts: List<PriceAlert> = emptyList()
+        private set
 
     fun observeSet(game: Game, setId: String) = db.cards().observeSet(game, setId)
     fun observeCard(id: Long) = db.cards().observe(id)
@@ -498,6 +521,7 @@ class CardRepository(
 
     suspend fun delete(card: OwnedCard) {
         db.cards().delete(card)
+        db.history().deleteFor(card.id)
         runCatching { snapshot() }
     }
 
@@ -534,6 +558,7 @@ class CardRepository(
         val gate = Semaphore(4)
         val done = AtomicInteger()
         val updated = AtomicInteger()
+        val alerts = java.util.concurrent.ConcurrentLinkedQueue<PriceAlert>()
         groups.map { (key, rows) ->
             async {
                 gate.withPermit {
@@ -545,16 +570,16 @@ class CardRepository(
                             val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: continue
                             val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
                             val price = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row)) }.getOrNull() ?: continue
-                            db.cards().update(
-                                row.copy(
-                                    price = price.amount,
-                                    priceCurrency = price.currency,
-                                    priceSource = price.source.label,
-                                    priceUpdatedAt = System.currentTimeMillis(),
-                                    priceNote = price.note,
-                                    rarity = fresh.rarity ?: row.rarity,
-                                ),
+                            val next = row.copy(
+                                price = price.amount,
+                                priceCurrency = price.currency,
+                                priceSource = price.source.label,
+                                priceUpdatedAt = System.currentTimeMillis(),
+                                priceNote = price.note,
+                                rarity = fresh.rarity ?: row.rarity,
                             )
+                            db.cards().update(next)
+                            alertFor(row, next, s)?.let { alerts += it }
                             updated.incrementAndGet()
                         }
                     }
@@ -562,8 +587,12 @@ class CardRepository(
                 }
             }
         }.forEach { it.await() }
+        runCatching { recordHistory() }
+        runCatching { refreshWishlist(s) }.getOrNull()?.let { alerts += it }
+        runCatching { refreshSealed() }
         settings.setLastRefresh(System.currentTimeMillis())
         snapshot()
+        lastAlerts = alerts.toList()
         updated.get()
     }
 
@@ -571,28 +600,224 @@ class CardRepository(
     suspend fun snapshot() {
         val rate = settings.current().usdToEur
         val owned = db.cards().getAll()
+        val sealed = db.sealed().getAll()
         db.snapshots().upsert(
             PortfolioSnapshot(
                 day = LocalDate.now().toEpochDay(),
-                valueUsd = owned.sumOf { Money.value(it, "USD", rate) },
-                valueEur = owned.sumOf { Money.value(it, "EUR", rate) },
+                valueUsd = owned.sumOf { Money.value(it, "USD", rate) } + sealed.sumOf { Money.sealedValue(it, "USD", rate) },
+                valueEur = owned.sumOf { Money.value(it, "EUR", rate) } + sealed.sumOf { Money.sealedValue(it, "EUR", rate) },
                 cardCount = owned.sumOf { it.quantity },
             ),
         )
     }
 
-    suspend fun exportBackup(): Backup = Backup(cards = db.cards().getAll(), snapshots = db.snapshots().getAll())
+    suspend fun exportBackup(device: String = ""): Backup = Backup(
+        cards = db.cards().getAll(),
+        snapshots = db.snapshots().getAll(),
+        history = db.history().getAll(),
+        wishlist = db.wishlist().getAll(),
+        sold = db.sold().getAll(),
+        sealed = db.sealed().getAll(),
+        savedAt = System.currentTimeMillis(),
+        device = device,
+    )
 
+    /** Replaces the whole collection with [backup]. */
     suspend fun importBackup(backup: Backup) {
         db.cards().deleteAll()
         db.cards().insertAll(backup.cards)
         db.snapshots().insertAll(backup.snapshots)
+        db.history().deleteAll()
+        db.history().upsertAll(backup.history)
+        db.wishlist().deleteAll()
+        db.wishlist().insertAll(backup.wishlist)
+        db.sold().deleteAll()
+        db.sold().insertAll(backup.sold)
+        db.sealed().deleteAll()
+        db.sealed().insertAll(backup.sealed)
         backup.cards.distinctBy { it.game to it.setId }.forEach { c ->
             runCatching {
                 if (db.sets().get(c.game, c.setId) == null) {
                     fetch(c.game, c.cardId)?.let { ensureSet(it) }
                 }
             }
+        }
+    }
+
+    /**
+     * Adds what [backup] has and this phone doesn't: cards are matched by card, printing and
+     * condition (the higher quantity wins), wishlist entries by card and printing, sold cards and
+     * sealed products by their details. Nothing on this phone is removed.
+     */
+    suspend fun mergeBackup(backup: Backup) {
+        val mine = db.cards().getAll()
+        for (c in backup.cards) {
+            val match = mine.firstOrNull { it.game == c.game && it.cardId == c.cardId && it.variant == c.variant && it.condition == c.condition }
+            if (match == null) db.cards().insert(c.copy(id = 0)) else if (c.quantity > match.quantity) db.cards().update(match.copy(quantity = c.quantity))
+        }
+        db.snapshots().insertAll(backup.snapshots.filter { s -> db.snapshots().getAll().none { it.day == s.day } })
+        for (w in backup.wishlist) if (db.wishlist().find(w.game, w.cardId, w.variant) == null) db.wishlist().upsert(w.copy(id = 0))
+        val sold = db.sold().getAll()
+        for (x in backup.sold) if (sold.none { it.cardId == x.cardId && it.soldAt == x.soldAt && it.variant == x.variant }) db.sold().insert(x.copy(id = 0))
+        for (x in backup.sealed) {
+            val match = db.sealed().find(x.game, x.productId)
+            if (match == null) db.sealed().upsert(x.copy(id = 0)) else if (x.quantity > match.quantity) db.sealed().update(match.copy(quantity = x.quantity))
+        }
+        runCatching { snapshot() }
+    }
+
+    // ---- Price history and alerts ----
+
+    fun priceHistory(cardRowId: Long) = db.history().observe(cardRowId)
+
+    /** Stores today's price per copy of every card, for the price history charts. */
+    private suspend fun recordHistory() {
+        val today = LocalDate.now().toEpochDay()
+        db.history().upsertAll(
+            db.cards().getAll().mapNotNull { c -> c.price?.let { PriceHistory(c.id, today, it, c.priceCurrency) } },
+        )
+    }
+
+    /** Sets the price alerts of a card (in [currency]); null clears one. */
+    suspend fun setAlerts(card: OwnedCard, above: Double?, below: Double?, currency: String) {
+        db.cards().update(card.copy(alertAbove = above, alertBelow = below, alertCurrency = currency.takeIf { above != null || below != null }))
+    }
+
+    /** An alert when the value per copy crossed one of the card's alert prices with this refresh. */
+    private fun alertFor(before: OwnedCard, after: OwnedCard, s: AppSettings): PriceAlert? {
+        val cur = after.alertCurrency ?: return null
+        val old = Money.unit(before, cur, s.usdToEur)
+        val now = Money.unit(after, cur, s.usdToEur)
+        if (now <= 0.0) return null
+        after.alertAbove?.let { limit ->
+            if (now >= limit && old < limit) return PriceAlert(after.name, com.monkaydee.tcgcatalogue.ui.AppStrings.get(R.string.alert_above, Money.format(now, cur), Money.format(limit, cur)), after.id)
+        }
+        after.alertBelow?.let { limit ->
+            if (now <= limit && old > limit) return PriceAlert(after.name, com.monkaydee.tcgcatalogue.ui.AppStrings.get(R.string.alert_below, Money.format(now, cur), Money.format(limit, cur)), after.id)
+        }
+        return null
+    }
+
+    // ---- Trade list ----
+
+    suspend fun setForTrade(card: OwnedCard, forTrade: Boolean) = db.cards().update(card.copy(forTrade = forTrade))
+
+    // ---- Selling ----
+
+    /**
+     * Sells [quantity] copies of [card] for [pricePerCopy] (in [currency]): they move to the sold
+     * list (with the purchase price, for the profit) and leave the collection.
+     */
+    suspend fun sell(card: OwnedCard, quantity: Int, pricePerCopy: Double, currency: String, soldAt: Long = System.currentTimeMillis()) {
+        val n = quantity.coerceIn(1, card.quantity)
+        db.sold().insert(
+            SoldCard(
+                game = card.game, cardId = card.cardId, variant = card.variant, variantLabel = card.variantLabel,
+                name = card.name, number = card.number, setName = card.setName, imageUrl = card.imageUrl,
+                quantity = n, condition = card.condition,
+                purchasePrice = card.purchasePrice, purchaseCurrency = card.priceCurrency,
+                salePrice = pricePerCopy, saleCurrency = currency, soldAt = soldAt,
+            ),
+        )
+        if (n >= card.quantity) delete(card) else {
+            db.cards().update(card.copy(quantity = card.quantity - n))
+            runCatching { snapshot() }
+        }
+    }
+
+    suspend fun deleteSold(card: SoldCard) = db.sold().delete(card)
+
+    // ---- Wishlist ----
+
+    suspend fun addToWishlist(card: CardCandidate, variant: Variant) {
+        val s = settings.current()
+        val price = rawPrice(card, variant, s)
+        val existing = db.wishlist().find(card.game, card.cardId, variant.key)
+        db.wishlist().upsert(
+            WishCard(
+                id = existing?.id ?: 0, game = card.game, cardId = card.cardId, variant = variant.key, variantLabel = variant.label,
+                name = card.name, number = card.number, setId = card.setId, setName = card.setName, rarity = card.rarity,
+                imageUrl = variant.imageUrl ?: card.imageUrl, price = price?.amount, priceCurrency = price?.currency ?: "USD",
+                priceUpdatedAt = System.currentTimeMillis(), targetPrice = existing?.targetPrice, targetCurrency = existing?.targetCurrency,
+                addedAt = existing?.addedAt ?: System.currentTimeMillis(),
+            ),
+        )
+    }
+
+    suspend fun removeFromWishlist(card: WishCard) = db.wishlist().delete(card)
+
+    /** Sets the price to be notified at when a wished card gets cheaper (null clears it). */
+    suspend fun setWishTarget(card: WishCard, target: Double?, currency: String) =
+        db.wishlist().update(card.copy(targetPrice = target, targetCurrency = currency.takeIf { target != null }))
+
+    /** Refreshes wishlist prices; returns alerts for cards that reached their target price. */
+    private suspend fun refreshWishlist(s: AppSettings): List<PriceAlert> {
+        val out = mutableListOf<PriceAlert>()
+        for (w in db.wishlist().getAll()) {
+            val fresh = runCatching { fetch(w.game, w.cardId) }.getOrNull() ?: continue
+            val variant = fresh.variants.firstOrNull { it.key == w.variant } ?: fresh.variants.first()
+            val price = rawPrice(fresh, variant, s) ?: continue
+            val next = w.copy(price = price.amount, priceCurrency = price.currency, priceUpdatedAt = System.currentTimeMillis())
+            db.wishlist().update(next)
+            val cur = w.targetCurrency ?: continue
+            val target = w.targetPrice ?: continue
+            val old = w.price?.let { Money.convert(it, w.priceCurrency, cur, s.usdToEur) }
+            val now = Money.convert(price.amount, price.currency, cur, s.usdToEur)
+            if (now <= target && (old == null || old > target)) {
+                out += PriceAlert(w.name, com.monkaydee.tcgcatalogue.ui.AppStrings.get(R.string.alert_wish, Money.format(now, cur), Money.format(target, cur)))
+            }
+        }
+        return out
+    }
+
+    // ---- Set checklist ----
+
+    /** Every card of a set, to show which ones are still missing (empty when unknown or offline). */
+    suspend fun setChecklist(game: Game, setId: String): List<ChecklistEntry> = runCatching {
+        when (game) {
+            Game.POKEMON -> tcgdex.setChecklist(setId)
+            Game.ONE_PIECE -> onePiece.setChecklist(setId)
+            Game.MAGIC -> scryfall.setChecklist(setId)
+            else -> setId.toIntOrNull()?.let { cardIndex.setChecklist(game, it) }.orEmpty()
+        }
+    }.getOrDefault(emptyList())
+
+    /** The full card behind a checklist entry, to add it or put it on the wishlist. */
+    suspend fun checklistCard(game: Game, entry: ChecklistEntry): CardCandidate? = runCatching { fetch(game, entry.cardId) }.getOrNull()
+
+    // ---- Sealed products ----
+
+    fun observeSealed(id: Long) = db.sealed().observe(id)
+
+    suspend fun searchSealed(game: Game, query: String) = runCatching { cardIndex.searchSealed(game, query) }.getOrDefault(emptyList())
+
+    suspend fun addSealed(product: com.monkaydee.tcgcatalogue.data.remote.SealedProduct, quantity: Int, purchasePrice: Double?) {
+        val s = settings.current()
+        val existing = db.sealed().find(product.game, product.productId)
+        if (existing != null) {
+            db.sealed().update(existing.copy(quantity = existing.quantity + quantity))
+        } else {
+            db.sealed().upsert(
+                SealedItem(
+                    game = product.game, productId = product.productId, name = product.name, groupName = product.groupName,
+                    imageUrl = product.imageUrl, quantity = quantity, price = product.price, priceCurrency = "USD",
+                    priceUpdatedAt = System.currentTimeMillis(),
+                    purchasePrice = purchasePrice?.let { Money.convert(it, s.currency, "USD", s.usdToEur) },
+                ),
+            )
+        }
+        runCatching { snapshot() }
+    }
+
+    suspend fun updateSealed(item: SealedItem) {
+        if (item.quantity <= 0) db.sealed().delete(item) else db.sealed().update(item)
+        runCatching { snapshot() }
+    }
+
+    private suspend fun refreshSealed() {
+        for (item in db.sealed().getAll()) {
+            val p = runCatching { cardIndex.sealedProduct(item.game, item.productId) }.getOrNull() ?: continue
+            p.price?.let { db.sealed().update(item.copy(price = it, priceCurrency = "USD", priceUpdatedAt = System.currentTimeMillis())) }
         }
     }
 }

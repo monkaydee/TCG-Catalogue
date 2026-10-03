@@ -18,7 +18,13 @@ class PriceRefreshWorker(context: Context, params: WorkerParameters) : Coroutine
     override suspend fun doWork(): Result {
         val repo = (applicationContext as TcgApp).repository
         return runCatching { repo.refreshPrices() }
-            .fold(onSuccess = { Result.success() }, onFailure = { if (runAttemptCount < 3) Result.retry() else Result.failure() })
+            .fold(
+                onSuccess = {
+                    AlertNotifier.show(applicationContext, repo.lastAlerts)
+                    Result.success()
+                },
+                onFailure = { if (runAttemptCount < 3) Result.retry() else Result.failure() },
+            )
     }
 
     companion object {

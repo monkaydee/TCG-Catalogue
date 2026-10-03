@@ -79,6 +79,44 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         index
     }
 
+    private val sealedLoaded = ConcurrentHashMap<Game, List<SealedProduct>>()
+
+    /** The sealed products of [game] (booster boxes, packs, decks …) with their TCGplayer market prices. */
+    suspend fun sealed(game: Game): List<SealedProduct> {
+        val file = dailyFile("SEALED_${game.name}.json") ?: return emptyList()
+        sealedLoaded[game]?.takeIf { file.lastModified() == sealedStamp[game] }?.let { return it }
+        val list = withContext(Dispatchers.Default) {
+            val root = http.json.parseToJsonElement(file.readText())
+            val groups = root["groups"].obj().orEmpty().mapValues { it.value.str().orEmpty() }
+            root["items"].arr().orEmpty().mapNotNull { row ->
+                val a = row.arr() ?: return@mapNotNull null
+                val id = a.getOrNull(0).str()?.toLongOrNull() ?: return@mapNotNull null
+                val gid = a.getOrNull(2).str().orEmpty()
+                SealedProduct(game, id, a.getOrNull(1).str().orEmpty(), groups[gid].orEmpty(), a.getOrNull(3).dbl())
+            }
+        }
+        sealedLoaded[game] = list
+        sealedStamp[game] = file.lastModified()
+        return list
+    }
+
+    private val sealedStamp = ConcurrentHashMap<Game, Long>()
+
+    /** Sealed products whose name or set contains every word of [query]. */
+    suspend fun searchSealed(game: Game, query: String, limit: Int = 80): List<SealedProduct> {
+        val words = query.lowercase().split(' ').filter { it.isNotBlank() }
+        return sealed(game).filter { p -> words.all { w -> p.name.lowercase().contains(w) || p.groupName.lowercase().contains(w) } }.take(limit)
+    }
+
+    suspend fun sealedProduct(game: Game, productId: Long): SealedProduct? = sealed(game).firstOrNull { it.productId == productId }
+
+    /** Every card of a set (TCGplayer group), in number order. */
+    suspend fun setChecklist(game: Game, groupId: Int): List<ChecklistEntry> {
+        val index = index(game) ?: return emptyList()
+        return index.entries.filter { it.groupId == groupId }.sortedBy { it.number }
+            .map { ChecklistEntry(it.productId.toString(), it.number, it.name, "https://tcgplayer-cdn.tcgplayer.com/product/${it.productId}_in_200x200.jpg") }
+    }
+
     /** Raw index entries for [code] (used to find One Piece's TCGplayer products). */
     suspend fun entries(game: Game, code: String): List<Entry> = index(game)?.byNumber?.get(code).orEmpty()
 

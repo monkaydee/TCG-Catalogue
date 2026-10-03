@@ -23,6 +23,10 @@ object Money {
             ?: card.price?.let { convert(it, card.priceCurrency, currency, usdToEur) }
             ?: 0.0
 
+    /** Value of all items of a sealed product in [currency]. */
+    fun sealedValue(item: com.monkaydee.tcgcatalogue.data.db.SealedItem, currency: String, usdToEur: Double): Double =
+        (item.price?.let { convert(it, item.priceCurrency, currency, usdToEur) } ?: 0.0) * item.quantity
+
     fun format(amount: Double, currency: String): String {
         val f = NumberFormat.getCurrencyInstance(Locale.getDefault())
         f.currency = Currency.getInstance(currency)

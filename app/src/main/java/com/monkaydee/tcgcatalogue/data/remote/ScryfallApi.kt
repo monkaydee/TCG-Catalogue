@@ -29,6 +29,23 @@ class ScryfallApi(private val http: Http) {
         return s["name"].str().orEmpty() to (s["printed_size"].int() ?: s["card_count"].int() ?: 0)
     }
 
+    /** Every card of a set, in collector-number order (follows Scryfall's pages). */
+    suspend fun setChecklist(code: String): List<ChecklistEntry> {
+        val out = mutableListOf<ChecklistEntry>()
+        var url: String? = "$base/cards/search?q=${enc("set:$code")}&unique=prints&order=set"
+        var pages = 0
+        while (url != null && pages++ < 6) {
+            val page = http.getJson(url) ?: break
+            page["data"].arr().orEmpty().forEach { c ->
+                val number = c["collector_number"].str() ?: return@forEach
+                val image = c["image_uris"]["small"].str() ?: c["card_faces"].arr()?.firstOrNull()?.get("image_uris")?.get("small").str()
+                out += ChecklistEntry("${code.lowercase()}/$number", number, c["name"].str().orEmpty(), image)
+            }
+            url = if (page["has_more"].bool()) page["next_page"].str() else null
+        }
+        return out
+    }
+
     private fun parse(c: JsonElement): CardCandidate? {
         if (c["object"].str() != "card") return null
         val set = c["set"].str() ?: return null

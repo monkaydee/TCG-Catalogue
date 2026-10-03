@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Price alerts</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Now %1$s — above your alert at %2$s</string>
+    <string name="alert_below">Now %1$s — below your alert at %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">On your wishlist: now %1$s — at or below your target of %2$s</string>
+</resources>

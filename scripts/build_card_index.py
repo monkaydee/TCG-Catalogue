@@ -61,9 +61,36 @@ def rarity_of(product):
     return None
 
 
-def build(game, category):
+# Sealed products only (the cards come from TCGdex and Scryfall for these games).
+SEALED_ONLY = {
+    "POKEMON": 3,
+    "MAGIC": 1,
+}
+
+SEALED_WORDS = re.compile(
+    r"booster|box|pack|deck|bundle|collection|tin|display|case|elite trainer|\betb\b|blister|starter|kit|set\b|chest|gift",
+    re.IGNORECASE,
+)
+NOT_SEALED = re.compile(
+    r"code card|\bsleeves\b|card sleeve|playmat|play mat|binder|deck box|portfolio|toploader|top loader|dice|token|coin|card protector|storage box|"
+    r"oversized|jumbo|poster|pin\b|figure|plush",
+    re.IGNORECASE,
+)
+
+
+def sealed_item(p, gid, by_product):
+    """A sealed product row [productId, name, groupId, market price], or None for accessories."""
+    name = p["name"]
+    if not SEALED_WORDS.search(name) or NOT_SEALED.search(name):
+        return None
+    prices = by_product.get(p["productId"], {})
+    price = prices.get("Normal") or next(iter(prices.values()), None)
+    return [p["productId"], name, gid, price]
+
+
+def build(game, category, cards_too=True):
     groups = get(f"https://tcgcsv.com/tcgplayer/{category}/groups")
-    out_groups, cards = {}, []
+    out_groups, cards, sealed, sealed_groups = {}, [], [], {}
     for g in groups:
         gid = g["groupId"]
         products = get(f"https://tcgcsv.com/tcgplayer/{category}/{gid}/products")
@@ -77,18 +104,28 @@ def build(game, category):
         for p in products:
             number = number_of(p)
             if not number:
-                continue  # sealed product, accessories, ...
+                item = sealed_item(p, gid, by_product)  # sealed product, or an accessory (skipped)
+                if item:
+                    sealed.append(item)
+                    sealed_groups[str(gid)] = g["name"]
+                continue
+            if not cards_too:
+                continue
             numbers.add(number)
             cards.append([number, p["name"], gid, rarity_of(p), p["productId"], by_product.get(p["productId"], {})])
         if numbers:
             out_groups[str(gid)] = [g["name"], g.get("abbreviation") or "", len(numbers)]
         time.sleep(0.05)
-    return {
-        "game": game,
-        "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "groups": out_groups,
-        "cards": cards,
-    }
+    updated = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    index = {"game": game, "updated": updated, "groups": out_groups, "cards": cards}
+    sealed_index = {"game": game, "updated": updated, "groups": sealed_groups, "items": sealed}
+    return index, sealed_index
+
+
+def write_sealed(out, game, data):
+    path = out / f"SEALED_{game}.json"
+    path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    print(f"  {len(data['items'])} sealed products, {path.stat().st_size // 1024} KB")
 
 
 CARDMARKET = "https://downloads.s3.cardmarket.com/productCatalog"
@@ -178,10 +215,15 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     for game, category in GAMES.items():
         print(f"{game} (category {category})")
-        data = build(game, category)
+        data, sealed = build(game, category)
         path = out / f"{game}.json"
         path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
         print(f"  {len(data['groups'])} sets, {len(data['cards'])} cards, {path.stat().st_size // 1024} KB")
+        write_sealed(out, game, sealed)
+    for game, category in SEALED_ONLY.items():
+        print(f"{game} sealed (category {category})")
+        _, sealed = build(game, category, cards_too=False)
+        write_sealed(out, game, sealed)
     print("CARDMARKET_POKEMON")
     data = build_cardmarket_pokemon()
     path = out / "CARDMARKET_POKEMON.json"

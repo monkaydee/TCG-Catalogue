@@ -34,6 +34,21 @@ class OnePieceApi(private val http: Http) {
             .toSet().size
     }
 
+    /** Every card of a set (its standard printing), in number order. */
+    suspend fun setChecklist(setId: String): List<ChecklistEntry> {
+        if (setId == "P") return emptyList()
+        val endpoint = if (setId.startsWith("ST")) "decks" else "sets"
+        val prefix = setId.replace("-", "")
+        return http.getJson("$base/$endpoint/$setId/").arr().orEmpty()
+            .filter { it["card_set_id"].str()?.startsWith(prefix) == true }
+            .groupBy { it["card_set_id"].str()!! }
+            .map { (code, rows) ->
+                val standard = rows.firstOrNull { it["card_image_id"].str() == code } ?: rows.first()
+                ChecklistEntry(code, code, baseName(standard["card_name"].str().orEmpty()), standard["card_image"].str())
+            }
+            .sortedBy { it.number }
+    }
+
     private fun parse(code: String, rows: List<JsonElement>): CardCandidate {
         // The API also lists reprints from later sets (e.g. an SPR of EB01-001 in EB-02);
         // the card belongs to the set its code names, and the plain printing comes first.

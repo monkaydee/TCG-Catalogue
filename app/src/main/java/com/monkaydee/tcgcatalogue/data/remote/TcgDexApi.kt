@@ -120,6 +120,13 @@ class TcgDexApi(private val http: Http) {
         cards
     }
 
+    /** Every card of a set, in set order. */
+    suspend fun setChecklist(setId: String): List<ChecklistEntry> =
+        http.getJson("$base/sets/${enc(setId)}")?.get("cards").arr().orEmpty().mapNotNull { c ->
+            val id = c["id"].str() ?: return@mapNotNull null
+            ChecklistEntry(id, c["localId"].str().orEmpty(), c["name"].str().orEmpty(), c["image"].str()?.let { "$it/low.webp" })
+        }
+
     /** [card], cached for the session (used to compare look-alike cards of a set). */
     suspend fun cachedCard(cardId: String): CardCandidate? = cardCache[cardId] ?: card(cardId)?.also { cardCache[cardId] = it }
 

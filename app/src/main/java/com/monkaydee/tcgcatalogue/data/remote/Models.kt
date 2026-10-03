@@ -63,6 +63,14 @@ data class CardCandidate(
     val defaultVariant: Variant get() = variants.firstOrNull { it.key == preferredVariant } ?: variants.first()
 }
 
+/** A sealed product from the daily index, priced in USD (TCGplayer market price). */
+data class SealedProduct(val game: Game, val productId: Long, val name: String, val groupName: String, val price: Double?) {
+    val imageUrl: String get() = "https://tcgplayer-cdn.tcgplayer.com/product/${productId}_in_400x400.jpg"
+}
+
+/** One card of a set, for the set checklist. [cardId] matches [com.monkaydee.tcgcatalogue.data.db.OwnedCard.cardId]. */
+data class ChecklistEntry(val cardId: String, val number: String, val name: String, val imageUrl: String?)
+
 /** Brief search result; details are fetched when the user picks it unless already known ([candidate]). */
 data class CardBrief(
     val game: Game,

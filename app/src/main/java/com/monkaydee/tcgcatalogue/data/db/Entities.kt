@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -74,9 +75,99 @@ data class OwnedCard(
     /** The user's own value per copy, overriding the market price (e.g. for slabs without sales data). */
     val manualPrice: Double? = null,
     val manualCurrency: String? = null,
+    /** Offered for trade (shown in the trade list). */
+    @ColumnInfo(defaultValue = "0") val forTrade: Boolean = false,
+    /** Price alerts per copy, in [alertCurrency]: notify when the value rises above / falls below. */
+    val alertAbove: Double? = null,
+    val alertBelow: Double? = null,
+    val alertCurrency: String? = null,
 ) {
     val graded: Boolean get() = grader != null
 }
+
+/** A card's price per copy on one day, for its price history chart. */
+@Serializable
+@Entity(tableName = "price_history", primaryKeys = ["cardRowId", "day"])
+data class PriceHistory(
+    /** [OwnedCard.id] */
+    val cardRowId: Long,
+    /** LocalDate.toEpochDay() */
+    val day: Long,
+    val price: Double,
+    val currency: String,
+)
+
+/** A card the user wants, with its market price and an optional target price to be notified at. */
+@Serializable
+@Entity(tableName = "wishlist", indices = [Index(value = ["game", "cardId", "variant"], unique = true)])
+data class WishCard(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val game: Game,
+    val cardId: String,
+    val variant: String,
+    val variantLabel: String,
+    val name: String,
+    val number: String,
+    val setId: String,
+    val setName: String,
+    val rarity: String? = null,
+    val imageUrl: String? = null,
+    /** Near-mint market price, in [priceCurrency]. */
+    val price: Double? = null,
+    val priceCurrency: String = "USD",
+    val priceUpdatedAt: Long? = null,
+    /** Notify when the price drops to this or lower, in [targetCurrency]. */
+    val targetPrice: Double? = null,
+    val targetCurrency: String? = null,
+    val addedAt: Long = System.currentTimeMillis(),
+)
+
+/** Copies the user sold, kept for the realised profit. */
+@Serializable
+@Entity(tableName = "sold_cards")
+data class SoldCard(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val game: Game,
+    val cardId: String,
+    val variant: String,
+    val variantLabel: String,
+    val name: String,
+    val number: String,
+    val setName: String,
+    val imageUrl: String? = null,
+    val quantity: Int,
+    /** Condition or slab label, as in [OwnedCard.condition]. */
+    val condition: String,
+    /** Paid per copy, in [purchaseCurrency], if known. */
+    val purchasePrice: Double? = null,
+    val purchaseCurrency: String = "USD",
+    /** Sold for per copy, in [saleCurrency]. */
+    val salePrice: Double,
+    val saleCurrency: String,
+    val soldAt: Long = System.currentTimeMillis(),
+)
+
+/** Sealed products (booster boxes, ETBs, decks …) priced from TCGplayer via the daily index. */
+@Serializable
+@Entity(tableName = "sealed_items", indices = [Index(value = ["game", "productId"], unique = true)])
+data class SealedItem(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val game: Game,
+    /** TCGplayer product id. */
+    val productId: Long,
+    val name: String,
+    /** The set or product line it belongs to. */
+    val groupName: String,
+    val imageUrl: String? = null,
+    val quantity: Int = 1,
+    /** Market price per item, in [priceCurrency]. */
+    val price: Double? = null,
+    val priceCurrency: String = "USD",
+    val priceUpdatedAt: Long? = null,
+    /** Paid per item, in [priceCurrency]. */
+    val purchasePrice: Double? = null,
+    val addedAt: Long = System.currentTimeMillis(),
+)
 
 /** Cached set metadata, used for completion percentages and logos. */
 @Serializable
