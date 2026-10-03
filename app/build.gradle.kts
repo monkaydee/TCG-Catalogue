@@ -8,6 +8,8 @@ plugins {
 
 android {
     namespace = "com.monkaydee.tcgcatalogue"
+    // Lists the app's languages for Android 13+'s per-app language setting.
+    androidResources { generateLocaleConfig = true }
     compileSdk = 35
 
     defaultConfig {
@@ -62,6 +64,7 @@ ksp {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.activity.compose)

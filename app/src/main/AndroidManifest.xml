@@ -35,6 +35,16 @@
             </intent-filter>
         </activity>
 
+        <!-- Remembers the language chosen in the app on Android 12 and older. -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
+
         <!-- Bundled ML Kit text model: no Play Services download needed. -->
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"

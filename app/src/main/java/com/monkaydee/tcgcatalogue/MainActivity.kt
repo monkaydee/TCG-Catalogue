@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.IntentCompat
@@ -20,7 +20,7 @@ import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.ui.AppNav
 import com.monkaydee.tcgcatalogue.ui.theme.TcgTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

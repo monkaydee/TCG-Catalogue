@@ -14,6 +14,7 @@ import com.monkaydee.tcgcatalogue.data.remote.Http
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.TcgDexApi
 import com.monkaydee.tcgcatalogue.work.PriceRefreshWorker
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 
 class TcgApp : Application() {
     lateinit var repository: CardRepository
@@ -21,6 +22,7 @@ class TcgApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        AppStrings.init(this)
         val http = Http()
         val cardIndex = CardIndexApi(http, java.io.File(filesDir, "card-index"))
         val tcgdex = TcgDexApi(http)
