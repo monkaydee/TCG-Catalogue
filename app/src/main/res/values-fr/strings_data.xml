@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = %2$d %% du NM (ventes TCGplayer)</string>
     <string name="price_note_estimated_share">%1$s estimé à %2$d %% du NM (aucune donnée de vente)</string>
     <string name="data_http_error">HTTP %1$d pour %2$s</string>
+    <string name="data_service_unavailable">Le service de cartes (%1$s) ne répond pas pour le moment. Réessayez dans une minute.</string>
 </resources>

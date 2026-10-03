@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alert_channel">Alertas de preço</string>
+    <string name="alert_above">Agora %1$s — acima do seu alerta de %2$s</string>
+    <string name="alert_below">Agora %1$s — abaixo do seu alerta de %2$s</string>
+    <string name="alert_wish">Na sua lista de desejos: agora %1$s — igual ou abaixo da sua meta de %2$s</string>
+
+    <string name="stack_mode">Modo pilha</string>
+    <string name="stack_review_later">%1$s — confira depois na faixa abaixo</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d carta para conferir — toque nela</item>
+        <item quantity="many">%d de cartas para conferir — toque nelas</item>
+        <item quantity="other">%d cartas para conferir — toque nelas</item>
+    </plurals>
+    <string name="stack_tap_to_review">Toque para conferir</string>
+    <string name="stack_undo">Desfazer</string>
+    <string name="stack_discard">Descartar</string>
+
+    <string name="sealed_title">Produtos lacrados</string>
+    <string name="sealed_add">Adicionar produto lacrado</string>
+    <string name="sealed_value">Valor lacrado</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d item</item>
+        <item quantity="many">%d de itens</item>
+        <item quantity="other">%d itens</item>
+    </plurals>
+    <string name="sealed_empty">Acompanhe aqui caixas de boosters, boosters, decks e caixas fechados. O valor de mercado deles entra no seu portfólio.</string>
+    <string name="sealed_remove_hint">Salvar com 0 remove o produto.</string>
+    <string name="sealed_gain">%1$s desde a compra</string>
+    <string name="sealed_no_price">sem preço</string>
+    <string name="sealed_search_hint">Nome do produto ou set, ex.: “booster box 151”</string>
+    <string name="sealed_no_results">Nenhum produto lacrado encontrado</string>
+
+    <string name="crash_title">Desculpe, o app parou de funcionar</string>
+    <string name="crash_text">Um relatório técnico foi guardado (versão do app e do Android, modelo do celular e o erro — nenhuma das suas cartas). Você pode enviá-lo para ajudar a corrigir o problema.</string>
+    <string name="crash_report_github">Relatar no GitHub</string>
+    <string name="crash_share">Compartilhar</string>
+    <string name="crash_dismiss">Agora não</string>
+
+    <string name="home_cloud_newer_title">Uma coleção mais recente de outro celular</string>
+    <string name="home_cloud_newer_text">Seu backup na nuvem foi atualizado em outro celular. Toque para carregá-lo ou mesclá-lo em Configurações.</string>
+
+    <string name="picture_find">Buscar por imagem</string>
+    <string name="picture_preparing">Preparando a busca por imagem — download único de cerca de 20 MB…</string>
+    <string name="picture_searching">Procurando a carta pela imagem…</string>
+    <string name="picture_none">Nenhuma carta encontrada pela imagem — tente digitar.</string>
+    <string name="picture_unavailable">A busca por imagem não está disponível agora — verifique sua conexão.</string>
+    <string name="picture_check">Encontrada pela imagem — confira se é a carta certa.</string>
+</resources>
