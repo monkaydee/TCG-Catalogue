@@ -33,6 +33,8 @@ sealed interface ScanHit {
         val setCode: String? = null,
         /** A "1st Edition" stamp was read on the card. */
         val firstEdition: Boolean = false,
+        /** The set code of a Japanese card ("SV2a", "S12a", "SM11b"), printed next to the number. */
+        val jaSet: String? = null,
     ) : ScanHit {
         override val game get() = Game.POKEMON
         override val key get() = "pkm:$number/$total"
@@ -95,6 +97,9 @@ object CardTextParser {
     private val pokemonSetCode = Regex("""(?<![A-Z0-9])([A-Z][A-Z0-9]{1,3})\s+(EN|DE|FR|IT|ES|PT|NL|PL)(?![A-Z])""")
     private val notSetCodes = setOf("HP", "EX", "GX", "VMAX", "VSTAR", "TERA")
 
+    // Japanese cards print the set's code next to the number ("G SV2a 025/165 C"); English ones don't.
+    private val japaneseSetCode = Regex("""(?<![A-Za-z0-9])((?:SV|SM|XY|BW|S|M|DP|PCG|ADV|L|LL)\d{1,2}[a-zA-Z]{0,2}|SV-P|S-P|SM-P|M-P|SVK|SVG|SVL|SVM|SVN|SVO)(?![A-Za-z0-9])""")
+
     // The 1st Edition stamp: "EDITION" around a big "1"; some prints spell it out.
     private val firstEditionStamp = Regex("""\bEDITION\b|\b1ST\s*ED""")
 
@@ -130,15 +135,21 @@ object CardTextParser {
         // Name, set code and stamp can only be tied to the number when there is a single card.
         if (numbers.size != 1) return numbers.map { (number, total) -> ScanHit.Pokemon(number, total, null) }
         val (number, total) = numbers.single()
-        return listOf(ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines)))
+        return listOf(ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines), japaneseSet(lines)))
     }
 
     fun findOnePiece(lines: List<OcrLine>): ScanHit.OnePiece? = allOnePiece(lines).firstOrNull()
 
     fun findPokemon(lines: List<OcrLine>): ScanHit.Pokemon? {
         val (number, total) = allPokemonNumbers(lines).firstOrNull() ?: return null
-        return ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines))
+        return ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines), japaneseSet(lines))
     }
+
+    /** The set code of a Japanese card, read near the number at the bottom ("SV2a"). */
+    fun japaneseSet(lines: List<OcrLine>): String? = lines
+        .filter { it.top > 0.75f || it.top == 0f }
+        .sortedByDescending { it.top }
+        .firstNotNullOfOrNull { l -> japaneseSetCode.find(l.text)?.groupValues?.get(1) }
 
     /** The set code printed in the bottom left of Scarlet & Violet cards ("PAL" from "G PAL EN 123/193"). */
     fun pokemonSetCode(lines: List<OcrLine>): String? = lines

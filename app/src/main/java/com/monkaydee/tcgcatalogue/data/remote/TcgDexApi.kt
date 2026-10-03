@@ -11,8 +11,18 @@ import java.net.URLEncoder
  * Pokémon card data and prices from TCGdex (https://tcgdex.dev), which carries
  * both Cardmarket (EUR) and TCGplayer (USD) prices.
  */
-class TcgDexApi(private val http: Http) {
-    private val base = "https://api.tcgdex.net/v2/en"
+class TcgDexApi(private val http: Http, val lang: String = "en") {
+    private val base = "https://api.tcgdex.net/v2/$lang"
+
+    /**
+     * Ids of other languages carry a prefix ("ja:SV2a-025", "ja:SV2a") so they never mix with the
+     * English ones in the collection; [raw] strips it for the API.
+     */
+    val idPrefix: String = if (lang == "en") "" else "$lang:"
+    private fun raw(id: String) = id.removePrefix(idPrefix)
+
+    /** The same API for another card language (Japanese: "ja"). */
+    fun forLanguage(other: String) = TcgDexApi(http, other)
     private val setsMutex = Mutex()
     private var setsCache: List<SetSummary>? = null
 
@@ -20,7 +30,7 @@ class TcgDexApi(private val http: Http) {
         setsCache ?: run {
             val list = http.getJson("$base/sets").arr().orEmpty().mapNotNull { s ->
                 SetSummary(
-                    id = s["id"].str() ?: return@mapNotNull null,
+                    id = idPrefix + (s["id"].str() ?: return@mapNotNull null),
                     name = s["name"].str().orEmpty(),
                     official = s["cardCount"]["official"].int() ?: 0,
                     total = s["cardCount"]["total"].int() ?: 0,
@@ -33,9 +43,9 @@ class TcgDexApi(private val http: Http) {
     }
 
     suspend fun setDetails(setId: String): Pair<SetSummary, String?>? {
-        val s = http.getJson("$base/sets/${enc(setId)}") ?: return null
+        val s = http.getJson("$base/sets/${enc(raw(setId))}") ?: return null
         val summary = SetSummary(
-            id = s["id"].str() ?: setId,
+            id = s["id"].str()?.let { idPrefix + it } ?: setId,
             name = s["name"].str().orEmpty(),
             official = s["cardCount"]["official"].int() ?: 0,
             total = s["cardCount"]["total"].int() ?: 0,
@@ -56,10 +66,10 @@ class TcgDexApi(private val http: Http) {
 
     /** Card by set and printed number, e.g. ("sv03.5", "25") or ("swsh9tg", "TG01"). */
     suspend fun cardInSet(setId: String, localId: String): CardCandidate? =
-        http.getJson("$base/sets/${enc(setId)}/${enc(localId)}")?.let(::parseCard)
+        http.getJson("$base/sets/${enc(raw(setId))}/${enc(localId)}")?.let(::parseCard)
 
     suspend fun card(cardId: String): CardCandidate? =
-        http.getJson("$base/cards/${enc(cardId)}")?.let(::parseCard)
+        http.getJson("$base/cards/${enc(raw(cardId))}")?.let(::parseCard)
 
     suspend fun searchByName(name: String, limit: Int = 60): List<CardBrief> {
         val url = "$base/cards?name=${enc(name)}&pagination:itemsPerPage=$limit"
@@ -67,7 +77,7 @@ class TcgDexApi(private val http: Http) {
             val id = c["id"].str() ?: return@mapNotNull null
             CardBrief(
                 game = Game.POKEMON,
-                cardId = id,
+                cardId = idPrefix + id,
                 name = c["name"].str().orEmpty(),
                 number = c["localId"].str().orEmpty(),
                 imageUrl = c["image"].str()?.let { "$it/low.webp" },
@@ -76,7 +86,7 @@ class TcgDexApi(private val http: Http) {
     }
 
     private fun parseCard(c: kotlinx.serialization.json.JsonElement): CardCandidate? {
-        val id = c["id"].str() ?: return null
+        val id = idPrefix + (c["id"].str() ?: return null)
         val localId = c["localId"].str().orEmpty()
         val set = c["set"]
         val official = set["cardCount"]["official"].int() ?: 0
@@ -96,7 +106,7 @@ class TcgDexApi(private val http: Http) {
             cardId = id,
             name = c["name"].str().orEmpty(),
             number = number,
-            setId = set["id"].str().orEmpty(),
+            setId = idPrefix + set["id"].str().orEmpty(),
             setName = set["name"].str().orEmpty(),
             setTotal = official,
             rarity = c["rarity"].str(),
@@ -112,8 +122,8 @@ class TcgDexApi(private val http: Http) {
 
     /** The cards of a set as (card id, name), cached for the session. */
     suspend fun setCards(setId: String): List<Pair<String, String>> = setCardsCache[setId] ?: run {
-        val cards = http.getJson("$base/sets/${enc(setId)}")?.get("cards").arr().orEmpty().mapNotNull { c ->
-            val id = c["id"].str() ?: return@mapNotNull null
+        val cards = http.getJson("$base/sets/${enc(raw(setId))}")?.get("cards").arr().orEmpty().mapNotNull { c ->
+            val id = idPrefix + (c["id"].str() ?: return@mapNotNull null)
             id to c["name"].str().orEmpty()
         }
         if (cards.isNotEmpty()) setCardsCache[setId] = cards
@@ -122,8 +132,8 @@ class TcgDexApi(private val http: Http) {
 
     /** Every card of a set, in set order. */
     suspend fun setChecklist(setId: String): List<ChecklistEntry> =
-        http.getJson("$base/sets/${enc(setId)}")?.get("cards").arr().orEmpty().mapNotNull { c ->
-            val id = c["id"].str() ?: return@mapNotNull null
+        http.getJson("$base/sets/${enc(raw(setId))}")?.get("cards").arr().orEmpty().mapNotNull { c ->
+            val id = idPrefix + (c["id"].str() ?: return@mapNotNull null)
             ChecklistEntry(id, c["localId"].str().orEmpty(), c["name"].str().orEmpty(), c["image"].str()?.let { "$it/low.webp" })
         }
 

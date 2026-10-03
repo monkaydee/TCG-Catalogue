@@ -70,7 +70,11 @@ class CardRepository(
     private val cardmarketPokemon: CardmarketPokemon,
     private val fx: FxApi,
     val settings: SettingsStore,
+    /** Japanese Pokémon cards (ids prefixed "ja:"). */
+    private val tcgdexJa: TcgDexApi = tcgdex.forLanguage("ja"),
 ) {
+    /** The TCGdex client for a Pokémon card or set id (Japanese ids start with "ja:"). */
+    private fun pokemonApi(id: String) = if (id.startsWith(tcgdexJa.idPrefix)) tcgdexJa else tcgdex
     val cards = db.cards().observeAll()
     val sets = db.sets().observeAll()
     val snapshots = db.snapshots().observeAll()
@@ -138,6 +142,16 @@ class CardRepository(
 
     private suspend fun resolvePokemon(hit: ScanHit.Pokemon): List<CardCandidate> = coroutineScope {
         val localId = if (hit.number.first().isDigit()) hit.number.trimStart('0').ifEmpty { "0" } else hit.number
+        // A Japanese card: its printed set code names the set directly.
+        hit.jaSet?.let { code ->
+            val set = runCatching { tcgdexJa.sets() }.getOrDefault(emptyList())
+                .firstOrNull { it.id.removePrefix(tcgdexJa.idPrefix).equals(code, ignoreCase = true) }
+            val card = set?.let { s ->
+                runCatching { tcgdexJa.cardInSet(s.id, hit.number) }.getOrNull()
+                    ?: runCatching { tcgdexJa.cardInSet(s.id, localId) }.getOrNull()
+            }
+            if (card != null) return@coroutineScope listOf(card.copy(score = 1.0, preferredVariant = printingFor(card, hit.firstEdition)))
+        }
         // Sets whose printed size matches the number after the slash.
         val sets = tcgdex.sets().filter { it.official == hit.total }
         val found = sets.map { set -> async { runCatching { tcgdex.cardInSet(set.id, localId) }.getOrNull() } }
@@ -193,7 +207,8 @@ class CardRepository(
     suspend fun search(game: Game, query: String): List<CardBrief> {
         val q = query.trim()
         return when (game) {
-            Game.POKEMON -> tcgdex.searchByName(q)
+            // Japanese names (kana/kanji) search the Japanese cards.
+            Game.POKEMON -> if (q.any { Character.UnicodeScript.of(it.code) in JAPANESE }) tcgdexJa.searchByName(q) else tcgdex.searchByName(q)
             Game.ONE_PIECE -> CardTextParser.findOnePiece(listOf(com.monkaydee.tcgcatalogue.scan.OcrLine(q.uppercase())))
                 ?.let { listOfNotNull(onePiece.card(it.code)?.toBrief()) }.orEmpty()
             Game.MAGIC -> {
@@ -206,10 +221,12 @@ class CardRepository(
     }
 
     /** A Pokémon card with the Cardmarket prices of the right print (see [CardmarketPokemon]). */
-    private suspend fun pokemonFixed(c: CardCandidate): CardCandidate = attempt { cardmarketPokemon.fix(c) }.getOrDefault(c)
+    private suspend fun pokemonFixed(c: CardCandidate): CardCandidate =
+        // The look-alike correction uses the English Cardmarket catalogue.
+        if (c.cardId.startsWith(tcgdexJa.idPrefix)) c else attempt { cardmarketPokemon.fix(c) }.getOrDefault(c)
 
     suspend fun details(brief: CardBrief): CardCandidate? = brief.candidate ?: when (brief.game) {
-        Game.POKEMON -> tcgdex.card(brief.cardId)?.let { pokemonFixed(it) }
+        Game.POKEMON -> pokemonApi(brief.cardId).card(brief.cardId)?.let { pokemonFixed(it) }
         Game.ONE_PIECE -> onePiece.card(brief.cardId)
         Game.MAGIC -> brief.cardId.split('/').takeIf { it.size == 2 }?.let { (set, n) -> scryfall.card(set, n) }
         else -> brief.cardId.toLongOrNull()?.let { cardIndex.byProduct(brief.game, it) }
@@ -528,7 +545,7 @@ class CardRepository(
     private suspend fun ensureSet(c: CardCandidate) {
         if (db.sets().get(c.game, c.setId) != null) return
         val set = when (c.game) {
-            Game.POKEMON -> tcgdex.setDetails(c.setId)?.let { (s, release) ->
+            Game.POKEMON -> pokemonApi(c.setId).setDetails(c.setId)?.let { (s, release) ->
                 CardSet(Game.POKEMON, s.id, s.name, s.official, s.logoUrl, release)
             }
             Game.ONE_PIECE -> CardSet(Game.ONE_PIECE, c.setId, c.setName, onePiece.setSize(c.setId))
@@ -540,7 +557,7 @@ class CardRepository(
 
     /** Fetches the current data of a card in the collection. */
     private suspend fun fetch(game: Game, cardId: String): CardCandidate? = when (game) {
-        Game.POKEMON -> tcgdex.card(cardId)?.let { pokemonFixed(it) }
+        Game.POKEMON -> pokemonApi(cardId).card(cardId)?.let { pokemonFixed(it) }
         Game.ONE_PIECE -> onePiece.card(cardId)
         Game.MAGIC -> cardId.split('/').takeIf { it.size == 2 }?.let { (set, n) -> scryfall.card(set, n) }
         else -> cardId.toLongOrNull()?.let { cardIndex.byProduct(game, it) }
@@ -775,7 +792,7 @@ class CardRepository(
     /** Every card of a set, to show which ones are still missing (empty when unknown or offline). */
     suspend fun setChecklist(game: Game, setId: String): List<ChecklistEntry> = runCatching {
         when (game) {
-            Game.POKEMON -> tcgdex.setChecklist(setId)
+            Game.POKEMON -> pokemonApi(setId).setChecklist(setId)
             Game.ONE_PIECE -> onePiece.setChecklist(setId)
             Game.MAGIC -> scryfall.setChecklist(setId)
             else -> setId.toIntOrNull()?.let { cardIndex.setChecklist(game, it) }.orEmpty()
@@ -819,5 +836,9 @@ class CardRepository(
             val p = runCatching { cardIndex.sealedProduct(item.game, item.productId) }.getOrNull() ?: continue
             p.price?.let { db.sealed().update(item.copy(price = it, priceCurrency = "USD", priceUpdatedAt = System.currentTimeMillis())) }
         }
+    }
+
+    private companion object {
+        val JAPANESE = setOf(Character.UnicodeScript.HIRAGANA, Character.UnicodeScript.KATAKANA, Character.UnicodeScript.HAN)
     }
 }

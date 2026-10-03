@@ -89,6 +89,19 @@ class CardTextParserTest {
         assertTrue(!hit.firstEdition)
     }
 
+    @Test fun readsTheSetCodeOfJapaneseCards() {
+        val hit = CardTextParser.parseAll(listOf(OcrLine("G SV2a 025/165 C", 0.95f, 0.01f))).single() as ScanHit.Pokemon
+        assertEquals("SV2a", hit.jaSet)
+        assertEquals("025", hit.number)
+        val old = CardTextParser.parseAll(listOf(OcrLine("SM11b 012/049", 0.95f, 0.01f))).single() as ScanHit.Pokemon
+        assertEquals("SM11b", old.jaSet)
+    }
+
+    @Test fun englishCardsHaveNoJapaneseSetCode() {
+        val hit = CardTextParser.parseAll(listOf(OcrLine("Meowscarada ex", 0.05f, 0.04f), OcrLine("G PAL EN 015/193", 0.95f, 0.01f))).single() as ScanHit.Pokemon
+        assertNull(hit.jaSet)
+    }
+
     @Test fun readsTheFirstEditionStamp() {
         val hit = CardTextParser.parseAll(listOf(OcrLine("Charizard", 0.05f, 0.04f), OcrLine("EDITION", 0.55f, 0.01f), OcrLine("4/102", 0.95f, 0.01f))).single() as ScanHit.Pokemon
         assertTrue(hit.firstEdition)
