@@ -47,8 +47,15 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   *From photos*, or the photo icon on the Collection screen), or share them to TCG Catalogue
   from any app. Each photo is read on the phone, tried in all four orientations, and can contain
   several cards (e.g. a binder page). You review the matches or add them all at once.
-- **Quick add**: scan a stack of cards quickly. Cards that are clearly recognised are added
-  without asking.
+- **Stack scan**: scan a pile of cards one after another. Each recognised card goes into a
+  running list at the bottom of the camera screen (with a light tick), with undo per card and a
+  review before everything is added. Cards that are clearly recognised are added without asking.
+- **Find by picture**: for cards whose number can't be read (old, worn, Japanese, in a toploader
+  at an angle) the *Find by picture* button compares the card's picture with every Pokémon and
+  One Piece card, entirely on the phone. A small free image model (MobileNetV3, ~10 MB) and the
+  picture index (~6.5 MB) are downloaded once and refreshed weekly; nothing is uploaded.
+- **Japanese Pokémon cards**: the set code printed next to the number (`SV2a`, `S12a`, `SM11b` …)
+  is read, and the card is looked up in TCGdex's Japanese data.
 - **Manual add**: search Pokémon by name or number, One Piece by code.
 - **Collection**: portfolio value, value chart (1M / 3M / 1Y / All), most valuable cards, and
   every set with its value, copy count and completion (`12/165`).
@@ -110,7 +117,26 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   - A worse condition is never valued above a better one.
 - **Printing, condition, quantity** per card (normal / holo / reverse / 1st edition;
   NM–DMG).
+- **Price history and alerts**: every card keeps a daily price history (shown as a small chart on
+  its page). Set "tell me above / below" prices and the daily refresh sends a notification.
+- **Lists**: a **wishlist** (with current prices), a **trade list** (mark copies "for trade"),
+  and **sold cards** with the realised profit.
+- **Set checklist**: every card of a set with its image; the ones you don't own are dimmed, and
+  missing cards can be added to the wishlist in one tap.
+- **Sealed products**: booster boxes, ETBs, bundles … with daily TCGplayer prices, counted in the
+  portfolio value.
+- **Home-screen widget**: the portfolio value, its 30-day change and the card count at a glance.
+- **Share a binder page** as a picture to any app.
+- **Onboarding**: three short screens on the first start, which also explain the camera
+  permission before Android asks for it.
 - **Backup**: export / import the collection as JSON. Data lives only on the phone.
+- **Cloud backup and sync, no sign-in**: Settings → Cloud backup lets you pick a file in Google
+  Drive, Dropbox, OneDrive … (through Android's file picker). The app saves the collection
+  there after changes, and when another phone saved a newer version, the Collection screen
+  offers to merge it. There is no server and no account in the app; the file lives in your own
+  cloud storage.
+- **Crash reports**: after a crash, the app offers to open a prefilled GitHub issue or share the
+  report. Nothing is sent automatically. See [docs/PRIVACY.md](docs/PRIVACY.md).
 
 ## How it works
 
@@ -154,14 +180,21 @@ CameraX frame ──▶ ML Kit text recognition (on-device)
 `scripts/build_card_index.py` downloads every set of the indexed games from TCGCSV and writes one
 compact JSON file per game (`{"groups": …, "cards": [[code, name, set, rarity, productId, prices]]}`).
 `.github/workflows/card-index.yml` runs it every day and force-pushes the files to the `data`
-branch. The app downloads the files of the enabled games from there, at most once a day.
+branch. The app downloads the files of the enabled games from there, at most once a day. Sealed products are written to `SEALED_<GAME>.json` the same way.
+
+## Picture index
+
+`scripts/build_embeddings.py` turns every Pokémon and One Piece card image into a fingerprint
+with MediaPipe's MobileNetV3 image embedder (whole card + artwork window), reduces it to 256
+numbers (PCA) and stores it as bytes. `.github/workflows/embeddings.yml` runs it weekly and
+publishes the files to the `embeddings` branch; the app downloads them for *Find by picture*.
 
 ## Building locally
 
 Requires JDK 17+ and the Android SDK (platform 35).
 
 ```sh
-./gradlew testDebugUnitTest   # parser unit tests
+./gradlew testDebugUnitTest   # unit tests and screenshot tests (Robolectric)
 ./gradlew assembleRelease     # app/build/outputs/apk/release/app-release.apk
 ```
 
