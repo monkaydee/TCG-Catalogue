@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Portafoglio</string>
+    <string name="widget_description">Il valore totale della tua collezione e come è cambiato negli ultimi 30 giorni.</string>
+    <string name="widget_title">Valore della collezione</string>
+    <string name="widget_cards">%1$d carte</string>
+    <string name="widget_updated">Aggiornato %1$s</string>
+    <string name="widget_change_30d">%1$s in 30 giorni</string>
+    <string name="widget_no_history">Ancora nessuno storico a 30 giorni</string>
+    <string name="widget_preview_change" formatted="false">+48,20 € (+4,1 %) in 30 giorni</string>
+    <string name="widget_preview_cards">312 carte</string>
+
+    <string name="share_page">Condividi pagina</string>
+    <string name="share_chooser_title">Condividi pagina del raccoglitore</string>
+    <string name="share_failed">Impossibile condividere la pagina: %1$s</string>
+
+    <string name="cloud_title">Backup cloud</string>
+    <string name="cloud_hint">Conserva una copia della tua collezione in un file su Google Drive, Dropbox, OneDrive o qualsiasi altra app di archiviazione di questo telefono. Viene salvata quando esci dall\'app, e all\'apertura ti viene proposta una copia più recente da un altro telefono.</string>
+    <string name="cloud_choose_new">Nuovo file</string>
+    <string name="cloud_choose_existing">Usa file esistente</string>
+    <string name="cloud_file">File: %1$s</string>
+    <string name="cloud_last_saved">Ultimo salvataggio: %1$s</string>
+    <string name="cloud_never_saved">Non ancora salvato</string>
+    <string name="cloud_backup_now">Esegui backup ora</string>
+    <string name="cloud_stop">Interrompi</string>
+    <string name="cloud_saved">Backup salvato</string>
+    <string name="cloud_unchanged">Nulla è cambiato dall\'ultimo backup</string>
+    <string name="cloud_stopped">Backup cloud interrotto</string>
+    <string name="cloud_error">Problema con il backup cloud: %1$s</string>
+    <string name="cloud_error_permission">L\'accesso al file è stato revocato. Scegli di nuovo il file.</string>
+    <string name="cloud_error_not_backup">Il file non è un backup di TCG Catalogue, quindi non è stato toccato.</string>
+    <string name="cloud_error_blocked">Una collezione più recente da un altro telefono è in attesa. Caricala, uniscila o ignorala prima.</string>
+    <string name="cloud_error_unknown">errore sconosciuto</string>
+    <string name="cloud_pending_title">Collezione più recente da un altro telefono</string>
+    <string name="cloud_pending_text">Il file di backup contiene una collezione con %1$d carte, salvata %2$s.</string>
+    <string name="cloud_load">Caricala (sostituisce)</string>
+    <string name="cloud_merge">Unisci</string>
+    <string name="cloud_ignore">Ignora</string>
+    <string name="cloud_loaded">Collezione caricata dal file di backup</string>
+    <string name="cloud_merged">Collezioni unite</string>
+    <string name="cloud_load_confirm_title">Sostituire la tua collezione?</string>
+    <string name="cloud_load_confirm_text">Tutto ciò che è su questo telefono viene sostituito dalla collezione nel file di backup.</string>
+    <string name="cloud_load_confirm_button">Sostituisci</string>
+</resources>

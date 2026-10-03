@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">تنبيهات الأسعار</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">الآن %1$s — أعلى من تنبيهك عند %2$s</string>
+    <string name="alert_below">الآن %1$s — أقل من تنبيهك عند %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">في قائمة أمنياتك: الآن %1$s — عند هدفك %2$s أو أقل</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">وضع الكومة</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — تحقق منها لاحقًا في الشريط أدناه</string>
+    <plurals name="stack_to_review">
+        <item quantity="zero">%d بطاقة للتحقق — اضغط عليها</item>
+        <item quantity="one">%d بطاقة للتحقق — اضغط عليها</item>
+        <item quantity="two">%d بطاقتان للتحقق — اضغط عليهما</item>
+        <item quantity="few">%d بطاقات للتحقق — اضغط عليها</item>
+        <item quantity="many">%d بطاقة للتحقق — اضغط عليها</item>
+        <item quantity="other">%d بطاقة للتحقق — اضغط عليها</item>
+    </plurals>
+    <string name="stack_tap_to_review">اضغط للتحقق</string>
+    <string name="stack_undo">تراجع</string>
+    <string name="stack_discard">تجاهل</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">المنتجات المغلقة</string>
+    <string name="sealed_add">إضافة منتج مغلق</string>
+    <string name="sealed_value">قيمة المنتجات المغلقة</string>
+    <plurals name="sealed_count">
+        <item quantity="zero">%d منتج</item>
+        <item quantity="one">%d منتج</item>
+        <item quantity="two">%d منتجان</item>
+        <item quantity="few">%d منتجات</item>
+        <item quantity="many">%d منتجًا</item>
+        <item quantity="other">%d منتج</item>
+    </plurals>
+    <string name="sealed_empty">تتبّع هنا صناديق البوستر والحزم والأوراق والصناديق غير المفتوحة. تُحتسب قيمتها السوقية ضمن محفظتك.</string>
+    <string name="sealed_remove_hint">الحفظ بالقيمة 0 يزيل المنتج.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s منذ الشراء</string>
+    <string name="sealed_no_price">لا يوجد سعر</string>
+    <string name="sealed_search_hint">اسم المنتج أو المجموعة، مثل «151 booster box»</string>
+    <string name="sealed_no_results">لم يُعثر على منتجات مغلقة</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">عذرًا، تعطّل التطبيق</string>
+    <string name="crash_text">تم حفظ تقرير تقني (إصدار التطبيق وأندرويد، وطراز الهاتف، والخطأ — دون أي من بطاقاتك). يمكنك إرساله للمساعدة في إصلاح المشكلة.</string>
+    <string name="crash_report_github">الإبلاغ على GitHub</string>
+    <string name="crash_share">مشاركة</string>
+    <string name="crash_dismiss">ليس الآن</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">مجموعة أحدث من هاتف آخر</string>
+    <string name="home_cloud_newer_text">تم تحديث نسختك السحابية على هاتف آخر. اضغط لتحميلها أو دمجها من الإعدادات.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">البحث بالصورة</string>
+    <string name="picture_preparing">جارٍ تجهيز البحث بالصورة — تنزيل لمرة واحدة بحجم 20 ميغابايت تقريبًا…</string>
+    <string name="picture_searching">جارٍ البحث عن البطاقة بصورتها…</string>
+    <string name="picture_none">لم يُعثر على بطاقة بالصورة — جرّب كتابتها يدويًا.</string>
+    <string name="picture_unavailable">البحث بالصورة غير متاح الآن — تحقق من اتصالك.</string>
+    <string name="picture_check">تم العثور عليها بالصورة — يرجى التأكد من أنها البطاقة الصحيحة.</string>
+</resources>

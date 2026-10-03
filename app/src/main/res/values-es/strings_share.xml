@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Cartera</string>
+    <string name="widget_description">El valor total de tu colección y cómo ha cambiado en los últimos 30 días.</string>
+    <string name="widget_title">Valor de la colección</string>
+    <string name="widget_cards">%1$d cartas</string>
+    <string name="widget_updated">Actualizado %1$s</string>
+    <string name="widget_change_30d">%1$s en 30 días</string>
+    <string name="widget_no_history">Aún no hay historial de 30 días</string>
+    <string name="widget_preview_change" formatted="false">+48,20 € (+4,1 %) en 30 días</string>
+    <string name="widget_preview_cards">312 cartas</string>
+
+    <string name="share_page">Compartir página</string>
+    <string name="share_chooser_title">Compartir página de la carpeta</string>
+    <string name="share_failed">No se pudo compartir la página: %1$s</string>
+
+    <string name="cloud_title">Copia en la nube</string>
+    <string name="cloud_hint">Guarda una copia de tu colección en un archivo de Google Drive, Dropbox, OneDrive o cualquier otra app de almacenamiento de este teléfono. Se guarda al salir de la app, y al abrirla se te ofrece una copia más reciente de otro teléfono.</string>
+    <string name="cloud_choose_new">Archivo nuevo</string>
+    <string name="cloud_choose_existing">Usar archivo existente</string>
+    <string name="cloud_file">Archivo: %1$s</string>
+    <string name="cloud_last_saved">Último guardado: %1$s</string>
+    <string name="cloud_never_saved">Aún sin guardar</string>
+    <string name="cloud_backup_now">Copiar ahora</string>
+    <string name="cloud_stop">Detener</string>
+    <string name="cloud_saved">Copia guardada</string>
+    <string name="cloud_unchanged">Nada ha cambiado desde la última copia</string>
+    <string name="cloud_stopped">Copia en la nube detenida</string>
+    <string name="cloud_error">Problema con la copia en la nube: %1$s</string>
+    <string name="cloud_error_permission">Se revocó el acceso al archivo. Elige el archivo de nuevo.</string>
+    <string name="cloud_error_not_backup">El archivo no es una copia de TCG Catalogue, así que no se ha tocado.</string>
+    <string name="cloud_error_blocked">Hay una colección más reciente de otro teléfono esperando. Cárgala, combínala o ignórala primero.</string>
+    <string name="cloud_error_unknown">error desconocido</string>
+    <string name="cloud_pending_title">Colección más reciente de otro teléfono</string>
+    <string name="cloud_pending_text">El archivo de copia contiene una colección con %1$d cartas, guardada %2$s.</string>
+    <string name="cloud_load">Cargarla (reemplaza)</string>
+    <string name="cloud_merge">Combinar</string>
+    <string name="cloud_ignore">Ignorar</string>
+    <string name="cloud_loaded">Colección cargada desde el archivo de copia</string>
+    <string name="cloud_merged">Colecciones combinadas</string>
+    <string name="cloud_load_confirm_title">¿Reemplazar tu colección?</string>
+    <string name="cloud_load_confirm_text">Todo lo que hay en este teléfono se reemplaza por la colección del archivo de copia.</string>
+    <string name="cloud_load_confirm_button">Reemplazar</string>
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
+    English only for now; the translations follow in values-xx/strings_share.xml.
+-->
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">Портфель</string>
+    <string name="widget_description">Общая стоимость вашей коллекции и её изменение за последние 30 дней.</string>
+    <string name="widget_title">Стоимость коллекции</string>
+    <string name="widget_cards">Карт: %1$d</string>
+    <string name="widget_updated">Обновлено: %1$s</string>
+    <string name="widget_change_30d">%1$s за 30 дней</string>
+    <string name="widget_no_history">Истории за 30 дней пока нет</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) за 30 дней</string>
+    <string name="widget_preview_cards">312 карт</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Поделиться страницей</string>
+    <string name="share_chooser_title">Поделиться страницей биндера</string>
+    <string name="share_failed">Не удалось поделиться страницей: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Облачная копия</string>
+    <string name="cloud_hint">Храните копию коллекции в файле на Google Drive, Dropbox, OneDrive или в любом другом приложении-хранилище на этом телефоне. Она сохраняется при выходе из приложения, а более новая копия с другого телефона предлагается при его запуске.</string>
+    <string name="cloud_choose_new">Новый файл</string>
+    <string name="cloud_choose_existing">Выбрать существующий файл</string>
+    <string name="cloud_file">Файл: %1$s</string>
+    <string name="cloud_last_saved">Последнее сохранение: %1$s</string>
+    <string name="cloud_never_saved">Ещё не сохранялось</string>
+    <string name="cloud_backup_now">Сохранить сейчас</string>
+    <string name="cloud_stop">Остановить</string>
+    <string name="cloud_saved">Копия сохранена</string>
+    <string name="cloud_unchanged">С последней копии ничего не изменилось</string>
+    <string name="cloud_stopped">Облачное копирование остановлено</string>
+    <string name="cloud_error">Проблема с облачной копией: %1$s</string>
+    <string name="cloud_error_permission">Доступ к файлу отозван. Выберите файл снова.</string>
+    <string name="cloud_error_not_backup">Этот файл не является резервной копией TCG Catalogue, поэтому он не был изменён.</string>
+    <string name="cloud_error_blocked">Ожидает более новая коллекция с другого телефона. Сначала загрузите её, объедините или проигнорируйте.</string>
+    <string name="cloud_error_unknown">неизвестная ошибка</string>
+    <string name="cloud_pending_title">Более новая коллекция с другого телефона</string>
+    <string name="cloud_pending_text">В файле копии коллекция из %1$d карт, сохранённая %2$s.</string>
+    <string name="cloud_load">Загрузить (заменить)</string>
+    <string name="cloud_merge">Объединить</string>
+    <string name="cloud_ignore">Игнорировать</string>
+    <string name="cloud_loaded">Коллекция загружена из файла копии</string>
+    <string name="cloud_merged">Коллекции объединены</string>
+    <string name="cloud_load_confirm_title">Заменить вашу коллекцию?</string>
+    <string name="cloud_load_confirm_text">Всё на этом телефоне будет заменено коллекцией из файла копии.</string>
+    <string name="cloud_load_confirm_button">Заменить</string>
+</resources>

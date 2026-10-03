@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">價格提醒</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">目前 %1$s — 高於你設定的提醒價 %2$s</string>
+    <string name="alert_below">目前 %1$s — 低於你設定的提醒價 %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">願望清單：目前 %1$s — 已達到或低於你的目標價 %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">連續掃描模式</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — 請稍後在下方列表中確認</string>
+    <plurals name="stack_to_review">
+        <item quantity="other">待確認的卡片：%d 張 — 點一下查看</item>
+    </plurals>
+    <string name="stack_tap_to_review">點一下確認</string>
+    <string name="stack_undo">復原</string>
+    <string name="stack_discard">捨棄</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">未拆封商品</string>
+    <string name="sealed_add">新增未拆封商品</string>
+    <string name="sealed_value">未拆封價值</string>
+    <plurals name="sealed_count">
+        <item quantity="other">%d 件</item>
+    </plurals>
+    <string name="sealed_empty">在這裡記錄未拆封的補充包盒、卡包、牌組等。它們的市場價值會計入你的資產總值。</string>
+    <string name="sealed_remove_hint">儲存為 0 會移除該商品。</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">自購入起 %1$s</string>
+    <string name="sealed_no_price">無價格</string>
+    <string name="sealed_search_hint">商品名稱或系列，例如「151 補充包盒」</string>
+    <string name="sealed_no_results">找不到未拆封商品</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">抱歉，應用程式當機了</string>
+    <string name="crash_text">已保留一份技術報告（應用程式和 Android 版本、手機型號及錯誤訊息，不含你的任何卡片）。你可以傳送它來協助修正問題。</string>
+    <string name="crash_report_github">在 GitHub 上回報</string>
+    <string name="crash_share">分享</string>
+    <string name="crash_dismiss">暫不</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">另一支手機上有更新的收藏</string>
+    <string name="home_cloud_newer_text">雲端備份已在另一支手機上更新。點一下即可在設定中載入或合併。</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">以圖搜卡</string>
+    <string name="picture_preparing">正在準備以圖搜卡 — 僅需一次性下載約 20 MB…</string>
+    <string name="picture_searching">正在以圖搜卡…</string>
+    <string name="picture_none">無法透過圖片找到卡片，請嘗試手動輸入。</string>
+    <string name="picture_unavailable">以圖搜卡暫時無法使用，請檢查網路連線。</string>
+    <string name="picture_check">已透過圖片找到卡片，請確認是否正確。</string>
+</resources>

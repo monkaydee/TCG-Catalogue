@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">스캔한 카드의 이름이 이 카드와 일치하지 않아요. 번호를 잘못 읽었을 수 있어요. 확인하거나, 취소하고 직접 입력해 주세요.</string>
+    <string name="data_graded">그레이딩</string>
+    <string name="data_graded_grade">그레이딩 %1$s</string>
+    <string name="data_graded_choose_grader">그레이딩 업체를 선택하세요</string>
+    <string name="data_graded_choose_grade">등급을 선택하세요</string>
+    <string name="data_graded_no_source">그레이딩 가격 출처 없음 — 내 평가액을 입력하거나 카드 페이지의 가격 링크를 확인하세요</string>
+    <string name="data_variant_normal">일반</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">스탠더드</string>
+    <string name="data_variant_numbered">버전 %1$d</string>
+    <string name="data_overview_prices">가격</string>
+    <string name="data_overview_no_card_data">카드 정보를 불러올 수 없어요 — 연결을 확인해 주세요</string>
+    <string name="data_overview_no_cardmarket">이 카드의 Cardmarket 가격 없음</string>
+    <string name="data_overview_no_tcgplayer">이 카드의 TCGplayer 가격 없음</string>
+    <string name="data_overview_by_condition">상태별 TCGplayer (판매)</string>
+    <string name="data_overview_no_condition_sales">상태별 판매 내역 없음</string>
+    <string name="price_label_trend">트렌드</string>
+    <string name="price_label_lowest_offer">최저 제시가</string>
+    <string name="price_label_average_sold">평균 판매가</string>
+    <string name="price_label_avg1">1일 평균</string>
+    <string name="price_label_avg7">7일 평균</string>
+    <string name="price_label_avg30">30일 평균</string>
+    <string name="price_label_market">시장가</string>
+    <string name="price_label_lowest_listing">최저 등록가</string>
+    <string name="price_label_mid">중간가</string>
+    <string name="price_label_highest_listing">최고 등록가</string>
+    <string name="price_label_direct_low">Direct 최저가</string>
+    <string name="price_note_raw_no_graded_source">Raw 가격을 표시 중 — 그레이딩 가격 출처 없음 — 내 평가액을 입력하거나 카드 페이지의 가격 링크를 확인하세요</string>
+    <string name="price_note_markets_disagree">%1$s 상품이 이 카드와 맞지 않아요 (%2$d배 차이). %3$s 사용 중</string>
+    <string name="price_note_capped">%1$s을(를) %2$s 기준으로 평가 (판매 데이터가 더 높았음)</string>
+    <string name="price_note_tcgplayer_sales">TCGplayer 판매 기준 %1$s 가격</string>
+    <string name="price_note_sales_share">%1$s = NM의 %2$d%% (TCGplayer 판매)</string>
+    <string name="price_note_estimated_share">%1$s은(는) NM의 %2$d%%로 추정 (판매 데이터 없음)</string>
+    <string name="data_http_error">%2$s에 대한 HTTP %1$d</string>
+    <string name="data_service_unavailable">카드 서비스(%1$s)가 지금 응답하지 않아요. 잠시 후 다시 시도하세요.</string>
+</resources>

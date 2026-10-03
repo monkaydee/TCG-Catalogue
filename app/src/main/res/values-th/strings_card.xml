@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">โหลดข้อมูลการ์ดไม่ได้ — ตรวจสอบการเชื่อมต่อ</string>
+    <string name="card_pager_position">%1$d / %2$d · ปัดเพื่อดูเพิ่ม</string>
+    <string name="card_back">กลับ</string>
+    <string name="card_edit">แก้ไขการ์ด</string>
+    <string name="card_remove_from_collection">ลบออกจากคอลเลกชัน</string>
+    <string name="card_save">บันทึก</string>
+    <string name="card_remove_title">ลบการ์ดนี้ไหม</string>
+    <plurals name="card_remove_message">
+        <item quantity="other">การดำเนินการนี้จะลบ %2$s จำนวน %1$d ใบออกจากคอลเลกชันของคุณ</item>
+    </plurals>
+    <string name="card_remove">ลบ</string>
+    <string name="card_cancel">ยกเลิก</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">ใบละ %1$s (%2$s บน %3$s)</string>
+    <string name="card_unit_price_on_market">ใบละ %1$s (%2$s ในตลาด)</string>
+    <string name="card_price_updated">อัปเดต %1$s</string>
+    <string name="card_no_market_price">ไม่มีราคาตลาด</string>
+    <string name="card_own_value">มูลค่าที่คุณตั้งเอง: ใบละ %1$s</string>
+    <string name="card_own_value_with_market">มูลค่าที่คุณตั้งเอง: ใบละ %1$s · ตลาด %2$s</string>
+    <string name="card_bought_for_with_percent">ซื้อมาใบละ %1$s · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">ซื้อมาใบละ %1$s · %2$s</string>
+    <string name="card_cert">เลขใบรับรอง %1$s</string>
+    <string name="card_graded_hint">การ์ดที่เกรดแล้วใช้มูลค่าที่คุณตั้งเอง — ดูราคาขายล่าสุดได้จากลิงก์ด้านล่าง</string>
+    <string name="card_raw_hint">ราคาตลาดของการ์ด Raw (ยังไม่เกรด) ในสภาพนี้</string>
+    <string name="card_quantity">จำนวน</string>
+    <string name="card_cardmarket_listing">รายการบน Cardmarket</string>
+    <string name="card_condition">สภาพ</string>
+    <string name="card_all_prices">ราคาทั้งหมด</string>
+    <string name="card_show">แสดง</string>
+    <string name="card_refresh">รีเฟรช</string>
+    <string name="card_check_prices">ดูราคาออนไลน์</string>
+    <string name="set_back">กลับ</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="other">%1$d จาก %2$d ใบ (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="other">%d การ์ด</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="other">%d ใบ</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">ตามมูลค่า</string>
+    <string name="set_sort_number">ตามหมายเลข</string>
+    <string name="set_no_price">ไม่มีราคา</string>
+    <string name="common_auto">อัตโนมัติ</string>
+    <string name="common_less">ลด</string>
+    <string name="common_more">เพิ่ม</string>
+    <string name="links_ebay_sold">eBay ขายแล้ว</string>
+</resources>

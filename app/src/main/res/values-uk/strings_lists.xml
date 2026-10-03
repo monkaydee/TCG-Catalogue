@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wishlist, trade list, sold cards, set checklist, price alerts and price history. Translations follow later. -->
+<resources>
+    <!-- Common -->
+    <string name="lists_back">Назад</string>
+    <string name="lists_cancel">Скасувати</string>
+    <string name="lists_save">Зберегти</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">Скинути</string>
+    <string name="lists_remove">Видалити</string>
+    <string name="lists_retry">Повторити</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">Списки</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">Сума (%1$s)</string>
+    <string name="lists_amount_invalid">Введіть суму, наприклад 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">Чекліст</string>
+    <string name="checklist_open">Показати чекліст</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="one">%1$d з %2$d картки в колекції</item>
+        <item quantity="few">%1$d з %2$d карток у колекції</item>
+        <item quantity="many">%1$d з %2$d карток у колекції</item>
+        <item quantity="other">%1$d з %2$d карток у колекції</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">Усі · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">Є · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">Немає · %1$d</string>
+    <string name="checklist_loading">Завантаження карток цього сету…</string>
+    <string name="checklist_empty_title">Немає чекліста для цього сету</string>
+    <string name="checklist_empty_text">Не вдалося завантажити список карток. Перевірте з\'єднання — можливо, цього сету ще немає в списку.</string>
+    <string name="checklist_none_owned">У вас поки немає жодної картки цього сету.</string>
+    <string name="checklist_none_missing">Готово! У вас є всі картки цього сету.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">Немає</string>
+    <string name="checklist_on_wishlist">У вашому списку бажань</string>
+    <string name="checklist_add_collection">Додати до колекції</string>
+    <string name="checklist_add_wishlist">Додати до списку бажань</string>
+    <string name="checklist_card_loading">Завантаження картки…</string>
+    <string name="checklist_card_failed">Не вдалося завантажити картку — перевірте з\'єднання</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s додано до колекції</string>
+    <string name="checklist_printing">Видання</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">Список бажань</string>
+    <string name="wish_add">Додати до списку бажань</string>
+    <string name="wish_remove">Прибрати зі списку бажань</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s додано до списку бажань</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s прибрано зі списку бажань</string>
+    <string name="wish_add_failed">Не вдалося додати картку — перевірте з\'єднання</string>
+    <string name="wish_total">Загальна вартість</string>
+    <plurals name="wish_count">
+        <item quantity="one">%1$d картка</item>
+        <item quantity="few">%1$d картки</item>
+        <item quantity="many">%1$d карток</item>
+        <item quantity="other">%1$d картки</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="one">%1$d не вище за вашу ціль</item>
+        <item quantity="few">%1$d не вище за вашу ціль</item>
+        <item quantity="many">%1$d не вище за вашу ціль</item>
+        <item quantity="other">%1$d не вище за вашу ціль</item>
+    </plurals>
+    <string name="wish_empty_title">Ваш список бажань порожній</string>
+    <string name="wish_empty_text">Додавайте картки з пошуку або з відсутніх карток чекліста сету.</string>
+    <string name="wish_no_price">Немає ціни</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">Ціль %1$s</string>
+    <string name="wish_no_target">Цільову ціну не задано</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">Ціль досягнуто</string>
+    <string name="wish_set_target">Задати цільову ціну</string>
+    <string name="wish_target_title">Цільова ціна</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">Ви отримаєте сповіщення, коли ціна опуститься до цієї суми або нижче. Зараз: %1$s</string>
+    <string name="wish_target_text_no_price">Ви отримаєте сповіщення, коли ціна опуститься до цієї суми або нижче.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">Список обміну</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">На обмін</string>
+    <string name="trade_share">Поділитися списком</string>
+    <string name="trade_remove">Прибрати зі списку обміну</string>
+    <string name="trade_total">Вартість обміну</string>
+    <string name="trade_empty_title">Поки нічого немає на обмін</string>
+    <string name="trade_empty_text">Відкрийте картку в колекції й торкніться «На обмін», щоб додати її сюди.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="one">Мій список обміну (%1$d картка)</item>
+        <item quantity="few">Мій список обміну (%1$d картки)</item>
+        <item quantity="many">Мій список обміну (%1$d карток)</item>
+        <item quantity="other">Мій список обміну (%1$d картки)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">Загальна вартість: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">Надіслано з %1$s</string>
+    <string name="trade_share_subject">Мій список обміну</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">Продати</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">Продати %1$s</string>
+    <string name="sold_quantity">Продано копій</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">з %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">Ціна за копію (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">Разом %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">Прибуток %1$s</string>
+    <string name="sold_confirm">Продати</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">Продано: %1$d× %2$s</string>
+    <string name="sold_title">Продано</string>
+    <string name="sold_realised">Фактичний прибуток</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">Продажі %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="one">%1$d продаж без ціни купівлі не враховується</item>
+        <item quantity="few">%1$d продажі без ціни купівлі не враховуються</item>
+        <item quantity="many">%1$d продажів без ціни купівлі не враховуються</item>
+        <item quantity="other">%1$d продажу без ціни купівлі не враховуються</item>
+    </plurals>
+    <string name="sold_empty_title">Продажів поки немає</string>
+    <string name="sold_empty_text">Відкрийте картку в колекції й торкніться «Продати», щоб записати продаж тут.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">Продано %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">Куплено по %1$s</string>
+    <string name="sold_paid_unknown">Ціна купівлі невідома</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">Продано %1$s</string>
+    <string name="sold_delete">Видалити запис</string>
+    <string name="sold_delete_title">Видалити цей продаж?</string>
+    <string name="sold_delete_text">Його буде видалено зі списку проданого та з фактичного прибутку. Картка не повернеться до вашої колекції.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">Сповіщення</string>
+    <string name="alert_ui_title">Цінове сповіщення</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">Отримуйте сповіщення, коли вартість однієї копії перетинає одну з цих сум. Зараз: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">Сповістити вище (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">Сповістити нижче (%1$s)</string>
+    <string name="alert_ui_order">«Вище» має бути більше, ніж «нижче»</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">Вище %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">Нижче %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">Історія цін</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">Макс. %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">Мін. %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">Змінити</string>
+    <string name="lists_card_remove">Видалити</string>
+</resources>

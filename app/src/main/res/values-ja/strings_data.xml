@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">スキャンしたカードの名前がこのカードと一致しません。番号を読み間違えた可能性があります。確認するか、キャンセルして手入力してください。</string>
+
+    <string name="data_graded">鑑定品</string>
+    <string name="data_graded_grade">鑑定 %1$s</string>
+
+    <string name="data_graded_choose_grader">鑑定会社を選択してください</string>
+    <string name="data_graded_choose_grade">グレードを選択してください</string>
+    <string name="data_graded_no_source">鑑定品の価格ソースがありません。自分の評価額を設定するか、カードページの価格リンクを確認してください</string>
+
+    <string name="data_variant_normal">ノーマル</string>
+    <string name="data_variant_holo">ホロ</string>
+    <string name="data_variant_reverse_holo">リバースホロ</string>
+    <string name="data_variant_first_edition">初版</string>
+    <string name="data_variant_foil">フォイル</string>
+    <string name="data_variant_etched_foil">エッチング・フォイル</string>
+    <string name="data_variant_standard">通常</string>
+    <string name="data_variant_numbered">パラレル%1$d</string>
+
+    <string name="data_overview_prices">価格</string>
+    <string name="data_overview_no_card_data">カードデータを読み込めませんでした。接続を確認してください</string>
+    <string name="data_overview_no_cardmarket">このカードのCardmarket価格はありません</string>
+    <string name="data_overview_no_tcgplayer">このカードのTCGplayer価格はありません</string>
+    <string name="data_overview_by_condition">TCGplayer 状態別（取引）</string>
+    <string name="data_overview_no_condition_sales">状態別の取引はありません</string>
+
+    <string name="price_label_trend">トレンド</string>
+    <string name="price_label_lowest_offer">最安値</string>
+    <string name="price_label_average_sold">平均取引価格</string>
+    <string name="price_label_avg1">1日平均</string>
+    <string name="price_label_avg7">7日平均</string>
+    <string name="price_label_avg30">30日平均</string>
+    <string name="price_label_market">相場</string>
+    <string name="price_label_lowest_listing">最安出品</string>
+    <string name="price_label_mid">中央値</string>
+    <string name="price_label_highest_listing">最高出品</string>
+    <string name="price_label_direct_low">Direct最安値</string>
+
+    <string name="price_note_raw_no_graded_source">未鑑定価格を表示中。鑑定品の価格ソースがありません。自分の評価額を設定するか、カードページの価格リンクを確認してください</string>
+    <string name="price_note_markets_disagree">%1$sの商品はこのカードと一致しませんでした（%2$d倍の差）。%3$sを使用</string>
+    <string name="price_note_capped">%1$sを%2$sと同額で評価（取引データの方が高かったため）</string>
+    <string name="price_note_tcgplayer_sales">TCGplayerの取引に基づく%1$sの価格</string>
+    <string name="price_note_sales_share">%1$s = NMの%2$d%%（TCGplayerの取引）</string>
+    <string name="price_note_estimated_share">%1$sはNMの%2$d%%と推定（取引データなし）</string>
+
+    <string name="data_http_error">HTTP %1$d（%2$s）</string>
+    <string name="data_service_unavailable">カードサービス（%1$s）が現在応答していません。しばらくしてからもう一度お試しください。</string>
+</resources>

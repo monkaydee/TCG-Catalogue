@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
+    English only for now; the translations follow in values-xx/strings_share.xml.
+-->
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">Portfolio</string>
+    <string name="widget_description">Your collection\'s total value and how it changed in the last 30 days.</string>
+    <string name="widget_title">Collection value</string>
+    <string name="widget_cards">%1$d cards</string>
+    <string name="widget_updated">Updated %1$s</string>
+    <string name="widget_change_30d">%1$s in 30 days</string>
+    <string name="widget_no_history">No 30-day history yet</string>
+    <string name="widget_preview_value" translatable="false">€1,234.50</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) in 30 days</string>
+    <string name="widget_preview_cards">312 cards</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Share page</string>
+    <string name="share_chooser_title">Share binder page</string>
+    <string name="share_failed">Could not share the page: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Cloud backup</string>
+    <string name="cloud_hint">Keep a copy of your collection in a file on Google Drive, Dropbox, OneDrive or any other storage app on this phone. It is saved when you leave the app, and a newer copy from another phone is offered when you open it.</string>
+    <string name="cloud_choose_new">New file</string>
+    <string name="cloud_choose_existing">Use existing file</string>
+    <string name="cloud_file">File: %1$s</string>
+    <string name="cloud_last_saved">Last saved: %1$s</string>
+    <string name="cloud_never_saved">Not saved yet</string>
+    <string name="cloud_backup_now">Back up now</string>
+    <string name="cloud_stop">Stop</string>
+    <string name="cloud_saved">Backup saved</string>
+    <string name="cloud_unchanged">Nothing changed since the last backup</string>
+    <string name="cloud_stopped">Cloud backup stopped</string>
+    <string name="cloud_error">Cloud backup problem: %1$s</string>
+    <string name="cloud_error_permission">Access to the file was revoked. Choose the file again.</string>
+    <string name="cloud_error_not_backup">The file is not a TCG Catalogue backup, so it was left untouched.</string>
+    <string name="cloud_error_blocked">A newer collection from another phone is waiting. Load it, merge it or ignore it first.</string>
+    <string name="cloud_error_unknown">unknown error</string>
+    <string name="cloud_pending_title">Newer collection from another phone</string>
+    <string name="cloud_pending_text">The backup file holds a collection with %1$d cards, saved %2$s.</string>
+    <string name="cloud_load">Load it (replace)</string>
+    <string name="cloud_merge">Merge</string>
+    <string name="cloud_ignore">Ignore</string>
+    <string name="cloud_loaded">Collection loaded from the backup file</string>
+    <string name="cloud_merged">Collections merged</string>
+    <string name="cloud_load_confirm_title">Replace your collection?</string>
+    <string name="cloud_load_confirm_text">Everything on this phone is replaced by the collection in the backup file.</string>
+    <string name="cloud_load_confirm_button">Replace</string>
+</resources>

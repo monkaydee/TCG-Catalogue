@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">fiyat yok</string>
+    <string name="add_grader_other">Diğer</string>
+    <string name="add_confirm">Ekle</string>
+    <string name="add_graded_missing">Derecelendirilmiş kart fiyatı bulunamadı (%1$s). Aşağıya kendi değerinizi girmezseniz derecelendirilmemiş (raw) fiyat kullanılır.</string>
+    <string name="add_no_sales_found">satış bulunamadı</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d olası eşleşme — doğru olana dokunun</item>
+        <item quantity="other">%d olası eşleşme — doğru olana dokunun</item>
+    </plurals>
+    <string name="add_raw_price">raw fiyat</string>
+    <string name="add_looking_up_sales">satışlar aranıyor…</string>
+    <string name="add_price_details">kopya başına · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">Baskı — lütfen kontrol edin: tarama başka bir baskıdan ayırt edemedi</string>
+    <string name="add_printing_recognised">Baskı — taramadan tanındı</string>
+    <string name="add_printing">Baskı</string>
+    <string name="add_cardmarket_listing">Cardmarket ilanı (sahip olduğunuz baskıyı seçin)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">Graded</string>
+    <string name="add_grading_company">Derecelendirme şirketi</string>
+    <string name="add_grade">Not</string>
+    <string name="add_cert_number">Sertifika numarası (isteğe bağlı)</string>
+    <string name="add_condition">Durum</string>
+    <string name="add_purchase_price">Kopya başına alış fiyatı (%1$s, isteğe bağlı)</string>
+    <string name="add_my_value">Kopya başına değerim (%1$s, isteğe bağlı — piyasa fiyatının yerine geçer)</string>
+    <string name="add_wrong_card">Yanlış kart mı? Doğrusunu arayın</string>
+    <string name="add_cancel">İptal</string>
+    <string name="import_could_not_open_photo">Fotoğraf açılamadı</string>
+    <string name="import_lookup_failed">Arama başarısız — bağlantınızı kontrol edin</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Fotoğrafları içe aktar</string>
+    <string name="import_back">Geri</string>
+    <string name="import_add_photos">Fotoğraf ekle</string>
+    <string name="import_intro">Dışarıdayken kartların fotoğrafını mı çektiniz? Buradan içe aktarın; canlı tarama gibi tanınırlar.\n\n• Fotoğraf başına bir kart en iyi sonucu verir; numaralar net ise binder sayfaları da olur\n• Kartın altındaki numaranın okunaklı olduğundan emin olun\n• Fotoğrafları galerinizden veya bir sohbet uygulamasından TCG Catalogue\'a da paylaşabilirsiniz</string>
+    <string name="import_choose_photos">Fotoğraf seç</string>
+    <plurals name="import_count_added">
+        <item quantity="one">%d eklendi</item>
+        <item quantity="other">%d eklendi</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">%d incelenecek</item>
+        <item quantity="other">%d incelenecek</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">%d işleniyor</item>
+        <item quantity="other">%d işleniyor</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">%d tanınmadı</item>
+        <item quantity="other">%d tanınmadı</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="one">%d kart için en iyi eşleşmeyi ekle</item>
+        <item quantity="other">%d kartın tümü için en iyi eşleşmeyi ekle</item>
+    </plurals>
+    <string name="import_reading_photo">Fotoğraf okunuyor…</string>
+    <string name="import_looking_up">%1$s aranıyor…</string>
+    <string name="import_check_printing">Baskıyı kontrol edin — başka bir baskıdan ayırt edilemedi</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d olası eşleşme · seçmek için dokunun</item>
+        <item quantity="other">%d olası eşleşme · seçmek için dokunun</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · eklemek için dokunun</string>
+    <string name="import_added">Eklendi</string>
+    <string name="import_no_card_found">%1$s için kart bulunamadı</string>
+    <string name="import_no_number">Bu fotoğrafta kart numarası bulunamadı</string>
+    <string name="import_something_wrong">Bir şeyler ters gitti</string>
+    <string name="import_type_it_in">Elle gir</string>
+    <string name="import_retry">Tekrar dene</string>
+    <string name="import_dismiss">Kaldır</string>
+    <string name="scan_lookup_failed">Arama başarısız — bağlantınızı kontrol edin</string>
+    <string name="scan_no_card_found">%1$s için kart bulunamadı</string>
+    <string name="scan_added_auto">%1$s eklendi (%2$s)</string>
+    <string name="scan_added_auto_graded">%1$s eklendi (%2$s) · %3$s</string>
+    <string name="scan_added_qty">%1$s eklendi ×%2$d</string>
+    <string name="scan_could_not_save">Kaydedilemedi: %1$s</string>
+    <string name="scan_camera_rationale">Kamera, kart numarasını okumak için kullanılır. Görüntüler telefonunuzdan asla çıkmaz.</string>
+    <string name="scan_allow_camera">Kameraya izin ver</string>
+    <string name="scan_import_instead">Bunun yerine fotoğraf içe aktar</string>
+    <string name="scan_torch">Fener</string>
+    <string name="scan_quick_add_on">Hızlı ekleme AÇIK — kartlar otomatik eklenir</string>
+    <string name="scan_quick_add_off">Hızlı ekleme KAPALI — her kartı onaylayın</string>
+    <string name="scan_reading">%1$s okunuyor…</string>
+    <string name="scan_hint">Kartı çerçeveyi dolduracak şekilde tutun. Alttaki numara net ve iyi aydınlatılmış olsun — odaklamak için ekrana dokunun.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">Bu oturumda %d eklendi</item>
+        <item quantity="other">Bu oturumda %d eklendi</item>
+    </plurals>
+    <string name="scan_from_photos">Fotoğraflardan</string>
+    <string name="scan_type_it_in">Elle gir</string>
+    <string name="search_no_card">%1$s numaralı kart yok</string>
+    <string name="search_nothing_found">\"%1$s\" için sonuç bulunamadı</string>
+    <string name="search_failed">Arama başarısız: %1$s</string>
+    <string name="search_could_not_load">Kart yüklenemedi</string>
+    <string name="search_added_qty">%1$s eklendi ×%2$d</string>
+    <string name="search_could_not_save">Kaydedilemedi: %1$s</string>
+    <string name="search_hint_pokemon">Ad veya numara (ör. Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Kart kodu (ör. OP05-060)</string>
+    <string name="search_hint_magic">Ad veya set + numara (ör. Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Kod veya ad (ör. FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Kod veya ad (ör. BT1-031)</string>
+    <string name="search_hint_union_arena">Kod veya ad (ör. UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Kod veya ad (ör. HOL/W91-001)</string>
+    <string name="search_hint_naruto">Kod veya ad</string>
+    <string name="search_title_replace">Doğru kartı bul</string>
+    <string name="search_title_add">Kart ekle</string>
+    <string name="search_back">Geri</string>
+    <string name="search_search">Ara</string>
+    <string name="search_replace">Değiştir</string>
+</resources>

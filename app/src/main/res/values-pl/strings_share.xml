@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">Portfolio</string>
+    <string name="widget_description">Łączna wartość twojej kolekcji i jej zmiana w ciągu ostatnich 30 dni.</string>
+    <string name="widget_title">Wartość kolekcji</string>
+    <string name="widget_cards">Karty: %1$d</string>
+    <string name="widget_updated">Zaktualizowano %1$s</string>
+    <string name="widget_change_30d">%1$s w 30 dni</string>
+    <string name="widget_no_history">Brak jeszcze historii z 30 dni</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) w 30 dni</string>
+    <string name="widget_preview_cards">312 kart</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Udostępnij stronę</string>
+    <string name="share_chooser_title">Udostępnij stronę klasera</string>
+    <string name="share_failed">Nie udało się udostępnić strony: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Kopia zapasowa w chmurze</string>
+    <string name="cloud_hint">Trzymaj kopię swojej kolekcji w pliku na Dysku Google, Dropboksie, OneDrive lub w dowolnej innej aplikacji do przechowywania danych na tym telefonie. Zapisuje się ona po wyjściu z aplikacji, a nowsza kopia z innego telefonu jest proponowana po jej otwarciu.</string>
+    <string name="cloud_choose_new">Nowy plik</string>
+    <string name="cloud_choose_existing">Użyj istniejącego pliku</string>
+    <string name="cloud_file">Plik: %1$s</string>
+    <string name="cloud_last_saved">Ostatni zapis: %1$s</string>
+    <string name="cloud_never_saved">Jeszcze nie zapisano</string>
+    <string name="cloud_backup_now">Utwórz kopię teraz</string>
+    <string name="cloud_stop">Zatrzymaj</string>
+    <string name="cloud_saved">Kopia zapasowa zapisana</string>
+    <string name="cloud_unchanged">Nic się nie zmieniło od ostatniej kopii zapasowej</string>
+    <string name="cloud_stopped">Zatrzymano kopię zapasową w chmurze</string>
+    <string name="cloud_error">Problem z kopią zapasową w chmurze: %1$s</string>
+    <string name="cloud_error_permission">Dostęp do pliku został cofnięty. Wybierz plik ponownie.</string>
+    <string name="cloud_error_not_backup">Ten plik nie jest kopią zapasową TCG Catalogue, więc nie został zmieniony.</string>
+    <string name="cloud_error_blocked">Czeka nowsza kolekcja z innego telefonu. Najpierw ją wczytaj, scal lub zignoruj.</string>
+    <string name="cloud_error_unknown">nieznany błąd</string>
+    <string name="cloud_pending_title">Nowsza kolekcja z innego telefonu</string>
+    <string name="cloud_pending_text">Plik kopii zapasowej zawiera kolekcję z liczbą kart: %1$d, zapisaną %2$s.</string>
+    <string name="cloud_load">Wczytaj (zastąp)</string>
+    <string name="cloud_merge">Scal</string>
+    <string name="cloud_ignore">Zignoruj</string>
+    <string name="cloud_loaded">Wczytano kolekcję z pliku kopii zapasowej</string>
+    <string name="cloud_merged">Kolekcje scalone</string>
+    <string name="cloud_load_confirm_title">Zastąpić kolekcję?</string>
+    <string name="cloud_load_confirm_text">Wszystko na tym telefonie zostanie zastąpione kolekcją z pliku kopii zapasowej.</string>
+    <string name="cloud_load_confirm_button">Zastąp</string>
+</resources>

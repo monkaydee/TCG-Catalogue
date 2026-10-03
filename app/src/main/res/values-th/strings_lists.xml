@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Common -->
+    <string name="lists_back">กลับ</string>
+    <string name="lists_cancel">ยกเลิก</string>
+    <string name="lists_save">บันทึก</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">ล้าง</string>
+    <string name="lists_remove">ลบ</string>
+    <string name="lists_retry">ลองอีกครั้ง</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">รายการ</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">จำนวนเงิน (%1$s)</string>
+    <string name="lists_amount_invalid">ใส่จำนวนเงิน เช่น 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">เช็กลิสต์</string>
+    <string name="checklist_open">แสดงเช็กลิสต์</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="other">มีแล้ว %1$d จาก %2$d การ์ด</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">ทั้งหมด · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">มีแล้ว · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">ยังขาด · %1$d</string>
+    <string name="checklist_loading">กำลังโหลดการ์ดของเซ็ตนี้…</string>
+    <string name="checklist_empty_title">ไม่มีเช็กลิสต์สำหรับเซ็ตนี้</string>
+    <string name="checklist_empty_text">โหลดรายการการ์ดไม่สำเร็จ ตรวจสอบการเชื่อมต่อ หรืออาจยังไม่มีเซ็ตนี้ในรายการ</string>
+    <string name="checklist_none_owned">คุณยังไม่มีการ์ดใดจากเซ็ตนี้</string>
+    <string name="checklist_none_missing">ครบแล้ว! คุณมีการ์ดครบทุกใบของเซ็ตนี้</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">ยังขาด</string>
+    <string name="checklist_on_wishlist">ในรายการที่อยากได้</string>
+    <string name="checklist_add_collection">เพิ่มในคอลเลกชัน</string>
+    <string name="checklist_add_wishlist">เพิ่มในรายการที่อยากได้</string>
+    <string name="checklist_card_loading">กำลังโหลดการ์ด…</string>
+    <string name="checklist_card_failed">โหลดการ์ดนี้ไม่สำเร็จ — ตรวจสอบการเชื่อมต่อ</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">เพิ่ม %1$s ในคอลเลกชันของคุณแล้ว</string>
+    <string name="checklist_printing">การพิมพ์</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">รายการที่อยากได้</string>
+    <string name="wish_add">เพิ่มในรายการที่อยากได้</string>
+    <string name="wish_remove">ลบออกจากรายการที่อยากได้</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">เพิ่ม %1$s ในรายการที่อยากได้แล้ว</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">ลบ %1$s ออกจากรายการที่อยากได้แล้ว</string>
+    <string name="wish_add_failed">เพิ่มการ์ดไม่สำเร็จ — ตรวจสอบการเชื่อมต่อ</string>
+    <string name="wish_total">ต้นทุนรวม</string>
+    <plurals name="wish_count">
+        <item quantity="other">%1$d การ์ด</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="other">%1$d ใบเท่ากับหรือต่ำกว่าเป้าหมาย</item>
+    </plurals>
+    <string name="wish_empty_title">รายการที่อยากได้ของคุณยังว่างอยู่</string>
+    <string name="wish_empty_text">เพิ่มการ์ดจากการค้นหา หรือจากการ์ดที่ยังขาดในเช็กลิสต์ของเซ็ต</string>
+    <string name="wish_no_price">ไม่มีราคา</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">เป้าหมาย %1$s</string>
+    <string name="wish_no_target">ไม่มีราคาเป้าหมาย</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">ถึงเป้าหมายแล้ว</string>
+    <string name="wish_set_target">ตั้งราคาเป้าหมาย</string>
+    <string name="wish_target_title">ราคาเป้าหมาย</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">คุณจะได้รับการแจ้งเตือนเมื่อราคาลดลงถึงจำนวนนี้หรือต่ำกว่า ตอนนี้: %1$s</string>
+    <string name="wish_target_text_no_price">คุณจะได้รับการแจ้งเตือนเมื่อราคาลดลงถึงจำนวนนี้หรือต่ำกว่า</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">รายการแลกเปลี่ยน</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">สำหรับแลกเปลี่ยน</string>
+    <string name="trade_share">แชร์รายการ</string>
+    <string name="trade_remove">เอาออกจากรายการแลกเปลี่ยน</string>
+    <string name="trade_total">มูลค่าแลกเปลี่ยน</string>
+    <string name="trade_empty_title">ยังไม่มีการ์ดสำหรับแลกเปลี่ยน</string>
+    <string name="trade_empty_text">เปิดการ์ดในคอลเลกชันของคุณแล้วแตะ “สำหรับแลกเปลี่ยน” เพื่อเพิ่มที่นี่</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="other">รายการแลกเปลี่ยนของฉัน (%1$d การ์ด)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">มูลค่ารวม: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">แชร์จาก %1$s</string>
+    <string name="trade_share_subject">รายการแลกเปลี่ยนของฉัน</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">ขาย</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">ขาย %1$s</string>
+    <string name="sold_quantity">จำนวนที่ขาย</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">จาก %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">ราคาต่อใบ (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">รวม %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">กำไร %1$s</string>
+    <string name="sold_confirm">ขาย</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">ขาย %2$s แล้ว %1$d ใบ</string>
+    <string name="sold_title">ขายแล้ว</string>
+    <string name="sold_realised">กำไรที่เกิดขึ้นจริง</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">ยอดขาย %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="other">ไม่นับการขาย %1$d รายการที่ไม่มีราคาซื้อ</item>
+    </plurals>
+    <string name="sold_empty_title">ยังไม่มีการขาย</string>
+    <string name="sold_empty_text">เปิดการ์ดในคอลเลกชันของคุณแล้วแตะ “ขาย” เพื่อบันทึกการขายที่นี่</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">ขาย %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">ซื้อมาใบละ %1$s</string>
+    <string name="sold_paid_unknown">ไม่ทราบราคาซื้อ</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">ขายเมื่อ %1$s</string>
+    <string name="sold_delete">ลบรายการ</string>
+    <string name="sold_delete_title">ลบการขายนี้ไหม</string>
+    <string name="sold_delete_text">รายการนี้จะถูกลบออกจากรายการที่ขายแล้วและกำไรที่เกิดขึ้นจริง การ์ดจะไม่กลับเข้ามาในคอลเลกชันของคุณ</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">แจ้งเตือน</string>
+    <string name="alert_ui_title">แจ้งเตือนราคา</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">รับการแจ้งเตือนเมื่อมูลค่าต่อใบข้ามจำนวนใดจำนวนหนึ่งเหล่านี้ ตอนนี้: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">แจ้งเมื่อสูงกว่า (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">แจ้งเมื่อต่ำกว่า (%1$s)</string>
+    <string name="alert_ui_order">ค่า “สูงกว่า” ต้องมากกว่าค่า “ต่ำกว่า”</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">สูงกว่า %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">ต่ำกว่า %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">ประวัติราคา</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">สูงสุด %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">ต่ำสุด %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">แก้ไข</string>
+    <string name="lists_card_remove">ลบ</string>
+</resources>

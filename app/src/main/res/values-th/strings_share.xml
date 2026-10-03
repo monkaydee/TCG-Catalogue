@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Home-screen widget -->
+    <string name="widget_name">พอร์ตโฟลิโอ</string>
+    <string name="widget_description">มูลค่ารวมของคอลเลกชันและการเปลี่ยนแปลงใน 30 วันที่ผ่านมา</string>
+    <string name="widget_title">มูลค่าคอลเลกชัน</string>
+    <string name="widget_cards">%1$d การ์ด</string>
+    <string name="widget_updated">อัปเดตเมื่อ %1$s</string>
+    <string name="widget_change_30d">%1$s ใน 30 วัน</string>
+    <string name="widget_no_history">ยังไม่มีประวัติ 30 วัน</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) ใน 30 วัน</string>
+    <string name="widget_preview_cards">312 การ์ด</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">แชร์หน้า</string>
+    <string name="share_chooser_title">แชร์หน้าอัลบั้ม</string>
+    <string name="share_failed">แชร์หน้าไม่สำเร็จ: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">สำรองข้อมูลบนคลาวด์</string>
+    <string name="cloud_hint">เก็บสำเนาคอลเลกชันของคุณไว้ในไฟล์บน Google Drive, Dropbox, OneDrive หรือแอปจัดเก็บข้อมูลอื่นบนโทรศัพท์เครื่องนี้ ระบบจะบันทึกเมื่อคุณออกจากแอป และจะเสนอสำเนาที่ใหม่กว่าจากโทรศัพท์เครื่องอื่นเมื่อคุณเปิดแอป</string>
+    <string name="cloud_choose_new">ไฟล์ใหม่</string>
+    <string name="cloud_choose_existing">ใช้ไฟล์ที่มีอยู่</string>
+    <string name="cloud_file">ไฟล์: %1$s</string>
+    <string name="cloud_last_saved">บันทึกล่าสุด: %1$s</string>
+    <string name="cloud_never_saved">ยังไม่เคยบันทึก</string>
+    <string name="cloud_backup_now">สำรองข้อมูลตอนนี้</string>
+    <string name="cloud_stop">หยุด</string>
+    <string name="cloud_saved">บันทึกข้อมูลสำรองแล้ว</string>
+    <string name="cloud_unchanged">ไม่มีการเปลี่ยนแปลงนับจากการสำรองข้อมูลครั้งล่าสุด</string>
+    <string name="cloud_stopped">หยุดการสำรองข้อมูลบนคลาวด์แล้ว</string>
+    <string name="cloud_error">การสำรองข้อมูลบนคลาวด์มีปัญหา: %1$s</string>
+    <string name="cloud_error_permission">สิทธิ์เข้าถึงไฟล์ถูกเพิกถอน โปรดเลือกไฟล์อีกครั้ง</string>
+    <string name="cloud_error_not_backup">ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ TCG Catalogue จึงไม่มีการแก้ไขไฟล์</string>
+    <string name="cloud_error_blocked">มีคอลเลกชันที่ใหม่กว่าจากโทรศัพท์เครื่องอื่นรออยู่ โปรดโหลด รวม หรือข้ามก่อน</string>
+    <string name="cloud_error_unknown">ข้อผิดพลาดที่ไม่ทราบสาเหตุ</string>
+    <string name="cloud_pending_title">คอลเลกชันที่ใหม่กว่าจากโทรศัพท์เครื่องอื่น</string>
+    <string name="cloud_pending_text">ไฟล์สำรองมีคอลเลกชันที่มี %1$d การ์ด บันทึกเมื่อ %2$s</string>
+    <string name="cloud_load">โหลด (แทนที่)</string>
+    <string name="cloud_merge">รวม</string>
+    <string name="cloud_ignore">ข้าม</string>
+    <string name="cloud_loaded">โหลดคอลเลกชันจากไฟล์สำรองแล้ว</string>
+    <string name="cloud_merged">รวมคอลเลกชันแล้ว</string>
+    <string name="cloud_load_confirm_title">แทนที่คอลเลกชันของคุณไหม</string>
+    <string name="cloud_load_confirm_text">ข้อมูลทั้งหมดบนโทรศัพท์เครื่องนี้จะถูกแทนที่ด้วยคอลเลกชันในไฟล์สำรอง</string>
+    <string name="cloud_load_confirm_button">แทนที่</string>
+</resources>

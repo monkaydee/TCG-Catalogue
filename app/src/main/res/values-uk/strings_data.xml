@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Назва на відсканованій картці не збігається з цією карткою — номер, імовірно, прочитано неправильно. Перевірте його або скасуйте й введіть вручну.</string>
+    <string name="data_graded">Градована</string>
+    <string name="data_graded_grade">Градована %1$s</string>
+    <string name="data_graded_choose_grader">оберіть компанію-грейдера</string>
+    <string name="data_graded_choose_grade">оберіть оцінку</string>
+    <string name="data_graded_no_source">немає джерела цін для градованих карток — вкажіть власну оцінку або перегляньте посилання на ціни на сторінці картки</string>
+    <string name="data_variant_normal">Звичайна</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Стандарт</string>
+    <string name="data_variant_numbered">Варіант %1$d</string>
+    <string name="data_overview_prices">Ціни</string>
+    <string name="data_overview_no_card_data">не вдалося завантажити дані картки — перевірте з\'єднання</string>
+    <string name="data_overview_no_cardmarket">немає цін Cardmarket для цієї картки</string>
+    <string name="data_overview_no_tcgplayer">немає цін TCGplayer для цієї картки</string>
+    <string name="data_overview_by_condition">TCGplayer за станом (продажі)</string>
+    <string name="data_overview_no_condition_sales">немає продажів за станом</string>
+    <string name="price_label_trend">Тренд</string>
+    <string name="price_label_lowest_offer">Мін. пропозиція</string>
+    <string name="price_label_average_sold">Сер. ціна продажу</string>
+    <string name="price_label_avg1">Середня за 1 день</string>
+    <string name="price_label_avg7">Середня за 7 днів</string>
+    <string name="price_label_avg30">Середня за 30 днів</string>
+    <string name="price_label_market">Ринкова</string>
+    <string name="price_label_lowest_listing">Мін. ціна лота</string>
+    <string name="price_label_mid">Середня</string>
+    <string name="price_label_highest_listing">Макс. ціна лота</string>
+    <string name="price_label_direct_low">Мін. Direct</string>
+    <string name="price_note_raw_no_graded_source">Показано ціну негрейдованої картки — немає джерела цін для градованих — вкажіть власну оцінку або перегляньте посилання на ціни на сторінці картки</string>
+    <string name="price_note_markets_disagree">Позиція %1$s не відповідала цій картці (різниця у %2$d раз.); використано %3$s</string>
+    <string name="price_note_capped">%1$s оцінено як %2$s (за даними продажів було вище)</string>
+    <string name="price_note_tcgplayer_sales">Ціна %1$s за продажами TCGplayer</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% від NM (продажі TCGplayer)</string>
+    <string name="price_note_estimated_share">%1$s оцінено в %2$d%% від NM (немає даних про продажі)</string>
+    <string name="data_http_error">HTTP %1$d для %2$s</string>
+    <string name="data_service_unavailable">Сервіс карток (%1$s) зараз не відповідає. Спробуйте ще раз за хвилину.</string>
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Portefeuille</string>
+    <string name="widget_description">La valeur totale de votre collection et son évolution sur les 30 derniers jours.</string>
+    <string name="widget_title">Valeur de la collection</string>
+    <string name="widget_cards">%1$d cartes</string>
+    <string name="widget_updated">Actualisé %1$s</string>
+    <string name="widget_change_30d">%1$s en 30 jours</string>
+    <string name="widget_no_history">Pas encore d\'historique sur 30 jours</string>
+    <string name="widget_preview_change" formatted="false">+48,20 € (+4,1 %) en 30 jours</string>
+    <string name="widget_preview_cards">312 cartes</string>
+
+    <string name="share_page">Partager la page</string>
+    <string name="share_chooser_title">Partager la page du classeur</string>
+    <string name="share_failed">Impossible de partager la page : %1$s</string>
+
+    <string name="cloud_title">Sauvegarde cloud</string>
+    <string name="cloud_hint">Gardez une copie de votre collection dans un fichier sur Google Drive, Dropbox, OneDrive ou toute autre appli de stockage de ce téléphone. Elle est enregistrée quand vous quittez l\'appli, et une copie plus récente d\'un autre téléphone vous est proposée à l\'ouverture.</string>
+    <string name="cloud_choose_new">Nouveau fichier</string>
+    <string name="cloud_choose_existing">Utiliser un fichier existant</string>
+    <string name="cloud_file">Fichier : %1$s</string>
+    <string name="cloud_last_saved">Dernière sauvegarde : %1$s</string>
+    <string name="cloud_never_saved">Pas encore enregistrée</string>
+    <string name="cloud_backup_now">Sauvegarder maintenant</string>
+    <string name="cloud_stop">Arrêter</string>
+    <string name="cloud_saved">Sauvegarde enregistrée</string>
+    <string name="cloud_unchanged">Rien n\'a changé depuis la dernière sauvegarde</string>
+    <string name="cloud_stopped">Sauvegarde cloud arrêtée</string>
+    <string name="cloud_error">Problème de sauvegarde cloud : %1$s</string>
+    <string name="cloud_error_permission">L\'accès au fichier a été révoqué. Choisissez à nouveau le fichier.</string>
+    <string name="cloud_error_not_backup">Ce fichier n\'est pas une sauvegarde de TCG Catalogue, il n\'a donc pas été modifié.</string>
+    <string name="cloud_error_blocked">Une collection plus récente d\'un autre téléphone est en attente. Chargez-la, fusionnez-la ou ignorez-la d\'abord.</string>
+    <string name="cloud_error_unknown">erreur inconnue</string>
+    <string name="cloud_pending_title">Collection plus récente d\'un autre téléphone</string>
+    <string name="cloud_pending_text">Le fichier de sauvegarde contient une collection de %1$d cartes, enregistrée %2$s.</string>
+    <string name="cloud_load">La charger (remplace)</string>
+    <string name="cloud_merge">Fusionner</string>
+    <string name="cloud_ignore">Ignorer</string>
+    <string name="cloud_loaded">Collection chargée depuis le fichier de sauvegarde</string>
+    <string name="cloud_merged">Collections fusionnées</string>
+    <string name="cloud_load_confirm_title">Remplacer votre collection ?</string>
+    <string name="cloud_load_confirm_text">Tout ce qui se trouve sur ce téléphone est remplacé par la collection du fichier de sauvegarde.</string>
+    <string name="cloud_load_confirm_button">Remplacer</string>
+</resources>

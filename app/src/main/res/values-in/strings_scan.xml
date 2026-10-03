@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">tanpa harga</string>
+    <string name="add_grader_other">Lainnya</string>
+    <string name="add_confirm">Tambah</string>
+    <string name="add_graded_missing">Harga graded tidak ditemukan (%1$s). Harga Raw dipakai kecuali Anda mengisi nilai sendiri di bawah.</string>
+    <string name="add_no_sales_found">penjualan tidak ditemukan</string>
+    <plurals name="add_possible_matches">
+        <item quantity="other">%d kemungkinan cocok — ketuk yang benar</item>
+    </plurals>
+    <string name="add_raw_price">harga Raw</string>
+    <string name="add_looking_up_sales">mencari penjualan…</string>
+    <string name="add_price_details">per kartu · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">Cetakan — mohon periksa: pemindaian tidak bisa membedakannya dari cetakan lain</string>
+    <string name="add_printing_recognised">Cetakan — dikenali dari pemindaian</string>
+    <string name="add_printing">Cetakan</string>
+    <string name="add_cardmarket_listing">Listing Cardmarket (pilih cetakan persis yang Anda miliki)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">Graded</string>
+    <string name="add_grading_company">Perusahaan grading</string>
+    <string name="add_grade">Grade</string>
+    <string name="add_cert_number">Nomor cert (opsional)</string>
+    <string name="add_condition">Kondisi</string>
+    <string name="add_purchase_price">Harga beli per kartu (%1$s, opsional)</string>
+    <string name="add_my_value">Nilai saya per kartu (%1$s, opsional — menggantikan harga pasar)</string>
+    <string name="add_wrong_card">Kartu salah? Cari yang benar</string>
+    <string name="add_cancel">Batal</string>
+    <string name="import_could_not_open_photo">Tidak dapat membuka foto</string>
+    <string name="import_lookup_failed">Pencarian gagal — periksa koneksi Anda</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Impor foto</string>
+    <string name="import_back">Kembali</string>
+    <string name="import_add_photos">Tambah foto</string>
+    <string name="import_intro">Memotret kartu saat bepergian? Impor di sini dan kartunya dikenali sama seperti pemindaian langsung.\n\n• Satu kartu per foto memberi hasil terbaik; halaman binder bisa dipakai jika nomornya tajam\n• Pastikan nomor di bagian bawah kartu terbaca\n• Anda juga bisa membagikan foto ke TCG Catalogue dari galeri atau aplikasi chat</string>
+    <string name="import_choose_photos">Pilih foto</string>
+    <plurals name="import_count_added">
+        <item quantity="other">%d ditambahkan</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="other">%d perlu ditinjau</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="other">%d sedang diproses</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="other">%d tidak dikenali</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="other">Tambahkan yang paling cocok untuk semua %d kartu</item>
+    </plurals>
+    <string name="import_reading_photo">Membaca foto…</string>
+    <string name="import_looking_up">Mencari %1$s…</string>
+    <string name="import_check_printing">Periksa cetakannya — tidak bisa dibedakan dari cetakan lain</string>
+    <plurals name="import_possible_matches">
+        <item quantity="other">%d kemungkinan cocok · ketuk untuk memilih</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · ketuk untuk menambah</string>
+    <string name="import_added">Ditambahkan</string>
+    <string name="import_no_card_found">Kartu untuk %1$s tidak ditemukan</string>
+    <string name="import_no_number">Nomor kartu tidak ditemukan di foto ini</string>
+    <string name="import_something_wrong">Terjadi kesalahan</string>
+    <string name="import_type_it_in">Ketik manual</string>
+    <string name="import_retry">Coba lagi</string>
+    <string name="import_dismiss">Tutup</string>
+    <string name="scan_lookup_failed">Pencarian gagal — periksa koneksi Anda</string>
+    <string name="scan_no_card_found">Kartu untuk %1$s tidak ditemukan</string>
+    <string name="scan_added_auto">%1$s (%2$s) ditambahkan</string>
+    <string name="scan_added_auto_graded">%1$s (%2$s) · %3$s ditambahkan</string>
+    <string name="scan_added_qty">%1$s ×%2$d ditambahkan</string>
+    <string name="scan_could_not_save">Tidak dapat menyimpan: %1$s</string>
+    <string name="scan_camera_rationale">Kamera dipakai untuk membaca nomor kartu. Gambar tidak pernah meninggalkan ponsel Anda.</string>
+    <string name="scan_allow_camera">Izinkan kamera</string>
+    <string name="scan_import_instead">Impor foto saja</string>
+    <string name="scan_torch">Senter</string>
+    <string name="scan_quick_add_on">Tambah cepat AKTIF — kartu ditambahkan otomatis</string>
+    <string name="scan_quick_add_off">Tambah cepat NONAKTIF — konfirmasi tiap kartu</string>
+    <string name="scan_reading">Membaca %1$s…</string>
+    <string name="scan_hint">Penuhi bingkai dengan kartu. Jaga nomor di bagian bawah tetap tajam dan terang — ketuk layar untuk fokus.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="other">%d ditambahkan sesi ini</item>
+    </plurals>
+    <string name="scan_from_photos">Dari foto</string>
+    <string name="scan_type_it_in">Ketik manual</string>
+    <string name="search_no_card">Tidak ada kartu %1$s</string>
+    <string name="search_nothing_found">Tidak ada hasil untuk “%1$s”</string>
+    <string name="search_failed">Pencarian gagal: %1$s</string>
+    <string name="search_could_not_load">Tidak dapat memuat kartu</string>
+    <string name="search_added_qty">%1$s ×%2$d ditambahkan</string>
+    <string name="search_could_not_save">Tidak dapat menyimpan: %1$s</string>
+    <string name="search_hint_pokemon">Nama atau nomor (mis. Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Kode kartu (mis. OP05-060)</string>
+    <string name="search_hint_magic">Nama atau set + nomor (mis. Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Kode atau nama (mis. FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Kode atau nama (mis. BT1-031)</string>
+    <string name="search_hint_union_arena">Kode atau nama (mis. UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Kode atau nama (mis. HOL/W91-001)</string>
+    <string name="search_hint_naruto">Kode atau nama</string>
+    <string name="search_title_replace">Cari kartu yang benar</string>
+    <string name="search_title_add">Tambah kartu</string>
+    <string name="search_back">Kembali</string>
+    <string name="search_search">Cari</string>
+    <string name="search_replace">Ganti</string>
+</resources>

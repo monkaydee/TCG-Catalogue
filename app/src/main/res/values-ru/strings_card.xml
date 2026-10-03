@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">Не удалось загрузить данные карты — проверьте подключение</string>
+    <string name="card_pager_position">%1$d / %2$d · листайте дальше</string>
+    <string name="card_back">Назад</string>
+    <string name="card_edit">Изменить карту</string>
+    <string name="card_remove_from_collection">Удалить из коллекции</string>
+    <string name="card_save">Сохранить</string>
+    <string name="card_remove_title">Удалить карту?</string>
+    <plurals name="card_remove_message">
+        <item quantity="one">Из коллекции будет удалена %1$d копия карты %2$s.</item>
+        <item quantity="few">Из коллекции будут удалены все %1$d копии карты %2$s.</item>
+        <item quantity="many">Из коллекции будут удалены все %1$d копий карты %2$s.</item>
+        <item quantity="other">Из коллекции будут удалены все %1$d копий карты %2$s.</item>
+    </plurals>
+    <string name="card_remove">Удалить</string>
+    <string name="card_cancel">Отмена</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s за копию (%2$s на %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s за копию (%2$s на рынке)</string>
+    <string name="card_price_updated">Обновлено %1$s</string>
+    <string name="card_no_market_price">Рыночная цена недоступна</string>
+    <string name="card_own_value">Своя оценка: %1$s за копию</string>
+    <string name="card_own_value_with_market">Своя оценка: %1$s за копию · рынок %2$s</string>
+    <string name="card_bought_for_with_percent">Покупка: %1$s за копию · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Покупка: %1$s за копию · %2$s</string>
+    <string name="card_cert">Сертификат №%1$s</string>
+    <string name="card_graded_hint">Для грейдированных копий используется своя оценка — проверьте недавние продажи по ссылкам ниже.</string>
+    <string name="card_raw_hint">Рыночная цена карты без грейда в этом состоянии.</string>
+    <string name="card_quantity">Количество</string>
+    <string name="card_cardmarket_listing">Товар на Cardmarket</string>
+    <string name="card_condition">Состояние</string>
+    <string name="card_all_prices">Все цены</string>
+    <string name="card_show">Показать</string>
+    <string name="card_refresh">Обновить</string>
+    <string name="card_check_prices">Проверить цены онлайн</string>
+
+    <string name="set_back">Назад</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%1$d из %2$d карты (%3$d%%)</item>
+        <item quantity="few">%1$d из %2$d карт (%3$d%%)</item>
+        <item quantity="many">%1$d из %2$d карт (%3$d%%)</item>
+        <item quantity="other">%1$d из %2$d карт (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="one">%d карта</item>
+        <item quantity="few">%d карты</item>
+        <item quantity="many">%d карт</item>
+        <item quantity="other">%d карт</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="one">%d копия</item>
+        <item quantity="few">%d копии</item>
+        <item quantity="many">%d копий</item>
+        <item quantity="other">%d копий</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">По цене</string>
+    <string name="set_sort_number">По номеру</string>
+    <string name="set_no_price">нет цены</string>
+
+    <string name="common_auto">Авто</string>
+    <string name="common_less">Меньше</string>
+    <string name="common_more">Больше</string>
+
+    <string name="links_ebay_sold">Продажи на eBay</string>
+</resources>

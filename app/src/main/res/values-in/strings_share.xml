@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Home-screen widget -->
+    <string name="widget_name">Portofolio</string>
+    <string name="widget_description">Total nilai koleksi Anda dan perubahannya dalam 30 hari terakhir.</string>
+    <string name="widget_title">Nilai koleksi</string>
+    <string name="widget_cards">%1$d kartu</string>
+    <string name="widget_updated">Diperbarui %1$s</string>
+    <string name="widget_change_30d">%1$s dalam 30 hari</string>
+    <string name="widget_no_history">Belum ada riwayat 30 hari</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) dalam 30 hari</string>
+    <string name="widget_preview_cards">312 kartu</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Bagikan halaman</string>
+    <string name="share_chooser_title">Bagikan halaman binder</string>
+    <string name="share_failed">Tidak dapat membagikan halaman: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Cadangan cloud</string>
+    <string name="cloud_hint">Simpan salinan koleksi Anda dalam file di Google Drive, Dropbox, OneDrive, atau aplikasi penyimpanan lain di ponsel ini. Salinan disimpan saat Anda keluar dari aplikasi, dan salinan yang lebih baru dari ponsel lain ditawarkan saat Anda membukanya.</string>
+    <string name="cloud_choose_new">File baru</string>
+    <string name="cloud_choose_existing">Pakai file yang ada</string>
+    <string name="cloud_file">File: %1$s</string>
+    <string name="cloud_last_saved">Terakhir disimpan: %1$s</string>
+    <string name="cloud_never_saved">Belum disimpan</string>
+    <string name="cloud_backup_now">Cadangkan sekarang</string>
+    <string name="cloud_stop">Berhenti</string>
+    <string name="cloud_saved">Cadangan disimpan</string>
+    <string name="cloud_unchanged">Tidak ada perubahan sejak cadangan terakhir</string>
+    <string name="cloud_stopped">Cadangan cloud dihentikan</string>
+    <string name="cloud_error">Masalah cadangan cloud: %1$s</string>
+    <string name="cloud_error_permission">Akses ke file dicabut. Pilih file lagi.</string>
+    <string name="cloud_error_not_backup">File ini bukan cadangan TCG Catalogue, jadi tidak diubah.</string>
+    <string name="cloud_error_blocked">Koleksi yang lebih baru dari ponsel lain sedang menunggu. Muat, gabungkan, atau abaikan terlebih dahulu.</string>
+    <string name="cloud_error_unknown">error tidak diketahui</string>
+    <string name="cloud_pending_title">Koleksi lebih baru dari ponsel lain</string>
+    <string name="cloud_pending_text">File cadangan berisi koleksi dengan %1$d kartu, disimpan %2$s.</string>
+    <string name="cloud_load">Muat (ganti)</string>
+    <string name="cloud_merge">Gabungkan</string>
+    <string name="cloud_ignore">Abaikan</string>
+    <string name="cloud_loaded">Koleksi dimuat dari file cadangan</string>
+    <string name="cloud_merged">Koleksi digabungkan</string>
+    <string name="cloud_load_confirm_title">Ganti koleksi Anda?</string>
+    <string name="cloud_load_confirm_text">Semua yang ada di ponsel ini diganti dengan koleksi di file cadangan.</string>
+    <string name="cloud_load_confirm_button">Ganti</string>
+</resources>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">価格なし</string>
+    <string name="add_grader_other">その他</string>
+    <string name="add_confirm">追加</string>
+    <string name="add_graded_missing">鑑定品の価格が見つかりません（%1$s）。下に自分の評価額を入力しない場合は、未鑑定価格が使われます。</string>
+    <string name="add_no_sales_found">取引が見つかりません</string>
+    <plurals name="add_possible_matches">
+        <item quantity="other">候補が%d件あります。正しいものをタップしてください</item>
+    </plurals>
+    <string name="add_raw_price">未鑑定価格</string>
+    <string name="add_looking_up_sales">取引を検索中…</string>
+    <string name="add_price_details">1枚あたり · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">仕様 — 要確認：スキャンでは別の仕様と区別できませんでした</string>
+    <string name="add_printing_recognised">仕様 — スキャンで認識済み</string>
+    <string name="add_printing">仕様</string>
+    <string name="add_cardmarket_listing">Cardmarketの商品（所有しているバージョンを正確に選択）</string>
+    <string name="add_raw">未鑑定</string>
+    <string name="add_graded">鑑定品</string>
+    <string name="add_grading_company">鑑定会社</string>
+    <string name="add_grade">グレード</string>
+    <string name="add_cert_number">鑑定番号（任意）</string>
+    <string name="add_condition">状態</string>
+    <string name="add_purchase_price">1枚あたりの購入価格（%1$s、任意）</string>
+    <string name="add_my_value">1枚あたりの自分の評価額（%1$s、任意 — 相場価格より優先）</string>
+    <string name="add_wrong_card">違うカード？正しいカードを検索</string>
+    <string name="add_cancel">キャンセル</string>
+
+    <string name="import_could_not_open_photo">写真を開けませんでした</string>
+    <string name="import_lookup_failed">検索に失敗しました。接続を確認してください</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">写真を取り込む</string>
+    <string name="import_back">戻る</string>
+    <string name="import_add_photos">写真を追加</string>
+    <string name="import_intro">外出先でカードを撮影しましたか？ここで取り込むと、ライブスキャンと同じように認識されます。\n\n• 写真1枚につきカード1枚が最適です。番号が鮮明ならバインダーのページも認識できます\n• カード下部の番号が読み取れることを確認してください\n• ギャラリーやチャットアプリからTCG Catalogueに写真を共有することもできます</string>
+    <string name="import_choose_photos">写真を選択</string>
+    <plurals name="import_count_added">
+        <item quantity="other">%d件追加</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="other">%d件要確認</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="other">%d件処理中</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="other">%d件認識できず</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="other">最有力候補で%d枚すべてを追加</item>
+    </plurals>
+    <string name="import_reading_photo">写真を読み取り中…</string>
+    <string name="import_looking_up">%1$sを検索中…</string>
+    <string name="import_check_printing">仕様を確認してください — 別の仕様と区別できませんでした</string>
+    <plurals name="import_possible_matches">
+        <item quantity="other">候補%d件 · タップして選択</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · タップして追加</string>
+    <string name="import_added">追加済み</string>
+    <string name="import_no_card_found">%1$sのカードが見つかりません</string>
+    <string name="import_no_number">この写真にカード番号が見つかりません</string>
+    <string name="import_something_wrong">問題が発生しました</string>
+    <string name="import_type_it_in">手入力</string>
+    <string name="import_retry">再試行</string>
+    <string name="import_dismiss">除外</string>
+
+    <string name="scan_lookup_failed">検索に失敗しました。接続を確認してください</string>
+    <string name="scan_no_card_found">%1$sのカードが見つかりません</string>
+    <string name="scan_added_auto">%1$s（%2$s）を追加しました</string>
+    <string name="scan_added_auto_graded">%1$s（%2$s）· %3$s を追加しました</string>
+    <string name="scan_added_qty">%1$s ×%2$d を追加しました</string>
+    <string name="scan_could_not_save">保存できませんでした：%1$s</string>
+    <string name="scan_camera_rationale">カメラはカード番号の読み取りに使用します。画像がスマートフォンの外に送信されることはありません。</string>
+    <string name="scan_allow_camera">カメラを許可</string>
+    <string name="scan_import_instead">写真から取り込む</string>
+    <string name="scan_torch">ライト</string>
+    <string name="scan_quick_add_on">クイック追加 ON — カードを自動で追加します</string>
+    <string name="scan_quick_add_off">クイック追加 OFF — カードごとに確認します</string>
+    <string name="scan_reading">%1$sを読み取り中…</string>
+    <string name="scan_hint">カードを枠いっぱいに収めてください。下部の番号がはっきり明るく写るようにし、画面をタップしてピントを合わせます。</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="other">今回%d枚追加</item>
+    </plurals>
+    <string name="scan_from_photos">写真から</string>
+    <string name="scan_type_it_in">手入力</string>
+
+    <string name="search_no_card">カード%1$sはありません</string>
+    <string name="search_nothing_found">「%1$s」に一致する結果はありません</string>
+    <string name="search_failed">検索に失敗しました：%1$s</string>
+    <string name="search_could_not_load">カードを読み込めませんでした</string>
+    <string name="search_added_qty">%1$s ×%2$d を追加しました</string>
+    <string name="search_could_not_save">保存できませんでした：%1$s</string>
+    <string name="search_hint_pokemon">名前または番号（例：Pikachu、025/165）</string>
+    <string name="search_hint_one_piece">カードコード（例：OP05-060）</string>
+    <string name="search_hint_magic">名前、またはセット＋番号（例：Sheoldred、DMU 107）</string>
+    <string name="search_hint_dragon_ball_fw">コードまたは名前（例：FB01-139）</string>
+    <string name="search_hint_dragon_ball_super">コードまたは名前（例：BT1-031）</string>
+    <string name="search_hint_union_arena">コードまたは名前（例：UE01BT/BLC-1-001）</string>
+    <string name="search_hint_weiss_schwarz">コードまたは名前（例：HOL/W91-001）</string>
+    <string name="search_hint_naruto">コードまたは名前</string>
+    <string name="search_title_replace">正しいカードを検索</string>
+    <string name="search_title_add">カードを追加</string>
+    <string name="search_back">戻る</string>
+    <string name="search_search">検索</string>
+    <string name="search_replace">置き換え</string>
+</resources>
