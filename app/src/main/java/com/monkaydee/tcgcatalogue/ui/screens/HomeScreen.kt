@@ -148,6 +148,7 @@ fun HomeScreen(
     onTradeList: () -> Unit = {},
     onSold: () -> Unit = {},
     onSealed: () -> Unit = {},
+    onSettings: () -> Unit = {},
 ) {
     val vm: HomeViewModel = viewModel { HomeViewModel(repo) }
     val state by vm.state.collectAsState()
@@ -212,6 +213,21 @@ fun HomeScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            item {
+                // A newer collection was saved by another phone to the cloud backup file.
+                val newer by com.monkaydee.tcgcatalogue.data.CloudBackup.pending.collectAsState()
+                if (newer != null) {
+                    Card(
+                        Modifier.fillMaxWidth().clickable(onClick = onSettings),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer, contentColor = MaterialTheme.colorScheme.onTertiaryContainer),
+                    ) {
+                        Column(Modifier.padding(16.dp)) {
+                            Text(stringResource(R.string.home_cloud_newer_title), style = MaterialTheme.typography.titleSmall)
+                            Text(stringResource(R.string.home_cloud_newer_text), style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+            }
             item {
                 Card(
                     Modifier.fillMaxWidth(),

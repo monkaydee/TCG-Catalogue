@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { !ready }
         super.onCreate(savedInstanceState)
-        CrashReporter.install(this)
         enableEdgeToEdge()
         if (savedInstanceState == null) handleShare(intent)
         val repository = (application as TcgApp).repository

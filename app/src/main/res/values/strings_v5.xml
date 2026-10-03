@@ -42,4 +42,8 @@
     <string name="crash_report_github">Report on GitHub</string>
     <string name="crash_share">Share</string>
     <string name="crash_dismiss">Not now</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">A newer collection from another phone</string>
+    <string name="home_cloud_newer_text">Your cloud backup was updated on another phone. Tap to load or merge it in Settings.</string>
 </resources>

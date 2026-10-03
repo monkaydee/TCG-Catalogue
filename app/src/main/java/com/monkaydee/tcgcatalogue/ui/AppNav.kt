@@ -153,6 +153,7 @@ fun AppNav(repo: CardRepository) {
                     onTradeList = { nav.navigate("trade") },
                     onSold = { nav.navigate("sold") },
                     onSealed = { nav.navigate("sealed") },
+                    onSettings = { goTab("settings") },
                 )
             }
             composable("wishlist") { WishlistScreen(repo, onBack = { nav.popBackStack() }) }

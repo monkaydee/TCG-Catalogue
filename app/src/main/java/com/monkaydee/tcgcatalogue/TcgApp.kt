@@ -35,6 +35,7 @@ class TcgApp : Application() {
     override fun onCreate() {
         super.onCreate()
         AppStrings.init(this)
+        CrashReporter.install(this)
         val http = Http()
         val cardIndex = CardIndexApi(http, java.io.File(filesDir, "card-index"))
         val tcgdex = TcgDexApi(http)
