@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -54,7 +53,6 @@ import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import android.widget.Toast
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.LocalContext
 import com.monkaydee.tcgcatalogue.data.remote.PriceSource
@@ -66,6 +64,14 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.monkaydee.tcgcatalogue.R
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.State
+import androidx.compose.ui.geometry.Offset
+import com.monkaydee.tcgcatalogue.ui.AppStrings
+import com.monkaydee.tcgcatalogue.ui.components.HoloCard
+import com.monkaydee.tcgcatalogue.ui.components.PriceHistoryCard
+import com.monkaydee.tcgcatalogue.ui.components.rememberDeviceTilt
+import com.monkaydee.tcgcatalogue.ui.components.rememberNotificationPermissionRequest
 
 /**
  * The list a card was opened from (a set sorted by value, the most valuable cards, ...), so the
@@ -90,7 +96,13 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
     val order = remember(id) { CardBrowse.ids.takeIf { id in it } ?: listOf(id) }
     // Cards removed meanwhile drop out of the pager.
     val cards = all?.associateBy { it.id }?.let { byId -> order.mapNotNull { byId[it] } }.orEmpty()
-    var confirmDelete by remember { mutableStateOf(false) }
+    // Dialogs keep the card's row id, so they always act on its latest data.
+    var deleteId by remember { mutableStateOf<Long?>(null) }
+    var sellId by remember { mutableStateOf<Long?>(null) }
+    var alertId by remember { mutableStateOf<Long?>(null) }
+    val askNotifications = rememberNotificationPermissionRequest()
+    // One tilt sensor listener for all pages of the pager.
+    val tilt = rememberDeviceTilt()
     // Edit: the card's current data from the API, so printings and prices can be changed.
     var editing by remember { mutableStateOf<OwnedCard?>(null) }
     var editCandidate by remember { mutableStateOf<CardCandidate?>(null) }
@@ -126,14 +138,6 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
                     }
                 },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) } },
-                actions = {
-                    if (editLoading) {
-                        CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
-                    } else {
-                        IconButton(onClick = { editing = current }) { Icon(Icons.Default.Edit, stringResource(R.string.card_edit)) }
-                    }
-                    IconButton(onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, stringResource(R.string.card_remove_from_collection)) }
-                },
             )
         },
     ) { padding ->
@@ -144,7 +148,25 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
             key = { cards[it].id },
             beyondViewportPageCount = 1,
         ) { page ->
-            CardDetail(cards[page], s, repo)
+            val card = cards[page]
+            CardDetail(
+                c = card,
+                s = s,
+                repo = repo,
+                tilt = tilt,
+                actions = {
+                    CardActionBar(
+                        card = card,
+                        editLoading = editLoading && editing?.id == card.id,
+                        onEdit = { if (!editLoading) editing = card },
+                        onSell = { sellId = card.id },
+                        onToggleTrade = { on -> scope.launch { repo.setForTrade(card, on) } },
+                        onAlert = { alertId = card.id },
+                        onDelete = { deleteId = card.id },
+                    )
+                },
+                onAlert = { alertId = card.id },
+            )
         }
     }
 
@@ -171,32 +193,69 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
         )
     }
 
-    if (confirmDelete && current != null) {
+    val toDelete = deleteId?.let { id -> cards.firstOrNull { it.id == id } }
+    if (toDelete != null) {
         AlertDialog(
-            onDismissRequest = { confirmDelete = false },
+            onDismissRequest = { deleteId = null },
             title = { Text(stringResource(R.string.card_remove_title)) },
-            text = { Text(pluralStringResource(R.plurals.card_remove_message, current.quantity, current.quantity, current.name)) },
+            text = { Text(pluralStringResource(R.plurals.card_remove_message, toDelete.quantity, toDelete.quantity, toDelete.name)) },
             confirmButton = {
                 TextButton(onClick = {
-                    confirmDelete = false
-                    scope.launch { repo.delete(current) }
+                    deleteId = null
+                    scope.launch { repo.delete(toDelete) }
                 }) { Text(stringResource(R.string.card_remove)) }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.card_cancel)) } },
+            dismissButton = { TextButton(onClick = { deleteId = null }) { Text(stringResource(R.string.card_cancel)) } },
         )
+    }
+
+    val toSell = sellId?.let { id -> cards.firstOrNull { it.id == id } }
+    if (toSell != null) {
+        SellDialog(toSell, s, onDismiss = { sellId = null }) { quantity, each ->
+            sellId = null
+            scope.launch {
+                runCatching { repo.sell(toSell, quantity, each, s.currency) }
+                    .onSuccess { Toast.makeText(context, AppStrings.get(R.string.sold_done, quantity, toSell.name), Toast.LENGTH_SHORT).show() }
+            }
+        }
+    }
+
+    val toAlert = alertId?.let { id -> cards.firstOrNull { it.id == id } }
+    if (toAlert != null) {
+        PriceAlertDialog(toAlert, s, onDismiss = { alertId = null }) { above, below ->
+            alertId = null
+            if (above != null || below != null) askNotifications()
+            scope.launch { repo.setAlerts(toAlert, above, below, s.currency) }
+        }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
+private fun CardDetail(
+    c: OwnedCard,
+    s: AppSettings,
+    repo: CardRepository,
+    tilt: State<Offset>,
+    actions: @Composable () -> Unit,
+    onAlert: () -> Unit,
+) {
     val scope = rememberCoroutineScope()
+    val history by remember(c.id) { repo.priceHistory(c.id) }.collectAsState(initial = emptyList())
     Column(
         Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CardOrSlab(c, Modifier.fillMaxWidth(if (c.graded) 0.8f else 0.75f))
+        // Room around the card so its shadow and lean aren't cut off.
+        HoloCard(
+            tilt = tilt,
+            modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(if (c.graded) 0.8f else 0.75f),
+            // Slab corners scale with its width (see GradedSlab).
+            shape = if (c.graded) RoundedCornerShape(percent = 6) else RoundedCornerShape(12.dp),
+        ) {
+            CardOrSlab(c, Modifier.fillMaxWidth())
+        }
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(c.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("${c.setName} · ${c.number}", style = MaterialTheme.typography.bodyMedium)
@@ -256,6 +315,9 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 Text(stringResource(R.string.card_raw_hint), style = MaterialTheme.typography.labelSmall)
             }
         }
+        actions()
+        ActiveAlerts(c, s, onAlert)
+        PriceHistoryCard(history, s)
         PriceLinks(c, s)
         PriceOverview(c, s, repo)
         Text(stringResource(R.string.card_quantity), style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
