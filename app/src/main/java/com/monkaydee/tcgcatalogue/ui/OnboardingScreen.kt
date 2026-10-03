@@ -80,8 +80,10 @@ fun OnboardingScreen(onFinish: () -> Unit) {
         scope.launch { pager.animateScrollToPage(pager.currentPage - 1) }
     }
 
+    // A Surface so text gets the theme's colour on the background (not black in the dark theme).
+    androidx.compose.material3.Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
     Column(
-        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).safeDrawingPadding(),
+        Modifier.fillMaxSize().safeDrawingPadding(),
     ) {
         Row(Modifier.fillMaxWidth().padding(horizontal = Spacing.s, vertical = Spacing.xs), horizontalArrangement = Arrangement.End) {
             TextButton(onClick = onFinish, enabled = !last, modifier = Modifier.alpha(if (last) 0f else 1f)) {
@@ -144,6 +146,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 Text(stringResource(if (last) R.string.onboarding_get_started else R.string.onboarding_next))
             }
         }
+    }
     }
 }
 
