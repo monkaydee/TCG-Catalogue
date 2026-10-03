@@ -37,6 +37,8 @@ class GameRecognitionTest {
         assertEquals(ScanHit.Indexed(Game.WEISS_SCHWARZ, "HOL/W91-001SP"), CardTextParser.parse(lines("HOL/W91-001SP SP"), indexes = index))
         // OCR read the zero as an O
         assertEquals(ScanHit.Indexed(Game.DRAGON_BALL_FW, "FB01-139"), CardTextParser.parse(lines("FBO1-139"), indexes = index))
+        // A Japanese Union Arena print finds its English counterpart
+        assertEquals(ScanHit.Indexed(Game.UNION_ARENA, "UE01BT/BLC-1-001"), CardTextParser.parse(lines("UA01BT/BLC-1-001"), indexes = index))
     }
 
     @Test fun unknownCodesAreIgnored() {

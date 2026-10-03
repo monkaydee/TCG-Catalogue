@@ -14,11 +14,13 @@ stored as bytes. Outputs (published on the `embeddings` branch, see
     EMBED_PCA.bin          float32 mean[2560], float16 components[2560][256]   (little-endian)
     EMBED_<GAME>.bin       "TCGE", int32 count, int32 dims, float32 scale[dims], int8 rows[count][dims]
     EMBED_<GAME>.json      ["<cardId>" or "<cardId>|<printing>", ...] in row order
+                           (Magic "<set>/<number>", TCGplayer-indexed games the product id)
 
 Embeddings of images seen before are kept in a cache file (restored by the workflow), so a weekly
 run only downloads and embeds new cards.
 """
 import concurrent.futures as cf
+import gzip
 import io
 import json
 import os
@@ -38,12 +40,15 @@ DIMS = 256
 # The artwork window of a card, as fractions of its width and height (same numbers in the app).
 ART = (0.08, 0.10, 0.92, 0.55)
 LIMIT = int(os.environ.get("EMBED_LIMIT", "0"))  # for local tests: cards per game
+# New images embedded per run, so a run always finishes (and saves its cache) within the job's
+# time limit; whatever is left is done by the next run. Cards not embedded yet are left out.
+MAX_NEW = int(os.environ.get("EMBED_MAX_NEW", "45000"))
 
 
 def get(url, tries=4, timeout=60):
     for attempt in range(tries):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "TCG-Catalogue picture index builder"})
+            req = urllib.request.Request(url, headers={"User-Agent": "TCG-Catalogue picture index builder", "Accept": "application/json;q=0.9,*/*;q=0.8"})
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
         except Exception as e:  # noqa: BLE001 - retry any network error
@@ -68,7 +73,47 @@ def one_piece_cards():
     return list(dict.fromkeys(out))
 
 
-GAMES = {"POKEMON": pokemon_cards, "ONE_PIECE": one_piece_cards}
+def magic_cards():
+    # One printing per artwork (Scryfall's "unique artwork" list): reprints with the same art look
+    # the same anyway, and the number on the card picks the exact printing when it can be read.
+    meta = json.loads(get("https://api.scryfall.com/bulk-data/unique-artwork"))
+    if meta.get("jsonl_download_uri"):  # gzipped JSON lines (current format)
+        raw = gzip.decompress(get(meta["jsonl_download_uri"], timeout=600))
+        cards = [json.loads(line) for line in raw.splitlines() if line.strip()]
+    else:
+        cards = json.loads(get(meta["download_uri"], timeout=600))
+    out = []
+    for c in cards:
+        if c.get("digital") or c.get("layout") in ("art_series", "token", "double_faced_token", "emblem"):
+            continue
+        uris = c.get("image_uris") or (c.get("card_faces") or [{}])[0].get("image_uris") or {}
+        if uris.get("normal"):
+            out.append((f"{c['set']}/{c['collector_number']}", uris["normal"]))
+    return out
+
+
+DATA = "https://raw.githubusercontent.com/monkaydee/TCG-Catalogue/data"
+
+
+def indexed_cards(game):
+    """Games from the daily TCGplayer card index (scripts/build_card_index.py): id = product id."""
+    def cards():
+        try:
+            index = json.loads(get(f"{DATA}/{game}.json", timeout=180))
+        except Exception as e:  # noqa: BLE001 - a game without an index is skipped
+            print(f"  no index for {game}: {e}", file=sys.stderr)
+            return []
+        return [(str(c[4]), f"https://tcgplayer-cdn.tcgplayer.com/product/{c[4]}_in_400x400.jpg") for c in index["cards"]]
+    return cards
+
+
+# Magic last: it is the biggest, and new cards of the smaller games shouldn't wait for it.
+GAMES = {
+    "POKEMON": pokemon_cards,
+    "ONE_PIECE": one_piece_cards,
+    **{g: indexed_cards(g) for g in ("DRAGON_BALL_FW", "DRAGON_BALL_SUPER", "UNION_ARENA", "WEISS_SCHWARZ", "NARUTO")},
+    "MAGIC": magic_cards,
+}
 
 
 class Embedder:
@@ -110,12 +155,19 @@ def main():
     print(f"cache: {len(cache)} embeddings")
 
     per_game = {}
+    budget = MAX_NEW
     for game, list_cards in GAMES.items():
-        cards = list_cards()
+        try:
+            cards = list_cards()
+        except Exception as e:  # noqa: BLE001 - one source being down shouldn't stop the others
+            print(f"{game}: list failed, skipped: {e}", file=sys.stderr)
+            continue
         if LIMIT:
             cards = cards[:LIMIT]
         todo = [(cid, url) for cid, url in cards if url not in cache]
-        print(f"{game}: {len(cards)} cards, {len(todo)} new")
+        print(f"{game}: {len(cards)} cards, {len(todo)} new, {budget} left for this run")
+        todo = todo[:budget]
+        budget -= len(todo)
 
         def fetch(item):
             cid, url = item
@@ -149,6 +201,8 @@ def main():
     meta = {"model": MODEL_URL, "input": INPUT, "dims": DIMS, "art": ART, "games": {},
             "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
     for game, rows in per_game.items():
+        if not rows:
+            continue
         x = (np.stack([cache[url] for _, url in rows]).astype(np.float32) - mean) @ components
         x /= np.linalg.norm(x, axis=1, keepdims=True) + 1e-9
         scale = np.abs(x).max(0) / 127.0 + 1e-12

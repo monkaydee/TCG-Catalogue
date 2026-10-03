@@ -26,15 +26,17 @@ object PhotoRecognizer {
 
     /**
      * Cards found in a photo, and the slab label if the photo shows one graded card. With a single
-     * card, [picture] is the photo (upright, small), for telling alt arts apart.
+     * card, [picture] is the photo (upright, small), for telling alt arts apart. [texts] is what
+     * could be read when no card number was found (e.g. the name), to help a search by picture.
      */
-    data class Result(val hits: List<ScanHit>, val grade: GradeInfo?, val picture: Bitmap? = null)
+    data class Result(val hits: List<ScanHit>, val grade: GradeInfo?, val picture: Bitmap? = null, val texts: List<String> = emptyList())
 
     suspend fun recognize(context: Context, uri: Uri, parse: (List<OcrLine>) -> List<ScanHit>): Result {
         val bitmap = withContext(Dispatchers.IO) { decode(context, uri) }
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         try {
             // Photos taken sideways or upside down: try the other orientations when nothing is found.
+            var bestTexts = emptyList<String>()
             for (rotation in listOf(0, 90, 270, 180)) {
                 val text = recognizer.process(InputImage.fromBitmap(bitmap, rotation)).await()
                 val height = (if (rotation % 180 == 0) bitmap.height else bitmap.width).toFloat()
@@ -43,13 +45,16 @@ object PhotoRecognizer {
                     OcrLine(line.text, (box?.top ?: 0) / height, (box?.height() ?: 0) / height)
                 }
                 val hits = parse(lines)
+                // Keep the orientation in which the most words could be read.
+                val texts = lines.map { it.text }
+                if (texts.sumOf { t -> t.count(Char::isLetter) } > bestTexts.sumOf { t -> t.count(Char::isLetter) }) bestTexts = texts
                 if (hits.isNotEmpty()) {
                     val single = hits.size == 1
                     val picture = if (single) runCatching { uprightSmall(bitmap, rotation) }.getOrNull() else null
                     return Result(hits, CardTextParser.parseGrade(lines).takeIf { single }, picture)
                 }
             }
-            return Result(emptyList(), null)
+            return Result(emptyList(), null, texts = bestTexts)
         } finally {
             recognizer.close()
             bitmap.recycle()
@@ -62,10 +67,10 @@ object PhotoRecognizer {
         return Bitmap.createBitmap(photo, 0, 0, photo.width, photo.height, Matrix().apply { postScale(scale, scale); postRotate(rotation.toFloat()) }, true)
     }
 
-    /** A photo, upright and at most 900 pixels on its longest side, for finding a card by its picture. */
-    suspend fun loadSmall(context: Context, uri: Uri): Bitmap = withContext(Dispatchers.IO) {
+    /** A photo, upright and at most [maxSide] pixels on its longest side, for finding a card by its picture. */
+    suspend fun loadSmall(context: Context, uri: Uri, maxSide: Int = 900): Bitmap = withContext(Dispatchers.IO) {
         val full = decode(context, uri)
-        val scale = 900f / max(full.width, full.height)
+        val scale = maxSide.toFloat() / max(full.width, full.height)
         if (scale >= 1f) full else Bitmap.createScaledBitmap(full, (full.width * scale).toInt(), (full.height * scale).toInt(), true).also { full.recycle() }
     }
 

@@ -229,7 +229,10 @@ object CardTextParser {
     private fun candidates(token: String): List<String> {
         val zeroed = token.replace('O', '0')
         val trimmed = token.trimEnd { it.isLetter() }
-        return listOf(token, zeroed, trimmed, trimmed.replace('O', '0')).distinct()
+        val forms = listOf(token, zeroed, trimmed, trimmed.replace('O', '0'))
+        // Japanese Union Arena prints "UA01BT/…" where the English print (in the index) has "UE01BT/…".
+        val english = forms.filter { it.startsWith("UA") }.map { "UE" + it.substring(2) }
+        return (forms + english).distinct()
     }
 
     /** The card name is the tallest plain-text line in the top part of the card. */

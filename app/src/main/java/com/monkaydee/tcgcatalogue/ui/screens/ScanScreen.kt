@@ -172,10 +172,12 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
 
     private var lastHitAt = 0L
     private var lastAnyPicture: android.graphics.Bitmap? = null
+    private var lastTexts: List<String> = emptyList()
 
     fun onFrame(frame: ScanFrame) {
         if (!scanning) return
         frame.card?.let { lastAnyPicture = it }
+        lastTexts = frame.cardLines.map { it.text }
         val filter = state.value.filter
         val hit = CardTextParser.parse(frame.cardLines, filter, repo.indexMatchers(enabled))
             ?.takeIf { filter != null || it.game in enabled }
@@ -213,7 +215,8 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
             cooldownUntil = System.currentTimeMillis() + 2500
             when {
                 result.isFailure -> state.update { it.copy(loading = false, message = AppStrings.get(R.string.scan_lookup_failed)) }
-                candidates.isEmpty() -> state.update { it.copy(loading = false, message = AppStrings.get(R.string.scan_no_card_found, describe(hit))) }
+                // The number led nowhere (misread, or a print the databases don't have): try the picture.
+                candidates.isEmpty() -> if (picture != null) findByPicture(picture) else state.update { it.copy(loading = false, message = AppStrings.get(R.string.scan_no_card_found, describe(hit))) }
                 else -> {
                     val s = repo.settings.current()
                     val top = candidates.first()
@@ -264,8 +267,9 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
     }
 
     /** Looks the card in the guide up by its picture alone (for cards whose number can't be read). */
-    fun findByPicture() {
-        val picture = lastAnyPicture ?: return
+    fun findByPicture(picture: android.graphics.Bitmap? = lastAnyPicture) {
+        picture ?: return
+        val texts = lastTexts
         val games = state.value.filter?.let { setOf(it) } ?: enabled
         state.update {
             it.copy(
@@ -275,8 +279,8 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         }
         viewModelScope.launch {
             val result = attempt {
-                val crop = PictureSearch.cardCrop(picture, fromCamera = true)
-                repo.candidatesFromPicture(PictureSearch.find(context, crop, games))
+                val crops = PictureSearch.crops(picture, fromCamera = true)
+                repo.candidatesFromPicture(PictureSearch.find(context, crops, games), texts)
             }
             cooldownUntil = System.currentTimeMillis() + 2500
             val found = result.getOrDefault(emptyList())

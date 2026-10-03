@@ -2,6 +2,7 @@ package com.monkaydee.tcgcatalogue.scan
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.remote.Http
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ import org.tensorflow.lite.Interpreter
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.math.max
 
 /**
  * Finds a card by its picture alone, for cards whose number can't be read (worn, old, at an angle).
@@ -27,10 +29,14 @@ object PictureSearch {
     private const val BASE = "https://raw.githubusercontent.com/monkaydee/TCG-Catalogue/embeddings"
     private const val WEEK = 7 * 24 * 60 * 60 * 1000L
 
-    /** Games in the picture index. */
-    val GAMES = setOf(Game.POKEMON, Game.ONE_PIECE)
+    /** Games the picture index can cover (the weekly build lists the ones it has in its meta file). */
+    val GAMES: Set<Game> = Game.entries.toSet()
 
-    /** A card found by picture: its id ("sv03.5-025", or "OP01-077|OP01-077_p1" with the printing). */
+    /**
+     * A card found by picture: its id as the game's lookup uses it ("sv03.5-025", Magic "dmu/107",
+     * a TCGplayer product id for the indexed games), for One Piece with the printing
+     * ("OP01-077|OP01-077_p1").
+     */
     data class Found(val game: Game, val id: String, val score: Float) {
         val cardId: String get() = id.substringBefore('|')
         val printing: String? get() = id.substringAfter('|', "").ifEmpty { null }
@@ -42,50 +48,100 @@ object PictureSearch {
     private val indexes = HashMap<Game, PictureIndex>()
     private var input = 224
     private var art = floatArrayOf(0.08f, 0.10f, 0.92f, 0.55f)
+    private val http by lazy { Http() }
 
     /**
-     * The middle of a picture taken around the camera's card guide (the card fills about this
-     * part of the analysed area, see TextAnalyzer), or a card-shaped centre crop of a photo.
+     * The parts of [picture] that may be the card: the usual crop (the middle of the camera's card
+     * guide, or a card-shaped centre crop of a photo) and the card-shaped areas [CardLocator]
+     * finds. A card lying on its side is tried turned both ways. Picture search keeps whichever
+     * crop matches a card best, so a card that is small or off-centre in a photo is still found.
      */
-    fun cardCrop(picture: Bitmap, fromCamera: Boolean): Bitmap {
+    fun crops(picture: Bitmap, fromCamera: Boolean): List<Bitmap> {
         val w = picture.width
         val h = picture.height
-        return if (fromCamera) {
+        val usual = if (fromCamera) {
             Bitmap.createBitmap(picture, (w * 0.115f).toInt(), (h * 0.143f).toInt(), (w * 0.77f).toInt(), (h * 0.714f).toInt())
         } else {
             val ch = minOf(h.toFloat(), w / 0.716f) * 0.92f
             val cw = ch * 0.716f
             Bitmap.createBitmap(picture, ((w - cw) / 2).toInt(), ((h - ch) / 2).toInt(), cw.toInt(), ch.toInt())
         }
+        val scale = CardLocator.SIDE.toFloat() / max(w, h)
+        val small = Bitmap.createScaledBitmap(picture, (w * scale).toInt().coerceAtLeast(1), (h * scale).toInt().coerceAtLeast(1), true)
+        val pixels = IntArray(small.width * small.height).also { small.getPixels(it, 0, small.width, 0, 0, small.width, small.height) }
+        val found = CardLocator.locate(Pixels(small.width, small.height, pixels))
+        if (small !== picture) small.recycle()
+        val located = found.flatMap { f ->
+            val x = (f.rect.x / scale).toInt().coerceIn(0, w - 1)
+            val y = (f.rect.y / scale).toInt().coerceIn(0, h - 1)
+            val cw = (f.rect.w / scale).toInt().coerceIn(1, w - x)
+            val ch = (f.rect.h / scale).toInt().coerceIn(1, h - y)
+            if (!f.lying) {
+                listOf(Bitmap.createBitmap(picture, x, y, cw, ch))
+            } else {
+                listOf(90f, 270f).map { Bitmap.createBitmap(picture, x, y, cw, ch, Matrix().apply { postRotate(it) }, true) }
+            }
+        }
+        return listOf(usual) + located
     }
 
     /** True once the model and index are on the phone (the first use downloads them). */
     fun isReady(context: Context): Boolean = File(dir(context), "model.tflite").exists() && File(dir(context), "EMBED_PCA.bin").exists()
 
-    /** The [k] best matches for [picture] (a photo of one card, roughly filling it) among [games]. */
-    private val http by lazy { Http() }
-
-    suspend fun find(context: Context, picture: Bitmap, games: Set<Game>, k: Int = 6): List<Found> = lock.withLock {
+    /**
+     * The [k] best matches among [games] for the card in [crops] (see [crops]): every crop is
+     * searched and the one whose best match is closest wins.
+     */
+    suspend fun find(context: Context, crops: List<Bitmap>, games: Set<Game>, k: Int = 8): List<Found> = lock.withLock {
         val wanted = games.filter { it in GAMES }.ifEmpty { return@withLock emptyList() }
         prepare(context, wanted)
         val model = interpreter ?: return@withLock emptyList()
         val pca = projection ?: return@withLock emptyList()
-        val query = withContext(Dispatchers.Default) { pca.project(fingerprint(model, picture)) }
-        wanted.flatMap { g -> indexes[g]?.search(query, k)?.map { Found(g, it.id, it.score) }.orEmpty() }
-            .sortedByDescending { it.score }
-            .take(k)
+        withContext(Dispatchers.Default) {
+            crops.map { crop ->
+                val query = pca.project(fingerprint(model, crop))
+                wanted.flatMap { g -> indexes[g]?.search(query, k)?.map { Found(g, it.id, it.score) }.orEmpty() }
+                    .sortedByDescending { it.score }
+                    .take(k)
+            }.maxByOrNull { it.firstOrNull()?.score ?: -1f }.orEmpty()
+        }
     }
 
+    /**
+     * Downloads what is missing. The projection and every game's index must come from the same
+     * weekly build, so when a new build is out, everything is fetched again together.
+     */
     private suspend fun prepare(context: Context, games: List<Game>) = withContext(Dispatchers.IO) {
         val dir = dir(context).apply { mkdirs() }
         val metaFile = File(dir, "EMBED_META.json")
-        val stale = !metaFile.exists() || System.currentTimeMillis() - metaFile.lastModified() > WEEK
-        if (stale) runCatching { http.getBytes("$BASE/EMBED_META.json") }.getOrNull()?.let { write(metaFile, it) }
-        if (!metaFile.exists()) error("picture index not available")
-        val meta = Json.parseToJsonElement(metaFile.readText()) as JsonObject
+        val local = metaFile.takeIf { it.exists() }?.let { runCatching { Json.parseToJsonElement(it.readText()) as JsonObject }.getOrNull() }
+        val listed = local?.get("games")?.let { it as? JsonObject }?.keys
+        val missing = !File(dir, "EMBED_PCA.bin").exists() ||
+            games.any { g -> (listed == null || g.name in listed) && !File(dir, "EMBED_${g.name}.bin").exists() }
+        val old = local == null || System.currentTimeMillis() - metaFile.lastModified() > WEEK
+        var meta = local
+        if (old || missing) {
+            val remote = runCatching { http.getBytes("$BASE/EMBED_META.json") }.getOrNull()
+            val parsed = remote?.let { runCatching { Json.parseToJsonElement(String(it)) as JsonObject }.getOrNull() }
+            if (parsed != null) {
+                val newBuild = parsed["updated"]?.jsonPrimitive?.content != local?.get("updated")?.jsonPrimitive?.content
+                if (newBuild) {
+                    // Drop everything of the old build; it is fetched again below as needed.
+                    dir.listFiles { f -> f.name.startsWith("EMBED_") && f.name != "EMBED_META.json" }?.forEach { it.delete() }
+                    projection = null
+                    indexes.clear()
+                }
+                write(metaFile, remote)
+                meta = parsed
+            } else if (local != null) {
+                metaFile.setLastModified(System.currentTimeMillis() - WEEK + 60 * 60 * 1000L) // try again in an hour
+            }
+        }
+        meta ?: error("picture index not available")
         input = meta["input"]?.jsonPrimitive?.content?.toIntOrNull() ?: 224
         meta["art"]?.jsonArray?.map { it.jsonPrimitive.content.toFloat() }?.takeIf { it.size == 4 }?.let { art = it.toFloatArray() }
         val dims = meta["dims"]?.jsonPrimitive?.content?.toIntOrNull() ?: 256
+        val available = (meta["games"] as? JsonObject)?.keys.orEmpty()
         // The model is fetched again only if the index was built with another one.
         val modelUrl = meta["model"]?.jsonPrimitive?.content ?: error("no model in the index")
         val modelFile = File(dir, "model.tflite")
@@ -96,14 +152,10 @@ object PictureSearch {
             interpreter?.close()
             interpreter = null
         }
-        val files = listOf("EMBED_PCA.bin") + games.flatMap { listOf("EMBED_${it.name}.bin", "EMBED_${it.name}.json") }
+        val files = listOf("EMBED_PCA.bin") + games.filter { it.name in available }.flatMap { listOf("EMBED_${it.name}.bin", "EMBED_${it.name}.json") }
         for (name in files) {
             val f = File(dir, name)
-            if (!f.exists() || stale) {
-                runCatching { http.getBytes("$BASE/$name") }.getOrNull()?.let { write(f, it) }
-                if (name == "EMBED_PCA.bin") projection = null
-                indexes.remove(games.firstOrNull { name.contains(it.name) })
-            }
+            if (!f.exists()) write(f, http.getBytes("$BASE/$name"))
         }
         if (interpreter == null) interpreter = Interpreter(modelFile, Interpreter.Options().setNumThreads(2))
         if (projection == null) projection = PictureProjection.parse(File(dir, "EMBED_PCA.bin").readBytes(), dims)
