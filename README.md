@@ -54,6 +54,14 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   one of them is linked to the wrong card (e.g. TCGdex gives the gold Zekrom 115/113 the price of the
   regular Zekrom). The app then uses the other market and shows a note on the card. Displayed in EUR or USD using ECB rates. Prices
   refresh daily in the background, which also records the portfolio history.
+- **One Piece on Cardmarket**: Cardmarket lists every print of a card separately (original,
+  reprints in other sets, alt arts, promos), e.g. 16 listings for Brannew OP03-089. With Cardmarket
+  as the price source you pick the exact listing ("The Best · V.3") when adding or later on the card
+  page. The prices come from Cardmarket's public price guide via the daily index
+  (`CARDMARKET_ONE_PIECE.json`).
+- **Misread numbers**: after a scan, the app checks that the card the number points to has the
+  name printed on the scanned card. If not, it tries look-alike numbers (6/8, 1/7, 3/8 …) and warns
+  you instead of adding the wrong card automatically.
 - **Prices by condition**: NM, LP, MP, HP and DMG copies are priced separately, from TCGplayer's
   market prices per condition (its sales history):
   - TCGplayer as the source: the real market price for that condition.

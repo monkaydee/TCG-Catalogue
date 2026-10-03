@@ -44,6 +44,7 @@ import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.remote.CardBrief
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.scan.OcrLine
@@ -101,9 +102,9 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
         }
     }
 
-    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?) {
+    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing?) {
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade) }
+            runCatching { repo.add(c, v, qty, condition, grade, listing) }
                 .onSuccess { state.update { it.copy(candidates = emptyList(), message = "Added ${c.name} ×$qty") } }
                 .onFailure { e -> state.update { it.copy(candidates = emptyList(), message = "Could not save: ${e.message}") } }
         }

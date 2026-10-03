@@ -5,6 +5,7 @@ import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.SettingsStore
 import com.monkaydee.tcgcatalogue.data.db.AppDatabase
 import com.monkaydee.tcgcatalogue.data.remote.CardIndexApi
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
 import com.monkaydee.tcgcatalogue.data.remote.EbayApi
 import com.monkaydee.tcgcatalogue.data.remote.WebViewBrowser
 import com.monkaydee.tcgcatalogue.data.remote.FxApi
@@ -24,15 +25,17 @@ class TcgApp : Application() {
         super.onCreate()
         val http = Http()
         val browser = WebViewBrowser(this)
+        val cardIndex = CardIndexApi(http, java.io.File(filesDir, "card-index"))
         repository = CardRepository(
             db = AppDatabase.create(this),
             tcgdex = TcgDexApi(http),
             onePiece = OnePieceApi(http),
             scryfall = ScryfallApi(http),
-            cardIndex = CardIndexApi(http, java.io.File(filesDir, "card-index")),
+            cardIndex = cardIndex,
             priceCharting = PriceChartingApi(http, browser),
             tcgplayer = TcgPlayerApi(http),
             ebay = EbayApi(browser),
+            cardmarket = CardmarketApi(cardIndex, http),
             fx = FxApi(http),
             settings = SettingsStore(this),
         )

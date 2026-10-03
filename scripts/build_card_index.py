@@ -15,6 +15,7 @@ The app looks up the code printed on a card (e.g. "UE01BT/BLC-1-001", "FB01-139"
 "HOL/W91-001") in this index. Runs daily in GitHub Actions (.github/workflows/card-index.yml).
 """
 import json
+import re
 import sys
 import time
 import urllib.request
@@ -90,6 +91,62 @@ def build(game, category):
     }
 
 
+CARDMARKET = "https://downloads.s3.cardmarket.com/productCatalog"
+CODE = re.compile(r"\(([A-Z]{1,4}\d{0,2}-\d{3})\)")
+EXPANSION_SUFFIXES = re.compile(
+    r"\s+(Booster Box Case.*|Booster Box.*|Sleeved Booster.*|Booster.*|Dash Pack.*|Deck Pack.*|Premium Storage.*|Display.*)$"
+)
+
+
+def get_cardmarket(path):
+    req = urllib.request.Request(f"{CARDMARKET}/{path}", headers={"User-Agent": "TCG-Catalogue index builder"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        return json.load(r)
+
+
+def build_cardmarket_one_piece():
+    """Cardmarket's One Piece listings by card code, with their EUR prices.
+
+    Cardmarket sells every print of a card (original, reprints, alt arts, promos ...) as its own
+    product, named "Brannew (OP03-089)", and tells them apart as V.1, V.2, ... within a set.
+    Set names come from the sealed products of each expansion ("The Best Booster Box" -> "The Best").
+    """
+    singles = get_cardmarket("productList/products_singles_18.json")["products"]
+    sealed = get_cardmarket("productList/products_nonsingles_18.json")["products"]
+    guide = {g["idProduct"]: g for g in get_cardmarket("priceGuide/price_guide_18.json")["priceGuides"]}
+    names, non_english = {}, set()
+    for p in sorted(sealed, key=lambda p: len(p["name"])):
+        names.setdefault(p["idExpansion"], EXPANSION_SUFFIXES.sub("", p["name"]).strip())
+        if "Non-English" in p["name"] or "Asia" in p["name"]:
+            non_english.add(p["idExpansion"])
+    for e in non_english:
+        if "Non-English" not in names[e]:
+            names[e] += " (Non-English)"
+    by_print = {}
+    for p in singles:
+        m = CODE.search(p["name"])
+        if m:
+            by_print.setdefault((p["idExpansion"], p["name"]), []).append(p)
+    cards = []
+    for (expansion, name), prints in by_print.items():
+        prints.sort(key=lambda p: p["idProduct"])
+        for i, p in enumerate(prints):
+            g = guide.get(p["idProduct"], {})
+            cards.append([
+                CODE.search(name).group(1),
+                name.split(" (")[0],
+                p["idProduct"],
+                expansion,
+                i + 1 if len(prints) > 1 else 0,
+                g.get("trend"), g.get("low"), g.get("avg7"), g.get("avg30"),
+            ])
+    return {
+        "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "expansions": {str(k): v for k, v in names.items()},
+        "cards": cards,
+    }
+
+
 def main():
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "index")
     out.mkdir(parents=True, exist_ok=True)
@@ -99,6 +156,11 @@ def main():
         path = out / f"{game}.json"
         path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
         print(f"  {len(data['groups'])} sets, {len(data['cards'])} cards, {path.stat().st_size // 1024} KB")
+    print("CARDMARKET_ONE_PIECE")
+    data = build_cardmarket_one_piece()
+    path = out / "CARDMARKET_ONE_PIECE.json"
+    path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    print(f"  {len(data['cards'])} listings, {path.stat().st_size // 1024} KB")
 
 
 if __name__ == "__main__":

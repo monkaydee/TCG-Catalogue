@@ -100,7 +100,7 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             }
 
             HorizontalDivider()
-            Text("Price source (Pokémon & Magic)", style = MaterialTheme.typography.titleSmall)
+            Text("Price source (Pokémon, Magic & One Piece)", style = MaterialTheme.typography.titleSmall)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(PriceSource.CARDMARKET, PriceSource.TCGPLAYER).forEach { p ->
                     FilterChip(s.pokemonSource == p, {
@@ -109,7 +109,7 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                 }
             }
             Text(
-                "Cardmarket trend price for European prices, TCGplayer market price for US prices. The other games only have TCGplayer prices. " +
+                "Cardmarket trend price for European prices, TCGplayer market price for US prices. For One Piece you pick the exact Cardmarket listing (set and V.1/V.2…) of your copy. The other games only have TCGplayer prices. " +
                     "When the two markets disagree by more than 3×, one of them is linked to the wrong card and the app uses the other one (the card shows a note). " +
                     "Graded cards are priced from PriceCharting's sold listings.",
                 style = MaterialTheme.typography.bodySmall,

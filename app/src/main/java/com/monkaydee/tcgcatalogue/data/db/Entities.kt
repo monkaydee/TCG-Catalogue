@@ -67,6 +67,10 @@ data class OwnedCard(
     val certNumber: String? = null,
     /** Explains where an unusual price comes from, e.g. when the two markets disagreed. */
     val priceNote: String? = null,
+    /** The Cardmarket product (exact print) this copy is priced from, for One Piece. */
+    val marketProductId: Long? = null,
+    /** "The Best · V.3" */
+    val marketLabel: String? = null,
 ) {
     val graded: Boolean get() = grader != null
 }

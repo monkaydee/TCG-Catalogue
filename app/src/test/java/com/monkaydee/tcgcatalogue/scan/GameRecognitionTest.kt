@@ -78,9 +78,28 @@ class GameRecognitionTest {
         assertEquals("GSG", CardTextParser.parseGrade(lines("GSG", "MINT 9"))!!.grader)
     }
 
+    @Test fun misreadCodesAndNameCheck() {
+        assertTrue("OP05-080" in CardTextParser.misreadVariants("OP05-060"))
+        assertTrue("OP05-068" in CardTextParser.misreadVariants("OP05-060"))
+        assertTrue(CardTextParser.nameOnCard("Monkey.D.Luffy (060)", listOf("LEADER", "Monkey.D.Luffy", "OP05-060")))
+        assertTrue(CardTextParser.nameOnCard("Monkey.D.Luffy", listOf("Monkey.D.Lufy")))
+        assertTrue(!CardTextParser.nameOnCard("Brannew", listOf("Monkey.D.Luffy", "OP05-060")))
+    }
+
+    @Test fun smallGradersAndGermanLabels() {
+        assertEquals(GradeInfo("GSG", "8.5", null, null), CardTextParser.parseGrade(lines("GSG", "ZEKROM", "NM-MT+ 8.5")))
+        assertEquals("8.5", CardTextParser.parseGrade(lines("GSG GRADING", "Zekrom 115/113", "8,5"))!!.grade)
+        assertEquals("8.5", CardTextParser.parseGrade(lines("Zekrom", "NOTE: 8,5", "GRADING"))!!.grade)
+        // Company not readable: still graded, the user picks the company.
+        val unknown = CardTextParser.parseGrade(lines("ZEKROM 115/113", "NEAR MINT-MINT+", "8.5"))!!
+        assertEquals("8.5", unknown.grade)
+        assertNull(unknown.grader)
+    }
+
     @Test fun rawCardsAreNotGraded() {
         assertNull(CardTextParser.parseGrade(lines("Basic", "Pikachu", "60 HP", "Gnaw 10", "MEW EN 025/165")))
         assertNull(CardTextParser.parseGrade(lines("Luffy & Ace", "ST30-001", "[DON!! x2] This Leader gains +1000 power")))
         assertNull(CardTextParser.parseGrade(lines("Charizard ex", "HP 330", "Burning Darkness 180+")))
+        assertNull(CardTextParser.parseGrade(lines("Snorlax", "Rest", "Heal 30 damage", "2/2", "Flip a coin. 10")))
     }
 }

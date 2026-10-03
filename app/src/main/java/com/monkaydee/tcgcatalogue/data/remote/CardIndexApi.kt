@@ -35,6 +35,23 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     private val loaded = ConcurrentHashMap<Game, Index>()
     private val mutex = Mutex()
 
+    /** A file from the data branch, downloaded at most once a day; the old copy is kept if a download fails. */
+    suspend fun dailyFile(name: String, maxAgeMs: Long = DAY): File? = mutex.withLock {
+        val file = File(dir, name)
+        if (!file.exists() || System.currentTimeMillis() - file.lastModified() >= maxAgeMs) {
+            runCatching {
+                val text = http.getText("$BASE/$name", accept = "application/json")
+                if (!text.isNullOrBlank()) withContext(Dispatchers.IO) {
+                    dir.mkdirs()
+                    val tmp = File(dir, "$name.tmp")
+                    tmp.writeText(text)
+                    tmp.renameTo(file)
+                }
+            }
+        }
+        file.takeIf { it.exists() }
+    }
+
     /** Index already in memory (used by the scanner, which can't wait for a download). */
     fun cached(game: Game): Index? = loaded[game]
 

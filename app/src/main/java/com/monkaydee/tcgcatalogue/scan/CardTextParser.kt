@@ -14,6 +14,9 @@ sealed interface ScanHit {
     data class OnePiece(val code: String) : ScanHit {
         override val game get() = Game.ONE_PIECE
         override val key get() = "op:$code"
+
+        /** All text read on the card, to check the name of the card the code points to. */
+        var texts: List<String> = emptyList()
     }
 
     /**
@@ -34,6 +37,9 @@ sealed interface ScanHit {
     /** A card code found in a game's card index ("FB01-139", "UE01BT/BLC-1-001", "HOL/W91-001"). */
     data class Indexed(override val game: Game, val code: String) : ScanHit {
         override val key get() = "idx:${game.name}:$code"
+
+        /** All text read on the card, to check the name of the card the code points to. */
+        var texts: List<String> = emptyList()
     }
 }
 
@@ -90,9 +96,10 @@ object CardTextParser {
         if (wants(Game.MAGIC)) {
             findMagic(lines, nameFallback = filter == Game.MAGIC)?.let { return listOf(it) }
         }
+        val texts = lines.map { it.text }
         val codes = buildList {
-            if (wants(Game.ONE_PIECE)) addAll(allOnePiece(lines))
-            indexes.filterKeys { wants(it) }.forEach { (game, contains) -> addAll(findIndexed(lines, game, contains)) }
+            if (wants(Game.ONE_PIECE)) addAll(allOnePiece(lines).onEach { it.texts = texts })
+            indexes.filterKeys { wants(it) }.forEach { (game, contains) -> addAll(findIndexed(lines, game, contains).onEach { it.texts = texts }) }
         }
         if (codes.isNotEmpty() || filter != null && filter != Game.POKEMON) return codes
         val numbers = allPokemonNumbers(lines)
@@ -215,11 +222,13 @@ object CardTextParser {
         "MNT" to Regex("""\bMNT\s*GRADING\b"""),
     )
 
-    private const val GRADE = """(10|[1-9](?:\.5)?)"""
-    private const val WORDS = """GEM\s*MT|GEM\s*MINT|GEM|PRISTINE|BLACK\s*LABEL|MINT\+?|NM-MT\+?|NM\+?|EX-MT\+?|EX\+?|VG-EX\+?|VG\+?|GOOD\+?|FAIR|FR|PR|POOR"""
-    private val gradeAfterWords = Regex("""(?<![A-Z])($WORDS)\s*$GRADE(?![\d.])""")
-    private val gradeBeforeWords = Regex("""(?<![\d.])$GRADE\s*($WORDS)(?![A-Z])""")
+    private const val GRADE = """(10|[1-9](?:[.,]5)?)"""
+    private const val WORDS = """GEM\s*-?\s*MT|GEM\s*MINT|GEM|PRISTINE|BLACK\s*LABEL|NEAR\s*MINT(?:\s*-\s*MINT)?\+?|NM\s*/\s*MINT\+?|MINT\s*\+?|NM-MT\+?|NM\+?|EX-MT\+?|EX\+?|EXCELLENT|VG-EX\+?|VG\+?|GOOD\+?|FAIR|FR|PR|POOR|GRADE|NOTE"""
+    private val gradeAfterWords = Regex("""(?<![A-Z])($WORDS)\s*:?\s*$GRADE(?![\d.,])""")
+    private val gradeBeforeWords = Regex("""(?<![\d.,])$GRADE\s*($WORDS)(?![A-Z])""")
     private val bareGrade = Regex("""^$GRADE$""")
+    private val bareHalfGrade = Regex("""^([1-9][.,]5)$""")
+    private val slabWords = Regex("""\bGRAD(ED|ING)\b|\bCERT\b|\bAUTHENTIC\b""")
     private val cert = Regex("""(?<!\d)(\d{7,12})(?!\d)""")
     private val subgradeWords = Regex("""CENTER|CORNER|EDGE|SURFACE""")
 
@@ -227,22 +236,25 @@ object CardTextParser {
     fun parseGrade(lines: List<OcrLine>): GradeInfo? {
         val texts = lines.map { it.text.uppercase().trim() }
         val grader = graders.firstOrNull { (_, re) -> texts.any { re.containsMatchIn(it) } }?.first
+        val slab = grader != null || texts.any { slabWords.containsMatchIn(it) }
         var grade: String? = null
         var words = ""
         for (t in texts) {
             if (subgradeWords.containsMatchIn(t)) continue
             val m = gradeAfterWords.find(t)?.let { it.groupValues[2] to it.groupValues[1] }
                 ?: gradeBeforeWords.find(t)?.let { it.groupValues[1] to it.groupValues[2] }
-            if (m != null) {
+            // "GRADE 8" / "NOTE 8" alone are only trusted on something that is clearly a slab.
+            if (m != null && (slab || m.second !in setOf("GRADE", "NOTE"))) {
                 grade = m.first
                 words = m.second.replace(Regex("""\s+"""), " ")
                 break
             }
         }
-        // BGS and CGC print the grade as a big number on its own.
-        if (grade == null && grader != null) {
-            grade = texts.firstNotNullOfOrNull { t -> bareGrade.find(t)?.groupValues?.get(1) }
+        // Many labels print the grade as a big number on its own; a lone "8.5" only exists on labels.
+        if (grade == null) {
+            grade = texts.firstNotNullOfOrNull { t -> (if (slab) bareGrade else bareHalfGrade).find(t)?.groupValues?.get(1) }
         }
+        grade = grade?.replace(',', '.')
         if (grader == null && grade == null) return null
         val all = texts.joinToString(" ")
         val qualifier = when {
@@ -258,6 +270,26 @@ object CardTextParser {
             else -> null
         }
         return GradeInfo(company, grade, qualifier, texts.firstNotNullOfOrNull { cert.find(it)?.groupValues?.get(1) })
+    }
+
+    /** Digits OCR mixes up on small print (6/8/0, 1/7, 3/8, 5/6 ...). */
+    private val confusable = mapOf(
+        '0' to "869", '1' to "74", '2' to "7", '3' to "85", '4' to "1",
+        '5' to "638", '6' to "580", '7' to "12", '8' to "0369", '9' to "08",
+    )
+
+    /** The code with one digit swapped for a look-alike: "OP05-060" -> "OP05-080", "OP05-068", ... */
+    fun misreadVariants(code: String): List<String> = code.indices
+        .filter { code[it].isDigit() }
+        .flatMap { i -> confusable[code[i]].orEmpty().map { c -> code.substring(0, i) + c + code.substring(i + 1) } }
+
+    /** True when the card name appears in the text read from the card (OCR errors tolerated). */
+    fun nameOnCard(name: String, texts: List<String>): Boolean {
+        val wanted = normalize(name.substringBefore(" - ").replace(Regex("""\([^)]*\)"""), ""))
+        if (wanted.length < 3) return true
+        val all = normalize(texts.joinToString(" "))
+        if (all.contains(wanted)) return true
+        return texts.any { similarity(it, name) >= 0.75 }
     }
 
     /** Similarity of two names in 0..1, tolerant to OCR errors (normalised Levenshtein). */

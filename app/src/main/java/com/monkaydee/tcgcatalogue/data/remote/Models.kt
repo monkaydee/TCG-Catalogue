@@ -6,6 +6,7 @@ enum class PriceSource(val label: String, val currency: String) {
     CARDMARKET("Cardmarket", "EUR"),
     TCGPLAYER("TCGplayer", "USD"),
     PRICECHARTING("PriceCharting", "USD"),
+    PRICECHARTING_EUR("PriceCharting", "EUR"),
     EBAY_US("eBay", "USD"),
     EBAY_DE("eBay.de", "EUR"),
 }

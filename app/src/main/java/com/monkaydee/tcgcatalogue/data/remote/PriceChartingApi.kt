@@ -9,21 +9,30 @@ import java.util.concurrent.ConcurrentHashMap
  * which tracks sold listings. Reads the public card pages, at most once per card per day.
  */
 class PriceChartingApi(private val http: Http, private val browser: Browser? = null) {
-    /** Prices in USD by row label: "Ungraded", "Grade 9", "PSA 10", "BGS 10 Black", ... */
-    data class Table(val url: String, val title: String, val prices: Map<String, Double>)
+    /** Prices by row label ("Ungraded", "Grade 9", "PSA 10", "BGS 10 Black", ...) in [currency]. */
+    data class Table(val url: String, val title: String, val prices: Map<String, Double>, val currency: String = "USD")
+
+    /** A lookup result with the reason when there is no table, shown to the user. */
+    data class Lookup(val table: Table?, val problem: String?)
 
     private data class Cached(val table: Table?, val at: Long)
 
     private val cache = ConcurrentHashMap<String, Cached>()
 
     /** PriceCharting's prices for [card] in the [variant] printing, or null if it isn't listed. */
-    suspend fun table(card: CardCandidate, variant: Variant?): Table? {
+    suspend fun table(card: CardCandidate, variant: Variant?): Table? = lookup(card, variant).table
+
+    suspend fun lookup(card: CardCandidate, variant: Variant?): Lookup {
         val key = "${card.game}/${card.cardId}/${variant?.key}"
-        cache[key]?.takeIf { System.currentTimeMillis() - it.at < (if (it.table == null) NOT_FOUND_TTL else DAY) }?.let { return it.table }
+        cache[key]?.takeIf { System.currentTimeMillis() - it.at < (if (it.table == null) NOT_FOUND_TTL else DAY) }
+            ?.let { return Lookup(it.table, if (it.table == null) "not listed" else null) }
         val result = runCatching { find(card, variant) }
         // Only remember real answers; a failed request is retried next time.
         if (result.isSuccess) cache[key] = Cached(result.getOrNull(), System.currentTimeMillis())
-        return result.getOrNull()
+        return result.fold(
+            onSuccess = { Lookup(it, if (it == null) "not listed" else null) },
+            onFailure = { Lookup(null, it.message ?: it.javaClass.simpleName) },
+        )
     }
 
     private suspend fun find(card: CardCandidate, variant: Variant?): Table? {
@@ -88,14 +97,32 @@ class PriceChartingApi(private val http: Http, private val browser: Browser? = n
             val start = html.indexOf("id=\"full-prices\"")
             if (start < 0) return null
             val section = html.substring(start, minOf(html.length, start + 12_000))
-            val prices = tableRow.findAll(section).mapNotNull { m ->
+            // The site converts prices to the visitor's currency (e.g. "€14,50" in Germany).
+            val cells = tableRow.findAll(section).mapNotNull { m ->
                 val label = m.groupValues[1].trim()
-                val value = m.groupValues[2].trim().removePrefix("$").replace(",", "").toDoubleOrNull()
-                value?.let { label to it }
-            }.toMap()
-            if (prices.isEmpty()) return null
+                parsePrice(m.groupValues[2])?.let { (amount, currency) -> Triple(label, amount, currency) }
+            }.toList()
+            if (cells.isEmpty()) {
+                if (section.contains(Regex("""\d"""))) throw java.io.IOException("couldn't read the prices")
+                return null
+            }
+            val currency = cells.groupingBy { it.third }.eachCount().maxBy { it.value }.key
+            val prices = cells.filter { it.third == currency }.associate { it.first to it.second }
             val title = pageTitle.find(html)?.groupValues?.get(1)?.substringBefore(" Prices")?.trim().orEmpty()
-            return Table(url, unescape(title), prices)
+            return Table(url, unescape(title), prices, currency)
+        }
+
+        /** "$1,234.56" -> (1234.56, USD), "€14,50" / "14,50 €" -> (14.5, EUR); other currencies are not used. */
+        internal fun parsePrice(cell: String): Pair<Double, String>? {
+            val t = unescape(cell).replace("&euro;", "€").trim()
+            if (t.isEmpty() || t == "-") return null
+            val currency = when {
+                t.contains("€") || t.contains("EUR") -> "EUR"
+                Regex("""(^|[^A-Z])\$""").containsMatchIn(t) && !Regex("""[A-Z]\$""").containsMatchIn(t) -> "USD"
+                else -> return null
+            }
+            val number = Regex("""\d[\d.,]*""").find(t)?.value ?: return null
+            return EbayApi.parseAmount(number)?.let { it to currency }
         }
 
         /** The number as PriceCharting writes it: "#25" for Pokémon and Magic, the code for the others. */

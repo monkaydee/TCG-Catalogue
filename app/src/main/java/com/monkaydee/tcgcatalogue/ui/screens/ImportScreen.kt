@@ -60,6 +60,7 @@ import coil.compose.AsyncImage
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
@@ -202,10 +203,10 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     fun closeReview() = state.update { it.copy(reviewing = null) }
     fun remove(item: ImportItem) = state.update { s -> s.copy(items = s.items.filterNot { it.key == item.key }) }
 
-    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?) {
+    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing? = null) {
         state.update { it.copy(reviewing = null) }
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade) }.onSuccess {
+            runCatching { repo.add(c, v, qty, condition, grade, listing) }.onSuccess {
                 state.value.items.firstOrNull { it.key == key }?.let { item ->
                     val extra = listOfNotNull(grade?.label, "×$qty".takeIf { qty > 1 })
                     replace(key, listOf(item.copy(status = ImportStatus.ADDED, note = (listOf("${c.name} · ${c.setName}") + extra).joinToString(" · "))))
@@ -328,7 +329,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
             settings,
             repo,
             initialGrade = reviewing.grade,
-            onAdd = { c, v, q, cond, g -> vm.add(reviewing.key, c, v, q, cond, g) },
+            onAdd = { c, v, q, cond, g, l -> vm.add(reviewing.key, c, v, q, cond, g, l) },
             onDismiss = vm::closeReview,
         )
     }

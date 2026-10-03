@@ -47,6 +47,8 @@ import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.Money
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
+import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.data.remote.Price
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
@@ -76,7 +78,7 @@ fun AddCardSheet(
     settings: AppSettings,
     repo: CardRepository,
     initialGrade: GradeInfo? = null,
-    onAdd: (CardCandidate, Variant, Int, String, GradeInfo?) -> Unit,
+    onAdd: (CardCandidate, Variant, Int, String, GradeInfo?, CardmarketApi.Listing?) -> Unit,
     onDismiss: () -> Unit,
 ) {
     if (candidates.isEmpty()) return
@@ -87,37 +89,49 @@ fun AddCardSheet(
     var quantity by remember(card) { mutableIntStateOf(1) }
     var condition by remember { mutableStateOf(settings.defaultCondition) }
     var graded by remember(initialGrade) { mutableStateOf(initialGrade != null) }
-    var grader by remember(initialGrade) { mutableStateOf(initialGrade?.grader ?: "PSA") }
+    // A slab whose company couldn't be read starts on "Other" so the user picks the company.
+    var grader by remember(initialGrade) { mutableStateOf(initialGrade?.let { it.grader ?: "Other" } ?: "PSA") }
     var grade by remember(initialGrade) { mutableStateOf(initialGrade?.grade ?: "10") }
     var qualifier by remember(initialGrade) { mutableStateOf(initialGrade?.qualifier) }
     var cert by remember(initialGrade) { mutableStateOf(initialGrade?.cert.orEmpty()) }
     val gradeInfo = GradeInfo(grader, grade, qualifier.takeIf { grade == "10" && it in qualifiersFor(grader) }, cert.ifBlank { null })
 
-    val raw = repo.rawPrice(card, variant, settings)
+    // One Piece: Cardmarket's listing of the exact print (original, reprint, alt art, ...).
+    var listings by remember(card) { mutableStateOf<List<CardmarketApi.Listing>>(emptyList()) }
+    var listing by remember(card) { mutableStateOf<CardmarketApi.Listing?>(null) }
+    var listingPicked by remember(card) { mutableStateOf(false) }
+    LaunchedEffect(card) { listings = repo.cardmarketListings(card) }
+    LaunchedEffect(listings, variant) {
+        if (!listingPicked) listing = repo.defaultListing(listings, variant, settings)
+    }
+    val raw = repo.rawPrice(card, variant, settings, listing)
     // Price for the chosen condition (NM is the market price itself; the others are looked up).
     var conditionQuote by remember { mutableStateOf<Price?>(null) }
     var conditionLoading by remember { mutableStateOf(false) }
-    LaunchedEffect(card, variant, condition, graded) {
+    LaunchedEffect(card, variant, condition, graded, listing) {
         if (graded || condition == "NM") {
             conditionQuote = raw
             return@LaunchedEffect
         }
         conditionLoading = true
-        conditionQuote = runCatching { repo.conditionPrice(card, variant, condition, settings) }.getOrNull() ?: raw
+        conditionQuote = runCatching { repo.conditionPrice(card, variant, condition, settings, listing) }.getOrNull() ?: raw
         conditionLoading = false
     }
     var gradedQuote by remember { mutableStateOf<Price?>(null) }
+    var gradedProblem by remember { mutableStateOf<String?>(null) }
     var gradedLoading by remember { mutableStateOf(false) }
     LaunchedEffect(card, variant, graded, gradeInfo.grader, gradeInfo.grade, gradeInfo.qualifier) {
         if (!graded) return@LaunchedEffect
         gradedLoading = true
-        gradedQuote = runCatching { repo.gradedPrice(card, variant, gradeInfo) }.getOrNull()
+        val result = runCatching { repo.gradedLookup(card, variant, gradeInfo) }
+        gradedQuote = result.getOrNull()?.price
+        gradedProblem = result.getOrNull()?.problem ?: result.exceptionOrNull()?.message
         gradedLoading = false
     }
     val shown = if (graded) gradedQuote ?: raw.takeIf { !gradedLoading } else conditionQuote ?: raw
     val loading = if (graded) gradedLoading else conditionLoading
     val gradedMissing = graded && !gradedLoading && gradedQuote == null
-    val note = if (gradedMissing) "No ${gradeInfo.label} sales on PriceCharting or eBay; the raw price will be used" else shown?.note
+    val note = if (gradedMissing) "No graded price, the raw price will be used (${gradedProblem ?: "no sales found"})" else shown?.note
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(
@@ -169,6 +183,13 @@ fun AddCardSheet(
                     note?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
                 }
             }
+            if (card.score < 0.6) {
+                Text(
+                    "The name on the scanned card doesn't match this card — the number may have been misread. Check it, or cancel and type it in.",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
             if (card.variants.size > 1) {
                 Text("Printing", style = MaterialTheme.typography.labelLarge)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -177,6 +198,18 @@ fun AddCardSheet(
                             selected = v.key == variant.key,
                             onClick = { variantKey = v.key },
                             label = { Text("${v.label} · ${repo.rawPrice(card, v, settings).display(settings)} NM") },
+                        )
+                    }
+                }
+            }
+            if (listings.isNotEmpty() && settings.pokemonSource == PriceSource.CARDMARKET) {
+                Text("Cardmarket listing (pick the exact print you own)", style = MaterialTheme.typography.labelLarge)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listings.forEach { l ->
+                        FilterChip(
+                            selected = l.productId == listing?.productId,
+                            onClick = { listing = l; listingPicked = true },
+                            label = { Text("${l.label} · ${l.price?.let { Money.format(Money.convert(it, "EUR", settings.currency, settings.usdToEur), settings.currency) } ?: "–"}") },
                         )
                     }
                 }
@@ -219,7 +252,7 @@ fun AddCardSheet(
                 QuantityStepper(quantity, { quantity = it })
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onDismiss) { Text("Cancel") }
-                    Button(onClick = { onAdd(card, variant, quantity, condition, gradeInfo.takeIf { graded }) }) { Text("Add") }
+                    Button(onClick = { onAdd(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing) }) { Text("Add") }
                 }
             }
         }

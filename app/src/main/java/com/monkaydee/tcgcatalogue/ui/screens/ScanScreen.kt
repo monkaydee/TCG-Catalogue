@@ -69,6 +69,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.data.db.Game
@@ -167,9 +168,9 @@ class ScanViewModel(private val repo: CardRepository) : ViewModel() {
         }
     }
 
-    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?) {
+    fun add(c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing?) {
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade) }
+            runCatching { repo.add(c, v, qty, condition, grade, listing) }
                 .onSuccess { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Added ${c.name} ×$qty", addedCount = s.addedCount + qty) } }
                 .onFailure { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Could not save: ${it.message}") } }
             cooldownUntil = System.currentTimeMillis() + 3000

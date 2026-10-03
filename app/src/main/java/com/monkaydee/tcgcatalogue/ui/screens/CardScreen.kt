@@ -40,7 +40,10 @@ import androidx.compose.ui.unit.dp
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.Money
+import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
+import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.ui.components.CONDITIONS
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
@@ -135,6 +138,7 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
             Text(c.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("${c.setName} · ${c.number}", style = MaterialTheme.typography.bodyMedium)
             Text(listOfNotNull(c.game.label, c.rarity, c.variantLabel).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
+            c.marketLabel?.let { Text("Cardmarket: $it", style = MaterialTheme.typography.bodySmall) }
             Text(
                 Money.format(Money.value(c, s.currency, s.usdToEur), s.currency),
                 style = MaterialTheme.typography.headlineMedium,
@@ -167,6 +171,20 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
         }
         Text("Quantity", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
         QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
+        if (c.game == Game.ONE_PIECE && s.pokemonSource == PriceSource.CARDMARKET) {
+            var listings by remember(c.id) { mutableStateOf<List<CardmarketApi.Listing>>(emptyList()) }
+            LaunchedEffect(c.id) { listings = repo.cardmarketListings(c) }
+            if (listings.isNotEmpty()) {
+                Text("Cardmarket listing", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
+                FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listings.forEach { l ->
+                        FilterChip(l.productId == c.marketProductId, {
+                            scope.launch { runCatching { repo.changeListing(c, l) } }
+                        }, { Text("${l.label} · ${l.price?.let { Money.format(Money.convert(it, "EUR", s.currency, s.usdToEur), s.currency) } ?: "–"}") })
+                    }
+                }
+            }
+        }
         if (!c.graded) {
             Text("Condition", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
             FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {

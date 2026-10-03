@@ -59,6 +59,19 @@ class PricingTest {
         assertEquals(754.0, PriceChartingApi.priceFor(table, "AOG", "10", null)!!.first, 0.0)
     }
 
+    @Test fun priceChartingInEuros() {
+        assertEquals(14.5 to "EUR", PriceChartingApi.parsePrice("€14,50"))
+        assertEquals(14.5 to "EUR", PriceChartingApi.parsePrice("14,50 €"))
+        assertEquals(1234.56 to "EUR", PriceChartingApi.parsePrice("€1.234,56"))
+        assertEquals(1234.56 to "USD", PriceChartingApi.parsePrice("$1,234.56"))
+        assertNull(PriceChartingApi.parsePrice("CA$20.00"))
+        assertNull(PriceChartingApi.parsePrice("-"))
+        val html = """<table id="full-prices"><tr><td>Ungraded</td><td>€4,57</td></tr><tr><td>CGC 10</td><td>€14,72</td></tr></table>"""
+        val t = PriceChartingApi.parseTable("u", html)!!
+        assertEquals("EUR", t.currency)
+        assertEquals(14.72, t.prices["CGC 10"]!!, 0.001)
+    }
+
     @Test fun parsesPriceChartingPages() {
         val html = """
             <title>Zekrom #115 Prices | Pokemon Legendary Treasures</title>
