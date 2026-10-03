@@ -29,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -145,6 +146,25 @@ class Screenshots {
             }
         }
         save("empty_collection")
+    }
+
+    @Test fun cardPageParts() {
+        val today = java.time.LocalDate.now().toEpochDay()
+        val history = (0 until 30).map { d ->
+            com.monkaydee.tcgcatalogue.data.db.PriceHistory(1, today - 29 + d, 40.0 + 8 * kotlin.math.sin(d / 4.0) + d * 0.6, "EUR")
+        }
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    val tilt = androidx.compose.runtime.remember { mutableStateOf(androidx.compose.ui.geometry.Offset(0.4f, -0.3f)) }
+                    com.monkaydee.tcgcatalogue.ui.components.HoloCard(tilt, Modifier.size(180.dp, 251.dp)) {
+                        Box(Modifier.fillMaxSize().background(Color(0xFF3949AB)))
+                    }
+                    com.monkaydee.tcgcatalogue.ui.components.PriceHistoryCard(history, AppSettings(currency = "EUR"), Modifier.fillMaxWidth())
+                }
+            }
+        }
+        save("card_page_parts")
     }
 
     @Test fun launcherIcon() {
