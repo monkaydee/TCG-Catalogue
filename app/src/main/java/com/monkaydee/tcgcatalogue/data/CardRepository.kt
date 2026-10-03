@@ -9,7 +9,7 @@ import com.monkaydee.tcgcatalogue.data.remote.CardBrief
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.CardIndexApi
 import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
-import com.monkaydee.tcgcatalogue.data.remote.EbayApi
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketPokemon
 import com.monkaydee.tcgcatalogue.data.remote.FxApi
 import com.monkaydee.tcgcatalogue.data.remote.OnePieceApi
 import com.monkaydee.tcgcatalogue.data.remote.Price
@@ -50,8 +50,8 @@ class CardRepository(
     private val cardIndex: CardIndexApi,
     private val priceCharting: PriceChartingApi,
     private val tcgplayer: TcgPlayerApi,
-    private val ebay: EbayApi,
     private val cardmarket: CardmarketApi,
+    private val cardmarketPokemon: CardmarketPokemon,
     private val fx: FxApi,
     val settings: SettingsStore,
 ) {
@@ -128,7 +128,7 @@ class CardRepository(
         }
         found.map { c ->
             val nameScore = hit.nameGuess?.let { CardTextParser.similarity(it, c.name) } ?: 0.5
-            c.copy(score = nameScore)
+            pokemonFixed(c).copy(score = nameScore)
         }.sortedByDescending { it.score }
     }
 
@@ -158,8 +158,11 @@ class CardRepository(
         }
     }
 
+    /** A Pokémon card with the Cardmarket prices of the right print (see [CardmarketPokemon]). */
+    private suspend fun pokemonFixed(c: CardCandidate): CardCandidate = attempt { cardmarketPokemon.fix(c) }.getOrDefault(c)
+
     suspend fun details(brief: CardBrief): CardCandidate? = brief.candidate ?: when (brief.game) {
-        Game.POKEMON -> tcgdex.card(brief.cardId)
+        Game.POKEMON -> tcgdex.card(brief.cardId)?.let { pokemonFixed(it) }
         Game.ONE_PIECE -> onePiece.card(brief.cardId)
         Game.MAGIC -> brief.cardId.split('/').takeIf { it.size == 2 }?.let { (set, n) -> scryfall.card(set, n) }
         else -> brief.cardId.toLongOrNull()?.let { cardIndex.byProduct(brief.game, it) }
@@ -216,15 +219,8 @@ class CardRepository(
             pc == null -> "PriceCharting: no $label sales"
             else -> null
         }
-        val euro = settings.current().currency == "EUR"
-        val sold = attempt { ebay.gradedAverage(card, grader, g, grade.qualifier, euro) }
-        sold.getOrNull()?.let {
-            val source = if (it.currency == "EUR") PriceSource.EBAY_DE else PriceSource.EBAY_US
-            return GradedResult(Price(it.average, source, "Average of the last ${it.count} $label sales on ${it.site}"), null)
-        }
-        val ebayProblem = if (sold.isFailure) "eBay: ${sold.exceptionOrNull()?.message}" else "eBay: no $label sales"
         pc?.let { (amount, note) -> return GradedResult(Price(amount, pcSource, note), null) }
-        return GradedResult(null, listOfNotNull(pcProblem, ebayProblem).joinToString(" · "))
+        return GradedResult(null, listOfNotNull(pcProblem, "set your own value, or check the price links on the card page").joinToString(" · "))
     }
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
@@ -279,6 +275,7 @@ class CardRepository(
         grade: GradeInfo? = null,
         listing: CardmarketApi.Listing? = null,
         purchasePrice: Double? = null,
+        manualValue: Double? = null,
     ): Long {
         val s = settings.current()
         val graded = grade?.grader != null && grade.grade != null
@@ -310,6 +307,8 @@ class CardRepository(
                 marketProductId = chosen?.productId,
                 marketLabel = chosen?.label,
                 purchasePrice = purchasePrice?.let { Money.convert(it, s.currency, price?.currency ?: s.currency, s.usdToEur) },
+                manualPrice = manualValue,
+                manualCurrency = manualValue?.let { s.currency },
             ),
         )
         runCatching { ensureSet(candidate) }
@@ -317,7 +316,7 @@ class CardRepository(
         return id
     }
 
-    suspend fun add(r: AddRequest): Long = add(r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice)
+    suspend fun add(r: AddRequest): Long = add(r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice, r.manualValue)
 
     /** Current data of a card in the collection, for editing it (null when offline). */
     suspend fun candidateFor(card: OwnedCard): CardCandidate? = runCatching { fetch(card.game, card.cardId) }.getOrNull()
@@ -357,6 +356,8 @@ class CardRepository(
             marketProductId = r.listing?.productId,
             marketLabel = r.listing?.label,
             purchasePrice = r.purchasePrice?.let { Money.convert(it, s.currency, price?.currency ?: original.priceCurrency, s.usdToEur) },
+            manualPrice = r.manualValue,
+            manualCurrency = r.manualValue?.let { s.currency },
         )
         val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition)?.takeIf { it.id != original.id }
         if (clash != null) {
@@ -449,13 +450,6 @@ class CardRepository(
                 .getOrNull()?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }
         }
         val graded = async { attempt { priceCharting.lookup(fresh, variant) }.getOrElse { PriceChartingApi.Lookup(null, it.message) } }
-        val sold = if (card.graded) {
-            async {
-                attempt { ebay.gradedAverage(fresh, card.grader!!, card.grade!!, card.gradeQualifier, settings.current().currency == "EUR") }
-            }
-        } else {
-            null
-        }
 
         val groups = mutableListOf<PriceGroup>()
         val cm = variant.details.filter { it.source == PriceSource.CARDMARKET }
@@ -490,15 +484,6 @@ class CardRepository(
             pc.table?.prices?.map { (label, amount) -> PricePoint(pcSource, label, amount) }.orEmpty(),
             pc.problem,
         )
-        sold?.await()?.let { result ->
-            val q = result.getOrNull()
-            val label = GradeInfo(card.grader, card.grade, card.gradeQualifier).label
-            groups += PriceGroup(
-                "eBay sold · $label",
-                listOfNotNull(q?.let { PricePoint(if (it.currency == "EUR") PriceSource.EBAY_DE else PriceSource.EBAY_US, "Average of last ${it.count}", it.average) }),
-                result.exceptionOrNull()?.message ?: if (q == null) "no $label sales" else null,
-            )
-        }
         groups
     }
 
@@ -526,7 +511,7 @@ class CardRepository(
 
     /** Fetches the current data of a card in the collection. */
     private suspend fun fetch(game: Game, cardId: String): CardCandidate? = when (game) {
-        Game.POKEMON -> tcgdex.card(cardId)
+        Game.POKEMON -> tcgdex.card(cardId)?.let { pokemonFixed(it) }
         Game.ONE_PIECE -> onePiece.card(cardId)
         Game.MAGIC -> cardId.split('/').takeIf { it.size == 2 }?.let { (set, n) -> scryfall.card(set, n) }
         else -> cardId.toLongOrNull()?.let { cardIndex.byProduct(game, it) }

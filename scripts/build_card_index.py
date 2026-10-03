@@ -147,6 +147,32 @@ def build_cardmarket_one_piece():
     }
 
 
+def build_cardmarket_pokemon():
+    """Cardmarket prices of Pokémon cards that have look-alike siblings.
+
+    Cardmarket groups every print of a card (same name and attacks) in a set under one
+    "metacard": the regular Zekrom 51/113 and the gold Zekrom 115/113 are two products of the
+    same metacard. TCGdex sometimes links a card to the wrong one, so the app re-picks the
+    product by collector-number order. Only products with siblings are needed for that.
+    Rows: [idProduct, idExpansion, idMetacard, trend, low, avg, avg1, avg7, avg30,
+           trend-holo, low-holo, avg-holo, avg1-holo, avg7-holo, avg30-holo]
+    """
+    singles = get_cardmarket("productList/products_singles_6.json")["products"]
+    guide = {g["idProduct"]: g for g in get_cardmarket("priceGuide/price_guide_6.json")["priceGuides"]}
+    groups = {}
+    for p in singles:
+        groups.setdefault((p["idExpansion"], p["idMetacard"]), []).append(p["idProduct"])
+    fields = ["trend", "low", "avg", "avg1", "avg7", "avg30"]
+    rows = []
+    for (expansion, metacard), products in groups.items():
+        if len(products) < 2 or not metacard:
+            continue
+        for pid in products:
+            g = guide.get(pid, {})
+            rows.append([pid, expansion, metacard] + [g.get(f) for f in fields] + [g.get(f + "-holo") for f in fields])
+    return {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "cards": rows}
+
+
 def main():
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "index")
     out.mkdir(parents=True, exist_ok=True)
@@ -156,6 +182,11 @@ def main():
         path = out / f"{game}.json"
         path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
         print(f"  {len(data['groups'])} sets, {len(data['cards'])} cards, {path.stat().st_size // 1024} KB")
+    print("CARDMARKET_POKEMON")
+    data = build_cardmarket_pokemon()
+    path = out / "CARDMARKET_POKEMON.json"
+    path.write_text(json.dumps(data, separators=(",", ":")))
+    print(f"  {len(data['cards'])} listings, {path.stat().st_size // 1024} KB")
     print("CARDMARKET_ONE_PIECE")
     data = build_cardmarket_one_piece()
     path = out / "CARDMARKET_ONE_PIECE.json"

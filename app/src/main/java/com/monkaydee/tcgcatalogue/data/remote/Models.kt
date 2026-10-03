@@ -7,8 +7,6 @@ enum class PriceSource(val label: String, val currency: String) {
     TCGPLAYER("TCGplayer", "USD"),
     PRICECHARTING("PriceCharting", "USD"),
     PRICECHARTING_EUR("PriceCharting", "EUR"),
-    EBAY_US("eBay", "USD"),
-    EBAY_DE("eBay.de", "EUR"),
 }
 
 data class Price(val amount: Double, val source: PriceSource, val note: String? = null) {
@@ -54,6 +52,10 @@ data class CardCandidate(
     val score: Double = 0.0,
     /** Shown in the add sheet, e.g. when the name on the scan doesn't match this card. */
     val warning: String? = null,
+    /** Pokémon: the Cardmarket product TCGdex links this card to (checked against look-alikes). */
+    val cardmarketId: Long? = null,
+    /** Pokémon: attack names, which tell look-alike cards of a set apart on Cardmarket. */
+    val attacks: List<String> = emptyList(),
 )
 
 /** Brief search result; details are fetched when the user picks it unless already known ([candidate]). */

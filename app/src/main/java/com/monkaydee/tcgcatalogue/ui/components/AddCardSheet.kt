@@ -80,6 +80,8 @@ data class AddRequest(
     val listing: CardmarketApi.Listing?,
     /** Price paid per copy, in the display currency, if entered. */
     val purchasePrice: Double?,
+    /** The user's own value per copy, in the display currency, overriding the market price. */
+    val manualValue: Double? = null,
 )
 
 /**
@@ -117,6 +119,11 @@ fun AddCardSheet(
     var grade by remember(startGrade) { mutableStateOf(startGrade?.grade ?: "10") }
     var qualifier by remember(startGrade) { mutableStateOf(startGrade?.qualifier) }
     var cert by remember(startGrade) { mutableStateOf(startGrade?.cert.orEmpty()) }
+    var myValue by remember {
+        mutableStateOf(
+            initial?.manualPrice?.let { "%.2f".format(Money.convert(it, initial.manualCurrency ?: settings.currency, settings.currency, settings.usdToEur)) }.orEmpty(),
+        )
+    }
     // Stored in the card's price currency, edited in the display currency.
     var paid by remember {
         mutableStateOf(
@@ -167,7 +174,7 @@ fun AddCardSheet(
     val shown = if (graded) gradedQuote ?: raw.takeIf { !gradedLoading } else conditionQuote ?: raw
     val loading = if (graded) gradedLoading else conditionLoading
     val gradedMissing = graded && !gradedLoading && gradedQuote == null
-    val note = if (gradedMissing) "No graded price, the raw price will be used (${gradedProblem ?: "no sales found"})" else shown?.note
+    val note = if (gradedMissing) "No graded price found (${gradedProblem ?: "no sales found"}). The raw price is used unless you enter your own value below." else shown?.note
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(
@@ -288,6 +295,14 @@ fun AddCardSheet(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth(),
             )
+            OutlinedTextField(
+                value = myValue,
+                onValueChange = { myValue = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.take(10) },
+                label = { Text("My value per copy (${settings.currency}, optional — overrides the market price)") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth(),
+            )
             if (onChangeCard != null) {
                 TextButton(onClick = onChangeCard) { Text("Wrong card? Search for the right one") }
             }
@@ -297,7 +312,8 @@ fun AddCardSheet(
                     OutlinedButton(onClick = onDismiss) { Text("Cancel") }
                     Button(onClick = {
                         val price = paid.replace(',', '.').toDoubleOrNull()
-                        onAdd(AddRequest(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing, price))
+                        val own = myValue.replace(',', '.').toDoubleOrNull()
+                        onAdd(AddRequest(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing, price, own))
                     }) { Text(confirmLabel) }
                 }
             }

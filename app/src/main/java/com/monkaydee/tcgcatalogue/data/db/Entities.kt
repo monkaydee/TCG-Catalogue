@@ -71,6 +71,9 @@ data class OwnedCard(
     val marketProductId: Long? = null,
     /** "The Best · V.3" */
     val marketLabel: String? = null,
+    /** The user's own value per copy, overriding the market price (e.g. for slabs without sales data). */
+    val manualPrice: Double? = null,
+    val manualCurrency: String? = null,
 ) {
     val graded: Boolean get() = grader != null
 }

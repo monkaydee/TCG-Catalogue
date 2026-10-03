@@ -17,8 +17,11 @@ object Money {
     fun value(card: OwnedCard, currency: String, usdToEur: Double): Double =
         unit(card, currency, usdToEur) * card.quantity
 
+    /** Value of one copy: the user's own value if set, otherwise the market price. */
     fun unit(card: OwnedCard, currency: String, usdToEur: Double): Double =
-        card.price?.let { convert(it, card.priceCurrency, currency, usdToEur) } ?: 0.0
+        card.manualPrice?.let { convert(it, card.manualCurrency ?: currency, currency, usdToEur) }
+            ?: card.price?.let { convert(it, card.priceCurrency, currency, usdToEur) }
+            ?: 0.0
 
     fun format(amount: Double, currency: String): String {
         val f = NumberFormat.getCurrencyInstance(Locale.getDefault())

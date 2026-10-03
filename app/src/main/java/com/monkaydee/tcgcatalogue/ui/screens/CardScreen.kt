@@ -25,6 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import com.monkaydee.tcgcatalogue.ui.components.PriceLinks
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.material3.AssistChip
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Card
@@ -212,7 +215,15 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
             } else {
                 Text("No market price available", style = MaterialTheme.typography.bodySmall)
             }
-            c.priceNote?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
+            c.manualPrice?.let {
+                Text(
+                    "Your own value: ${Money.format(Money.convert(it, c.manualCurrency ?: s.currency, s.currency, s.usdToEur), s.currency)} per copy" +
+                        (c.price?.let { m -> " · market ${Money.format(Money.convert(m, c.priceCurrency, s.currency, s.usdToEur), s.currency)}" } ?: ""),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            }
+            c.priceNote?.takeIf { c.manualPrice == null }?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
             c.purchasePrice?.let { paid ->
                 val paidShown = Money.convert(paid, c.priceCurrency, s.currency, s.usdToEur)
                 val now = Money.unit(c, s.currency, s.usdToEur)
@@ -236,6 +247,7 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 Text("Raw-card market price for this condition.", style = MaterialTheme.typography.labelSmall)
             }
         }
+        PriceLinks(c, s)
         PriceOverview(c, s, repo)
         Text("Quantity", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
         QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
@@ -304,6 +316,24 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                     }
                 }
                 g.problem?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
+            }
+        }
+    }
+}
+
+/**
+ * Opens this card on eBay (sold listings), PriceCharting, Cardmarket and TCGplayer in the phone's
+ * browser, to check prices by hand and enter your own value (pencil -> "My value").
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PriceLinks(c: OwnedCard, s: AppSettings) {
+    val open = LocalUriHandler.current
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text("Check prices online", style = MaterialTheme.typography.labelLarge)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            PriceLinks.forCard(c, s.currency).forEach { (label, url) ->
+                AssistChip(onClick = { runCatching { open.openUri(url) } }, label = { Text(label) })
             }
         }
     }

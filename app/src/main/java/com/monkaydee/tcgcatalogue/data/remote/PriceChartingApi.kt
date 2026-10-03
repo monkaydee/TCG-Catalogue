@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Graded card prices (PSA / BGS / CGC / SGC / TAG / ACE 10s and Grade 1–9.5) from PriceCharting,
  * which tracks sold listings. Reads the public card pages, at most once per card per day.
  */
-class PriceChartingApi(private val http: Http, private val browser: Browser? = null) {
+class PriceChartingApi(private val http: Http) {
     /** Prices by row label ("Ungraded", "Grade 9", "PSA 10", "BGS 10 Black", ...) in [currency]. */
     data class Table(val url: String, val title: String, val prices: Map<String, Double>, val currency: String = "USD")
 
@@ -58,16 +58,14 @@ class PriceChartingApi(private val http: Http, private val browser: Browser? = n
     }
 
     /**
-     * Fetches a page directly, or through the browser when PriceCharting answers with something
-     * else (bot check, block or consent page). That case is an error, never "not listed".
+     * Fetches a page. When PriceCharting answers with something else than the page (bot check,
+     * block or consent page), that is reported as "blocked", never as "not listed".
      */
     private suspend fun page(url: String): String? {
         val direct = attempt { http.getText(url, accept = "text/html", userAgent = BROWSER) }
         direct.getOrNull()?.takeIf { looksReal(it) }?.let { return it }
         if (direct.isSuccess && direct.getOrNull() == null) return null // 404
-        val viaBrowser = browser?.html(url)
-        viaBrowser?.takeIf { looksReal(it) }?.let { return it }
-        val seen = (viaBrowser ?: direct.getOrNull())?.let { pageTitle.find(it)?.groupValues?.get(1)?.trim() }
+        val seen = direct.getOrNull()?.let { pageTitle.find(it)?.groupValues?.get(1)?.trim() }
         throw java.io.IOException(
             "blocked" + (seen?.takeIf { it.isNotBlank() }?.let { " (\"${it.take(60)}\")" } ?: direct.exceptionOrNull()?.message?.let { " ($it)" } ?: ""),
         )
@@ -130,7 +128,7 @@ class PriceChartingApi(private val http: Http, private val browser: Browser? = n
                 else -> return null
             }
             val number = Regex("""\d[\d.,]*""").find(t)?.value ?: return null
-            return EbayApi.parseAmount(number)?.let { it to currency }
+            return Amounts.parse(number)?.let { it to currency }
         }
 
         /** The number as PriceCharting writes it: "#25" for Pokémon and Magic, the code for the others. */

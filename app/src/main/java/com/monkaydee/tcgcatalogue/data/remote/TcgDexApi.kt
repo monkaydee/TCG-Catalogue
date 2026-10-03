@@ -90,8 +90,26 @@ class TcgDexApi(private val http: Http) {
             rarity = c["rarity"].str(),
             imageUrl = c["image"].str()?.let { "$it/high.webp" },
             variants = variants,
+            cardmarketId = pricing["cardmarket"]["idProduct"].str()?.toLongOrNull(),
+            attacks = c["attacks"].arr().orEmpty().mapNotNull { it["name"].str() },
         )
     }
+
+    private val setCardsCache = java.util.concurrent.ConcurrentHashMap<String, List<Pair<String, String>>>()
+    private val cardCache = java.util.concurrent.ConcurrentHashMap<String, CardCandidate>()
+
+    /** The cards of a set as (card id, name), cached for the session. */
+    suspend fun setCards(setId: String): List<Pair<String, String>> = setCardsCache[setId] ?: run {
+        val cards = http.getJson("$base/sets/${enc(setId)}")?.get("cards").arr().orEmpty().mapNotNull { c ->
+            val id = c["id"].str() ?: return@mapNotNull null
+            id to c["name"].str().orEmpty()
+        }
+        if (cards.isNotEmpty()) setCardsCache[setId] = cards
+        cards
+    }
+
+    /** [card], cached for the session (used to compare look-alike cards of a set). */
+    suspend fun cachedCard(cardId: String): CardCandidate? = cardCache[cardId] ?: card(cardId)?.also { cardCache[cardId] = it }
 
     private fun variant(key: String, label: String, pricing: kotlinx.serialization.json.JsonElement?): Variant {
         val tcg = pricing["tcgplayer"]
@@ -140,13 +158,16 @@ class TcgDexApi(private val http: Http) {
         val tcg = p["tcgplayer"] ?: pricing["tcgplayer"]
         val tcgPrice = listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition", "holofoil", "normal")
             .firstNotNullOfOrNull { k -> tcg[k]["marketPrice"].dbl() }
-        val cmPrice = p["cardmarket"]["trend"].dbl()?.takeIf { it > 0 } ?: p["cardmarket"]["avg"].dbl()?.takeIf { it > 0 }
+        // Cardmarket often sells 1st Edition as the same product as Unlimited; its price is then the
+        // Unlimited one, so only a separate product counts (otherwise TCGplayer's 1st Edition price is used).
+        val ownProduct = p["cardmarket"]["idProduct"].str()?.takeIf { it != pricing["cardmarket"]["idProduct"].str() }
+        val cmPrice = if (ownProduct == null) null else p["cardmarket"]["trend"].dbl()?.takeIf { it > 0 } ?: p["cardmarket"]["avg"].dbl()?.takeIf { it > 0 }
         val productId = detailed["thirdParty"]["tcgplayer"].str()?.toLongOrNull()
             ?: tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal").firstNotNullOfOrNull { t[it]["productId"].str()?.toLongOrNull() } }
         val tcgFirst = tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition").firstNotNullOfOrNull { k -> t[k].takeIf { it != null } } }
         return Variant(
             "firstEdition", "1st Edition", prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = "1st Edition Holofoil",
-            details = cardmarketDetails(p["cardmarket"], "") + tcgplayerDetails(tcgFirst),
+            details = (if (ownProduct != null) cardmarketDetails(p["cardmarket"], "") else emptyList()) + tcgplayerDetails(tcgFirst),
         )
     }
 

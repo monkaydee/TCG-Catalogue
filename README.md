@@ -30,10 +30,10 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
     index. English prints only (the index comes from TCGplayer).
 - **Graded cards**: the slab label is read too. That covers PSA, BGS/Beckett (including Black Label),
   CGC (including Pristine), SGC, TAG, ACE, AOG, GSG and PI, plus the grade and cert number.
-  Graded copies are priced from PriceCharting's sold listings for that company and grade. If
-  PriceCharting has no sales for that slab, the app uses the average of the last 5 eBay sales of
-  the same card, company and grade (eBay.de for EUR, eBay.com for USD). It skips lots,
-  other grades and Japanese copies. You can also set or correct the company, grade and cert by hand.
+  Graded copies are priced from PriceCharting's sold prices for that company and grade when its
+  page can be read. PriceCharting often blocks apps with a bot check, so you can also set **your own
+  value** per card. The card page has links that open eBay sold listings, PriceCharting,
+  Cardmarket and TCGplayer for that exact card and grade in your browser, so you can look it up.
 - **Import photos**: took pictures while you were out? Pick them from the gallery (Scan →
   *From photos*, or the photo icon on the Collection screen), or share them to TCG Catalogue
   from any app. Each photo is read on the phone, tried in all four orientations, and can contain
@@ -64,6 +64,11 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   one of them is linked to the wrong card (e.g. TCGdex gives the gold Zekrom 115/113 the price of the
   regular Zekrom). The app then uses the other market and shows a note on the card. Displayed in EUR or USD using ECB rates. Prices
   refresh daily in the background, which also records the portfolio history.
+- **Right Cardmarket print for Pokémon**: TCGdex sometimes links a card to the wrong
+  Cardmarket product when a set has look-alikes (the gold Zekrom 115/113 was priced as the regular
+  Zekrom 51/113: 5.23 EUR instead of 186.60 EUR). The app re-picks the product: Cardmarket groups all
+  prints with the same name and attacks in a set and numbers them in collector-number order. Data:
+  `CARDMARKET_POKEMON.json` from the daily index, built from Cardmarket's public price guide.
 - **One Piece on Cardmarket**: Cardmarket lists every print of a card separately (original,
   reprints in other sets, alt arts, promos), e.g. 16 listings for Brannew OP03-089. With Cardmarket
   as the price source you pick the exact listing ("The Best · V.3") when adding or later on the card
@@ -115,7 +120,7 @@ CameraX frame ──▶ ML Kit text recognition (on-device)
 | One Piece data     | [OPTCG API](https://optcgapi.com) (TCGplayer prices) |
 | Magic data         | [Scryfall](https://scryfall.com) (Cardmarket + TCGplayer prices) |
 | Other games        | [TCGCSV](https://tcgcsv.com) (TCGplayer) → daily index on the `data` branch |
-| Graded prices      | [PriceCharting](https://www.pricecharting.com) sold listings, eBay sold listings as fallback |
+| Graded prices      | [PriceCharting](https://www.pricecharting.com) when reachable, otherwise your own value |
 | Exchange rates     | [Frankfurter](https://frankfurter.dev) (ECB)        |
 
 ## Card index
@@ -138,9 +143,6 @@ Requires JDK 17+ and the Android SDK (platform 35).
 
 - APKs are signed with the key in `app/signing/debug.keystore`. It's checked in so that CI builds
   can update each other. Don't publish the app to the Play Store with this key.
-- eBay and (if it blocks plain requests) PriceCharting are read through an invisible in-app
-  browser (WebView), the way a person would open the page. eBay blocks data-centre servers, so this
-  only works on the phone.
 - Graded prices come from PriceCharting's public card pages. Smaller graders (AOG, GSG, PI, …)
   have no separate 10 prices there, so their 10s are estimated from the general Grade 9.5 price,
   and the card says so.
