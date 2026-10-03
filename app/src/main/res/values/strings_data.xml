@@ -89,4 +89,6 @@
 
     <!-- A server answered with an error. %1$d = HTTP status code, %2$s = web address. -->
     <string name="data_http_error">HTTP %1$d for %2$s</string>
+    <!-- %1$s = the web service's address, e.g. api.tcgdex.net -->
+    <string name="data_service_unavailable">The card service (%1$s) isn\'t answering right now. Please try again in a minute.</string>
 </resources>

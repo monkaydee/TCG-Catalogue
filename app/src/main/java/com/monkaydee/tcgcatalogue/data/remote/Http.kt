@@ -3,6 +3,7 @@ package com.monkaydee.tcgcatalogue.data.remote
 import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.ui.AppStrings
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -31,17 +32,59 @@ class Http(
     suspend fun getJson(url: String): JsonElement? =
         getText(url, accept = "application/json")?.takeIf { it.isNotBlank() }?.let(json::parseToJsonElement)
 
-    /** GET [url] as text. Returns null on HTTP 404. */
+    /**
+     * GET [url] as text. Returns null on HTTP 404. A server that is briefly overloaded or
+     * restarting (HTTP 429/5xx) or a dropped connection is retried a few times before giving up.
+     */
     suspend fun getText(url: String, accept: String = "*/*", userAgent: String = "TCG-Catalogue-Android/1.0"): String? =
         withContext(Dispatchers.IO) {
             val request = Request.Builder().url(url).header("User-Agent", userAgent).header("Accept", accept).build()
-            client.newCall(request).execute().use { response ->
-                if (response.code == 404) return@withContext null
-                // The message is shown to the user when a search fails.
-                if (!response.isSuccessful) throw HttpException(response.code, AppStrings.get(R.string.data_http_error, response.code, url))
-                response.body?.string().orEmpty()
+            var attemptNo = 0
+            while (true) {
+                val outcome = runCatching {
+                    client.newCall(request).execute().use { response ->
+                        when {
+                            response.code == 404 -> Fetched.Missing
+                            response.isSuccessful -> Fetched.Text(response.body?.string().orEmpty())
+                            response.code == 429 || response.code in 500..599 ->
+                                Fetched.Busy(response.code, response.header("Retry-After")?.toLongOrNull())
+                            // The message is shown to the user when a search fails.
+                            else -> throw HttpException(response.code, AppStrings.get(R.string.data_http_error, response.code, request.url.host))
+                        }
+                    }
+                }
+                val result = outcome.getOrElse { e ->
+                    if (e is HttpException || e is kotlinx.coroutines.CancellationException) throw e
+                    if (e !is IOException) throw e
+                    Fetched.Busy(0, null, e)
+                }
+                when (result) {
+                    is Fetched.Text -> return@withContext result.body
+                    Fetched.Missing -> return@withContext null
+                    is Fetched.Busy -> {
+                        if (attemptNo >= RETRIES.size) {
+                            throw HttpException(result.code, AppStrings.get(R.string.data_service_unavailable, request.url.host))
+                        }
+                        val wait = result.retryAfterSeconds?.takeIf { it in 1..5 }?.times(1000) ?: RETRIES[attemptNo]
+                        attemptNo++
+                        delay(wait)
+                    }
+                }
             }
+            @Suppress("UNREACHABLE_CODE")
+            null as String?
         }
+
+    private sealed interface Fetched {
+        data class Text(val body: String) : Fetched
+        data object Missing : Fetched
+        data class Busy(val code: Int, val retryAfterSeconds: Long?, val cause: Throwable? = null) : Fetched
+    }
+
+    private companion object {
+        /** Waits before each retry, in ms. */
+        val RETRIES = longArrayOf(700, 1800, 4000)
+    }
 }
 
 /** Like runCatching, but lets coroutine cancellation through instead of treating it as a failure. */

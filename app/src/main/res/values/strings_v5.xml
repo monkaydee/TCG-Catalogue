@@ -19,4 +19,20 @@
     <string name="stack_tap_to_review">Tap to check</string>
     <string name="stack_undo">Undo</string>
     <string name="stack_discard">Discard</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Sealed products</string>
+    <string name="sealed_add">Add sealed product</string>
+    <string name="sealed_value">Sealed value</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <string name="sealed_empty">Track unopened booster boxes, packs, decks and boxes here. Their market value counts towards your portfolio.</string>
+    <string name="sealed_remove_hint">Saving with 0 removes the product.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s since purchase</string>
+    <string name="sealed_no_price">no price</string>
+    <string name="sealed_search_hint">Product name or set, e.g. “151 booster box”</string>
+    <string name="sealed_no_results">No sealed products found</string>
 </resources>
