@@ -1,6 +1,39 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.ui.AppStrings
+import kotlin.math.roundToInt
+
+/**
+ * The sentences of the price notes [Pricing] writes. The app passes [App] (its chosen language);
+ * the default [English] keeps [Pricing] usable without Android resources (unit tests).
+ */
+interface PriceTexts {
+    /** [other]'s listing didn't match the card, the markets being [times] apart; [chosen]'s price is used. */
+    fun marketsDisagree(other: String, times: Int, chosen: String): String
+    /** [condition] got the price of the better [better] because its own sales data was higher. */
+    fun capped(condition: String, better: String): String
+    fun tcgplayerSales(condition: String): String
+    fun salesShare(condition: String, percent: Int): String
+    fun estimatedShare(condition: String, percent: Int): String
+
+    object English : PriceTexts {
+        override fun marketsDisagree(other: String, times: Int, chosen: String) = "$other listing didn't match this card (${times}x apart); using $chosen"
+        override fun capped(condition: String, better: String) = "$condition valued like $better (its sales data was higher)"
+        override fun tcgplayerSales(condition: String) = "$condition price from TCGplayer sales"
+        override fun salesShare(condition: String, percent: Int) = "$condition = $percent% of NM (TCGplayer sales)"
+        override fun estimatedShare(condition: String, percent: Int) = "$condition estimated at $percent% of NM (no sales data)"
+    }
+
+    object App : PriceTexts {
+        override fun marketsDisagree(other: String, times: Int, chosen: String) = AppStrings.get(R.string.price_note_markets_disagree, other, times, chosen)
+        override fun capped(condition: String, better: String) = AppStrings.get(R.string.price_note_capped, condition, better)
+        override fun tcgplayerSales(condition: String) = AppStrings.get(R.string.price_note_tcgplayer_sales, condition)
+        override fun salesShare(condition: String, percent: Int) = AppStrings.get(R.string.price_note_sales_share, condition, percent)
+        override fun estimatedShare(condition: String, percent: Int) = AppStrings.get(R.string.price_note_estimated_share, condition, percent)
+    }
+}
 
 /** Chooses which market price to show for a card. */
 object Pricing {
@@ -21,7 +54,7 @@ object Pricing {
      * rare would show the price of the common. When the markets disagree by more than 3x, the
      * cheaper price is taken for ordinary cards and the higher one for special rarities.
      */
-    fun pick(variant: Variant, rarity: String?, preferred: PriceSource, usdToEur: Double): Price? {
+    fun pick(variant: Variant, rarity: String?, preferred: PriceSource, usdToEur: Double, texts: PriceTexts = PriceTexts.English): Price? {
         val cm = variant.prices[PriceSource.CARDMARKET]
         val tcg = variant.prices[PriceSource.TCGPLAYER]
         if (cm == null || tcg == null || cm <= 0 || tcg <= 0) return variant.price(preferred)
@@ -36,7 +69,7 @@ object Pricing {
         return Price(
             amount = if (useCardmarket) cm else tcg,
             source = chosen,
-            note = "${other.label} listing didn't match this card (%.0fx apart); using ${chosen.label}".format(ratio),
+            note = texts.marketsDisagree(other.label, ratio.roundToInt(), chosen.label),
         )
     }
 
@@ -52,14 +85,14 @@ object Pricing {
      * Prices never go up as the condition gets worse (single odd sales on low-volume cards can
      * put an LP above NM or an HP above MP).
      */
-    fun forCondition(base: Price?, condition: String, byCondition: Map<String, Double>?): Price? {
+    fun forCondition(base: Price?, condition: String, byCondition: Map<String, Double>?, texts: PriceTexts = PriceTexts.English): Price? {
         if (condition == "NM") return base
         var cap = base?.amount ?: byCondition?.get("Near Mint")
         var better = "NM"
         for (c in CONDITION_ORDER.drop(1)) {
-            val p = single(base, c, byCondition) ?: return null
+            val p = single(base, c, byCondition, texts) ?: return null
             val capped = if (cap != null && p.amount > cap) {
-                p.copy(amount = cap, note = listOfNotNull(base?.note, "$c valued like $better (its sales data was higher)").joinToString(" · "))
+                p.copy(amount = cap, note = listOfNotNull(base?.note, texts.capped(c, better)).joinToString(" · "))
             } else {
                 p
             }
@@ -72,12 +105,12 @@ object Pricing {
 
     private val CONDITION_ORDER = listOf("NM", "LP", "MP", "HP", "DMG")
 
-    private fun single(base: Price?, condition: String, byCondition: Map<String, Double>?): Price? {
+    private fun single(base: Price?, condition: String, byCondition: Map<String, Double>?, texts: PriceTexts): Price? {
         val name = TcgPlayerApi.CONDITION_NAMES[condition] ?: return base
         val nm = byCondition?.get("Near Mint")
         val actual = byCondition?.get(name)
         if (base == null) {
-            return actual?.let { Price(minOf(it, nm ?: it), PriceSource.TCGPLAYER, "$condition price from TCGplayer sales") }
+            return actual?.let { Price(minOf(it, nm ?: it), PriceSource.TCGPLAYER, texts.tcgplayerSales(condition)) }
         }
         fun note(text: String) = listOfNotNull(base.note, text).joinToString(" · ")
         if (actual != null && base.source == PriceSource.TCGPLAYER) {
@@ -85,9 +118,9 @@ object Pricing {
         }
         if (actual != null && nm != null && nm > 0) {
             val factor = (actual / nm).coerceIn(0.05, 1.0)
-            return base.copy(amount = base.amount * factor, note = note("$condition = %.0f%% of NM (TCGplayer sales)".format(factor * 100)))
+            return base.copy(amount = base.amount * factor, note = note(texts.salesShare(condition, (factor * 100).roundToInt())))
         }
         val factor = TcgPlayerApi.DEFAULT_FACTORS.getValue(condition)
-        return base.copy(amount = base.amount * factor, note = note("$condition estimated at %.0f%% of NM (no sales data)".format(factor * 100)))
+        return base.copy(amount = base.amount * factor, note = note(texts.estimatedShare(condition, (factor * 100).roundToInt())))
     }
 }

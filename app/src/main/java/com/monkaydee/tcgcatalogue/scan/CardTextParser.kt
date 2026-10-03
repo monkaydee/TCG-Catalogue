@@ -1,6 +1,8 @@
 package com.monkaydee.tcgcatalogue.scan
 
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 
 /** A line of OCR text with its position, in fractions (0..1) of the analysed frame. */
 data class OcrLine(val text: String, val top: Float = 0f, val height: Float = 0f)
@@ -59,8 +61,15 @@ data class GradeInfo(
     val qualifier: String? = null,
     val cert: String? = null,
 ) {
-    /** "PSA 10", "BGS 10 Black Label", "CGC 9.5" */
-    val label: String get() = listOfNotNull(grader ?: "Graded", grade, qualifier).joinToString(" ")
+    /** "PSA 10", "BGS 10 Black Label", "CGC 9.5"; "Graded 9" (in the app's language) when the company wasn't read. */
+    val label: String get() {
+        val rest = listOfNotNull(grade, qualifier).joinToString(" ")
+        return when {
+            grader != null -> listOfNotNull(grader, grade, qualifier).joinToString(" ")
+            rest.isEmpty() -> AppStrings.get(R.string.data_graded)
+            else -> AppStrings.get(R.string.data_graded_grade, rest)
+        }
+    }
 }
 
 /**

@@ -1,6 +1,8 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.net.URLEncoder
@@ -83,11 +85,11 @@ class TcgDexApi(private val http: Http) {
         val pricing = c["pricing"]
         val flags = c["variants"]
         val variants = buildList {
-            if (flags["normal"].bool()) add(variant("normal", "Normal", pricing))
-            if (flags["holo"].bool()) add(variant("holo", "Holo", pricing))
-            if (flags["reverse"].bool()) add(variant("reverse", "Reverse Holo", pricing))
+            if (flags["normal"].bool()) add(variant("normal", AppStrings.get(R.string.data_variant_normal), pricing))
+            if (flags["holo"].bool()) add(variant("holo", AppStrings.get(R.string.data_variant_holo), pricing))
+            if (flags["reverse"].bool()) add(variant("reverse", AppStrings.get(R.string.data_variant_reverse_holo), pricing))
             if (flags["firstEdition"].bool()) add(firstEdition(c, pricing))
-            if (isEmpty()) add(variant("normal", "Normal", pricing))
+            if (isEmpty()) add(variant("normal", AppStrings.get(R.string.data_variant_normal), pricing))
         }
         return CardCandidate(
             game = Game.POKEMON,
@@ -143,12 +145,14 @@ class TcgDexApi(private val http: Http) {
     }
 
     private fun cardmarketDetails(cm: kotlinx.serialization.json.JsonElement?, suffix: String) = listOf(
-        "trend" to "Trend", "avg" to "Average sold", "low" to "Lowest offer", "avg1" to "1-day average", "avg7" to "7-day average", "avg30" to "30-day average",
-    ).mapNotNull { (k, label) -> cm["$k$suffix"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.CARDMARKET, label, it) } }
+        "trend" to R.string.price_label_trend, "avg" to R.string.price_label_average_sold, "low" to R.string.price_label_lowest_offer,
+        "avg1" to R.string.price_label_avg1, "avg7" to R.string.price_label_avg7, "avg30" to R.string.price_label_avg30,
+    ).mapNotNull { (k, label) -> cm["$k$suffix"].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.CARDMARKET, AppStrings.get(label), it) } }
 
     private fun tcgplayerDetails(p: kotlinx.serialization.json.JsonElement?) = listOf(
-        "marketPrice" to "Market", "lowPrice" to "Lowest listing", "midPrice" to "Mid", "highPrice" to "Highest listing", "directLowPrice" to "Direct low",
-    ).mapNotNull { (k, label) -> p[k].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, label, it) } }
+        "marketPrice" to R.string.price_label_market, "lowPrice" to R.string.price_label_lowest_listing, "midPrice" to R.string.price_label_mid,
+        "highPrice" to R.string.price_label_highest_listing, "directLowPrice" to R.string.price_label_direct_low,
+    ).mapNotNull { (k, label) -> p[k].dbl()?.takeIf { it > 0 }?.let { PricePoint(PriceSource.TCGPLAYER, AppStrings.get(label), it) } }
 
     /** TCGdex's TCGplayer price keys as TCGplayer names the printings. */
     private fun printingName(key: String) = when (key) {
@@ -176,7 +180,7 @@ class TcgDexApi(private val http: Http) {
             ?: tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal").firstNotNullOfOrNull { t[it]["productId"].str()?.toLongOrNull() } }
         val tcgFirst = tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition").firstNotNullOfOrNull { k -> t[k].takeIf { it != null } } }
         return Variant(
-            "firstEdition", "1st Edition", prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = "1st Edition Holofoil",
+            "firstEdition", AppStrings.get(R.string.data_variant_first_edition), prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = "1st Edition Holofoil",
             details = (if (ownProduct != null) cardmarketDetails(p["cardmarket"], "") else emptyList()) + tcgplayerDetails(tcgFirst),
         )
     }
