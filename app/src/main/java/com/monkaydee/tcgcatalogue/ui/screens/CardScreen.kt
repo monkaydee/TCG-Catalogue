@@ -62,6 +62,9 @@ import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import com.monkaydee.tcgcatalogue.ui.components.QuantityStepper
 import kotlinx.coroutines.launch
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.monkaydee.tcgcatalogue.R
 
 /**
  * The list a card was opened from (a set sorted by value, the most valuable cards, ...), so the
@@ -98,7 +101,7 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
         editCandidate = repo.candidateFor(card)
         editLoading = false
         if (editCandidate == null) {
-            Toast.makeText(context, "Couldn't load the card data — check your connection", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.card_load_failed), Toast.LENGTH_LONG).show()
             editing = null
         }
     }
@@ -116,18 +119,18 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
                     Column {
                         Text(current?.name.orEmpty(), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (cards.size > 1) {
-                            Text("${pager.currentPage + 1} / ${cards.size} · swipe for more", style = MaterialTheme.typography.labelSmall)
+                            Text(stringResource(R.string.card_pager_position, pager.currentPage + 1, cards.size), style = MaterialTheme.typography.labelSmall)
                         }
                     }
                 },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) } },
                 actions = {
                     if (editLoading) {
                         CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
                     } else {
-                        IconButton(onClick = { editing = current }) { Icon(Icons.Default.Edit, "Edit card") }
+                        IconButton(onClick = { editing = current }) { Icon(Icons.Default.Edit, stringResource(R.string.card_edit)) }
                     }
-                    IconButton(onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, "Remove from collection") }
+                    IconButton(onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, stringResource(R.string.card_remove_from_collection)) }
                 },
             )
         },
@@ -151,7 +154,7 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
             settings = s,
             repo = repo,
             initial = toEdit,
-            confirmLabel = "Save",
+            confirmLabel = stringResource(R.string.card_save),
             onChangeCard = {
                 editing = null
                 editCandidate = null
@@ -169,15 +172,15 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
     if (confirmDelete && current != null) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            title = { Text("Remove card?") },
-            text = { Text("This removes all ${current.quantity} copies of ${current.name} from your collection.") },
+            title = { Text(stringResource(R.string.card_remove_title)) },
+            text = { Text(pluralStringResource(R.plurals.card_remove_message, current.quantity, current.quantity, current.name)) },
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete = false
                     scope.launch { repo.delete(current) }
-                }) { Text("Remove") }
+                }) { Text(stringResource(R.string.card_remove)) }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.card_cancel)) } },
         )
     }
 }
@@ -196,7 +199,7 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
             Text(c.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("${c.setName} · ${c.number}", style = MaterialTheme.typography.bodyMedium)
             Text(listOfNotNull(c.game.label, c.rarity, c.variantLabel).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
-            c.marketLabel?.let { Text("Cardmarket: $it", style = MaterialTheme.typography.bodySmall) }
+            c.marketLabel?.let { Text(stringResource(R.string.card_cardmarket_label, it), style = MaterialTheme.typography.bodySmall) }
             Text(
                 Money.format(Money.value(c, s.currency, s.usdToEur), s.currency),
                 style = MaterialTheme.typography.headlineMedium,
@@ -204,21 +207,24 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 fontWeight = FontWeight.Bold,
             )
             if (c.price != null) {
+                val unit = Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)
+                val original = Money.format(c.price, c.priceCurrency)
                 Text(
-                    "${Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)} per copy" +
-                        " (${Money.format(c.price, c.priceCurrency)} on ${c.priceSource ?: "market"})",
+                    c.priceSource?.let { stringResource(R.string.card_unit_price_on_source, unit, original, it) }
+                        ?: stringResource(R.string.card_unit_price_on_market, unit, original),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 c.priceUpdatedAt?.let {
-                    Text("Updated ${android.text.format.DateUtils.getRelativeTimeSpanString(it)}", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.card_price_updated, android.text.format.DateUtils.getRelativeTimeSpanString(it)), style = MaterialTheme.typography.labelSmall)
                 }
             } else {
-                Text("No market price available", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.card_no_market_price), style = MaterialTheme.typography.bodySmall)
             }
             c.manualPrice?.let {
+                val own = Money.format(Money.convert(it, c.manualCurrency ?: s.currency, s.currency, s.usdToEur), s.currency)
                 Text(
-                    "Your own value: ${Money.format(Money.convert(it, c.manualCurrency ?: s.currency, s.currency, s.usdToEur), s.currency)} per copy" +
-                        (c.price?.let { m -> " · market ${Money.format(Money.convert(m, c.priceCurrency, s.currency, s.usdToEur), s.currency)}" } ?: ""),
+                    c.price?.let { m -> stringResource(R.string.card_own_value_with_market, own, Money.format(Money.convert(m, c.priceCurrency, s.currency, s.usdToEur), s.currency)) }
+                        ?: stringResource(R.string.card_own_value, own),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary,
                 )
@@ -228,34 +234,35 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 val paidShown = Money.convert(paid, c.priceCurrency, s.currency, s.usdToEur)
                 val now = Money.unit(c, s.currency, s.usdToEur)
                 val diff = now - paidShown
+                val paidText = Money.format(paidShown, s.currency)
+                val diffText = (if (diff >= 0) "+" else "") + Money.format(diff, s.currency)
                 Text(
-                    "Bought for ${Money.format(paidShown, s.currency)} each · " +
-                        (if (diff >= 0) "+" else "") + Money.format(diff, s.currency) +
-                        (if (paidShown > 0) " (%+.0f%%)".format(diff / paidShown * 100) else ""),
+                    if (paidShown > 0) stringResource(R.string.card_bought_for_with_percent, paidText, diffText, diff / paidShown * 100)
+                    else stringResource(R.string.card_bought_for, paidText, diffText),
                     style = MaterialTheme.typography.bodySmall,
                     color = if (diff >= 0) com.monkaydee.tcgcatalogue.ui.theme.Gain else com.monkaydee.tcgcatalogue.ui.theme.Loss,
                 )
             }
             if (c.graded) {
                 Text(
-                    listOfNotNull(c.condition, c.certNumber?.let { "Cert #$it" }).joinToString(" · "),
+                    listOfNotNull(c.condition, c.certNumber?.let { stringResource(R.string.card_cert, it) }).joinToString(" · "),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.secondary,
                 )
-                Text("Graded copies use your own value — check recent sales with the links below.", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.card_graded_hint), style = MaterialTheme.typography.labelSmall)
             } else {
-                Text("Raw-card market price for this condition.", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.card_raw_hint), style = MaterialTheme.typography.labelSmall)
             }
         }
         PriceLinks(c, s)
         PriceOverview(c, s, repo)
-        Text("Quantity", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
+        Text(stringResource(R.string.card_quantity), style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
         QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
         if (c.game == Game.ONE_PIECE && s.pokemonSource == PriceSource.CARDMARKET) {
             var listings by remember(c.id) { mutableStateOf<List<CardmarketApi.Listing>>(emptyList()) }
             LaunchedEffect(c.id) { listings = repo.cardmarketListings(c) }
             if (listings.isNotEmpty()) {
-                Text("Cardmarket listing", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
+                Text(stringResource(R.string.card_cardmarket_listing), style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
                 FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listings.forEach { l ->
                         FilterChip(l.productId == c.marketProductId, {
@@ -266,7 +273,7 @@ private fun CardDetail(c: OwnedCard, s: AppSettings, repo: CardRepository) {
             }
         }
         if (!c.graded) {
-            Text("Condition", style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
+            Text(stringResource(R.string.card_condition), style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
             FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CONDITIONS.forEach { cond ->
                     FilterChip(cond == c.condition, {
@@ -287,7 +294,7 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("All prices", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.card_all_prices), style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
                 if (loading) {
                     CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
                 } else {
@@ -297,7 +304,7 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                             groups = repo.priceOverview(c)
                             loading = false
                         }
-                    }) { Text(if (groups == null) "Show" else "Refresh") }
+                    }) { Text(stringResource(if (groups == null) R.string.card_show else R.string.card_refresh)) }
                 }
             }
             groups?.forEach { g ->
@@ -330,7 +337,7 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
 private fun PriceLinks(c: OwnedCard, s: AppSettings) {
     val open = LocalUriHandler.current
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text("Check prices online", style = MaterialTheme.typography.labelLarge)
+        Text(stringResource(R.string.card_check_prices), style = MaterialTheme.typography.labelLarge)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             PriceLinks.forCard(c, s.currency).forEach { (label, url) ->
                 AssistChip(onClick = { runCatching { open.openUri(url) } }, label = { Text(label) })

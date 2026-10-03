@@ -45,6 +45,9 @@ import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import kotlinx.coroutines.flow.map
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.monkaydee.tcgcatalogue.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +65,7 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
         topBar = {
             TopAppBar(
                 title = { Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.set_back)) } },
             )
         },
     ) { padding ->
@@ -79,15 +82,20 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
                         fontWeight = FontWeight.Bold,
                     )
                     val total = set?.total ?: 0
+                    val copies = cards.sumOf { it.quantity }
                     Text(
-                        if (total > 0) "$owned of $total cards (${owned * 100 / total}%) · ${cards.sumOf { it.quantity }} copies"
-                        else "$owned cards · ${cards.sumOf { it.quantity }} copies",
+                        stringResource(
+                            R.string.set_summary,
+                            if (total > 0) pluralStringResource(R.plurals.set_owned_of_total, total, owned, total, owned * 100 / total)
+                            else pluralStringResource(R.plurals.set_owned, owned, owned),
+                            pluralStringResource(R.plurals.set_copies, copies, copies),
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     if (total > 0) LinearProgressIndicator(progress = { (owned.toFloat() / total).coerceAtMost(1f) }, modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
                     Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        FilterChip(!byNumber, { byNumber = false }, { Text("By value") })
-                        FilterChip(byNumber, { byNumber = true }, { Text("By number") })
+                        FilterChip(!byNumber, { byNumber = false }, { Text(stringResource(R.string.set_sort_value)) })
+                        FilterChip(byNumber, { byNumber = true }, { Text(stringResource(R.string.set_sort_number)) })
                     }
                 }
             }
@@ -110,7 +118,7 @@ fun OwnedCardRow(c: OwnedCard, s: AppSettings, onClick: () -> Unit) {
             Column(horizontalAlignment = Alignment.End) {
                 Text(Money.format(Money.value(c, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text(
-                    if (c.price == null) "no price" else "${c.quantity} × ${Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)}",
+                    if (c.price == null) stringResource(R.string.set_no_price) else "${c.quantity} × ${Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)}",
                     style = MaterialTheme.typography.labelSmall,
                 )
             }

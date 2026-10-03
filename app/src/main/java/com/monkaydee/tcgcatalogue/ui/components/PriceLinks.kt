@@ -2,6 +2,8 @@ package com.monkaydee.tcgcatalogue.ui.components
 
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
+import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import java.net.URLEncoder
 
 /** Search links for a card on the price sites, opened in the phone's browser. */
@@ -26,7 +28,7 @@ object PriceLinks {
         val ebayHost = if (currency == "EUR") "www.ebay.de" else "www.ebay.com"
         val ebayQuery = listOfNotNull(name, number, grade ?: gameWord).joinToString(" ")
         val links = mutableListOf(
-            "eBay sold" to "https://$ebayHost/sch/i.html?_nkw=${enc(ebayQuery)}&LH_Sold=1&LH_Complete=1&_sop=13",
+            AppStrings.get(R.string.links_ebay_sold) to "https://$ebayHost/sch/i.html?_nkw=${enc(ebayQuery)}&LH_Sold=1&LH_Complete=1&_sop=13",
             "PriceCharting" to "https://www.pricecharting.com/search-products?type=prices&q=${enc("$name ${c.setName} $number")}",
         )
         cardmarketGame(c.game)?.let { g ->

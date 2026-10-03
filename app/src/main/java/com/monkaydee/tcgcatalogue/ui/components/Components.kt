@@ -37,6 +37,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
+import com.monkaydee.tcgcatalogue.R
 
 /** One chip per game (plus "Auto"/"All" when [nullLabel] is set), scrolling sideways. */
 @Composable
@@ -44,7 +46,7 @@ fun GameChips(
     selected: Game?,
     onSelect: (Game?) -> Unit,
     games: List<Game> = Game.entries,
-    nullLabel: String? = "Auto",
+    nullLabel: String? = stringResource(R.string.common_auto),
     colors: SelectableChipColors? = null,
 ) {
     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -81,11 +83,11 @@ fun CardImage(url: String?, modifier: Modifier = Modifier, thumb: Boolean = fals
 fun QuantityStepper(value: Int, onChange: (Int) -> Unit, min: Int = 1) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         FilledTonalIconButton(onClick = { if (value > min) onChange(value - 1) }, enabled = value > min) {
-            Icon(Icons.Default.Remove, contentDescription = "Less")
+            Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.common_less))
         }
         Text("$value", style = MaterialTheme.typography.titleLarge, modifier = Modifier.width(40.dp), textAlign = TextAlign.Center)
         FilledTonalIconButton(onClick = { onChange(value + 1) }) {
-            Icon(Icons.Default.Add, contentDescription = "More")
+            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.common_more))
         }
     }
 }

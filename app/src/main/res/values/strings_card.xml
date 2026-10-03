@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Card screen (one card of the collection) -->
+    <string name="card_load_failed">Couldn\'t load the card data — check your connection</string>
+    <!-- Position in the list of cards the user can swipe through, e.g. "3 / 12 · swipe for more" -->
+    <string name="card_pager_position">%1$d / %2$d · swipe for more</string>
+    <string name="card_back">Back</string>
+    <string name="card_edit">Edit card</string>
+    <string name="card_remove_from_collection">Remove from collection</string>
+    <!-- Button that saves the edited card -->
+    <string name="card_save">Save</string>
+    <string name="card_remove_title">Remove card?</string>
+    <!-- %1$d = number of copies, %2$s = card name -->
+    <plurals name="card_remove_message">
+        <item quantity="one">This removes %1$d copy of %2$s from your collection.</item>
+        <item quantity="other">This removes all %1$d copies of %2$s from your collection.</item>
+    </plurals>
+    <string name="card_remove">Remove</string>
+    <string name="card_cancel">Cancel</string>
+    <!-- %1$s = the card's product name on Cardmarket -->
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <!-- %1$s = price of one copy in the user's currency, %2$s = original price, %3$s = price source (e.g. Cardmarket, TCGplayer) -->
+    <string name="card_unit_price_on_source">%1$s per copy (%2$s on %3$s)</string>
+    <!-- Same as above when the price source is unknown: %1$s = price of one copy, %2$s = original price -->
+    <string name="card_unit_price_on_market">%1$s per copy (%2$s on market)</string>
+    <!-- %1$s = relative time, e.g. "5 minutes ago" -->
+    <string name="card_price_updated">Updated %1$s</string>
+    <string name="card_no_market_price">No market price available</string>
+    <!-- The value the user entered for the card. %1$s = price per copy -->
+    <string name="card_own_value">Your own value: %1$s per copy</string>
+    <!-- %1$s = the user's own value per copy, %2$s = market price per copy -->
+    <string name="card_own_value_with_market">Your own value: %1$s per copy · market %2$s</string>
+    <!-- %1$s = purchase price per copy, %2$s = gain or loss since (with + or -), %3$+.0f = gain or loss in percent with sign -->
+    <string name="card_bought_for_with_percent">Bought for %1$s each · %2$s (%3$+.0f%%)</string>
+    <!-- %1$s = purchase price per copy, %2$s = gain or loss since (with + or -) -->
+    <string name="card_bought_for">Bought for %1$s each · %2$s</string>
+    <!-- Certificate number of a graded card (printed on the slab label) -->
+    <string name="card_cert">Cert #%1$s</string>
+    <string name="card_graded_hint">Graded copies use your own value — check recent sales with the links below.</string>
+    <!-- "Raw" = an ungraded card (not in a grading company's slab) -->
+    <string name="card_raw_hint">Raw-card market price for this condition.</string>
+    <!-- Heading: number of copies owned -->
+    <string name="card_quantity">Quantity</string>
+    <!-- Heading: the Cardmarket product (print version) the card's price is taken from -->
+    <string name="card_cardmarket_listing">Cardmarket listing</string>
+    <!-- Heading: the card's physical condition (Near Mint, Lightly Played, ...) -->
+    <string name="card_condition">Condition</string>
+    <!-- Heading of the box listing the card's prices from all price sites -->
+    <string name="card_all_prices">All prices</string>
+    <!-- Button that loads all prices -->
+    <string name="card_show">Show</string>
+    <!-- Button that reloads all prices -->
+    <string name="card_refresh">Refresh</string>
+    <string name="card_check_prices">Check prices online</string>
+
+    <!-- Set screen (the owned cards of one card set/expansion) -->
+    <string name="set_back">Back</string>
+    <!-- %1$d = distinct cards owned, %2$d = cards in the set, %3$d = percent owned -->
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%1$d of %2$d card (%3$d%%)</item>
+        <item quantity="other">%1$d of %2$d cards (%3$d%%)</item>
+    </plurals>
+    <!-- Number of distinct cards owned in the set -->
+    <plurals name="set_owned">
+        <item quantity="one">%d card</item>
+        <item quantity="other">%d cards</item>
+    </plurals>
+    <!-- Number of copies owned in the set (counting duplicates) -->
+    <plurals name="set_copies">
+        <item quantity="one">%d copy</item>
+        <item quantity="other">%d copies</item>
+    </plurals>
+    <!-- Joins the card count (%1$s, e.g. "12 of 200 cards (6%)") and the copy count (%2$s, e.g. "15 copies") -->
+    <string name="set_summary">%1$s · %2$s</string>
+    <!-- Sort order: most valuable cards first -->
+    <string name="set_sort_value">By value</string>
+    <!-- Sort order: by card number within the set -->
+    <string name="set_sort_number">By number</string>
+    <!-- Shown instead of the price when a card has no price -->
+    <string name="set_no_price">no price</string>
+
+    <!-- Shared components -->
+    <!-- Game filter chip: detect the card game automatically -->
+    <string name="common_auto">Auto</string>
+    <!-- Decrease the quantity by one (screen reader) -->
+    <string name="common_less">Less</string>
+    <!-- Increase the quantity by one (screen reader) -->
+    <string name="common_more">More</string>
+
+    <!-- Price links -->
+    <!-- Link to eBay's search for sold listings of the card -->
+    <string name="links_ebay_sold">eBay sold</string>
+</resources>
