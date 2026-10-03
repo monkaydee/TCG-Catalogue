@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">건너뛰기</string>
+    <string name="onboarding_next">다음</string>
+    <string name="onboarding_get_started">시작하기</string>
+    <string name="onboarding_scan_title">카드 스캔</string>
+    <string name="onboarding_scan_text">카메라를 카드에 비추거나 갤러리에서 사진을 가져오세요. 이름과 번호를 자동으로 읽어 줘요.</string>
+    <string name="onboarding_binder_title">바인더로 보는 내 컬렉션</string>
+    <string name="onboarding_binder_text">가상 바인더에서 카드를 페이지별로 둘러보고 실제처럼 넘겨 보세요.</string>
+    <string name="onboarding_prices_title">가격과 가치</string>
+    <string name="onboarding_prices_text">각 카드의 가치와 컬렉션 전체 가치의 변화를 확인하세요.</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">%1$d / %2$d 페이지</string>
+</resources>

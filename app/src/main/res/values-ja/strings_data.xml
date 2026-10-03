@@ -45,4 +45,5 @@
     <string name="price_note_estimated_share">%1$sはNMの%2$d%%と推定（取引データなし）</string>
 
     <string name="data_http_error">HTTP %1$d（%2$s）</string>
+    <string name="data_service_unavailable">カードサービス（%1$s）が現在応答していません。しばらくしてからもう一度お試しください。</string>
 </resources>

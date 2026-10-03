@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = NM 價格的 %2$d%%（TCGplayer 成交）</string>
     <string name="price_note_estimated_share">%1$s 估計為 NM 價格的 %2$d%%（無成交資料）</string>
     <string name="data_http_error">%2$s 回傳 HTTP %1$d</string>
+    <string name="data_service_unavailable">卡片服務（%1$s）目前沒有回應，請稍後再試。</string>
 </resources>

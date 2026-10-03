@@ -38,4 +38,5 @@
     <string name="price_note_sales_share">%1$s = NM의 %2$d%% (TCGplayer 판매)</string>
     <string name="price_note_estimated_share">%1$s은(는) NM의 %2$d%%로 추정 (판매 데이터 없음)</string>
     <string name="data_http_error">%2$s에 대한 HTTP %1$d</string>
+    <string name="data_service_unavailable">카드 서비스(%1$s)가 지금 응답하지 않아요. 잠시 후 다시 시도하세요.</string>
 </resources>
