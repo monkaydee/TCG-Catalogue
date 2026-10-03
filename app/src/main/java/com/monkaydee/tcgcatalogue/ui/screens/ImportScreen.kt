@@ -50,6 +50,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -57,6 +59,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
@@ -71,6 +74,7 @@ import com.monkaydee.tcgcatalogue.scan.PhotoRecognizer
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.scan.VisualMatcher
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.GradedSlab
@@ -149,7 +153,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             }
         }
         if (result.isFailure) {
-            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.ERROR, note = "Could not open the photo")))
+            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_could_not_open_photo))))
             return
         }
         val found = result.getOrThrow()
@@ -169,7 +173,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         val result = runCatching { VisualMatcher.rank(context, item.picture, repo.resolve(hit), VisualMatcher.Source.PHOTO) }
         val candidates = result.getOrDefault(emptyList())
         val updated = when {
-            result.isFailure -> item.copy(status = ImportStatus.ERROR, note = "Lookup failed — check your connection")
+            result.isFailure -> item.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_lookup_failed))
             candidates.isEmpty() -> item.copy(status = ImportStatus.NOT_FOUND)
             repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
@@ -211,7 +215,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         viewModelScope.launch {
             runCatching { repo.add(c, v, qty, condition, grade, listing, paid, own) }.onSuccess {
                 state.value.items.firstOrNull { it.key == key }?.let { item ->
-                    val extra = listOfNotNull(grade?.label, "×$qty".takeIf { qty > 1 })
+                    val extra = listOfNotNull(grade?.label, AppStrings.get(R.string.import_quantity, qty).takeIf { qty > 1 })
                     replace(key, listOf(item.copy(status = ImportStatus.ADDED, note = (listOf("${c.name} · ${c.setName}") + extra).joinToString(" · "))))
                 }
             }
@@ -266,9 +270,9 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Import photos") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
-                actions = { IconButton(onClick = pick) { Icon(Icons.Default.AddPhotoAlternate, "Add photos") } },
+                title = { Text(stringResource(R.string.import_title)) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.import_back)) } },
+                actions = { IconButton(onClick = pick) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.import_add_photos)) } },
             )
         },
     ) { padding ->
@@ -284,17 +288,14 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                 item {
                     Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            "Took photos of cards while you were out? Import them here and they're recognised just like a live scan.\n\n" +
-                                "• One card per photo works best; binder pages work if the numbers are sharp\n" +
-                                "• Make sure the number at the bottom of the card is readable\n" +
-                                "• You can also share photos to TCG Catalogue from your gallery or a chat app",
+                            stringResource(R.string.import_intro),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Spacer(Modifier.size(16.dp))
                         Button(onClick = pick) {
                             Icon(Icons.Default.AddPhotoAlternate, null)
                             Spacer(Modifier.width(8.dp))
-                            Text("Choose photos")
+                            Text(stringResource(R.string.import_choose_photos))
                         }
                     }
                 }
@@ -302,11 +303,11 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                 item {
                     Text(
                         listOfNotNull(
-                            counts[ImportStatus.ADDED]?.let { "$it added" },
-                            toReview.takeIf { it > 0 }?.let { "$it to review" },
-                            ((counts[ImportStatus.READING] ?: 0) + (counts[ImportStatus.LOOKING_UP] ?: 0)).takeIf { it > 0 }?.let { "$it in progress" },
+                            counts[ImportStatus.ADDED]?.let { pluralStringResource(R.plurals.import_count_added, it, it) },
+                            toReview.takeIf { it > 0 }?.let { pluralStringResource(R.plurals.import_count_to_review, it, it) },
+                            ((counts[ImportStatus.READING] ?: 0) + (counts[ImportStatus.LOOKING_UP] ?: 0)).takeIf { it > 0 }?.let { pluralStringResource(R.plurals.import_count_in_progress, it, it) },
                             ((counts[ImportStatus.NO_NUMBER] ?: 0) + (counts[ImportStatus.NOT_FOUND] ?: 0) + (counts[ImportStatus.ERROR] ?: 0))
-                                .takeIf { it > 0 }?.let { "$it not recognised" },
+                                .takeIf { it > 0 }?.let { pluralStringResource(R.plurals.import_count_not_recognised, it, it) },
                         ).joinToString(" · "),
                         style = MaterialTheme.typography.titleSmall,
                     )
@@ -314,7 +315,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                 if (toReview > 1) {
                     item {
                         FilledTonalButton(onClick = vm::addAllBest, modifier = Modifier.fillMaxWidth()) {
-                            Text("Add best match for all $toReview cards")
+                            Text(pluralStringResource(R.plurals.import_add_all_best, toReview, toReview))
                         }
                     }
                 }
@@ -363,18 +364,18 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 when (item.status) {
-                    ImportStatus.READING -> Text("Reading photo…", style = MaterialTheme.typography.bodyMedium)
-                    ImportStatus.LOOKING_UP -> Text("Looking up ${item.hit?.label()}…", style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.READING -> Text(stringResource(R.string.import_reading_photo), style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.LOOKING_UP -> Text(stringResource(R.string.import_looking_up, item.hit?.label().toString()), style = MaterialTheme.typography.bodyMedium)
                     ImportStatus.REVIEW -> {
                         Text(top!!.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         item.grade?.let { Text(it.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary) }
                         Text("${top.setName} · ${top.number}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (top.variants.size > 1) Text(top.defaultVariant.label, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (top.printingCheck) {
-                            Text("Check the printing — it couldn't be told apart from another one", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(R.string.import_check_printing), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
                         }
                         Text(
-                            if (item.candidates.size > 1) "${item.candidates.size} possible matches · tap to choose" else "${repo.rawPrice(top, top.defaultVariant, settings).display(settings)} · tap to add",
+                            if (item.candidates.size > 1) pluralStringResource(R.plurals.import_possible_matches, item.candidates.size, item.candidates.size) else stringResource(R.string.import_tap_to_add, repo.rawPrice(top, top.defaultVariant, settings).display(settings)),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
                         )
@@ -383,24 +384,24 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.CheckCircle, null, tint = Gain, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(4.dp))
-                            Text("Added", style = MaterialTheme.typography.titleSmall, color = Gain, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.import_added), style = MaterialTheme.typography.titleSmall, color = Gain, fontWeight = FontWeight.Bold)
                         }
                         item.note?.let { Text(it, style = MaterialTheme.typography.bodySmall, maxLines = 2) }
                     }
-                    ImportStatus.NOT_FOUND -> Text("No card found for ${item.hit?.label()}", style = MaterialTheme.typography.bodyMedium)
-                    ImportStatus.NO_NUMBER -> Text("No card number found in this photo", style = MaterialTheme.typography.bodyMedium)
-                    ImportStatus.ERROR -> Text(item.note ?: "Something went wrong", style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.NOT_FOUND -> Text(stringResource(R.string.import_no_card_found, item.hit?.label().toString()), style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.NO_NUMBER -> Text(stringResource(R.string.import_no_number), style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.ERROR -> Text(item.note ?: stringResource(R.string.import_something_wrong), style = MaterialTheme.typography.bodyMedium)
                 }
                 when (item.status) {
-                    ImportStatus.NO_NUMBER, ImportStatus.NOT_FOUND -> OutlinedButton(onClick = onManual) { Text("Type it in") }
-                    ImportStatus.ERROR -> OutlinedButton(onClick = onRetry) { Text("Retry") }
+                    ImportStatus.NO_NUMBER, ImportStatus.NOT_FOUND -> OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
+                    ImportStatus.ERROR -> OutlinedButton(onClick = onRetry) { Text(stringResource(R.string.import_retry)) }
                     else -> Unit
                 }
             }
             when (item.status) {
                 ImportStatus.READING, ImportStatus.LOOKING_UP -> CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
                 ImportStatus.ADDED -> Unit
-                else -> IconButton(onClick = onRemove) { Icon(Icons.Default.Close, "Dismiss") }
+                else -> IconButton(onClick = onRemove) { Icon(Icons.Default.Close, stringResource(R.string.import_dismiss)) }
             }
         }
     }

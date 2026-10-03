@@ -41,9 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.Money
@@ -55,13 +58,14 @@ import com.monkaydee.tcgcatalogue.data.remote.attempt
 import com.monkaydee.tcgcatalogue.data.remote.Price
 import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 
 val CONDITIONS = listOf("NM", "LP", "MP", "HP", "DMG")
 val GRADERS = listOf("PSA", "BGS", "CGC", "SGC", "TAG", "ACE", "AOG", "GSG", "PI", "Other")
 val GRADES = listOf("10", "9.5", "9", "8.5", "8", "7.5", "7", "6", "5", "4", "3", "2", "1")
 
 fun Price?.display(s: AppSettings): String =
-    this?.let { Money.format(Money.convert(it.amount, it.currency, s.currency, s.usdToEur), s.currency) } ?: "no price"
+    this?.let { Money.format(Money.convert(it.amount, it.currency, s.currency, s.usdToEur), s.currency) } ?: AppStrings.get(R.string.add_no_price)
 
 /** The special 10s that are priced separately. */
 fun qualifiersFor(grader: String?): List<String> = when (grader) {
@@ -98,7 +102,7 @@ fun AddCardSheet(
     repo: CardRepository,
     initialGrade: GradeInfo? = null,
     initial: OwnedCard? = null,
-    confirmLabel: String = "Add",
+    confirmLabel: String = stringResource(R.string.add_confirm),
     onChangeCard: (() -> Unit)? = null,
     onAdd: (AddRequest) -> Unit,
     onDismiss: () -> Unit,
@@ -174,7 +178,7 @@ fun AddCardSheet(
     val shown = if (graded) gradedQuote ?: raw.takeIf { !gradedLoading } else conditionQuote ?: raw
     val loading = if (graded) gradedLoading else conditionLoading
     val gradedMissing = graded && !gradedLoading && gradedQuote == null
-    val note = if (gradedMissing) "No graded price found (${gradedProblem ?: "no sales found"}). The raw price is used unless you enter your own value below." else shown?.note
+    val note = if (gradedMissing) stringResource(R.string.add_graded_missing, gradedProblem ?: stringResource(R.string.add_no_sales_found)) else shown?.note
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(
@@ -185,7 +189,7 @@ fun AddCardSheet(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (candidates.size > 1) {
-                Text("${candidates.size} possible matches — tap the right one", style = MaterialTheme.typography.labelLarge)
+                Text(pluralStringResource(R.plurals.add_possible_matches, candidates.size, candidates.size), style = MaterialTheme.typography.labelLarge)
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     itemsIndexed(candidates) { i, c ->
                         Card(
@@ -220,7 +224,7 @@ fun AddCardSheet(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text(
-                        if (graded) "${gradeInfo.label} · ${if (gradedMissing) "raw price" else shown?.source?.label ?: "looking up sales…"}" else "per copy · ${variant.label} · $condition · ${shown?.source?.label.orEmpty()}",
+                        if (graded) "${gradeInfo.label} · ${if (gradedMissing) stringResource(R.string.add_raw_price) else shown?.source?.label ?: stringResource(R.string.add_looking_up_sales)}" else stringResource(R.string.add_price_details, variant.label, condition, shown?.source?.label.orEmpty()),
                         style = MaterialTheme.typography.bodySmall,
                     )
                     note?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
@@ -232,9 +236,9 @@ fun AddCardSheet(
             if (card.variants.size > 1) {
                 Text(
                     when {
-                        initial == null && card.printingCheck -> "Printing — please check: the scan couldn't tell it apart from another printing"
-                        initial == null && card.preferredVariant != null -> "Printing — recognised from the scan"
-                        else -> "Printing"
+                        initial == null && card.printingCheck -> stringResource(R.string.add_printing_check)
+                        initial == null && card.preferredVariant != null -> stringResource(R.string.add_printing_recognised)
+                        else -> stringResource(R.string.add_printing)
                     },
                     style = MaterialTheme.typography.labelLarge,
                     color = if (initial == null && card.printingCheck) MaterialTheme.colorScheme.error else androidx.compose.ui.graphics.Color.Unspecified,
@@ -250,7 +254,7 @@ fun AddCardSheet(
                 }
             }
             if (listings.isNotEmpty() && settings.pokemonSource == PriceSource.CARDMARKET) {
-                Text("Cardmarket listing (pick the exact print you own)", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.add_cardmarket_listing), style = MaterialTheme.typography.labelLarge)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listings.forEach { l ->
                         FilterChip(
@@ -262,15 +266,15 @@ fun AddCardSheet(
                 }
             }
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-                SegmentedButton(!graded, { graded = false }, SegmentedButtonDefaults.itemShape(0, 2)) { Text("Raw") }
-                SegmentedButton(graded, { graded = true }, SegmentedButtonDefaults.itemShape(1, 2)) { Text("Graded") }
+                SegmentedButton(!graded, { graded = false }, SegmentedButtonDefaults.itemShape(0, 2)) { Text(stringResource(R.string.add_raw)) }
+                SegmentedButton(graded, { graded = true }, SegmentedButtonDefaults.itemShape(1, 2)) { Text(stringResource(R.string.add_graded)) }
             }
             if (graded) {
-                Text("Grading company", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.add_grading_company), style = MaterialTheme.typography.labelLarge)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    GRADERS.forEach { g -> FilterChip(g == grader, { grader = g }, { Text(g) }) }
+                    GRADERS.forEach { g -> FilterChip(g == grader, { grader = g }, { Text(if (g == "Other") stringResource(R.string.add_grader_other) else g) }) }
                 }
-                Text("Grade", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.add_grade), style = MaterialTheme.typography.labelLarge)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     GRADES.forEach { g -> FilterChip(g == grade, { grade = g }, { Text(g) }) }
                 }
@@ -284,13 +288,13 @@ fun AddCardSheet(
                 OutlinedTextField(
                     value = cert,
                     onValueChange = { cert = it.filter(Char::isLetterOrDigit).take(14) },
-                    label = { Text("Cert number (optional)") },
+                    label = { Text(stringResource(R.string.add_cert_number)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth(),
                 )
             } else {
-                Text("Condition", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.add_condition), style = MaterialTheme.typography.labelLarge)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     CONDITIONS.forEach { c -> FilterChip(selected = c == condition, onClick = { condition = c }, label = { Text(c) }) }
                 }
@@ -298,7 +302,7 @@ fun AddCardSheet(
             OutlinedTextField(
                 value = paid,
                 onValueChange = { paid = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.take(10) },
-                label = { Text("Purchase price per copy (${settings.currency}, optional)") },
+                label = { Text(stringResource(R.string.add_purchase_price, settings.currency)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth(),
@@ -306,18 +310,18 @@ fun AddCardSheet(
             OutlinedTextField(
                 value = myValue,
                 onValueChange = { myValue = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.take(10) },
-                label = { Text("My value per copy (${settings.currency}, optional — overrides the market price)") },
+                label = { Text(stringResource(R.string.add_my_value, settings.currency)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth(),
             )
             if (onChangeCard != null) {
-                TextButton(onClick = onChangeCard) { Text("Wrong card? Search for the right one") }
+                TextButton(onClick = onChangeCard) { Text(stringResource(R.string.add_wrong_card)) }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 QuantityStepper(quantity, { quantity = it })
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = onDismiss) { Text("Cancel") }
+                    OutlinedButton(onClick = onDismiss) { Text(stringResource(R.string.add_cancel)) }
                     Button(onClick = {
                         val price = paid.replace(',', '.').toDoubleOrNull()
                         val own = myValue.replace(',', '.').toDoubleOrNull()

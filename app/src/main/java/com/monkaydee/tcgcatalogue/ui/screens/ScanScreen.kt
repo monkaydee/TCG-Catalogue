@@ -61,6 +61,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -68,6 +70,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
@@ -82,6 +85,7 @@ import com.monkaydee.tcgcatalogue.scan.ScanFrame
 import com.monkaydee.tcgcatalogue.scan.VisualMatcher
 import com.monkaydee.tcgcatalogue.scan.ScanHit
 import com.monkaydee.tcgcatalogue.scan.TextAnalyzer
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import com.monkaydee.tcgcatalogue.ui.components.AddRequest
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -158,8 +162,8 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
             cooldownKey = hit.key
             cooldownUntil = System.currentTimeMillis() + 2500
             when {
-                result.isFailure -> state.update { it.copy(loading = false, message = "Lookup failed — check your connection") }
-                candidates.isEmpty() -> state.update { it.copy(loading = false, message = "No card found for ${describe(hit)}") }
+                result.isFailure -> state.update { it.copy(loading = false, message = AppStrings.get(R.string.scan_lookup_failed)) }
+                candidates.isEmpty() -> state.update { it.copy(loading = false, message = AppStrings.get(R.string.scan_no_card_found, describe(hit))) }
                 else -> {
                     val s = repo.settings.current()
                     val top = candidates.first()
@@ -168,7 +172,7 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
                         repo.add(top, top.defaultVariant, 1, s.defaultCondition, grade)
                         cooldownUntil = System.currentTimeMillis() + 4000
                         state.update {
-                            it.copy(loading = false, grade = null, message = "Added ${top.name} (${top.number})" + (grade?.let { g -> " · ${g.label}" } ?: ""), addedCount = it.addedCount + 1)
+                            it.copy(loading = false, grade = null, message = grade?.let { g -> AppStrings.get(R.string.scan_added_auto_graded, top.name, top.number, g.label) } ?: AppStrings.get(R.string.scan_added_auto, top.name, top.number), addedCount = it.addedCount + 1)
                         }
                     } else {
                         state.update { it.copy(loading = false, candidates = candidates) }
@@ -183,8 +187,8 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         val qty = r.quantity
         viewModelScope.launch {
             runCatching { repo.add(r) }
-                .onSuccess { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Added ${c.name} ×$qty", addedCount = s.addedCount + qty) } }
-                .onFailure { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = "Could not save: ${it.message}") } }
+                .onSuccess { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = AppStrings.get(R.string.scan_added_qty, c.name, qty), addedCount = s.addedCount + qty) } }
+                .onFailure { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = AppStrings.get(R.string.scan_could_not_save, it.message.toString())) } }
             cooldownUntil = System.currentTimeMillis() + 3000
         }
     }
@@ -217,11 +221,11 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
 
     if (!granted) {
         Column(Modifier.fillMaxSize().padding(32.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("The camera is used to read the card number. Images never leave your phone.", textAlign = TextAlign.Center)
+            Text(stringResource(R.string.scan_camera_rationale), textAlign = TextAlign.Center)
             Spacer(Modifier.height(16.dp))
-            Button(onClick = { launcher.launch(Manifest.permission.CAMERA) }) { Text("Allow camera") }
+            Button(onClick = { launcher.launch(Manifest.permission.CAMERA) }) { Text(stringResource(R.string.scan_allow_camera)) }
             Spacer(Modifier.height(8.dp))
-            OutlinedButton(onClick = onPhotos) { Text("Import photos instead") }
+            OutlinedButton(onClick = onPhotos) { Text(stringResource(R.string.scan_import_instead)) }
         }
         return
     }
@@ -244,13 +248,13 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
                     )
                 }
                 FilledTonalIconButton(onClick = { torch = !torch; camera?.cameraControl?.enableTorch(torch) }) {
-                    Icon(if (torch) Icons.Default.FlashOff else Icons.Default.FlashOn, "Torch")
+                    Icon(if (torch) Icons.Default.FlashOff else Icons.Default.FlashOn, stringResource(R.string.scan_torch))
                 }
             }
             FilterChip(
                 selected = settings.quickAdd,
                 onClick = { scope.launch { repo.settings.setQuickAdd(!settings.quickAdd) } },
-                label = { Text(if (settings.quickAdd) "Quick add ON — cards are added automatically" else "Quick add OFF — confirm each card") },
+                label = { Text(if (settings.quickAdd) stringResource(R.string.scan_quick_add_on) else stringResource(R.string.scan_quick_add_off)) },
                 colors = FilterChipDefaults.filterChipColors(containerColor = Color.Black.copy(alpha = 0.5f), labelColor = Color.White),
             )
         }
@@ -262,22 +266,22 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
         ) {
             if (state.loading) CircularProgressIndicator(Modifier.size(28.dp), color = Color.White)
             Text(
-                state.message ?: state.reading?.let { "Reading $it…" } ?: "Fill the frame with the card. Keep the number at the bottom sharp and well lit — tap the screen to focus.",
+                state.message ?: state.reading?.let { stringResource(R.string.scan_reading, it) } ?: stringResource(R.string.scan_hint),
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium,
             )
-            if (state.addedCount > 0) Text("${state.addedCount} added this session", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
+            if (state.addedCount > 0) Text(pluralStringResource(R.plurals.scan_added_this_session, state.addedCount, state.addedCount), color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = onPhotos) {
                     Icon(Icons.Default.PhotoLibrary, null)
                     Spacer(Modifier.size(8.dp))
-                    Text("From photos")
+                    Text(stringResource(R.string.scan_from_photos))
                 }
                 Button(onClick = onManual) {
                     Icon(Icons.Default.Keyboard, null)
                     Spacer(Modifier.size(8.dp))
-                    Text("Type it in")
+                    Text(stringResource(R.string.scan_type_it_in))
                 }
             }
         }

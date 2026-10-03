@@ -36,12 +36,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.db.Game
@@ -52,6 +54,7 @@ import com.monkaydee.tcgcatalogue.data.remote.Variant
 import com.monkaydee.tcgcatalogue.scan.CardTextParser
 import com.monkaydee.tcgcatalogue.scan.OcrLine
 import com.monkaydee.tcgcatalogue.scan.GradeInfo
+import com.monkaydee.tcgcatalogue.ui.AppStrings
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import com.monkaydee.tcgcatalogue.ui.components.AddRequest
 import com.monkaydee.tcgcatalogue.ui.components.GameChips
@@ -81,7 +84,7 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
                     // "025/165" optionally followed by the name: "025/165 pikachu"
                     val name = q.replace(Regex("""[A-Z]{0,3}\d{1,3}\s?/\s?[A-Z]{0,3}\d{2,3}"""), "").trim().ifEmpty { null }
                     val found = repo.resolve(pokemonNumber.copy(nameGuess = name))
-                    state.update { it.copy(loading = false, candidates = found, message = if (found.isEmpty()) "No card $q" else null) }
+                    state.update { it.copy(loading = false, candidates = found, message = if (found.isEmpty()) AppStrings.get(R.string.search_no_card, q) else null) }
                 } else {
                     val results = repo.search(game, q)
                     val single = results.singleOrNull()?.candidate
@@ -90,11 +93,11 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
                             loading = false,
                             results = if (single != null) emptyList() else results,
                             candidates = listOfNotNull(single),
-                            message = if (results.isEmpty()) "Nothing found for \"$q\"" else null,
+                            message = if (results.isEmpty()) AppStrings.get(R.string.search_nothing_found, q) else null,
                         )
                     }
                 }
-            }.onFailure { e -> state.update { it.copy(loading = false, message = "Search failed: ${e.message}") } }
+            }.onFailure { e -> state.update { it.copy(loading = false, message = AppStrings.get(R.string.search_failed, e.message.toString())) } }
         }
     }
 
@@ -102,7 +105,7 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
         state.update { it.copy(loading = true) }
         viewModelScope.launch {
             val c = runCatching { repo.details(brief) }.getOrNull()
-            state.update { it.copy(loading = false, candidates = listOfNotNull(c), message = if (c == null) "Could not load card" else null) }
+            state.update { it.copy(loading = false, candidates = listOfNotNull(c), message = if (c == null) AppStrings.get(R.string.search_could_not_load) else null) }
         }
     }
 
@@ -111,8 +114,8 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
         val qty = r.quantity
         viewModelScope.launch {
             runCatching { repo.add(r) }
-                .onSuccess { state.update { it.copy(candidates = emptyList(), message = "Added ${c.name} ×$qty") } }
-                .onFailure { e -> state.update { it.copy(candidates = emptyList(), message = "Could not save: ${e.message}") } }
+                .onSuccess { state.update { it.copy(candidates = emptyList(), message = AppStrings.get(R.string.search_added_qty, c.name, qty)) } }
+                .onFailure { e -> state.update { it.copy(candidates = emptyList(), message = AppStrings.get(R.string.search_could_not_save, e.message.toString())) } }
         }
     }
 
@@ -120,14 +123,14 @@ class SearchViewModel(private val repo: CardRepository) : ViewModel() {
 }
 
 private fun searchHint(game: Game) = when (game) {
-    Game.POKEMON -> "Name or number (e.g. Pikachu, 025/165)"
-    Game.ONE_PIECE -> "Card code (e.g. OP05-060)"
-    Game.MAGIC -> "Name or set + number (e.g. Sheoldred, DMU 107)"
-    Game.DRAGON_BALL_FW -> "Code or name (e.g. FB01-139)"
-    Game.DRAGON_BALL_SUPER -> "Code or name (e.g. BT1-031)"
-    Game.UNION_ARENA -> "Code or name (e.g. UE01BT/BLC-1-001)"
-    Game.WEISS_SCHWARZ -> "Code or name (e.g. HOL/W91-001)"
-    Game.NARUTO -> "Code or name"
+    Game.POKEMON -> R.string.search_hint_pokemon
+    Game.ONE_PIECE -> R.string.search_hint_one_piece
+    Game.MAGIC -> R.string.search_hint_magic
+    Game.DRAGON_BALL_FW -> R.string.search_hint_dragon_ball_fw
+    Game.DRAGON_BALL_SUPER -> R.string.search_hint_dragon_ball_super
+    Game.UNION_ARENA -> R.string.search_hint_union_arena
+    Game.WEISS_SCHWARZ -> R.string.search_hint_weiss_schwarz
+    Game.NARUTO -> R.string.search_hint_naruto
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,8 +145,8 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit, replaceId: Long? = nu
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (replaceId != null) "Find the right card" else "Add a card") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                title = { Text(if (replaceId != null) stringResource(R.string.search_title_replace) else stringResource(R.string.search_title_add)) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.search_back)) } },
             )
         },
     ) { padding ->
@@ -154,8 +157,8 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit, replaceId: Long? = nu
                 onValueChange = { query = it },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                label = { Text(searchHint(game)) },
-                trailingIcon = { IconButton(onClick = { vm.search(game, query) }) { Icon(Icons.Default.Search, "Search") } },
+                label = { Text(stringResource(searchHint(game))) },
+                trailingIcon = { IconButton(onClick = { vm.search(game, query) }) { Icon(Icons.Default.Search, stringResource(R.string.search_search)) } },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { vm.search(game, query) }),
             )
@@ -189,7 +192,7 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit, replaceId: Long? = nu
             settings,
             repo,
             initial = original,
-            confirmLabel = "Replace",
+            confirmLabel = stringResource(R.string.search_replace),
             onAdd = { r ->
                 vm.dismiss()
                 scope.launch {
