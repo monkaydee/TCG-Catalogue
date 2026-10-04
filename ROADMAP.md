@@ -59,6 +59,20 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 
 ---
 
+## P0 status (October 2026)
+
+| # | Item | Status |
+|---|---|---|
+| 1–2 | Golden set + recognition check in CI | **Done**: shared `PhotoIdentifier`, `GoldenSetTest`, `recognition.yml`; waiting for the photos in a private repo (docs/GOLDEN_SET.md) |
+| 3 | "Wrong card?" → test case | **Done**: corrections are kept automatically, confirmed imports optionally; export in Settings |
+| 4 | One scoring for all signals | **Partly**: number results are checked against the printed name (all languages), contradictions and picture / new-card finds never auto-add. A single score formula follows once the golden set measures it. |
+| 5 | Offline name index in all languages | **Done** for Pokémon (EN/DE/FR/IT/ES/PT, daily) |
+| 6 | Newest cards on day one | **Done** for Pokémon (TCGplayer list of promos and the last 180 days) |
+| 7 | Small print reading | **Done**: enlarged bottom-strip OCR when no number is read |
+| 8 | Debug view | **Done**: long-press an imported photo |
+| 9 | Price confidence | **Done** for eBay prices (listings, range, date) |
+| 10 | Language price coverage | **Waiting**: Cardmarket API needs a seller account (owner); eBay by language in use |
+
 ## P0: Right card, right price (now)
 
 | # | What | Why / how | Effort |
