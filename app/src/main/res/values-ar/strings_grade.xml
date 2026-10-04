@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">تآكل شديد</string>
     <string name="grade_disclaimer">تقدير من الصور، معايَر على مسوحات PSA لبطاقات مقيّمة. لا يتم فحص خدوش السطح أو الانبعاجات أو خطوط الطباعة. تقرر شركات التقييم يدويًا، لذا قد تختلف الدرجة الفعلية.</string>
     <string name="grade_again">تقييم مبدئي لبطاقة أخرى</string>
+    <string name="grade_centering_explain">50/50 مثالي. يسمح PSA 10 حتى 55/45 في الأمام و75/25 في الخلف.</string>
+    <string name="grade_centering_good">متمركزة جيدًا</string>
+    <string name="grade_centering_off">غير متمركزة</string>
+    <string name="grade_no_frame">لا يوجد إطار مطبوع للقياس (طبيعي لهذا الظهر)</string>
 </resources>

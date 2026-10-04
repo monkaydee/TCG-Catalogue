@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">duże zużycie</string>
     <string name="grade_disclaimer">Szacunek na podstawie zdjęć, skalibrowany na skanach kart ocenionych przez PSA. Rysy na powierzchni, wgniecenia i linie druku nie są sprawdzane. Firmy gradingowe oceniają ręcznie, więc rzeczywista ocena może się różnić.</string>
     <string name="grade_again">Oceń kolejną kartę</string>
+    <string name="grade_centering_explain">50/50 to ideał. PSA 10 dopuszcza do 55/45 z przodu i 75/25 z tyłu.</string>
+    <string name="grade_centering_good">dobrze wyśrodkowana</string>
+    <string name="grade_centering_off">niewyśrodkowana</string>
+    <string name="grade_no_frame">brak nadrukowanej ramki do pomiaru (normalne dla tego rewersu)</string>
 </resources>

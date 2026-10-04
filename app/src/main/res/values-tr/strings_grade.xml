@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">ağır aşınma</string>
     <string name="grade_disclaimer">Fotoğraflardan yapılan bir tahmindir; derecelendirilmiş kartların PSA taramalarıyla kalibre edilmiştir. Yüzey çizikleri, ezikler ve baskı çizgileri kontrol edilmez. Derecelendirme şirketleri elle karar verir, bu yüzden gerçek not farklı olabilir.</string>
     <string name="grade_again">Başka bir kartı ön derecelendir</string>
+    <string name="grade_centering_explain">50/50 kusursuzdur. PSA 10 önde 55/45, arkada 75/25\'e kadar izin verir.</string>
+    <string name="grade_centering_good">iyi ortalanmış</string>
+    <string name="grade_centering_off">ortalanmamış</string>
+    <string name="grade_no_frame">ölçülecek baskılı çerçeve yok (bu arka yüz için normal)</string>
 </resources>

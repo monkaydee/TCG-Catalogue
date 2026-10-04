@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">ज़्यादा घिसावट</string>
     <string name="grade_disclaimer">फ़ोटो से लगाया गया अनुमान, ग्रेड किए गए कार्ड के PSA स्कैन पर कैलिब्रेट किया गया। सतह की खरोंचें, डेंट और प्रिंट लाइनें जाँची नहीं जातीं। ग्रेडिंग कंपनियाँ हाथ से तय करती हैं, इसलिए असली ग्रेड अलग हो सकता है।</string>
     <string name="grade_again">दूसरे कार्ड की प्री-ग्रेडिंग करें</string>
+    <string name="grade_centering_explain">50/50 एकदम सही है। PSA 10 में आगे 55/45 और पीछे 75/25 तक चलता है।</string>
+    <string name="grade_centering_good">अच्छी तरह केंद्रित</string>
+    <string name="grade_centering_off">केंद्र से हटी</string>
+    <string name="grade_no_frame">मापने के लिए छपा फ़्रेम नहीं (इस पिछले हिस्से के लिए सामान्य)</string>
 </resources>

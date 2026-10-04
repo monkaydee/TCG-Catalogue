@@ -56,4 +56,8 @@
 
     <string name="grade_disclaimer">An estimate from photos, calibrated on PSA scans of graded cards. Surface scratches, dents and print lines are not checked. Grading companies decide by hand, so the real grade can differ.</string>
     <string name="grade_again">Pre-grade another card</string>
+    <string name="grade_centering_explain">50/50 is perfect. A PSA 10 allows up to 55/45 on the front and 75/25 on the back.</string>
+    <string name="grade_centering_good">well centred</string>
+    <string name="grade_centering_off">off-centre</string>
+    <string name="grade_no_frame">no printed frame to measure (normal for this back)</string>
 </resources>

@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">mòn nặng</string>
     <string name="grade_disclaimer">Ước tính từ ảnh, được hiệu chỉnh trên ảnh quét PSA của thẻ đã chấm điểm. Không kiểm tra vết xước bề mặt, vết lõm và vệt in. Các công ty chấm điểm đánh giá thủ công, nên điểm thực tế có thể khác.</string>
     <string name="grade_again">Chấm điểm sơ bộ thẻ khác</string>
+    <string name="grade_centering_explain">50/50 là hoàn hảo. PSA 10 cho phép tới 55/45 mặt trước và 75/25 mặt sau.</string>
+    <string name="grade_centering_good">căn giữa tốt</string>
+    <string name="grade_centering_off">lệch tâm</string>
+    <string name="grade_no_frame">không có khung in để đo (bình thường với mặt sau này)</string>
 </resources>

@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">starke Abnutzung</string>
     <string name="grade_disclaimer">Eine Schätzung anhand von Fotos, kalibriert mit PSA-Scans gegradeter Karten. Kratzer auf der Oberfläche, Dellen und Drucklinien werden nicht geprüft. Grading-Firmen bewerten von Hand, daher kann die echte Note abweichen.</string>
     <string name="grade_again">Weitere Karte pre-graden</string>
+    <string name="grade_centering_explain">50/50 ist perfekt. PSA 10 erlaubt bis 55/45 vorne und 75/25 hinten.</string>
+    <string name="grade_centering_good">gut zentriert</string>
+    <string name="grade_centering_off">dezentriert</string>
+    <string name="grade_no_frame">kein gedruckter Rahmen zum Messen (normal bei dieser Rückseite)</string>
 </resources>

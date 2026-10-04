@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">forte usure</string>
     <string name="grade_disclaimer">Une estimation à partir de photos, calibrée sur des scans PSA de cartes gradées. Les rayures de surface, bosses et lignes d\'impression ne sont pas vérifiées. Les sociétés de grading évaluent à la main, la note réelle peut donc différer.</string>
     <string name="grade_again">Pré-grader une autre carte</string>
+    <string name="grade_centering_explain">50/50 est parfait. Un PSA 10 tolère jusqu\'à 55/45 au recto et 75/25 au verso.</string>
+    <string name="grade_centering_good">bien centrée</string>
+    <string name="grade_centering_off">décentrée</string>
+    <string name="grade_no_frame">pas de cadre imprimé à mesurer (normal pour ce verso)</string>
 </resources>

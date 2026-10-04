@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">zware slijtage</string>
     <string name="grade_disclaimer">Een schatting op basis van foto’s, gekalibreerd op PSA-scans van gegradede kaarten. Krassen op het oppervlak, deukjes en printlijnen worden niet gecontroleerd. Gradingbedrijven beoordelen met de hand, dus de echte grade kan afwijken.</string>
     <string name="grade_again">Nog een kaart pre-graden</string>
+    <string name="grade_centering_explain">50/50 is perfect. PSA 10 staat tot 55/45 voor en 75/25 achter toe.</string>
+    <string name="grade_centering_good">goed gecentreerd</string>
+    <string name="grade_centering_off">uit het midden</string>
+    <string name="grade_no_frame">geen gedrukte rand om te meten (normaal voor deze achterkant)</string>
 </resources>

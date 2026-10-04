@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">ひどい傷み</string>
     <string name="grade_disclaimer">写真からの推定値で、鑑定済みカードのPSAスキャンで調整しています。表面の傷、へこみ、印刷線はチェックしていません。鑑定会社は人の手で判定するため、実際のグレードは異なる場合があります。</string>
     <string name="grade_again">別のカードをプレグレード</string>
+    <string name="grade_centering_explain">50/50が理想です。PSA 10は表55/45、裏75/25まで許容します。</string>
+    <string name="grade_centering_good">良好なセンタリング</string>
+    <string name="grade_centering_off">センターずれ</string>
+    <string name="grade_no_frame">測れる印刷枠がありません（この裏面では通常です）</string>
 </resources>

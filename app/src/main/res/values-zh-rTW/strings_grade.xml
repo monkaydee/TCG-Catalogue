@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">嚴重磨損</string>
     <string name="grade_disclaimer">根據照片估算，依 PSA 評級卡掃描圖校準。不檢查表面刮痕、凹痕與印刷線。評級公司以人工評定，實際評級可能不同。</string>
     <string name="grade_again">預評級另一張卡</string>
+    <string name="grade_centering_explain">50/50 為完美。PSA 10 允許正面最多 55/45，背面 75/25。</string>
+    <string name="grade_centering_good">置中良好</string>
+    <string name="grade_centering_off">偏心</string>
+    <string name="grade_no_frame">沒有可測量的印刷邊框（此背面屬正常）</string>
 </resources>

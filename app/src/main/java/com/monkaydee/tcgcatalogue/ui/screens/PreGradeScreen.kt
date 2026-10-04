@@ -331,8 +331,9 @@ private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, onRedo: (
         }
         // Centering
         Section(stringResource(R.string.grade_centering)) {
-            CenteringLine(stringResource(R.string.grade_front), front?.centering)
-            CenteringLine(stringResource(R.string.grade_back), back?.centering)
+            CenteringLine(stringResource(R.string.grade_front), front?.centering, limit = 55.0)
+            CenteringLine(stringResource(R.string.grade_back), back?.centering, limit = 75.0)
+            Text(stringResource(R.string.grade_centering_explain), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
             Centering.Company.entries.forEach { co ->
                 Text(
@@ -370,16 +371,28 @@ private fun Section(title: String, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun CenteringLine(label: String, c: Centering.Result?) {
-    Row(Modifier.fillMaxWidth()) {
-        Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+private fun CenteringLine(label: String, c: Centering.Result?, limit: Double) {
+    Column(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth()) {
+            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text(
+                c?.let {
+                    val lr = it.leftRight
+                    val tb = it.topBottom
+                    "↔ %.0f/%.0f · ↕ %.0f/%.0f".format(lr, 100 - lr, tb, 100 - tb)
+                } ?: "–",
+                style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium,
+            )
+        }
+        val good = c != null && c.worst <= limit
         Text(
-            c?.let {
-                val lr = it.leftRight
-                val tb = it.topBottom
-                "%.0f/%.0f · %.0f/%.0f".format(lr, 100 - lr, tb, 100 - tb)
-            } ?: stringResource(R.string.grade_not_measurable),
-            style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium,
+            when {
+                c == null -> stringResource(R.string.grade_no_frame)
+                good -> stringResource(R.string.grade_centering_good)
+                else -> stringResource(R.string.grade_centering_off)
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = if (c != null && !good) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

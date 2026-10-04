@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">сильне зношення</string>
     <string name="grade_disclaimer">Оцінка за фотографіями, відкалібрована на сканах PSA грейдованих карт. Подряпини на поверхні, вм\'ятини й смуги друку не перевіряються. Грейдингові компанії оцінюють вручну, тому реальна оцінка може відрізнятися.</string>
     <string name="grade_again">Оцінити іншу карту</string>
+    <string name="grade_centering_explain">50/50 — ідеально. PSA 10 допускає до 55/45 спереду і 75/25 ззаду.</string>
+    <string name="grade_centering_good">добре відцентрована</string>
+    <string name="grade_centering_off">зміщена</string>
+    <string name="grade_no_frame">немає друкованої рамки для вимірювання (нормально для цієї сорочки)</string>
 </resources>

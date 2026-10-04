@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">kraftigt slitage</string>
     <string name="grade_disclaimer">En uppskattning från foton, kalibrerad mot PSA-skanningar av graderade kort. Repor på ytan, bucklor och tryckränder kontrolleras inte. Graderingsföretagen bedömer för hand, så den verkliga graden kan skilja sig.</string>
     <string name="grade_again">Förgradera ett annat kort</string>
+    <string name="grade_centering_explain">50/50 är perfekt. PSA 10 tillåter upp till 55/45 fram och 75/25 bak.</string>
+    <string name="grade_centering_good">väl centrerad</string>
+    <string name="grade_centering_off">snedcentrerad</string>
+    <string name="grade_no_frame">ingen tryckt ram att mäta (normalt för denna baksida)</string>
 </resources>

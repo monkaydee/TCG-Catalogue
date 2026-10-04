@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">desgaste forte</string>
     <string name="grade_disclaimer">Uma estimativa a partir de fotos, calibrada com scans da PSA de cartas graduadas. Arranhões na superfície, amassados e linhas de impressão não são verificados. As empresas de graduação avaliam manualmente, então a nota real pode ser diferente.</string>
     <string name="grade_again">Pré-avaliar outra carta</string>
+    <string name="grade_centering_explain">50/50 é perfeito. Um PSA 10 permite até 55/45 na frente e 75/25 no verso.</string>
+    <string name="grade_centering_good">bem centralizada</string>
+    <string name="grade_centering_off">descentralizada</string>
+    <string name="grade_no_frame">sem moldura impressa para medir (normal neste verso)</string>
 </resources>

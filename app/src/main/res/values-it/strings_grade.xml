@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">forte usura</string>
     <string name="grade_disclaimer">Una stima basata su foto, calibrata su scansioni PSA di carte gradate. Graffi superficiali, ammaccature e linee di stampa non vengono controllati. Le società di grading valutano a mano, quindi il voto reale può differire.</string>
     <string name="grade_again">Pre-grading di un\'altra carta</string>
+    <string name="grade_centering_explain">50/50 è perfetto. Un PSA 10 ammette fino a 55/45 sul fronte e 75/25 sul retro.</string>
+    <string name="grade_centering_good">ben centrata</string>
+    <string name="grade_centering_off">decentrata</string>
+    <string name="grade_no_frame">nessuna cornice stampata da misurare (normale per questo retro)</string>
 </resources>

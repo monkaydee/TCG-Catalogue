@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">สึกมาก</string>
     <string name="grade_disclaimer">เป็นการประเมินจากรูปถ่าย ปรับเทียบกับภาพสแกนการ์ดเกรดของ PSA ไม่ได้ตรวจรอยขีดข่วนบนพื้นผิว รอยบุบ และเส้นพิมพ์ บริษัทเกรดตัดสินด้วยคน เกรดจริงจึงอาจต่างออกไป</string>
     <string name="grade_again">ประเมินเกรดการ์ดใบอื่น</string>
+    <string name="grade_centering_explain">50/50 คือสมบูรณ์แบบ PSA 10 ยอมให้ถึง 55/45 ด้านหน้า และ 75/25 ด้านหลัง</string>
+    <string name="grade_centering_good">อยู่กึ่งกลางดี</string>
+    <string name="grade_centering_off">ไม่อยู่กึ่งกลาง</string>
+    <string name="grade_no_frame">ไม่มีกรอบพิมพ์ให้วัด (ปกติสำหรับด้านหลังนี้)</string>
 </resources>

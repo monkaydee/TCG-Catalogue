@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">aus berat</string>
     <string name="grade_disclaimer">Perkiraan dari foto, dikalibrasi dengan scan PSA dari kartu yang sudah di-grade. Goresan permukaan, penyok, dan garis cetak tidak diperiksa. Perusahaan grading menilai secara manual, jadi grade sebenarnya bisa berbeda.</string>
     <string name="grade_again">Pre-grade kartu lain</string>
+    <string name="grade_centering_explain">50/50 sempurna. PSA 10 mengizinkan hingga 55/45 di depan dan 75/25 di belakang.</string>
+    <string name="grade_centering_good">tengah dengan baik</string>
+    <string name="grade_centering_off">tidak di tengah</string>
+    <string name="grade_no_frame">tidak ada bingkai cetak untuk diukur (normal untuk sisi belakang ini)</string>
 </resources>

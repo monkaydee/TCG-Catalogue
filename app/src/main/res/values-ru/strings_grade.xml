@@ -45,4 +45,8 @@
     <string name="grade_zone_heavy">сильный износ</string>
     <string name="grade_disclaimer">Оценка по фотографиям, откалиброванная на сканах PSA грейдированных карт. Царапины на поверхности, вмятины и полосы печати не проверяются. Грейдинговые компании оценивают вручную, поэтому реальная оценка может отличаться.</string>
     <string name="grade_again">Оценить другую карту</string>
+    <string name="grade_centering_explain">50/50 — идеально. PSA 10 допускает до 55/45 спереди и 75/25 сзади.</string>
+    <string name="grade_centering_good">хорошо отцентрована</string>
+    <string name="grade_centering_off">смещена</string>
+    <string name="grade_no_frame">нет печатной рамки для измерения (нормально для этой рубашки)</string>
 </resources>
