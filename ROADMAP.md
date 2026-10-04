@@ -35,6 +35,7 @@ Two rules apply to everything here:
   - predictive back;
   - right-to-left layout.
 - **Price server:** free Cloudflare Worker with the provider keys, shared cache and per-provider budgets (`worker/`, docs/CLOUDFLARE.md); graded prices on the card page and in the collection value; PSA cert check; optional online identification (Ximilar).
+- **Pre-grader (Standard, first version):** front and back photo (camera with card guide or gallery), card found and straightened on the phone, centering against PSA / BGS / CGC limits, corner and edge wear per zone, a likely PSA range calibrated on PSA scans of graded cards (scripts/pregrade/). Free for now.
 - **Engineering:**
   - screenshot tests in CI;
   - crash reports through GitHub issue / share;
@@ -87,6 +88,8 @@ All on the phone. No photos are uploaded and there is no cost per scan. The meas
 | 7. Calibration | A benchmark set: cards with known grades (our own slabs, cracked-out cards, volunteers). Measure how often we're within one grade. Use Ximilar's free test credits on the same photos as a second reference. Only release when the numbers are good. | M |
 | 8. Paid tier | Google Play Billing: Standard as a one-time purchase or a small subscription, with a few free checks to try it. Needs the $25 Play account. | M |
 | 9. "Worth grading?" | Combines pre-grade and graded prices: expected value after grading (chance × price per grade) minus grading fee and shipping, against the raw price. | S |
+
+**Status:** steps 1–4, 6 and a first calibration are in the app. The grade model is fitted on about 13,000 PSA-graded cards (front and back cert scans) (Hugging Face `jyesr/pokemon-tcg-grading`, see scripts/pregrade/DATASETS.md); on held-out cards it is within one grade 87 % of the time (always guessing PSA 10 would be 82 %). It sorts better and worse cards apart, but it can't tell a 9 from a 10 reliably yet, because many 9s miss the 10 on surface flaws Standard doesn't see. Next: a boosted-tree model (tested: clearly better separation), more dataset shards, the Pokémon back template for registration-based centering, a benchmark of real phone photos with known grades, then step 5 and step 8.
 
 **Pre-grading Pro (later):** surface scratches, print lines, dents and stains need a stronger model and very good light (raking light, several photos). It builds on the pre-grading repo once Standard is calibrated.
 

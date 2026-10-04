@@ -154,6 +154,7 @@ fun AppNav(repo: CardRepository) {
                     onSold = { nav.navigate("sold") },
                     onSealed = { nav.navigate("sealed") },
                     onSettings = { goTab("settings") },
+                    onPreGrade = { nav.navigate("pregrade") },
                 )
             }
             composable("wishlist") { WishlistScreen(repo, onBack = { nav.popBackStack() }) }
@@ -209,7 +210,13 @@ fun AppNav(repo: CardRepository) {
                 )
             }
             composable("card/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->
-                CardScreen(repo, e.arguments!!.getLong("id"), onBack = { nav.popBackStack() }, onReplace = { nav.navigate("search?replace=$it") })
+                CardScreen(
+                    repo, e.arguments!!.getLong("id"), onBack = { nav.popBackStack() }, onReplace = { nav.navigate("search?replace=$it") },
+                    onPreGrade = { name -> nav.navigate("pregrade?title=${android.net.Uri.encode(name)}") },
+                )
+            }
+            composable("pregrade?title={title}", arguments = listOf(navArgument("title") { type = NavType.StringType; nullable = true; defaultValue = null })) { e ->
+                com.monkaydee.tcgcatalogue.ui.screens.PreGradeScreen(e.arguments?.getString("title"), onBack = { nav.popBackStack() })
             }
         }
     }

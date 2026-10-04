@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -89,7 +93,7 @@ object CardBrowse {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (Long) -> Unit = {}) {
+fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (Long) -> Unit = {}, onPreGrade: (String) -> Unit = {}) {
     val all by repo.cards.collectAsState(initial = null)
     val s by repo.settings.flow.collectAsState(initial = AppSettings())
     val scope = rememberCoroutineScope()
@@ -166,6 +170,7 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
                     )
                 },
                 onAlert = { alertId = card.id },
+                onPreGrade = { onPreGrade("${card.name} · ${card.number}") },
             )
         }
     }
@@ -239,6 +244,7 @@ private fun CardDetail(
     tilt: State<Offset>,
     actions: @Composable () -> Unit,
     onAlert: () -> Unit,
+    onPreGrade: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val history by remember(c.id) { repo.priceHistory(c.id) }.collectAsState(initial = emptyList())
@@ -316,6 +322,13 @@ private fun CardDetail(
             }
         }
         actions()
+        if (!c.graded) {
+            OutlinedButton(onClick = onPreGrade, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Default.Straighten, null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.grade_open))
+            }
+        }
         ActiveAlerts(c, s, onAlert)
         PriceHistoryCard(history, s)
         PriceLinks(c, s)

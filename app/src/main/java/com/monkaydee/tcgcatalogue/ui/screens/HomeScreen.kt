@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Paid
@@ -149,6 +150,7 @@ fun HomeScreen(
     onSold: () -> Unit = {},
     onSealed: () -> Unit = {},
     onSettings: () -> Unit = {},
+    onPreGrade: () -> Unit = {},
 ) {
     val vm: HomeViewModel = viewModel { HomeViewModel(repo) }
     val state by vm.state.collectAsState()
@@ -173,6 +175,7 @@ fun HomeScreen(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = onBinder) { Icon(Icons.AutoMirrored.Filled.MenuBook, stringResource(R.string.home_binder)) }
+                    IconButton(onClick = onPreGrade) { Icon(Icons.Default.Straighten, stringResource(R.string.grade_open)) }
                     IconButton(onClick = onPhotos) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.home_import_photos)) }
                     IconButton(onClick = onSearch) { Icon(Icons.Default.Search, stringResource(R.string.home_search)) }
                     if (refreshing) {
