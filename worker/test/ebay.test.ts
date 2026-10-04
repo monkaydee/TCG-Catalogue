@@ -12,6 +12,8 @@ describe("ebay", () => {
     expect(gradeInTitle("Flareon PSA NM-MT 8")).toEqual({ grader: "PSA", grade: "8" });
     expect(gradeInTitle("Flareon PSA 9 and PSA 10 lot")).toBeNull();
     expect(gradeInTitle("Flareon holo raw")).toBeNull();
+    expect(gradeInTitle("Flareon 3/64 CGC 9.5 Mint+")).toEqual({ grader: "CGC", grade: "9.5" });
+    expect(gradeInTitle("Flareon 3/64 SGC 10 Gold Label")).toEqual({ grader: "SGC", grade: "10" });
   });
 
   it("needs name and number in the title", () => {

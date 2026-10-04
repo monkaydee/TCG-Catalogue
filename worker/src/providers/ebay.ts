@@ -17,7 +17,9 @@ import { fetchJson, obj, price, str } from "../util";
 const API = "https://api.ebay.com";
 /** eBay's "CCG Individual Cards" category (Pokémon, One Piece, Magic, …). */
 const SINGLES = "183454";
-const GRADERS = ["PSA", "BGS", "CGC", "SGC", "TAG", "ACE"];
+const GRADERS = ["PSA", "BGS", "CGC", "SGC", "TAG", "ACE", "AOG", "GSG"];
+/** Special 10s that sell far above a plain 10: never counted as one. */
+const SPECIAL_TEN = /\b(black\s*label|pristine)\b/i;
 const NOT_A_SINGLE = /\b(lot|bundle|proxy|custom|reprint|orica|fan ?art|digital|choose|pick|you pick|break|box|pack|empty|label only)\b/i;
 
 let token: { value: string; expires: number } | null = null;
@@ -118,7 +120,7 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
     const value = price(typeof p.value === "string" ? Number(p.value) : p.value);
     if (value === null || str(p.currency) !== marketplace(card.language).currency || !titleMatches(title, card)) continue;
     const g = gradeInTitle(title);
-    if (!g) continue;
+    if (!g || (g.grade === "10" && SPECIAL_TEN.test(title))) continue;
     const k = `${g.grader}|${g.grade}`;
     by.set(k, [...(by.get(k) ?? []), value]);
   }
@@ -185,7 +187,21 @@ export function ebay(): GradedProvider {
     supports: (card) => !!card.name,
     async fetch(cards, key): Promise<BatchResult<GradedPrice[]>> {
       const card = cards[0];
-      const graded = parseEbay(await search(card, key, "graded"), card);
+      // PSA fills most results, so the other companies get a search of their own.
+      const [all, others] = await Promise.all([
+        search(card, key, "graded"),
+        search(card, key, "-psa (bgs,cgc,sgc,tag,ace,beckett)"),
+      ]);
+      const seen = new Set<string>();
+      const items = [all, others]
+        .flatMap((j) => (Array.isArray(obj(j).itemSummaries) ? (obj(j).itemSummaries as unknown[]) : []))
+        .filter((it) => {
+          const id = str(obj(it).itemId) ?? str(obj(it).title) ?? "";
+          if (seen.has(id)) return false;
+          seen.add(id);
+          return true;
+        });
+      const graded = parseEbay({ itemSummaries: items }, card);
       return new Map(graded.length ? [[card.key, graded]] : []);
     },
   };
