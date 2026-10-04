@@ -24,8 +24,7 @@ android {
         fun env(name: String) = System.getenv(name).orEmpty().trim().filter { it.isLetterOrDigit() || it in ":/._-~" }
         buildConfigField("String", "PRICE_SERVER_URL", "\"${env("PRICE_SERVER_URL")}\"")
         buildConfigField("String", "PRICE_SERVER_KEY", "\"${env("PRICE_SERVER_KEY")}\"")
-        // Phones only; drops the emulator (x86) native libraries that ML Kit ships.
-        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -44,6 +43,9 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
+            // Phones only; drops the emulator (x86) native libraries that ML Kit ships. Debug keeps
+            // them, so the recognition test (golden set) can run on an emulator in CI.
+            ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -69,6 +71,8 @@ ksp {
 }
 
 dependencies {
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.appcompat)

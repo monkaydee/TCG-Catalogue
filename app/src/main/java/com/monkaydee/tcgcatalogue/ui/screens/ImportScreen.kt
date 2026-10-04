@@ -118,6 +118,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     private val queue = Channel<Uri>(Channel.UNLIMITED)
     private var nextKey = 0L
     private val dir = File(context.cacheDir, "imports").apply { mkdirs() }
+    private val identifier = com.monkaydee.tcgcatalogue.scan.PhotoIdentifier(context, repo)
 
     init {
         // Photos are read one at a time to keep memory use low.
@@ -149,13 +150,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     private suspend fun process(photo: Uri) {
         val placeholder = state.value.items.firstOrNull { it.photo == photo && it.status == ImportStatus.READING } ?: return
-        val filter = state.value.filter
-        val enabled = repo.settings.current().enabledGames
-        val result = runCatching {
-            PhotoRecognizer.recognize(context, photo) { lines ->
-                CardTextParser.parseAll(lines, filter, repo.indexMatchers(enabled)).filter { filter != null || it.game in enabled }
-            }
-        }
+        val result = runCatching { identifier.read(photo, state.value.filter) }
         if (result.isFailure) {
             replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_could_not_open_photo))))
             return
@@ -163,8 +158,8 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         val found = result.getOrThrow()
         if (found.hits.isEmpty()) {
             // No number could be read: look the card up by its picture straight away.
-            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.LOOKING_UP)))
-            replace(placeholder.key, listOf(byPicture(placeholder, found.texts)))
+            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.LOOKING_UP, texts = found.texts)))
+            replace(placeholder.key, listOf(byPicture(placeholder.copy(texts = found.texts), found.texts)))
             return
         }
         val items = found.hits.mapIndexed { i, hit ->
@@ -176,12 +171,14 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     private suspend fun lookUp(item: ImportItem) {
         val hit = item.hit ?: return
-        val result = runCatching { VisualMatcher.rank(context, item.picture, repo.checkedByName(repo.resolve(hit), item.texts), VisualMatcher.Source.PHOTO) }
-        val candidates = result.getOrDefault(emptyList())
+        val result = runCatching { identifier.lookUp(item.photo, hit, item.grade, item.picture, item.texts, state.value.filter) }
+        val found = result.getOrNull()
+        val candidates = found?.candidates.orEmpty()
         val updated = when {
-            result.isFailure -> item.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_lookup_failed))
-            // The number led nowhere (misread, or a print the databases don't have): try the picture.
-            candidates.isEmpty() -> byPicture(item, item.texts).let { if (it.candidates.isEmpty()) item.copy(status = ImportStatus.NOT_FOUND) else it }
+            found == null -> item.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_lookup_failed))
+            candidates.isEmpty() -> item.copy(status = ImportStatus.NOT_FOUND)
+            // found by the picture after the number led nowhere: always for review
+            found.byPicture -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, note = null)
             repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
                 val grade = item.grade?.takeIf { it.grader != null && it.grade != null }
@@ -206,7 +203,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     /** A photo without a readable number: look the card up by its picture alone. */
     fun findByPicture(item: ImportItem) {
         replace(item.key, listOf(item.copy(status = ImportStatus.LOOKING_UP, note = null)))
-        viewModelScope.launch { replace(item.key, listOf(byPicture(item, emptyList()))) }
+        viewModelScope.launch { replace(item.key, listOf(byPicture(item, item.texts))) }
     }
 
     /**
@@ -214,17 +211,11 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
      * own), as a picture can't tell reprints with the same art apart. [texts] is what could be read.
      */
     private suspend fun byPicture(item: ImportItem, texts: List<String>): ImportItem {
-        val games = state.value.filter?.let { setOf(it) } ?: repo.settings.current().enabledGames
-        val result = com.monkaydee.tcgcatalogue.data.remote.attempt {
-            val photo = PhotoRecognizer.loadSmall(context, item.photo)
-            val crops = PictureSearch.crops(photo, fromCamera = false)
-            repo.candidatesFromPicture(PictureSearch.find(context, crops, CardTextParser.gameFromPrint(texts)?.takeIf { it in games }?.let { setOf(it) } ?: games), texts)
-        }
-        val found = result.getOrDefault(emptyList())
+        val found = identifier.byPicture(item.photo, texts, state.value.filter, item.hit)
         return when {
-            result.isFailure -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_unavailable))
-            found.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_none))
-            else -> item.copy(status = ImportStatus.REVIEW, candidates = found, note = null)
+            found.pictureUnavailable -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_unavailable))
+            found.candidates.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_none))
+            else -> item.copy(status = ImportStatus.REVIEW, candidates = found.candidates, note = null)
         }
     }
 

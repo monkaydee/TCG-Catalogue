@@ -10,3 +10,4 @@ build/
 *.keystore
 !debug.keystore
 __pycache__/
+/app/src/androidTest/assets/golden/

@@ -1,0 +1,80 @@
+name: Recognition test
+
+# Runs the photo recognition on the golden set (real card photos with the right answers) on an
+# Android emulator and writes the score to the run summary. The photos live in a private
+# repository (variable GOLDEN_REPO, e.g. "monkaydee/tcg-golden", read with secret GOLDEN_TOKEN);
+# without them the job is skipped. See docs/GOLDEN_SET.md.
+
+on:
+  push:
+    paths:
+      - "app/src/main/**"
+      - "app/src/androidTest/**"
+      - ".github/workflows/recognition.yml"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.c.outputs.ready }}
+    steps:
+      - id: c
+        env:
+          REPO: ${{ vars.GOLDEN_REPO }}
+          TOKEN: ${{ secrets.GOLDEN_TOKEN }}
+        run: |
+          if [ -n "$REPO" ] && [ -n "$TOKEN" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "### Recognition test skipped: no golden set configured (docs/GOLDEN_SET.md)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  golden:
+    needs: check
+    if: needs.check.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Golden set photos
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.GOLDEN_REPO }}
+          token: ${{ secrets.GOLDEN_TOKEN }}
+          path: app/src/androidTest/assets/golden
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: |
+            ./gradlew --no-daemon connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.monkaydee.tcgcatalogue.GoldenSetTest -Pandroid.testInstrumentationRunnerArguments.minExact=${{ vars.GOLDEN_MIN_EXACT || '0' }} || touch failed
+            adb logcat -d -v raw -s GoldenSet:I > golden-report.txt || true
+            test ! -f failed
+
+      - name: Report
+        if: always()
+        run: |
+          echo "### Recognition on the golden set" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f golden-report.txt ]; then
+            { echo '```'; cat golden-report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No report (see the test log)." >> "$GITHUB_STEP_SUMMARY"
+          fi
