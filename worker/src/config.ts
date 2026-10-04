@@ -16,7 +16,7 @@ export const DEFAULT_BUDGETS: Record<ProviderName, Budget> = {
   justtcg: { daily: 90, monthly: 900 }, // free: 100/day, 1,000/month
   tcgapi: { daily: 90, monthly: 0 }, // free: 100/day
   poketrace: { daily: 225, monthly: 0 }, // free: 250/day
-  rapidapi: { daily: 5, monthly: 45 }, // free: 50/month, shared by the TCGplayer and PSA pop APIs
+  rapidapi: { daily: 3, monthly: 22 }, // free: 25/month (TCGplayer Price Data BASIC, hard limit)
   ppt: { daily: 9000, monthly: 0 }, // paid Pro: 20,000 credits/day, 2 credits per graded lookup
   psa: { daily: 90, monthly: 0 }, // free token: 100/day (PSA may have lowered this, see docs)
   ximilar: { daily: 10, monthly: 90 }, // free: 1,000 credits/month, 10 credits per identification

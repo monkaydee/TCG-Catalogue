@@ -1,6 +1,10 @@
 {
+  "success": true,
+  "count": 4,
   "results": [
-    { "name": "Charizard ex - 199/165", "set": "Scarlet & Violet 151", "marketPrice": 128.4, "lowestPrice": 119.99, "url": "https://www.tcgplayer.com/product/517045" },
-    { "name": "Charizard", "set": "Base Set", "number": "4/102", "marketPrice": "430.00", "lowestPrice": 399 }
+    { "productName": "Charizard ex - 199/165", "productLineName": "Pokemon", "setName": "SV: Scarlet & Violet 151", "rarityName": "Special Illustration Rare", "marketPrice": 128.4, "medianPrice": 125, "lowestPrice": 119.99, "url": "https://www.tcgplayer.com/product/517045" },
+    { "productName": "Charizard", "productLineName": "Pokemon", "setName": "Base Set", "rarityName": "Holo Rare", "marketPrice": 430.0, "medianPrice": 410, "lowestPrice": 399 },
+    { "productName": "Charizard", "productLineName": "Pokemon", "setName": "Base Set 2", "rarityName": "Holo Rare", "marketPrice": 180.5 },
+    { "productName": "Charizard", "productLineName": "Magic: The Gathering", "setName": "Base Set", "marketPrice": 1.0 }
   ]
 }

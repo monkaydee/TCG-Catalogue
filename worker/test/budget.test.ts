@@ -68,7 +68,7 @@ describe("budget settings", () => {
   it("defaults are the free tiers minus 10%", () => {
     expect(DEFAULT_BUDGETS.justtcg).toEqual({ daily: 90, monthly: 900 });
     expect(DEFAULT_BUDGETS.tcgapi.daily).toBe(90);
-    expect(DEFAULT_BUDGETS.rapidapi.monthly).toBe(45);
+    expect(DEFAULT_BUDGETS.rapidapi.monthly).toBe(22);
   });
   it("reads overrides from vars and ignores junk", () => {
     const env = { BUDGET_JUSTTCG_DAILY: "50", BUDGET_JUSTTCG_MONTHLY: "oops" } as unknown as Env;

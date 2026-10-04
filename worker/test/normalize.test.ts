@@ -108,11 +108,15 @@ describe("TCG API", () => {
 });
 
 describe("RapidAPI", () => {
-  it("accepts only a search result whose name and number match", () => {
-    const base = card({});
-    expect(parseRapidTcg(rapidSearch, base)?.market).toBe(430);
+  it("uses a search result only when name, game and set or number settle the printing", () => {
+    // Base Set Charizard: the Pokémon one in "Base Set", not Base Set 2 nor a Magic card.
+    expect(parseRapidTcg(rapidSearch, card({}))?.market).toBe(430);
+    // The number in the product name decides.
+    expect(parseRapidTcg(rapidSearch, card({ name: "Charizard ex", set: "151", number: "199/165" }))?.market).toBe(128.4);
     expect(parseRapidTcg(rapidSearch, card({ name: "Blastoise" }))).toBeNull();
-    expect(parseRapidTcg([{ name: "Charizard", price: 5 }], base)?.market).toBe(5);
+    // Several Charizards and nothing to tell them apart: no guess.
+    expect(parseRapidTcg(rapidSearch, card({ set: "Some other set", number: "" }))).toBeNull();
+    expect(parseRapidTcg({ results: [{ productName: "Charizard", productLineName: "Pokemon", setName: "Base Set", marketPrice: 5 }] }, card({}))?.market).toBe(5);
   });
   it("reads the PSA population response", () => {
     expect(parseRapidPop(rapidPop)).toEqual({

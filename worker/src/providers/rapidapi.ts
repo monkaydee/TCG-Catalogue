@@ -1,32 +1,33 @@
 // RapidAPI APIs from https://dev.to/lulzasaur/building-a-trading-card-price-tracker-with-free-apis-4mkg
-// Free tier: 50 requests/month in total, so these are the last resort.
+// Free tier of the TCGplayer search: 25 requests/month (hard limit), so it is the last resort.
 //
-// TCGplayer prices:  GET https://tcgplayer-price-data.p.rapidapi.com/tcgplayer/search?query=…&game=…&limit=5
-//                    Headers: x-rapidapi-key, x-rapidapi-host. Items have name, set, marketPrice,
-//                    lowestPrice, url (field names from the author's articles; no formal schema).
+// TCGplayer prices:  GET https://tcgplayer-price-data.p.rapidapi.com/tcgplayer/search?query=…&limit=…
+//                    Headers: x-rapidapi-key, x-rapidapi-host. From the API's OpenAPI spec on RapidAPI:
+//                    { success, count, results: [{ productName, productLineName, setName, rarityName,
+//                    marketPrice, medianPrice, lowestPrice, lowestPriceWithShipping, totalListings,
+//                    imageUrl, url, scrapedAt }] }. Only `query` and `limit` (max 50) exist.
 // PSA population:    GET https://{RAPIDAPI_POP_HOST}{RAPIDAPI_POP_PATH}?certNumber=…
 //                    Returns cardName, year, brand, grade, totalPopulation, psa10Count, psa9Count.
 //
 // Uncertain:
-//  - The response wrapper is not documented; we accept a bare array, { results }, or { data }.
-//  - The `game` values the search accepts are not documented; we send plain names ("pokemon").
 //  - The RapidAPI host of the PSA population API is not published in the article (it calls the
 //    author's own backend). It is a setting (RAPIDAPI_POP_HOST) and is off until the owner fills
 //    it in from the RapidAPI page of that API.
-//  - Results are a name search, so we only accept an item whose name matches the card and, when
-//    the item has a number, whose number matches too.
+//  - Results are a name search: a result is only used when its name and game match and its set
+//    or number settles which printing it is (never a guess between several look-alikes).
 
 import type { BatchResult, CardRequest, Game, Population, RawPrice, RawProvider } from "../types";
 import { arr, emptyConditions, fetchJson, obj, price, str } from "../util";
 
-const GAME_NAMES: Record<Game, string> = {
+/** Words of TCGplayer's product line name ("Pokemon", "One Piece Card Game", "Magic: The Gathering" …). */
+const GAME_WORDS: Record<Game, string> = {
   pokemon: "pokemon",
-  one_piece: "one piece",
+  one_piece: "onepiece",
   magic: "magic",
-  dragon_ball_fw: "dragon ball super fusion world",
-  dragon_ball_super: "dragon ball super",
-  union_arena: "union arena",
-  weiss_schwarz: "weiss schwarz",
+  dragon_ball_fw: "fusionworld",
+  dragon_ball_super: "dragonball",
+  union_arena: "unionarena",
+  weiss_schwarz: "weiss",
   naruto: "naruto",
 };
 
@@ -39,16 +40,24 @@ export function rapidItems(json: unknown): Record<string, unknown>[] {
 }
 
 export function parseRapidTcg(json: unknown, card: CardRequest): RawPrice | null {
-  const item = rapidItems(json).find((it) => {
-    const name = str(it.name) ?? "";
-    if (!name || !norm(name).includes(norm(card.name))) return false;
-    // The number may be its own field or part of the name ("Charizard ex - 199/165").
-    const num = str(it.number) ?? str(it.cardNumber) ?? /(\b[A-Z]*\d+[a-z]?)\/\w+/i.exec(name)?.[1];
-    if (!num || !card.number) return true;
-    const strip = (s: string) => norm(s.split("/")[0]).replace(/^0+/, "");
-    return strip(num) === strip(card.number);
+  const strip = (v: string) => norm(v.split("/")[0]).replace(/^0+/, "");
+  const nameOf = (it: Record<string, unknown>) => str(it.productName) ?? str(it.name) ?? "";
+  const matches = rapidItems(json).filter((it) => {
+    const name = nameOf(it);
+    if (!name || !norm(name).includes(norm(card.name ?? ""))) return false;
+    const line = str(it.productLineName);
+    return !line || norm(line).includes(GAME_WORDS[card.game]) ||
+      (card.game === "dragon_ball_super" && !norm(line).includes("fusionworld") && norm(line).includes("dragonball"));
   });
-  const market = item ? (price(item.marketPrice) ?? price(item.market_price) ?? price(item.price)) : null;
+  // The number may be its own field or part of the name ("Charizard ex - 199/165").
+  const numberOf = (it: Record<string, unknown>) =>
+    str(it.number) ?? str(it.cardNumber) ?? /(\b[A-Z]*\d+[a-z]?)\/\w+/i.exec(nameOf(it))?.[1];
+  const byNumber = card.number ? matches.filter((it) => { const n = numberOf(it); return !!n && strip(n) === strip(card.number!); }) : [];
+  const bySet = card.set ? matches.filter((it) => norm(str(it.setName) ?? str(it.set) ?? "") === norm(card.set!)) : [];
+  const both = byNumber.filter((it) => bySet.includes(it));
+  const item = both[0] ?? (byNumber.length === 1 ? byNumber[0] : undefined) ?? (bySet.length === 1 ? bySet[0] : undefined) ??
+    (matches.length === 1 && !card.set && !card.number ? matches[0] : undefined);
+  const market = item ? (price(item.marketPrice) ?? price(item.medianPrice) ?? price(item.market_price) ?? price(item.price)) : null;
   return market === null ? null : { conditions: emptyConditions(), market, source: "rapidapi-tcgplayer" };
 }
 
@@ -59,8 +68,8 @@ export function rapidTcg(host: string): RawProvider {
     supports: (card) => !!card.name,
     async fetch(cards, key): Promise<BatchResult<RawPrice>> {
       const card = cards[0];
-      const query = [card.name, card.set, card.number].filter(Boolean).join(" ");
-      const q = new URLSearchParams({ query, game: GAME_NAMES[card.game], limit: "5" });
+      // A plain name search; the most results per request, as every request counts.
+      const q = new URLSearchParams({ query: card.name!, limit: "50" });
       const json = await fetchJson("rapidapi", `https://${host}/tcgplayer/search?${q}`, {
         headers: { "x-rapidapi-key": key, "x-rapidapi-host": host },
       });
