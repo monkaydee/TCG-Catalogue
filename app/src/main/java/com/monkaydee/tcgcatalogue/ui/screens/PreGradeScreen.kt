@@ -103,24 +103,6 @@ private fun guideFractions(viewW: Float, viewH: Float): FloatArray {
     return floatArrayOf(left / viewW, top / viewH, (left + w) / viewW, (top + h) / viewH)
 }
 
-/**
- * The guide (fractions of the preview) as fractions of the photo. The preview shows the middle of
- * the camera image scaled to fill the screen (FILL_CENTER); a photo already cropped to the preview
- * has the screen's shape and the fractions stay as they are.
- */
-private fun guideInPhoto(g: FloatArray, viewW: Float, viewH: Float, photoW: Int, photoH: Int): FloatArray {
-    if (viewW <= 0f || viewH <= 0f) return g
-    val scale = maxOf(viewW / photoW, viewH / photoH)
-    val shownW = viewW / scale
-    val shownH = viewH / scale
-    val offX = (photoW - shownW) / 2
-    val offY = (photoH - shownH) / 2
-    return floatArrayOf(
-        (offX + g[0] * shownW) / photoW, (offY + g[1] * shownH) / photoH,
-        (offX + g[2] * shownW) / photoW, (offY + g[3] * shownH) / photoH,
-    )
-}
-
 private enum class Step { FRONT, BACK, RESULT }
 
 /**
@@ -439,7 +421,7 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val executor = remember { Executors.newSingleThreadExecutor() }
-    val capture = remember { arrayOfNulls<ImageCapture>(1) }
+    val previewRef = remember { arrayOfNulls<PreviewView>(1) }
     var viewSize by remember { mutableStateOf(0f to 0f) }
     var taking by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -448,20 +430,29 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { ctx ->
-                val view = PreviewView(ctx).apply { scaleType = PreviewView.ScaleType.FILL_CENTER }
+                // COMPATIBLE (TextureView) so the frame on screen can be read back as a bitmap.
+                val view = PreviewView(ctx).apply {
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                }
+                previewRef[0] = view
                 val future = ProcessCameraProvider.getInstance(ctx)
                 view.post {
                     viewSize = view.width.toFloat() to view.height.toFloat()
                     future.addListener({
                         val provider = future.get()
-                        val preview = Preview.Builder().build().also { it.setSurfaceProvider(view.surfaceProvider) }
-                        val ic = ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build()
-                        capture[0] = ic
+                        // A sharp preview (Full HD or the closest): the analysed frame is the preview itself.
+                        val selector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
+                            .setResolutionStrategy(
+                                androidx.camera.core.resolutionselector.ResolutionStrategy(
+                                    android.util.Size(1920, 1080),
+                                    androidx.camera.core.resolutionselector.ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER,
+                                ),
+                            ).build()
+                        val preview = Preview.Builder().setResolutionSelector(selector).build().also { it.setSurfaceProvider(view.surfaceProvider) }
                         runCatching {
                             provider.unbindAll()
-                            val group = UseCaseGroup.Builder().addUseCase(preview).addUseCase(ic)
-                            view.viewPort?.let { group.setViewPort(it) }
-                            provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, group.build())
+                            provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview)
                         }.onFailure { onError() }
                     }, ContextCompat.getMainExecutor(context))
                 }
@@ -493,14 +484,14 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
             color = Color.White, style = MaterialTheme.typography.bodyMedium,
         )
         fun shoot() {
-            val ic = capture[0] ?: return
             if (taking) return
+            val view = previewRef[0] ?: return
             taking = true
-            scope.launch {
-                val photo = takePhoto(ic, executor)
-                taking = false
-                if (photo == null) onError() else onPhoto(photo, guideInPhoto(guideFractions(viewSize.first, viewSize.second), viewSize.first, viewSize.second, photo.width, photo.height))
-            }
+            // The frame exactly as shown on screen: the guide box is the same pixels in it, so the card
+            // is where the user put it (no mapping between camera photo and preview to get wrong).
+            val frame = view.bitmap
+            taking = false
+            if (frame == null || view.width == 0) onError() else onPhoto(frame, guideFractions(view.width.toFloat(), view.height.toFloat()))
         }
         // Takes the photo by itself once the phone has stayed flat for a moment (steady hands, no tap shake).
         LaunchedEffect(level) {
@@ -517,25 +508,6 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
             if (taking) CircularProgressIndicator(Modifier.size(28.dp), color = Color.White) else Icon(Icons.Default.CameraAlt, stringResource(R.string.grade_take_photo))
         }
     }
-}
-
-/** A photo from [ic], upright and cropped to what the preview showed. */
-private suspend fun takePhoto(ic: ImageCapture, executor: java.util.concurrent.Executor): Bitmap? = suspendCoroutine { cont ->
-    ic.takePicture(executor, object : ImageCapture.OnImageCapturedCallback() {
-        override fun onCaptureSuccess(image: ImageProxy) {
-            val result = runCatching {
-                val full = image.toBitmap()
-                val crop = image.cropRect
-                val cropped = Bitmap.createBitmap(full, crop.left, crop.top, crop.width(), crop.height())
-                val rotation = image.imageInfo.rotationDegrees
-                if (rotation == 0) cropped else Bitmap.createBitmap(cropped, 0, 0, cropped.width, cropped.height, Matrix().apply { postRotate(rotation.toFloat()) }, true)
-            }.getOrNull()
-            image.close()
-            cont.resume(result)
-        }
-
-        override fun onError(exception: ImageCaptureException) = cont.resume(null)
-    })
 }
 
 /** Tilt below this many degrees counts as flat (the frame turns green). */

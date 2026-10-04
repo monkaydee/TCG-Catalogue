@@ -62,11 +62,13 @@ object CardRectifier {
         val guideArea = abs(area(guide))
         val fits = { q: Quad ->
             q.corners.all { it.x in (gx0 - mx)..(gx1 + mx) && it.y in (gy0 - my)..(gy1 + my) } &&
-                abs(area(q)) in (0.55 * guideArea)..(1.15 * guideArea)
+                abs(area(q)) in (0.35 * guideArea)..(1.15 * guideArea)
         }
         val lineScale = LINE_SIDE.toDouble() / max(p.width, p.height)
-        val starts = StraightEdges.quads(downscale(p, lineScale), 8).map { it.scaled(1 / lineScale) }.filter(fits) + guide
-        return best(gray, starts, doubleArrayOf(0.06, 0.03, 0.012), accept = fits, share = 0.8)
+        // The guide itself is only a start when no straight-edged outline lies in the box: refined, it
+        // settles on mat texture or sleeve lines bigger than the card.
+        val lines = StraightEdges.quads(downscale(p, lineScale), 24).map { it.scaled(1 / lineScale) }.filter(fits)
+        return best(gray, lines.ifEmpty { listOf(guide) }, accept = fits, share = 0.93)
     }
 
     private fun best(

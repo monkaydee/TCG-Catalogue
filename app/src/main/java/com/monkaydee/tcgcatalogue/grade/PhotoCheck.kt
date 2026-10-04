@@ -45,10 +45,10 @@ object PhotoCheck {
 
     /**
      * Problems with a photo. [cardWidthInPhoto] is how wide the card was in the original photo,
-     * in pixels: below ~700 there is too little detail for corners and edges.
+     * in pixels: below ~560 there is too little detail for corners and edges.
      */
     fun problems(card: Pixels, cardWidthInPhoto: Double): List<Problem> = buildList {
-        if (cardWidthInPhoto < 700) add(Problem.TOO_SMALL)
+        if (cardWidthInPhoto < 560) add(Problem.TOO_SMALL)
         if (sharpness(card) < 3.0) add(Problem.BLURRY)
         if (glare(card) > 0.02) add(Problem.GLARE)
     }
