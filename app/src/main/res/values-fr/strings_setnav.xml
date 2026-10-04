@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">Extension précédente</string>
     <string name="set_next">Extension suivante</string>
+    <string name="import_add_all_sure">Ajouter toutes les sûres (%1$d)</string>
 </resources>

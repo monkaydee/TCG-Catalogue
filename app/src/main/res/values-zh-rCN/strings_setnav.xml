@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">上一个系列</string>
     <string name="set_next">下一个系列</string>
+    <string name="import_add_all_sure">添加所有确定的 (%1$d)</string>
 </resources>

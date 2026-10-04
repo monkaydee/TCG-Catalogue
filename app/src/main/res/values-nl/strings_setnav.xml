@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">Vorige set</string>
     <string name="set_next">Volgende set</string>
+    <string name="import_add_all_sure">Alle zekere toevoegen (%1$d)</string>
 </resources>

@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">Bộ trước</string>
     <string name="set_next">Bộ tiếp theo</string>
+    <string name="import_add_all_sure">Thêm tất cả thẻ chắc chắn (%1$d)</string>
 </resources>

@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">Предыдущий сет</string>
     <string name="set_next">Следующий сет</string>
+    <string name="import_add_all_sure">Добавить все надёжные (%1$d)</string>
 </resources>

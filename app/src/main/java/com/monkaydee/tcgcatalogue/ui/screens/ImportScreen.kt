@@ -111,6 +111,8 @@ data class ImportItem(
     val texts: List<String> = emptyList(),
     /** True when the matches come from the picture alone. */
     val byPicture: Boolean = false,
+    /** True when the number and the name agree on one card: safe to add without looking. */
+    val sure: Boolean = false,
 )
 
 data class ImportState(
@@ -197,7 +199,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
                         onFailure = { item.copy(status = ImportStatus.REVIEW, candidates = candidates) },
                     )
             }
-            else -> item.copy(status = ImportStatus.REVIEW, candidates = candidates)
+            else -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, sure = repo.isConfident(candidates))
         }
         replace(item.key, listOf(updated))
     }
@@ -286,12 +288,12 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         }
     }
 
-    /** Adds the best match of every card still waiting for review. */
-    fun addAllBest() {
+    /** Adds the best match of every card still waiting for review ([sureOnly]: only the sure ones). */
+    fun addAllBest(sureOnly: Boolean = false) {
         val s = state.value
         viewModelScope.launch {
             val condition = repo.settings.current().defaultCondition
-            s.items.filter { it.status == ImportStatus.REVIEW }.forEach { item ->
+            s.items.filter { it.status == ImportStatus.REVIEW && (!sureOnly || it.sure) }.forEach { item ->
                 val top = item.candidates.first()
                 add(item.key, top, top.defaultVariant, 1, condition, item.grade?.takeIf { it.grader != null && it.grade != null })
             }
@@ -377,9 +379,17 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                         style = MaterialTheme.typography.titleSmall,
                     )
                 }
+                val sure = state.items.count { it.status == ImportStatus.REVIEW && it.sure }
+                if (sure > 0 && sure < toReview) {
+                    item {
+                        Button(onClick = { vm.addAllBest(sureOnly = true) }, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.import_add_all_sure, sure))
+                        }
+                    }
+                }
                 if (toReview > 1) {
                     item {
-                        FilledTonalButton(onClick = vm::addAllBest, modifier = Modifier.fillMaxWidth()) {
+                        FilledTonalButton(onClick = { vm.addAllBest() }, modifier = Modifier.fillMaxWidth()) {
                             Text(pluralStringResource(R.plurals.import_add_all_best, toReview, toReview))
                         }
                     }

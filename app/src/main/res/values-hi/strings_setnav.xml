@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">पिछला सेट</string>
     <string name="set_next">अगला सेट</string>
+    <string name="import_add_all_sure">सभी पक्के वाले जोड़ें (%1$d)</string>
 </resources>

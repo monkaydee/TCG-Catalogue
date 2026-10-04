@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">이전 세트</string>
     <string name="set_next">다음 세트</string>
+    <string name="import_add_all_sure">확실한 카드 모두 추가 (%1$d)</string>
 </resources>

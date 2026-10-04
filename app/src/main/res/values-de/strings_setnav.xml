@@ -2,4 +2,5 @@
 <resources>
     <string name="set_previous">Vorherige Serie</string>
     <string name="set_next">Nächste Serie</string>
+    <string name="import_add_all_sure">Alle sicheren hinzufügen (%1$d)</string>
 </resources>
