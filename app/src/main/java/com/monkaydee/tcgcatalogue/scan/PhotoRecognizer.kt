@@ -37,6 +37,7 @@ object PhotoRecognizer {
         try {
             // Photos taken sideways or upside down: try the other orientations when nothing is found.
             var bestTexts = emptyList<String>()
+            var bestLines = emptyList<OcrLine>()
             for (rotation in listOf(0, 90, 270, 180)) {
                 val text = recognizer.process(InputImage.fromBitmap(bitmap, rotation)).await()
                 val height = (if (rotation % 180 == 0) bitmap.height else bitmap.width).toFloat()
@@ -47,18 +48,65 @@ object PhotoRecognizer {
                 val hits = parse(lines)
                 // Keep the orientation in which the most words could be read.
                 val texts = lines.map { it.text }
-                if (texts.sumOf { t -> t.count(Char::isLetter) } > bestTexts.sumOf { t -> t.count(Char::isLetter) }) bestTexts = texts
+                if (texts.sumOf { t -> t.count(Char::isLetter) } > bestTexts.sumOf { t -> t.count(Char::isLetter) }) {
+                    bestTexts = texts
+                    bestLines = lines
+                }
                 if (hits.isNotEmpty()) {
                     val single = hits.size == 1
                     val picture = if (single) runCatching { uprightSmall(bitmap, rotation) }.getOrNull() else null
                     return Result(hits, CardTextParser.parseGrade(lines).takeIf { single }, picture, texts)
                 }
             }
-            return Result(emptyList(), null, texts = bestTexts)
+            // No number anywhere: read the card's bottom strip again, enlarged. Collector numbers and
+            // promo codes ("SVP DE 123", "TG03/TG30") are tiny and often lost behind a toploader.
+            val strip = smallPrint(recognizer, bitmap)
+            if (strip.isNotEmpty()) {
+                val lines = bestLines + strip
+                val hits = parse(lines)
+                if (hits.isNotEmpty()) {
+                    val single = hits.size == 1
+                    val picture = if (single) runCatching { uprightSmall(bitmap, 0) }.getOrNull() else null
+                    return Result(hits, CardTextParser.parseGrade(lines).takeIf { single }, picture, lines.map { it.text })
+                }
+            }
+            return Result(emptyList(), null, texts = bestTexts + strip.map { it.text })
         } finally {
             recognizer.close()
             bitmap.recycle()
         }
+    }
+
+    /**
+     * Text in the bottom strip of the card in [photo], read again from enlarged crops: the strip
+     * under the card's outline (straight-edge search, works behind toploaders) and, in case the
+     * outline is off, two bands across the lower half of the photo.
+     */
+    private suspend fun smallPrint(recognizer: com.google.mlkit.vision.text.TextRecognizer, photo: Bitmap): List<OcrLine> {
+        val regions = ArrayList<android.graphics.Rect>()
+        val scale = minOf(1f, 1600f / max(photo.width, photo.height))
+        val work = if (scale < 1f) Bitmap.createScaledBitmap(photo, (photo.width * scale).toInt(), (photo.height * scale).toInt(), true) else photo
+        val pixels = IntArray(work.width * work.height).also { work.getPixels(it, 0, work.width, 0, 0, work.width, work.height) }
+        val quad = runCatching { com.monkaydee.tcgcatalogue.grade.CardRectifier.findQuad(Pixels(work.width, work.height, pixels)) }.getOrNull()
+        if (work !== photo) work.recycle()
+        quad?.corners?.let { c ->
+            val x0 = (c.minOf { it.x } / scale).toInt(); val x1 = (c.maxOf { it.x } / scale).toInt()
+            val y0 = c.minOf { it.y } / scale; val y1 = c.maxOf { it.y } / scale
+            regions += android.graphics.Rect(x0, (y0 + (y1 - y0) * 0.80).toInt(), x1, (y1 + (y1 - y0) * 0.03).toInt())
+        }
+        regions += android.graphics.Rect(0, (photo.height * 0.55).toInt(), photo.width, (photo.height * 0.80).toInt())
+        regions += android.graphics.Rect(0, (photo.height * 0.75).toInt(), photo.width, photo.height)
+        val out = ArrayList<OcrLine>()
+        for (r in regions) {
+            if (!r.intersect(0, 0, photo.width, photo.height) || r.width() < 16 || r.height() < 8) continue
+            val zoom = (2000f / r.width()).coerceIn(1f, 3f)
+            val crop = Bitmap.createBitmap(photo, r.left, r.top, r.width(), r.height(), Matrix().apply { postScale(zoom, zoom) }, true)
+            val text = runCatching { recognizer.process(InputImage.fromBitmap(crop, 0)).await() }.getOrNull()
+            crop.recycle()
+            // Placed at the bottom of the card, where the parser expects collector numbers and set codes.
+            text?.textBlocks?.flatMap { it.lines }?.forEach { out += OcrLine(it.text, 0.95f, 0.02f) }
+        }
+        return out
     }
 
     /** The photo turned the way the text was read, at most 420 pixels on its longest side. */
