@@ -156,6 +156,11 @@ class CardRepository(
             }
             if (card != null) return@coroutineScope listOf(card.copy(score = 1.0, preferredVariant = printingFor(card, hit.firstEdition)))
         }
+        // A Black Star promo: the promo set and number say it all.
+        hit.promoSet?.let { set ->
+            val card = attempt { tcgdex.cardInSet(set, hit.number) }.getOrNull()
+            return@coroutineScope listOfNotNull(card?.let { pokemonFixed(it).copy(score = 1.0) })
+        }
         // Sets whose printed size matches the number after the slash.
         val sets = tcgdex.sets().filter { it.official == hit.total }
         val found = sets.map { set -> async { runCatching { tcgdex.cardInSet(set.id, localId) }.getOrNull() } }

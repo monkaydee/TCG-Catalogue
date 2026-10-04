@@ -280,7 +280,7 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         viewModelScope.launch {
             val result = attempt {
                 val crops = PictureSearch.crops(picture, fromCamera = true)
-                repo.candidatesFromPicture(PictureSearch.find(context, crops, games), texts)
+                repo.candidatesFromPicture(PictureSearch.find(context, crops, CardTextParser.gameFromPrint(texts)?.takeIf { it in games }?.let { setOf(it) } ?: games), texts)
             }
             cooldownUntil = System.currentTimeMillis() + 2500
             val found = result.getOrDefault(emptyList())

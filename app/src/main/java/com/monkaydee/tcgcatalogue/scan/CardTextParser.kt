@@ -35,9 +35,11 @@ sealed interface ScanHit {
         val firstEdition: Boolean = false,
         /** The set code of a Japanese card ("SV2a", "S12a", "SM11b"), printed next to the number. */
         val jaSet: String? = null,
+        /** A Black Star promo without a set size ("SVP DE 123", "SWSH123"): the promo set's id. */
+        val promoSet: String? = null,
     ) : ScanHit {
         override val game get() = Game.POKEMON
-        override val key get() = "pkm:$number/$total"
+        override val key get() = if (promoSet != null) "pkm:$promoSet-$number" else "pkm:$number/$total"
     }
 
     /** Magic: set code + collector number ("DMU", "107") or, failing that, the card name. */
@@ -133,6 +135,9 @@ object CardTextParser {
         if (codes.isNotEmpty() || filter != null && filter != Game.POKEMON) return codes
         val numbers = allPokemonNumbers(lines)
         // Name, set code and stamp can only be tied to the number when there is a single card.
+        if (numbers.isEmpty()) {
+            pokemonPromo(lines)?.let { (set, number) -> return listOf(ScanHit.Pokemon(number, 0, guessName(lines), promoSet = set)) }
+        }
         if (numbers.size != 1) return numbers.map { (number, total) -> ScanHit.Pokemon(number, total, null) }
         val (number, total) = numbers.single()
         return listOf(ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines), japaneseSet(lines)))
@@ -158,6 +163,31 @@ object CardTextParser {
         .firstNotNullOfOrNull { l ->
             pokemonSetCode.findAll(l.text.uppercase()).map { it.groupValues[1] }.firstOrNull { it !in notSetCodes }
         }
+
+    /** The game the card's own small print names ("©2024 Pokémon/Nintendo", "BANDAI", "Wizards of the Coast"), if any. */
+    fun gameFromPrint(texts: List<String>): Game? {
+        val all = texts.joinToString(" ").uppercase()
+        return when {
+            Regex("""POK[EÉ]MON\s*/\s*NINTENDO|GAME\s*FREAK|CREATURES""").containsMatchIn(all) -> Game.POKEMON
+            Regex("""WIZARDS\s+OF\s+THE\s+COAST""").containsMatchIn(all) -> Game.MAGIC
+            Regex("""ONE\s*PIECE""").containsMatchIn(all) && "BANDAI" in all -> Game.ONE_PIECE
+            else -> null
+        }
+    }
+
+    /** Black Star promo codes: "SVP DE 123" / "SVP EN 045" (Scarlet & Violet), "SWSH123" (Sword & Shield). */
+    private val svPromo = Regex("""\bSVP\s*(?:[A-Z]{2}\s*)?0*(\d{1,3})\b""")
+    private val swshPromo = Regex("""\bSWSH\s*0*(\d{1,3})\b""")
+
+    /** A promo's set (TCGdex id) and number, read on one line or two neighbouring ones. */
+    fun pokemonPromo(lines: List<OcrLine>): Pair<String, String>? {
+        val texts = lines.map { it.text.uppercase() }
+        for (t in texts + texts.zipWithNext { a, b -> "$a $b" }) {
+            svPromo.find(t)?.let { return "svp" to it.groupValues[1] }
+            swshPromo.find(t)?.let { return "swshp" to "SWSH" + it.groupValues[1].padStart(3, '0') }
+        }
+        return null
+    }
 
     /** True when the 1st Edition stamp (or the words) can be read on the card. */
     fun firstEdition(lines: List<OcrLine>): Boolean = lines.any { firstEditionStamp.containsMatchIn(it.text.uppercase()) }

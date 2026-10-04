@@ -216,7 +216,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         val result = com.monkaydee.tcgcatalogue.data.remote.attempt {
             val photo = PhotoRecognizer.loadSmall(context, item.photo)
             val crops = PictureSearch.crops(photo, fromCamera = false)
-            repo.candidatesFromPicture(PictureSearch.find(context, crops, games), texts)
+            repo.candidatesFromPicture(PictureSearch.find(context, crops, CardTextParser.gameFromPrint(texts)?.takeIf { it in games }?.let { setOf(it) } ?: games), texts)
         }
         val found = result.getOrDefault(emptyList())
         return when {

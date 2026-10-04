@@ -56,6 +56,13 @@ class GameRecognitionTest {
         assertEquals(GradeInfo("PSA", "8", null, "74004211"), g)
     }
 
+    @Test fun scarletVioletPromo() {
+        val hit = CardTextParser.parseAll(lines("Türkisgrüne-Maske-Ogerpon", "KP 110", "SVP DE", "123", "©2024 Pokémon/Nintendo/Creatures/GAME FREAK")).single() as ScanHit.Pokemon
+        assertEquals("svp", hit.promoSet)
+        assertEquals("123", hit.number)
+        assertEquals(Game.POKEMON, CardTextParser.gameFromPrint(listOf("©2024 Pokémon/Nintendo/Creatures/GAME FREAK")))
+    }
+
     @Test fun psaLabelOcrVariants() {
         assertEquals(GradeInfo("PSA", "8", null, "74004211"), CardTextParser.parseGrade(lines("1999 POKÉMON JUNGLE", "FLAREON-HOLO", "NM MT", "8", "74004211")))
         assertEquals(GradeInfo("PSA", "8", null, "74004211"), CardTextParser.parseGrade(lines("FLAREON-HOLO", "#3", "NMMT 8", "74004211")))
