@@ -9,7 +9,7 @@ import { getPrices, hours, MAX_CARDS, parseCard, type ChainProvider } from "./pr
 import { justTcgGraded, justTcgRaw } from "./providers/justtcg";
 import { poketrace } from "./providers/poketrace";
 import { ppt } from "./providers/ppt";
-import { ebay } from "./providers/ebay";
+import { ebay, ebayRaw } from "./providers/ebay";
 import { psaCert, psaSpecPop, type Cert } from "./providers/psa";
 import { rapidPop, rapidTcg } from "./providers/rapidapi";
 import { tcgApi } from "./providers/tcgapi";
@@ -47,7 +47,7 @@ function chains(env: Env, s: Settings) {
       return key ? [{ provider, key }] : [];
     });
   return {
-    raw: withKey<RawPrice>([justTcgRaw(), tcgApi(), poketrace(), rapidTcg(s.rapidapiTcgHost)]),
+    raw: withKey<RawPrice>([justTcgRaw(), tcgApi(), poketrace(), rapidTcg(s.rapidapiTcgHost), ebayRaw()]),
     graded: withKey<GradedPrice[]>([justTcgGraded(), ppt(), ebay()]),
   };
 }

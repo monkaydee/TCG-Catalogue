@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { gradeInTitle, parseEbay, titleMatches } from "../src/providers/ebay";
+import { gradeInTitle, parseEbay, parseEbayRaw, titleMatches } from "../src/providers/ebay";
 import type { CardRequest } from "../src/types";
 
 const flareon: CardRequest = { game: "pokemon", id: "base2-3", name: "Flareon", set: "Jungle", number: "3/64", key: "k" };
@@ -25,6 +25,12 @@ describe("ebay", () => {
     const out = parseEbay(json, flareon);
     expect(out.find((g) => g.grade === "9")).toMatchObject({ grader: "PSA", price: 120, source: "eBay listings (asking)" });
     expect(out.find((g) => g.grade === "8")).toBeUndefined(); // one listing only
+  });
+
+  it("prices ungraded copies without slabs", () => {
+    const json = { itemSummaries: [item("Flareon 3/64 Holo Jungle", "50"), item("Flareon 3/64 Holo NM", "60"), item("Flareon Holo 3/64", "70"), item("Flareon 3/64 PSA 9", "300")] };
+    expect(parseEbayRaw(json, flareon)?.market).toBe(60);
+    expect(parseEbayRaw({ itemSummaries: [item("Flareon 3/64", "50")] }, flareon)).toBeNull();
   });
 
   it("keeps 1st Edition apart", () => {

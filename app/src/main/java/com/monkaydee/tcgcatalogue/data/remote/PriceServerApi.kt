@@ -59,6 +59,29 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     /** True when the server answers with this app key. */
     suspend fun reachable(): Boolean = runCatching { get("/v1/status") != null }.getOrDefault(false)
 
+    /** The price server's raw (ungraded) price of a printing: NM or a blended market price, in USD, and its source. */
+    suspend fun raw(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String?): Pair<Double, String>? {
+        val body = buildJsonObject {
+            putJsonArray("cards") {
+                add(
+                    buildJsonObject {
+                        put("game", game.name)
+                        put("id", cardId)
+                        put("name", name)
+                        put("set", setName)
+                        put("number", number)
+                        tcgplayerId?.let { put("tcgplayerId", it) }
+                        printing?.let { put("printing", it) }
+                    },
+                )
+            }
+        }
+        val result = post("/v1/prices", body.toString().toRequestBody(JSON))?.get("results").arr()?.firstOrNull() ?: return null
+        val amount = (result["conditions"]?.let { it as? kotlinx.serialization.json.JsonObject }?.get("NM").dbl() ?: result["market"].dbl())
+            ?.takeIf { it > 0 } ?: return null
+        return amount to result["source"].str().orEmpty()
+    }
+
     /** Graded prices of a card (TCGplayer product [tcgplayerId]), or an empty list when there are none. */
     suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null): List<Graded> {
         val body = buildJsonObject {

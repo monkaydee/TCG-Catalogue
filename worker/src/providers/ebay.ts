@@ -10,8 +10,8 @@
 // card, its number and exactly one grade; per grader and grade the median is used.
 // The key is "clientId:clientSecret" (secrets EBAY_CLIENT_ID and EBAY_CLIENT_SECRET).
 
-import type { BatchResult, CardRequest, GradedPrice } from "../types";
-import type { GradedProvider } from "../types";
+import type { BatchResult, CardRequest, GradedPrice, GradedProvider, RawPrice, RawProvider } from "../types";
+import { emptyConditions } from "../util";
 import { fetchJson, obj, price, str } from "../util";
 
 const API = "https://api.ebay.com";
@@ -96,6 +96,50 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
   });
 }
 
+const SLAB = /\b(psa|bgs|beckett|cgc|sgc|tag|ace|graded|slab)\b/i;
+
+function median(list: number[]): number {
+  const s = [...list].sort((a, b) => a - b);
+  const m = s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
+  return Math.round(m * 100) / 100;
+}
+
+/** Ungraded copies: median asking price of at least 3 listings naming the card, no slab words. */
+export function parseEbayRaw(json: unknown, card: CardRequest): RawPrice | null {
+  const prices: number[] = [];
+  for (const it of Array.isArray(obj(json).itemSummaries) ? (obj(json).itemSummaries as unknown[]) : []) {
+    const item = obj(it);
+    const title = str(item.title) ?? "";
+    const p = obj(item.price);
+    const value = price(typeof p.value === "string" ? Number(p.value) : p.value);
+    if (value === null || str(p.currency) !== "USD" || SLAB.test(title) || !titleMatches(title, card)) continue;
+    prices.push(value);
+  }
+  return prices.length >= 3 ? { conditions: emptyConditions(), market: median(prices), source: "eBay listings (asking)" } : null;
+}
+
+async function search(card: CardRequest, key: string, extra: string): Promise<unknown> {
+  const first = /first|1st/i.test(card.printing ?? "") ? "1st edition" : "";
+  const q = [card.name, card.number ? shortNumber(card.number) : "", card.set, first, extra].filter(Boolean).join(" ");
+  const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
+  return fetchJson("ebay", `${API}/buy/browse/v1/item_summary/search?${params}`, {
+    headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": "EBAY_US" },
+  });
+}
+
+export function ebayRaw(): RawProvider {
+  return {
+    name: "ebay",
+    batchSize: 1,
+    supports: (card) => !!card.name,
+    async fetch(cards, key): Promise<BatchResult<RawPrice>> {
+      const card = cards[0];
+      const p = parseEbayRaw(await search(card, key, ""), card);
+      return new Map(p ? [[card.key, p]] : []);
+    },
+  };
+}
+
 export function ebay(): GradedProvider {
   return {
     name: "ebay",
@@ -103,12 +147,7 @@ export function ebay(): GradedProvider {
     supports: (card) => !!card.name,
     async fetch(cards, key): Promise<BatchResult<GradedPrice[]>> {
       const card = cards[0];
-      const q = [card.name, card.number ? shortNumber(card.number) : "", card.set, "graded"].filter(Boolean).join(" ");
-      const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
-      const json = await fetchJson("ebay", `${API}/buy/browse/v1/item_summary/search?${params}`, {
-        headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": "EBAY_US" },
-      });
-      const graded = parseEbay(json, card);
+      const graded = parseEbay(await search(card, key, "graded"), card);
       return new Map(graded.length ? [[card.key, graded]] : []);
     },
   };

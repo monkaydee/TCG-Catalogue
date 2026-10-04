@@ -153,7 +153,8 @@ fun AddCardSheet(
     var conditionQuote by remember { mutableStateOf<Price?>(null) }
     var conditionLoading by remember { mutableStateOf(false) }
     LaunchedEffect(card, variant, condition, graded, listing) {
-        if (graded || condition == "NM") {
+        // NM is the market price itself, unless the card databases have none (then the price server is asked)
+        if (graded || (condition == "NM" && raw != null)) {
             conditionQuote = raw
             return@LaunchedEffect
         }

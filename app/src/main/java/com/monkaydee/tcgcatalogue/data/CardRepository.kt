@@ -348,10 +348,18 @@ class CardRepository(
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
     suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings, listing: CardmarketApi.Listing? = null): Price? {
-        val base = rawPrice(card, variant, s, listing)
+        val base = rawPrice(card, variant, s, listing) ?: serverRawPrice(card, variant)
         if (condition == "NM") return base
         val table = runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull()
         return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }, PriceTexts.App)
+    }
+
+    /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */
+    private suspend fun serverRawPrice(card: CardCandidate, variant: Variant): Price? {
+        if (!server.isSetUp()) return null
+        val (amount, source) = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key) }
+            .getOrNull() ?: return null
+        return Price(amount, PriceSource.SERVER, note = source.takeIf { it.isNotBlank() })
     }
 
     /**

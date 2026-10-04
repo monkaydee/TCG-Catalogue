@@ -8,6 +8,9 @@ enum class PriceSource(val label: String, val currency: String) {
 
     /** Graded sales from the app's price server (JustTCG, PokemonPriceTracker …), in USD. */
     GRADED("Graded market", "USD"),
+
+    /** Raw price from the app's price server when the card databases have none (JustTCG, eBay listings …), in USD. */
+    SERVER("Market", "USD"),
 }
 
 data class Price(val amount: Double, val source: PriceSource, val note: String? = null) {
