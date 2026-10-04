@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_previous">Попередній сет</string>
+    <string name="set_next">Наступний сет</string>
+</resources>

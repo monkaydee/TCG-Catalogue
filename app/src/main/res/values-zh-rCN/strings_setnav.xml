@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_previous">上一个系列</string>
+    <string name="set_next">下一个系列</string>
+</resources>

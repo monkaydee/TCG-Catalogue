@@ -2,6 +2,9 @@ package com.monkaydee.tcgcatalogue.ui.screens
 
 import androidx.compose.foundation.clickable
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
+import com.monkaydee.tcgcatalogue.ui.components.SetSwitchBar
+import com.monkaydee.tcgcatalogue.ui.components.rememberSetNeighbours
+import com.monkaydee.tcgcatalogue.ui.components.swipeSets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -55,7 +58,8 @@ import com.monkaydee.tcgcatalogue.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Unit, onOpenCard: (Long) -> Unit, onChecklist: () -> Unit = {}) {
+fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Unit, onOpenCard: (Long) -> Unit, onChecklist: () -> Unit = {}, onSwitchSet: (String) -> Unit = {}) {
+    val (previousSet, nextSet) = rememberSetNeighbours(repo, game, setId)
     val cards by remember(game, setId) { repo.observeSet(game, setId) }.collectAsState(initial = emptyList())
     val set by remember(game, setId) { repo.sets.map { list -> list.firstOrNull { it.game == game && it.setId == setId } } }
         .collectAsState(initial = null)
@@ -74,9 +78,10 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
                 actions = { IconButton(onClick = onChecklist) { Icon(Icons.Default.Checklist, stringResource(R.string.checklist_open)) } },
             )
         },
+        bottomBar = { SetSwitchBar(previousSet, nextSet, onSwitchSet) },
     ) { padding ->
         LazyColumn(
-            Modifier.padding(padding).fillMaxSize(),
+            Modifier.padding(padding).fillMaxSize().swipeSets(previousSet, nextSet, onSwitchSet),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {

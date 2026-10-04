@@ -195,6 +195,9 @@ fun AppNav(repo: CardRepository) {
                     onBack = { nav.popBackStack() },
                     onOpenCard = { nav.navigate("card/$it") },
                     onChecklist = { nav.navigate("checklist/${e.arguments!!.getString("game")}/${android.net.Uri.encode(e.arguments!!.getString("setId"))}") },
+                    onSwitchSet = { id ->
+                        nav.navigate("set/${e.arguments!!.getString("game")}/${android.net.Uri.encode(id)}") { popUpTo(e.destination.id) { inclusive = true } }
+                    },
                 )
             }
             composable(
@@ -207,6 +210,9 @@ fun AppNav(repo: CardRepository) {
                     setId = e.arguments!!.getString("setId")!!,
                     onBack = { nav.popBackStack() },
                     onOpenCard = { nav.navigate("card/$it") },
+                    onSwitchSet = { id ->
+                        nav.navigate("checklist/${e.arguments!!.getString("game")}/${android.net.Uri.encode(id)}") { popUpTo(e.destination.id) { inclusive = true } }
+                    },
                 )
             }
             composable("card/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->

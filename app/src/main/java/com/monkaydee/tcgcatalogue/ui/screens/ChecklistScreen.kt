@@ -82,6 +82,9 @@ import com.monkaydee.tcgcatalogue.ui.AppStrings
 import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.ListEmptyState
+import com.monkaydee.tcgcatalogue.ui.components.SetSwitchBar
+import com.monkaydee.tcgcatalogue.ui.components.rememberSetNeighbours
+import com.monkaydee.tcgcatalogue.ui.components.swipeSets
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import com.monkaydee.tcgcatalogue.ui.components.display
 import com.monkaydee.tcgcatalogue.ui.components.thumbUrl
@@ -104,7 +107,8 @@ private val Greyscale = ColorFilter.colorMatrix(ColorMatrix().apply { setToSatur
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Unit, onOpenCard: (Long) -> Unit) {
+fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Unit, onOpenCard: (Long) -> Unit, onSwitchSet: (String) -> Unit = {}) {
+    val (previousSet, nextSet) = rememberSetNeighbours(repo, game, setId)
     val s by repo.settings.flow.collectAsState(initial = AppSettings())
     val all by repo.cards.collectAsState(initial = emptyList())
     val wishlist by repo.wishlist.collectAsState(initial = emptyList())
@@ -143,6 +147,7 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
             )
         },
         snackbarHost = { SnackbarHost(snackbar) },
+        bottomBar = { SetSwitchBar(previousSet, nextSet, onSwitchSet) },
     ) { padding ->
         val list = entries
         when {
@@ -176,7 +181,7 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
                 val browseIds = shown.flatMap { e -> owned[e.cardId].orEmpty().map { it.id } }
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(100.dp),
-                    modifier = Modifier.padding(padding).fillMaxSize(),
+                    modifier = Modifier.padding(padding).fillMaxSize().swipeSets(previousSet, nextSet, onSwitchSet),
                     contentPadding = PaddingValues(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
