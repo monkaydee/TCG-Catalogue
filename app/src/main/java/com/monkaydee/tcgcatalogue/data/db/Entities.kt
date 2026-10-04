@@ -29,7 +29,7 @@ enum class Game(val label: String, val short: String = label) {
 @Serializable
 @Entity(
     tableName = "owned_cards",
-    indices = [Index(value = ["game", "cardId", "variant", "condition"], unique = true), Index("setId")],
+    indices = [Index(value = ["game", "cardId", "variant", "condition", "language"], unique = true), Index("setId")],
 )
 data class OwnedCard(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -58,6 +58,8 @@ data class OwnedCard(
     val priceSource: String? = null,
     val priceUpdatedAt: Long? = null,
     val purchasePrice: Double? = null,
+    /** Language of the copy ("EN", "DE", "JA" …); prices are looked up for it. */
+    @androidx.room.ColumnInfo(defaultValue = "EN") val language: String = "EN",
     val addedAt: Long = System.currentTimeMillis(),
     /** Grading company ("PSA", "BGS", "CGC", ...) for slabbed cards, null for raw cards. */
     val grader: String? = null,

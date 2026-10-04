@@ -16,7 +16,8 @@ const text = (v: unknown, max = 200) => (typeof v === "string" ? v.trim().slice(
 export function cacheKey(c: Omit<CardRequest, "key">): string {
   const id = c.tcgplayerId ? `tcg${c.tcgplayerId}` : `id${c.id}`;
   const printing = c.printing ? `:${c.printing.toLowerCase().replace(/[^a-z0-9]/g, "")}` : "";
-  return `${c.game}:${id}${printing}`;
+  const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
+  return `${c.game}:${id}${printing}${language}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -35,6 +36,8 @@ export function parseCard(v: unknown): CardRequest | null {
     number: text(o.number, 40),
     ...(/^\d+$/.test(tcg) ? { tcgplayerId: tcg } : {}),
     ...(text(o.printing, 60) ? { printing: text(o.printing, 60) } : {}),
+    ...(text(o.localName, 120) ? { localName: text(o.localName, 120) } : {}),
+    ...(typeof o.language === "string" && /^[A-Z]{2}$/.test(o.language) ? { language: o.language } : {}),
     ...(o.graded === true ? { graded: true } : {}),
   };
   if (!card.id && !card.tcgplayerId) return null;
@@ -135,6 +138,7 @@ export interface CardPrice {
   key: string;
   conditions: Conditions | null;
   market: number | null;
+  currency: string;
   graded: GradedPrice[];
   source: string | null;
   fetchedAt: string | null;
@@ -238,6 +242,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
       key: c.key,
       conditions: p ? p.conditions : null,
       market: p ? p.market : null,
+      currency: p?.currency ?? "USD",
       graded: gradedList,
       source: p ? p.source : null,
       fetchedAt: rawEntry ? new Date(rawEntry.fetchedAt).toISOString() : null,

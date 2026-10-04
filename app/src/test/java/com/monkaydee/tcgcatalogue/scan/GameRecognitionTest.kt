@@ -63,6 +63,14 @@ class GameRecognitionTest {
         assertEquals(Game.POKEMON, CardTextParser.gameFromPrint(listOf("©2024 Pokémon/Nintendo/Creatures/GAME FREAK")))
     }
 
+    @Test fun otherPromos() {
+        assertEquals("mep" to "031", CardTextParser.pokemonPromo(lines("Ns Zekrom", "MEP DE 031")))
+        assertEquals("smp" to "SM233", CardTextParser.pokemonPromo(lines("Evoli GX", "SM233")))
+        assertEquals("swshp" to "SWSH050", CardTextParser.pokemonPromo(lines("SWSH050")))
+        assertEquals(Game.POKEMON, CardTextParser.gameFromPrint(listOf("Schwäche", "©2019 Pokémon")))
+        assertEquals("DE", CardTextParser.detectLanguage(listOf("Schwäche ×2", "Resistenz", "Rückzug")))
+    }
+
     @Test fun psaLabelOcrVariants() {
         assertEquals(GradeInfo("PSA", "8", null, "74004211"), CardTextParser.parseGrade(lines("1999 POKÉMON JUNGLE", "FLAREON-HOLO", "NM MT", "8", "74004211")))
         assertEquals(GradeInfo("PSA", "8", null, "74004211"), CardTextParser.parseGrade(lines("FLAREON-HOLO", "#3", "NMMT 8", "74004211")))

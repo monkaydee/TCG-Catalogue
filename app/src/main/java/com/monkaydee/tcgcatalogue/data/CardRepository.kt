@@ -112,7 +112,7 @@ class CardRepository(
         is ScanHit.Pokemon -> resolvePokemon(hit)
         is ScanHit.Magic -> resolveMagic(hit)
         is ScanHit.Indexed -> verified(hit.game, hit.code, hit.texts) { code -> cardIndex.lookup(hit.game, code) }
-    }
+    }.map { it.copy(language = it.language ?: hit.language) }
 
     /**
      * Checks that the card the code points to has the name printed on the scanned card. If not,
@@ -283,21 +283,39 @@ class CardRepository(
      * Without a server, or when nobody sold that grade, graded copies carry the user's own value,
      * helped by the price links on the card page.
      */
-    suspend fun gradedLookup(card: CardCandidate, variant: Variant, grade: GradeInfo): GradedResult {
+    suspend fun gradedLookup(card: CardCandidate, variant: Variant, grade: GradeInfo, language: String = "EN"): GradedResult {
         val grader = grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
         val value = grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
         if (!server.isSetUp()) return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
         // A Black Label or Pristine 10 sells far above a plain 10: never priced as one.
         if (grade.qualifier != null) return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
-        val prices = attempt { gradedPrices(card, variant) }.getOrElse { return GradedResult(null, AppStrings.get(R.string.data_graded_server_error)) }
-        val match = prices.firstOrNull { it.grader.equals(grader, ignoreCase = true) && sameGrade(it.grade, value) && it.currency == "USD" }
+        val prices = attempt { gradedPrices(card, variant, language) }.getOrElse { return GradedResult(null, AppStrings.get(R.string.data_graded_server_error)) }
+        val match = prices.firstOrNull { it.grader.equals(grader, ignoreCase = true) && sameGrade(it.grade, value) && it.currency in setOf("USD", "EUR") }
             ?: return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
-        return GradedResult(Price(match.price, PriceSource.GRADED, note = gradedNote(match)), null)
+        val source = if (match.currency == "EUR") PriceSource.GRADED_EUR else PriceSource.GRADED
+        return GradedResult(Price(match.price, source, note = gradedNote(match)), null)
     }
 
     /** All graded prices the price server has for a printing (every company and grade). */
-    suspend fun gradedPrices(card: CardCandidate, variant: Variant): List<PriceServerApi.Graded> =
-        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key)
+    suspend fun gradedPrices(card: CardCandidate, variant: Variant, language: String = "EN"): List<PriceServerApi.Graded> =
+        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key, language, localName(card, language))
+
+    /** The card's name in [language] for searching listings ("Flamara"), Pokémon only. */
+    private suspend fun localName(card: CardCandidate, language: String): String? =
+        if (language == "EN" || card.game != Game.POKEMON || card.cardId.contains(':')) null
+        else attempt { tcgdex.localName(card.cardId, language) }.getOrNull()?.takeIf { !it.equals(card.name, ignoreCase = true) }
+
+    /** True when the card's own price sources already describe [language] (English cards; Japanese cards from the Japanese database). */
+    private fun ownLanguage(card: CardCandidate, language: String) = language == "EN" || card.cardId.startsWith("${language.lowercase()}:")
+
+    /** The price of a copy in [language] from listings in that language, if the server has one. */
+    private suspend fun languagePrice(card: CardCandidate, variant: Variant, language: String): Price? {
+        if (!server.isSetUp()) return null
+        val (amount, source, currency) = attempt {
+            server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key, language, localName(card, language))
+        }.getOrNull() ?: return null
+        return Price(amount, if (currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = source.takeIf { it.isNotBlank() })
+    }
 
     /** Graded prices for a card in the collection, for its card page. */
     suspend fun gradedPricesFor(row: OwnedCard): List<PriceServerApi.Graded> {
@@ -352,7 +370,13 @@ class CardRepository(
     ).joinToString(" · ")
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
-    suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings, listing: CardmarketApi.Listing? = null): Price? {
+    suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings, listing: CardmarketApi.Listing? = null, language: String = "EN"): Price? {
+        if (!ownLanguage(card, language)) {
+            val local = languagePrice(card, variant, language)
+            if (local != null) return if (condition == "NM") local else Pricing.forCondition(local, condition, null, PriceTexts.App)
+            // nothing for this language: the English price, said so
+            return conditionPrice(card, variant, condition, s, listing)?.copy(note = AppStrings.get(R.string.price_note_english_price))
+        }
         val base = rawPrice(card, variant, s, listing) ?: serverRawPrice(card, variant)
         if (condition == "NM") return base
         val table = runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull()
@@ -392,9 +416,10 @@ class CardRepository(
         condition: String,
         s: AppSettings,
         listing: CardmarketApi.Listing? = null,
+        language: String = "EN",
     ): Price? {
-        if (grade?.grader == null || grade.grade == null) return conditionPrice(card, variant, condition, s, listing)
-        val result = gradedLookup(card, variant, grade)
+        if (grade?.grader == null || grade.grade == null) return conditionPrice(card, variant, condition, s, listing, language)
+        val result = gradedLookup(card, variant, grade, language)
         // Grader and grade are set here, so a missing graded price means there is no graded price source.
         return result.price ?: rawPrice(card, variant, s, listing)?.copy(note = AppStrings.get(R.string.price_note_raw_no_graded_source))
     }
@@ -413,11 +438,12 @@ class CardRepository(
         listing: CardmarketApi.Listing? = null,
         purchasePrice: Double? = null,
         manualValue: Double? = null,
+        language: String = "EN",
     ): Long {
         val s = settings.current()
         val graded = grade?.grader != null && grade.grade != null
         val chosen = listing ?: defaultListing(cardmarketListings(candidate), variant, s)
-        val price = runCatching { priceFor(candidate, variant, grade, condition, s, chosen) }.getOrNull()
+        val price = runCatching { priceFor(candidate, variant, grade, condition, s, chosen, language) }.getOrNull()
         val id = db.cards().addOrIncrement(
             OwnedCard(
                 game = candidate.game,
@@ -446,6 +472,7 @@ class CardRepository(
                 purchasePrice = purchasePrice?.let { Money.convert(it, s.currency, price?.currency ?: s.currency, s.usdToEur) },
                 manualPrice = manualValue,
                 manualCurrency = manualValue?.let { s.currency },
+                language = language,
             ),
         )
         runCatching { ensureSet(candidate) }
@@ -453,7 +480,7 @@ class CardRepository(
         return id
     }
 
-    suspend fun add(r: AddRequest): Long = add(r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice, r.manualValue)
+    suspend fun add(r: AddRequest): Long = add(r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice, r.manualValue, r.language)
 
     /** Current data of a card in the collection, for editing it (null when offline). */
     suspend fun candidateFor(card: OwnedCard): CardCandidate? = runCatching { fetch(card.game, card.cardId) }.getOrNull()
@@ -467,8 +494,9 @@ class CardRepository(
         val s = settings.current()
         val graded = r.grade?.grader != null && r.grade.grade != null
         val condition = if (graded) r.grade!!.label else r.condition
-        val price = runCatching { priceFor(r.card, r.variant, r.grade, r.condition, s, r.listing) }.getOrNull()
+        val price = runCatching { priceFor(r.card, r.variant, r.grade, r.condition, s, r.listing, r.language) }.getOrNull()
         val edited = original.copy(
+            language = r.language,
             game = r.card.game,
             cardId = r.card.cardId,
             variant = r.variant.key,
@@ -496,7 +524,7 @@ class CardRepository(
             manualPrice = r.manualValue,
             manualCurrency = r.manualValue?.let { s.currency },
         )
-        val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition)?.takeIf { it.id != original.id }
+        val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition, edited.language)?.takeIf { it.id != original.id }
         if (clash != null) {
             db.cards().update(clash.copy(quantity = clash.quantity + edited.quantity))
             db.cards().delete(original)
@@ -520,7 +548,7 @@ class CardRepository(
      */
     suspend fun changeCondition(card: OwnedCard, condition: String) {
         if (card.graded || card.condition == condition) return
-        val existing = db.cards().find(card.game, card.cardId, card.variant, condition)
+        val existing = db.cards().find(card.game, card.cardId, card.variant, condition, card.language)
         if (existing != null) {
             db.cards().update(existing.copy(quantity = existing.quantity + card.quantity))
             db.cards().delete(card)
@@ -530,7 +558,7 @@ class CardRepository(
         val s = settings.current()
         val fresh = runCatching { fetch(card.game, card.cardId) }.getOrNull()
         val variant = fresh?.variants?.firstOrNull { it.key == card.variant }
-        val price = if (fresh != null && variant != null) runCatching { conditionPrice(fresh, variant, condition, s, listingOf(card)) }.getOrNull() else null
+        val price = if (fresh != null && variant != null) runCatching { conditionPrice(fresh, variant, condition, s, listingOf(card), card.language) }.getOrNull() else null
         db.cards().update(
             if (price == null) {
                 card.copy(condition = condition)
@@ -554,7 +582,7 @@ class CardRepository(
         val fresh = runCatching { fetch(card.game, card.cardId) }.getOrNull()
         val variant = fresh?.variants?.firstOrNull { it.key == card.variant }
         val grade = if (card.graded) GradeInfo(card.grader, card.grade, card.gradeQualifier, card.certNumber) else null
-        val price = if (fresh != null && variant != null) runCatching { priceFor(fresh, variant, grade, card.condition, s, listing) }.getOrNull() else null
+        val price = if (fresh != null && variant != null) runCatching { priceFor(fresh, variant, grade, card.condition, s, listing, card.language) }.getOrNull() else null
         db.cards().update(
             card.copy(
                 marketProductId = listing.productId,
@@ -670,7 +698,7 @@ class CardRepository(
                         for (row in rows) {
                             val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: continue
                             val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
-                            val price = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row)) }.getOrNull() ?: continue
+                            val price = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row), row.language) }.getOrNull() ?: continue
                             val next = row.copy(
                                 price = price.amount,
                                 priceCurrency = price.currency,
@@ -948,18 +976,26 @@ class CardRepository(
         cardsByPrintedName(readable, warning).ifEmpty { cards }
     }
 
-    /** Pokémon cards named by a word printed on the card ("Ogerpon"), the one whose number was read first. */
+    /**
+     * Pokémon cards named by a word printed on the card ("Ogerpon", "Evoli"), searched in the card's
+     * language and in English. When the number printed on the card picks out one of them, only that one.
+     */
     private suspend fun cardsByPrintedName(texts: List<String>, warning: String): List<CardCandidate> = coroutineScope {
-        val numbers = texts.flatMap { Regex("""\d{1,3}""").findAll(it).map { m -> m.value.trimStart('0') }.toList() }.toSet()
-        val words = texts.take(8).flatMap { it.split(Regex("""[^\p{L}]+""")) }.filter { it.length >= 5 }.distinct().take(5)
+        fun digits(s: String) = s.filter(Char::isDigit).trimStart('0')
+        val numbers = texts.flatMap { Regex("""\d{1,3}""").findAll(it).map { m -> m.value.trimStart('0') }.toList() }.filter { it.isNotEmpty() }.toSet()
+        val words = texts.take(8).flatMap { it.split(Regex("""[^\p{L}]+""")) }.filter { it.length >= 5 }.distinct().take(6)
+        val language = CardTextParser.detectLanguage(texts)?.lowercase()?.takeIf { it in setOf("de", "fr", "it", "es", "pt") }
         for (word in words) {
-            val briefs = attempt { tcgdex.searchByName(word, 80) }.getOrDefault(emptyList())
+            val briefs = (language?.let { attempt { tcgdex.searchByNameIn(it, word) }.getOrDefault(emptyList()) }.orEmpty() +
+                attempt { tcgdex.searchByName(word, 80) }.getOrDefault(emptyList()))
                 .filter { it.name.contains(word, ignoreCase = true) }
-            if (briefs.isEmpty() || briefs.size >= 80) continue // none, or a common word
-            val ranked = briefs.sortedByDescending { it.number.trimStart('0') in numbers }.take(8)
+                .distinctBy { it.cardId }
+            if (briefs.isEmpty() || briefs.size >= 120) continue // none, or a common word
+            val exact = briefs.filter { digits(it.number) in numbers }
+            val ranked = (if (exact.size == 1) exact else exact + (briefs - exact.toSet())).take(8)
             return@coroutineScope ranked.map { b -> async { attempt { tcgdex.card(b.cardId) }.getOrNull() } }
                 .mapNotNull { it.await() }
-                .map { pokemonFixed(it).copy(warning = warning) }
+                .map { pokemonFixed(it).copy(warning = warning, score = if (exact.size == 1) 1.0 else it.score) }
         }
         emptyList()
     }

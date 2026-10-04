@@ -68,6 +68,22 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
     suspend fun cardInSet(setId: String, localId: String): CardCandidate? =
         http.getJson("$base/sets/${enc(raw(setId))}/${enc(localId)}")?.let(::parseCard)
 
+    /** Card ids (same as the English ones) and names whose name in [language] contains [name] ("de", "Evoli"). */
+    suspend fun searchByNameIn(language: String, name: String, limit: Int = 80): List<CardBrief> =
+        http.getJson("https://api.tcgdex.net/v2/${language.lowercase()}/cards?name=${enc(name)}&pagination:itemsPerPage=$limit").arr().orEmpty().mapNotNull { c ->
+            CardBrief(
+                game = Game.POKEMON,
+                cardId = c["id"].str() ?: return@mapNotNull null,
+                name = c["name"].str().orEmpty(),
+                number = c["localId"].str().orEmpty(),
+                imageUrl = null,
+            )
+        }
+
+    /** The card's printed name in another language ("de" → "Flamara"), null when TCGdex has none. */
+    suspend fun localName(cardId: String, language: String): String? =
+        runCatching { http.getJson("https://api.tcgdex.net/v2/${language.lowercase()}/cards/${enc(raw(cardId))}")?.get("name").str() }.getOrNull()
+
     suspend fun card(cardId: String): CardCandidate? =
         http.getJson("$base/cards/${enc(raw(cardId))}")?.let(::parseCard)
 

@@ -11,6 +11,12 @@ enum class PriceSource(val label: String, val currency: String) {
 
     /** Raw price from the app's price server when the card databases have none (JustTCG, eBay listings …), in USD. */
     SERVER("Market", "USD"),
+
+    /** The same, from a European eBay site (cards in German, French …), in EUR. */
+    SERVER_EUR("Market", "EUR"),
+
+    /** Graded prices from a European eBay site, in EUR. */
+    GRADED_EUR("Graded market", "EUR"),
 }
 
 data class Price(val amount: Double, val source: PriceSource, val note: String? = null) {
@@ -64,6 +70,8 @@ data class CardCandidate(
     val preferredVariant: String? = null,
     /** The scan couldn't tell for sure which printing it is, and they differ in value: the user should check. */
     val printingCheck: Boolean = false,
+    /** The language the scan was read in ("EN", "DE", "JA" …), when it could be told. */
+    val language: String? = null,
 ) {
     /** The printing to preselect: the recognised one, otherwise the first. */
     val defaultVariant: Variant get() = variants.firstOrNull { it.key == preferredVariant } ?: variants.first()

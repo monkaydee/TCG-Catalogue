@@ -40,6 +40,10 @@ export interface CardRequest {
   number: string;
   tcgplayerId?: string;
   printing?: string;
+  /** Card language ("EN", "DE", "JA" …); prices for other languages than English come from eBay only. */
+  language?: string;
+  /** The card's name in [language] (e.g. "Flamara" for Flareon in German), when known. */
+  localName?: string;
   graded?: boolean;
   /** Cache key (game + best identifier + printing), filled in by the server. */
   key: string;
@@ -63,6 +67,8 @@ export interface RawPrice {
    */
   market: number | null;
   source: string;
+  /** Currency of the prices (default USD). */
+  currency?: string;
 }
 
 /** One graded price. Only ever filled from data the provider labels as graded. */

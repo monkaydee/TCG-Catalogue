@@ -86,6 +86,14 @@ data class AddRequest(
     val purchasePrice: Double?,
     /** The user's own value per copy, in the display currency, overriding the market price. */
     val manualValue: Double? = null,
+    /** Language of the copy ("EN", "DE", "JA" …). */
+    val language: String = "EN",
+)
+
+/** Card languages, shown by their own name (no translation needed). */
+val CARD_LANGUAGES = listOf(
+    "EN" to "English", "DE" to "Deutsch", "FR" to "Français", "IT" to "Italiano", "ES" to "Español", "PT" to "Português",
+    "NL" to "Nederlands", "PL" to "Polski", "JA" to "日本語", "KO" to "한국어", "ZH" to "中文",
 )
 
 /**
@@ -111,6 +119,7 @@ fun AddCardSheet(
     if (candidates.isEmpty()) return
     var selected by remember(candidates) { mutableIntStateOf(0) }
     val card = candidates[selected.coerceIn(candidates.indices)]
+    var language by remember(card) { mutableStateOf(initial?.language ?: card.language ?: if (card.cardId.startsWith("ja:")) "JA" else "EN") }
     var variantKey by remember(card) {
         mutableStateOf(initial?.variant?.takeIf { k -> card.variants.any { it.key == k } } ?: card.defaultVariant.key)
     }
@@ -152,26 +161,26 @@ fun AddCardSheet(
     // Price for the chosen condition (NM is the market price itself; the others are looked up).
     var conditionQuote by remember { mutableStateOf<Price?>(null) }
     var conditionLoading by remember { mutableStateOf(false) }
-    LaunchedEffect(card, variant, condition, graded, listing) {
-        // NM is the market price itself, unless the card databases have none (then the price server is asked)
-        if (graded || (condition == "NM" && raw != null)) {
+    LaunchedEffect(card, variant, condition, graded, listing, language) {
+        // NM English is the market price itself, unless the card databases have none (then the price server is asked)
+        if (graded || (condition == "NM" && raw != null && language == "EN")) {
             conditionQuote = raw
             return@LaunchedEffect
         }
         conditionLoading = true
-        conditionQuote = attempt { repo.conditionPrice(card, variant, condition, settings, listing) }.getOrNull() ?: raw
+        conditionQuote = attempt { repo.conditionPrice(card, variant, condition, settings, listing, language) }.getOrNull() ?: raw
         conditionLoading = false
     }
     var gradedQuote by remember { mutableStateOf<Price?>(null) }
     var gradedProblem by remember { mutableStateOf<String?>(null) }
     var gradedLoading by remember { mutableStateOf(false) }
-    LaunchedEffect(card, variant, graded, gradeInfo.grader, gradeInfo.grade, gradeInfo.qualifier) {
+    LaunchedEffect(card, variant, graded, gradeInfo.grader, gradeInfo.grade, gradeInfo.qualifier, language) {
         if (!graded) return@LaunchedEffect
         gradedLoading = true
         gradedQuote = null
         gradedProblem = null
         // attempt() lets cancellation through, so a lookup for the previous grade can't overwrite this one.
-        val result = attempt { repo.gradedLookup(card, variant, gradeInfo) }
+        val result = attempt { repo.gradedLookup(card, variant, gradeInfo, language) }
         gradedQuote = result.getOrNull()?.price
         gradedProblem = result.getOrNull()?.problem ?: result.exceptionOrNull()?.message
         gradedLoading = false
@@ -300,6 +309,10 @@ fun AddCardSheet(
                     CONDITIONS.forEach { c -> FilterChip(selected = c == condition, onClick = { condition = c }, label = { Text(c) }) }
                 }
             }
+            Text(stringResource(R.string.add_language), style = MaterialTheme.typography.labelLarge)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CARD_LANGUAGES.forEach { (code, name) -> FilterChip(selected = code == language, onClick = { language = code }, label = { Text(name) }) }
+            }
             OutlinedTextField(
                 value = paid,
                 onValueChange = { paid = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.take(10) },
@@ -326,7 +339,7 @@ fun AddCardSheet(
                     Button(onClick = {
                         val price = paid.replace(',', '.').toDoubleOrNull()
                         val own = myValue.replace(',', '.').toDoubleOrNull()
-                        onAdd(AddRequest(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing, price, own))
+                        onAdd(AddRequest(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing, price, own, language))
                     }) { Text(confirmLabel) }
                 }
             }

@@ -46,9 +46,12 @@ function chains(env: Env, s: Settings) {
       const key = keyOf(env, provider.name);
       return key ? [{ provider, key }] : [];
     });
+  // These sources price the English print; other languages only come from eBay listings in that language.
+  const english = <P extends { supports(c: CardRequest): boolean }>(p: P): P =>
+    ({ ...p, supports: (c: CardRequest) => (!c.language || c.language === "EN") && p.supports(c) });
   return {
-    raw: withKey<RawPrice>([justTcgRaw(), tcgApi(), poketrace(), rapidTcg(s.rapidapiTcgHost), ebayRaw()]),
-    graded: withKey<GradedPrice[]>([justTcgGraded(), ppt(), ebay()]),
+    raw: withKey<RawPrice>([english(justTcgRaw()), english(tcgApi()), english(poketrace()), english(rapidTcg(s.rapidapiTcgHost)), ebayRaw()]),
+    graded: withKey<GradedPrice[]>([english(justTcgGraded()), english(ppt()), ebay()]),
   };
 }
 

@@ -13,12 +13,17 @@ sealed interface ScanHit {
     /** Stable identity used to decide when the same card has been read several frames in a row. */
     val key: String
 
+    /** The card's language read from its text ("EN", "DE", "JA" …), null when it can't be told. */
+    val language: String? get() = null
+
     data class OnePiece(val code: String) : ScanHit {
         override val game get() = Game.ONE_PIECE
         override val key get() = "op:$code"
 
         /** All text read on the card, to check the name of the card the code points to. */
         var texts: List<String> = emptyList()
+
+        override val language get() = CardTextParser.detectLanguage(texts)
     }
 
     /**
@@ -37,6 +42,7 @@ sealed interface ScanHit {
         val jaSet: String? = null,
         /** A Black Star promo without a set size ("SVP DE 123", "SWSH123"): the promo set's id. */
         val promoSet: String? = null,
+        override val language: String? = null,
     ) : ScanHit {
         override val game get() = Game.POKEMON
         override val key get() = if (promoSet != null) "pkm:$promoSet-$number" else "pkm:$number/$total"
@@ -54,6 +60,8 @@ sealed interface ScanHit {
 
         /** All text read on the card, to check the name of the card the code points to. */
         var texts: List<String> = emptyList()
+
+        override val language get() = CardTextParser.detectLanguage(texts)
     }
 }
 
@@ -136,11 +144,12 @@ object CardTextParser {
         val numbers = allPokemonNumbers(lines)
         // Name, set code and stamp can only be tied to the number when there is a single card.
         if (numbers.isEmpty()) {
-            pokemonPromo(lines)?.let { (set, number) -> return listOf(ScanHit.Pokemon(number, 0, guessName(lines), promoSet = set)) }
+            pokemonPromo(lines)?.let { (set, number) -> return listOf(ScanHit.Pokemon(number, 0, guessName(lines), promoSet = set, language = detectLanguage(texts))) }
         }
-        if (numbers.size != 1) return numbers.map { (number, total) -> ScanHit.Pokemon(number, total, null) }
+        if (numbers.size != 1) return numbers.map { (number, total) -> ScanHit.Pokemon(number, total, null, language = detectLanguage(texts)) }
         val (number, total) = numbers.single()
-        return listOf(ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines), japaneseSet(lines)))
+        val ja = japaneseSet(lines)
+        return listOf(ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines), ja, language = if (ja != null) "JA" else detectLanguage(texts)))
     }
 
     fun findOnePiece(lines: List<OcrLine>): ScanHit.OnePiece? = allOnePiece(lines).firstOrNull()
@@ -164,27 +173,67 @@ object CardTextParser {
             pokemonSetCode.findAll(l.text.uppercase()).map { it.groupValues[1] }.firstOrNull { it !in notSetCodes }
         }
 
+    /** Words printed on cards in one language only (Pokémon rule words; One Piece and others are mostly EN/JA). */
+    private val languageWords = listOf(
+        "DE" to Regex("""\b(SCHWÄCHE|SCHWACHE|RESISTENZ|RÜCKZUG|RUCKZUG|ENTWICKELT SICH AUS|BASIS)\b"""),
+        "FR" to Regex("""\b(FAIBLESSE|RÉSISTANCE|RETRAITE|ÉVOLUE DE|DE BASE)\b"""),
+        "IT" to Regex("""\b(DEBOLEZZA|RESISTENZA|COSTO DI RITIRATA|RITIRATA|SI EVOLVE DA)\b"""),
+        "ES" to Regex("""\b(DEBILIDAD|RESISTENCIA|RETIRADA|EVOLUCIONA DE|BÁSICO)\b"""),
+        "PT" to Regex("""\b(FRAQUEZA|RESISTÊNCIA|RECUO|EVOLUI DE)\b"""),
+        "NL" to Regex("""\b(ZWAKTE|WEERSTAND|TERUGTREKKEN)\b"""),
+        "PL" to Regex("""\b(SŁABOŚĆ|SLABOSC|ODPORNOŚĆ|WYCOFANIE)\b"""),
+        "EN" to Regex("""\b(WEAKNESS|RESISTANCE|RETREAT|EVOLVES FROM|BASIC|COUNTER|BLOCKER|RUSH|ON PLAY|WHEN ATTACKING)\b"""),
+    )
+    private val languageCode = Regex("""\b[A-Z]{3}\s+(EN|DE|FR|IT|ES|PT|NL|PL)\b""")
+
+    /**
+     * The card's language from its text: the code next to the set code ("PAL DE 123/193",
+     * "SVP DE 123"), Japanese / Korean / Chinese script, or the most rule words of one language.
+     */
+    fun detectLanguage(texts: List<String>): String? {
+        val all = texts.joinToString(" ").uppercase()
+        languageCode.find(all)?.let { return it.groupValues[1] }
+        val kana = all.count { Character.UnicodeScript.of(it.code) in setOf(Character.UnicodeScript.HIRAGANA, Character.UnicodeScript.KATAKANA) }
+        val hangul = all.count { Character.UnicodeScript.of(it.code) == Character.UnicodeScript.HANGUL }
+        val han = all.count { Character.UnicodeScript.of(it.code) == Character.UnicodeScript.HAN }
+        when {
+            hangul >= 3 -> return "KO"
+            kana >= 2 -> return "JA"
+            han >= 4 -> return "ZH"
+        }
+        return languageWords.map { (code, re) -> code to re.findAll(all).count() }.filter { it.second > 0 }.maxByOrNull { it.second }?.first
+    }
+
     /** The game the card's own small print names ("©2024 Pokémon/Nintendo", "BANDAI", "Wizards of the Coast"), if any. */
     fun gameFromPrint(texts: List<String>): Game? {
         val all = texts.joinToString(" ").uppercase()
         return when {
-            Regex("""POK[EÉ]MON\s*/\s*NINTENDO|GAME\s*FREAK|CREATURES""").containsMatchIn(all) -> Game.POKEMON
+            Regex("""POK[EÉ]MON\s*/\s*NINTENDO|GAME\s*FREAK|CREATURES|©\s*\d{4}\s*POK[EÉ]MON|\b(SCHW[AÄ]CHE|WEAKNESS|FAIBLESSE|DEBOLEZZA|DEBILIDAD|FRAQUEZA|R[UÜ]CKZUG|RETREAT)\b""").containsMatchIn(all) -> Game.POKEMON
             Regex("""WIZARDS\s+OF\s+THE\s+COAST""").containsMatchIn(all) -> Game.MAGIC
             Regex("""ONE\s*PIECE""").containsMatchIn(all) && "BANDAI" in all -> Game.ONE_PIECE
             else -> null
         }
     }
 
-    /** Black Star promo codes: "SVP DE 123" / "SVP EN 045" (Scarlet & Violet), "SWSH123" (Sword & Shield). */
-    private val svPromo = Regex("""\bSVP\s*(?:[A-Z]{2}\s*)?0*(\d{1,3})\b""")
-    private val swshPromo = Regex("""\bSWSH\s*0*(\d{1,3})\b""")
+    /**
+     * Black Star promo codes: "SVP DE 123" / "MEP DE 031" (Scarlet & Violet, Mega Evolution, with a
+     * language code), "SWSH123", "SM233", "XY123", "BW12" (older eras, number printed with the prefix).
+     */
+    private val newPromo = Regex("""\b(SVP|MEP)\s*(?:[A-Z]{2}\s*)?(\d{1,3})\b""")
+    private val oldPromo = Regex("""\b(SWSH|SM|XY|BW)\s?(\d{1,3})\b""")
 
     /** A promo's set (TCGdex id) and number, read on one line or two neighbouring ones. */
     fun pokemonPromo(lines: List<OcrLine>): Pair<String, String>? {
         val texts = lines.map { it.text.uppercase() }
         for (t in texts + texts.zipWithNext { a, b -> "$a $b" }) {
-            svPromo.find(t)?.let { return "svp" to it.groupValues[1] }
-            swshPromo.find(t)?.let { return "swshp" to "SWSH" + it.groupValues[1].padStart(3, '0') }
+            newPromo.find(t)?.let { return it.groupValues[1].lowercase() to it.groupValues[2].padStart(3, '0') }
+        }
+        for (t in texts) {
+            oldPromo.find(t)?.let { m ->
+                val prefix = m.groupValues[1]
+                val digits = if (prefix == "SWSH") m.groupValues[2].padStart(3, '0') else m.groupValues[2]
+                return "${prefix.lowercase()}p" to prefix + digits
+            }
         }
         return null
     }

@@ -57,16 +57,52 @@ function shortNumber(n: string): string {
 const FIRST_EDITION = /\b(1st|first)\s*(ed\.?|edition)\b/i;
 const SHADOWLESS = /\bshadowless\b/i;
 
+/** Words sellers use for a card's language (English and the local eBay site's language). */
+const LANGUAGE_WORDS: Record<string, RegExp> = {
+  DE: /\b(german|deutsch|deutsche|ger)\b/i,
+  FR: /\b(french|fran[cç]ais|fran[cç]aise|franz[oö]sisch|fr)\b/i,
+  IT: /\b(italian|italiano|italiana|italienisch|ita)\b/i,
+  ES: /\b(spanish|espa[nñ]ol|espa[nñ]ola|spanisch|esp)\b/i,
+  PT: /\b(portuguese|portugu[eê]s|portugiesisch)\b/i,
+  NL: /\b(dutch|nederlands|niederl[aä]ndisch)\b/i,
+  PL: /\b(polish|polski|polnisch)\b/i,
+  JA: /\b(japanese|japan|jpn|jp|japanisch|japonais)\b/i,
+  KO: /\b(korean|kor|koreanisch)\b/i,
+  ZH: /\b(chinese|chn|s-chinese|t-chinese|chinesisch)\b/i,
+};
+
+/** The eBay site where cards of a language are mostly sold, and its currency. */
+export function marketplace(language?: string): { site: string; currency: string } {
+  switch (language) {
+    case "DE": case "PL": case "PT": return { site: "EBAY_DE", currency: "EUR" };
+    case "FR": return { site: "EBAY_FR", currency: "EUR" };
+    case "IT": return { site: "EBAY_IT", currency: "EUR" };
+    case "ES": return { site: "EBAY_ES", currency: "EUR" };
+    case "NL": return { site: "EBAY_NL", currency: "EUR" };
+    default: return { site: "EBAY_US", currency: "USD" };
+  }
+}
+
+/** English listings name no other language; other languages must be named in the title. */
+export function languageMatches(title: string, language?: string): boolean {
+  if (!language || language === "EN") return !Object.values(LANGUAGE_WORDS).some((re) => re.test(title));
+  return LANGUAGE_WORDS[language]?.test(title) ?? false;
+}
+
 export function titleMatches(title: string, card: CardRequest): boolean {
+  if (!languageMatches(title, card.language)) return false;
   const t = title.toLowerCase();
   if (NOT_A_SINGLE.test(title)) return false;
   // 1st Edition and Shadowless sell for many times the regular print: only for that printing.
   const first = /first|1st/i.test(card.printing ?? "");
   if (FIRST_EDITION.test(title) !== first) return false;
   if (SHADOWLESS.test(title) && !/shadowless/i.test(card.printing ?? "")) return false;
-  // every word of the name (ignoring short ones and punctuation)
-  const words = card.name.toLowerCase().split(/[^a-z0-9éè]+/).filter((w) => w.length > 1);
-  if (!words.every((w) => t.includes(w))) return false;
+  // every word of the name, English or in the card's language
+  const named = (name?: string) => {
+    const words = (name ?? "").toLowerCase().split(/[^\p{L}0-9]+/u).filter((w) => w.length > 1);
+    return words.length > 0 && words.every((w) => t.includes(w));
+  };
+  if (!named(card.name) && !named(card.localName)) return false;
   if (!card.number) return true;
   const n = shortNumber(card.number).toLowerCase();
   const esc = n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -80,7 +116,7 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
     const title = str(item.title) ?? "";
     const p = obj(item.price);
     const value = price(typeof p.value === "string" ? Number(p.value) : p.value);
-    if (value === null || str(p.currency) !== "USD" || !titleMatches(title, card)) continue;
+    if (value === null || str(p.currency) !== marketplace(card.language).currency || !titleMatches(title, card)) continue;
     const g = gradeInTitle(title);
     if (!g) continue;
     const k = `${g.grader}|${g.grade}`;
@@ -92,7 +128,7 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
     const [grader, grade] = k.split("|");
     const s = [...list].sort((a, b) => a - b);
     const median = s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
-    return { grader, grade, price: Math.round(median * 100) / 100, currency: "USD", source: "eBay listings (asking)", date };
+    return { grader, grade, price: Math.round(median * 100) / 100, currency: marketplace(card.language).currency, source: "eBay listings (asking)", date };
   });
 }
 
@@ -112,18 +148,20 @@ export function parseEbayRaw(json: unknown, card: CardRequest): RawPrice | null 
     const title = str(item.title) ?? "";
     const p = obj(item.price);
     const value = price(typeof p.value === "string" ? Number(p.value) : p.value);
-    if (value === null || str(p.currency) !== "USD" || SLAB.test(title) || !titleMatches(title, card)) continue;
+    if (value === null || str(p.currency) !== marketplace(card.language).currency || SLAB.test(title) || !titleMatches(title, card)) continue;
     prices.push(value);
   }
-  return prices.length >= 3 ? { conditions: emptyConditions(), market: median(prices), source: "eBay listings (asking)" } : null;
+  return prices.length >= 3 ? { conditions: emptyConditions(), market: median(prices), source: "eBay listings (asking)", currency: marketplace(card.language).currency } : null;
 }
 
 async function search(card: CardRequest, key: string, extra: string): Promise<unknown> {
   const first = /first|1st/i.test(card.printing ?? "") ? "1st edition" : "";
-  const q = [card.name, card.number ? shortNumber(card.number) : "", card.set, first, extra].filter(Boolean).join(" ");
+  const { site } = marketplace(card.language);
+  const languageWord = { DE: "deutsch", FR: "français", IT: "italiano", ES: "español", PT: "portuguese", NL: "nederlands", PL: "polish", JA: "japanese", KO: "korean", ZH: "chinese" }[card.language ?? ""] ?? "";
+  const q = [card.localName ?? card.name, card.number ? shortNumber(card.number) : "", card.set, first, languageWord, extra].filter(Boolean).join(" ");
   const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
   return fetchJson("ebay", `${API}/buy/browse/v1/item_summary/search?${params}`, {
-    headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": "EBAY_US" },
+    headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": site },
   });
 }
 

@@ -33,6 +33,12 @@ describe("ebay", () => {
     expect(parseEbayRaw({ itemSummaries: [item("Flareon 3/64", "50")] }, flareon)).toBeNull();
   });
 
+  it("matches the card language", () => {
+    expect(titleMatches("Flareon 3/64 Holo Japanese PSA 9", flareon)).toBe(false);
+    expect(titleMatches("Flamara 3/64 Holo Jungle Deutsch PSA 9", { ...flareon, language: "DE", localName: "Flamara" })).toBe(true);
+    expect(titleMatches("Flareon 3/64 Holo PSA 9", { ...flareon, language: "DE" })).toBe(false);
+  });
+
   it("keeps 1st Edition apart", () => {
     expect(titleMatches("Flareon 3/64 1st Edition Holo PSA 9", flareon)).toBe(false);
     expect(titleMatches("Flareon 3/64 1st Edition Holo PSA 9", { ...flareon, printing: "firstEdition" })).toBe(true);
