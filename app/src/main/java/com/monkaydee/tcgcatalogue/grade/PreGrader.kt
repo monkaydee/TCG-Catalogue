@@ -46,7 +46,7 @@ object PreGrader {
         // The guide only helps when the card is roughly in it; otherwise search the photo.
         val quad = (hint?.let { CardRectifier.findQuad(p, it) } ?: CardRectifier.findQuad(p)) ?: return Outcome.NoCard
         val upright = upright(quad)
-        val flat = CardRectifier.warp(p, upright)
+        val flat = trimmed(CardRectifier.warp(p, upright))
         val c = upright.corners
         val widthInPhoto = (hypot(c[1].x - c[0].x, c[1].y - c[0].y) + hypot(c[2].x - c[3].x, c[2].y - c[3].y)) / 2 / scale
         val bitmap = Bitmap.createBitmap(flat.argb, flat.width, flat.height, Bitmap.Config.ARGB_8888)
@@ -59,6 +59,21 @@ object PreGrader {
                 wear = Wear.measure(flat),
             ),
         )
+    }
+
+    /** The straightened card with leftover background strips cut off, scaled back to the standard size. */
+    private fun trimmed(flat: Pixels): Pixels {
+        val l = Centering.cut(flat, 'L')
+        val r = Centering.cut(flat, 'R')
+        val t = Centering.cut(flat, 'T')
+        val b = Centering.cut(flat, 'B')
+        if (l + r + t + b == 0) return flat
+        val full = Bitmap.createBitmap(flat.argb, flat.width, flat.height, Bitmap.Config.ARGB_8888)
+        val cropped = Bitmap.createBitmap(full, l, t, flat.width - l - r, flat.height - t - b)
+        val scaled = Bitmap.createScaledBitmap(cropped, flat.width, flat.height, true)
+        val px = IntArray(flat.width * flat.height).also { scaled.getPixels(it, 0, flat.width, 0, 0, flat.width, flat.height) }
+        listOf(full, cropped, scaled).distinct().forEach { it.recycle() }
+        return Pixels(flat.width, flat.height, px)
     }
 
     /** A card lying on its side is turned upright (its short sides become top and bottom). */

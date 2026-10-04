@@ -121,8 +121,10 @@ jobs:
           PSA_TOKEN: ${{ secrets.PSA_TOKEN }}
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           PPT_KEY: ${{ secrets.PPT_KEY }}
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
         run: |
-          names="APP_KEY JUSTTCG_KEY POKETRACE_KEY TCGAPI_KEY XIMILAR_KEY PSA_TOKEN RAPIDAPI_KEY PPT_KEY"
+          names="APP_KEY JUSTTCG_KEY POKETRACE_KEY TCGAPI_KEY XIMILAR_KEY PSA_TOKEN RAPIDAPI_KEY PPT_KEY EBAY_CLIENT_ID EBAY_CLIENT_SECRET"
           json='{}'
           for n in $names; do
             v="${!n}"

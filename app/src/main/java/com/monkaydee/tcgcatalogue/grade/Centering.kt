@@ -78,6 +78,31 @@ object Centering {
     private fun median(values: List<FloatArray>): FloatArray =
         FloatArray(3) { c -> values.map { it[c] }.sorted().let { it[it.size / 2] } }
 
+    /**
+     * Where the card really starts on one side of a straightened photo, in pixels: the first colour
+     * step followed by an even stretch (the border), else the first lasting step away from the
+     * background. Thin background strips left by straightening would otherwise count as wear.
+     * At most 4 % of the card; 0 when nothing is found.
+     */
+    fun cut(card: Pixels, side: Char): Int {
+        val ls = lines(card, side)
+        val length = ls[0].size
+        val prof = Array(length) { i -> median(ls.map { it[i] }) }
+        val region = (0.04 * length).toInt()
+        val need = max(10, (0.02 * length).toInt())
+        fun even(i: Int): Boolean {
+            val seg = (i until min(length, i + need)).map { prof[it] }
+            val med = median(seg)
+            val dev = seg.map { dist(it, med) }.sorted()
+            return dev[(dev.size * 0.8).toInt().coerceAtMost(dev.size - 1)] < 12 && dev.last() < 40
+        }
+        for (i in 0 until region) if ((i <= 2 || dist(prof[i], prof[i - 3]) > 14) && even(i)) return i
+        val bg = median(prof.take(3))
+        val run = max(6, (0.01 * length).toInt())
+        for (i in 3 until region) if ((i until i + run).all { dist(prof[it], bg) > 30 }) return i
+        return 0
+    }
+
     private fun side(card: Pixels, side: Char): Side? {
         val ls = lines(card, side)
         val length = ls[0].size

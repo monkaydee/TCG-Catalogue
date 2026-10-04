@@ -13,6 +13,8 @@ export interface Env {
   PSA_TOKEN?: string;
   RAPIDAPI_KEY?: string;
   PPT_KEY?: string;
+  EBAY_CLIENT_ID?: string;
+  EBAY_CLIENT_SECRET?: string;
 
   // Plain settings from [vars] in wrangler.toml. All are strings; see config.ts for defaults.
   [name: string]: unknown;
@@ -75,7 +77,7 @@ export interface GradedPrice {
 }
 
 /** The provider names, also used as the budget counter names in D1. */
-export type ProviderName = "justtcg" | "tcgapi" | "poketrace" | "rapidapi" | "ppt" | "psa" | "ximilar";
+export type ProviderName = "justtcg" | "tcgapi" | "poketrace" | "rapidapi" | "ppt" | "psa" | "ximilar" | "ebay";
 
 /**
  * Thrown by an adapter when the provider says "too many requests" or "quota used up".

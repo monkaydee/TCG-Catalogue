@@ -71,6 +71,7 @@ provider you leave out is simply not used.
 | `PSA_TOKEN` | optional | Sign in at <https://www.psacard.com>, then open <https://www.psacard.com/publicapi/documentation> → copy your **access token**. |
 | `RAPIDAPI_KEY` | optional | <https://rapidapi.com> → sign up → subscribe (Basic, free) to **TCGPlayer Price Data** by lulzasaur9192 → **Apps → default application → Authorization → X-RapidAPI-Key**. |
 | `PPT_KEY` | optional, paid | <https://www.pokemonpricetracker.com> → dashboard → API key. Only add it if you buy a plan; it is used for Pokémon graded (PSA/CGC/BGS) prices. |
+| `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET` | free, recommended | <https://developer.ebay.com> → My Account → Application Keys → **Production** keyset: App ID (Client ID) and Cert ID (Client Secret). Graded prices for every game from current eBay listings (asking prices), 5,000 calls/day. |
 
 Paste each value exactly, without spaces before or after.
 

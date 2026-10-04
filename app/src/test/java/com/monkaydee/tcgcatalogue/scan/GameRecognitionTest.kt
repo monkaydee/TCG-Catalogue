@@ -51,6 +51,11 @@ class GameRecognitionTest {
         assertEquals("PSA 10", g!!.label)
     }
 
+    @Test fun psaLabelWithGradeOnTwoLinesAndNoLogoText() {
+        val g = CardTextParser.parseGrade(lines("1999 POKEMON JUNGLE", "FLAREON-HOLO", "#3", "NM-MT", "8", "74004211"))
+        assertEquals(GradeInfo("PSA", "8", null, "74004211"), g)
+    }
+
     @Test fun psaWordingWithoutLogo() {
         assertEquals("PSA", CardTextParser.parseGrade(lines("CHESPIN", "GEM MT 10", "12345678"))!!.grader)
         assertEquals("9", CardTextParser.parseGrade(lines("PSA", "MINT 9"))!!.grade)

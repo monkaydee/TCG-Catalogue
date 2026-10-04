@@ -19,6 +19,7 @@ export const DEFAULT_BUDGETS: Record<ProviderName, Budget> = {
   rapidapi: { daily: 3, monthly: 22 }, // free: 25/month (TCGplayer Price Data BASIC, hard limit)
   ppt: { daily: 9000, monthly: 0 }, // paid Pro: 20,000 credits/day, 2 credits per graded lookup
   psa: { daily: 90, monthly: 0 }, // free token: 100/day (PSA may have lowered this, see docs)
+  ebay: { daily: 4500, monthly: 0 }, // free: 5,000 Browse calls/day
   ximilar: { daily: 10, monthly: 90 }, // free: 1,000 credits/month, 10 credits per identification
 };
 

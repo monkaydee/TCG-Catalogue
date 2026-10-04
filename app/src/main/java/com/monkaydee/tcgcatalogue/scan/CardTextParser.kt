@@ -281,19 +281,27 @@ object CardTextParser {
     private val bareHalfGrade = Regex("""^([1-9][.,]5)$""")
     private val slabWords = Regex("""\bGRAD(ED|ING)\b|\bCERT\b|\bAUTHENTIC\b""")
     private val cert = Regex("""(?<!\d)(\d{7,12})(?!\d)""")
+    private val psaTopLine = Regex("""^(19|20)\d\d\s+(POKEMON|ONE PIECE|MAGIC|YU-GI-OH|DRAGON BALL|WEISS|UNION ARENA)\b""")
+    private val loneWords = Regex("""^(GEM\s*MT|NM-MT\+?|MINT\+?|EX-MT\+?|VG-EX\+?|EX\+?|VG\+?|GOOD\+?)$""")
+    private val psaCert = Regex("""(?<!\d)\d{8,9}(?!\d)""")
     private val subgradeWords = Regex("""CENTER|CORNER|EDGE|SURFACE""")
 
     /** Reads the grading company, grade and cert number from a slab label, or null for a raw card. */
     fun parseGrade(lines: List<OcrLine>): GradeInfo? {
         val texts = lines.map { it.text.uppercase().trim() }
         val grader = graders.firstOrNull { (_, re) -> texts.any { re.containsMatchIn(it) } }?.first
-        val slab = grader != null || texts.any { slabWords.containsMatchIn(it) }
+        // PSA's label: "1999 POKEMON JUNGLE" on top and a grade word ("NM-MT") on a line of its own
+        val labelStyle = texts.any { psaTopLine.containsMatchIn(it) } || texts.any { loneWords.matches(it) }
+        val slab = grader != null || labelStyle || texts.any { slabWords.containsMatchIn(it) }
         var grade: String? = null
         var words = ""
-        for (t in texts) {
+        // the grade word and number are often read as two lines ("NM-MT" / "8"): try neighbours joined too
+        val candidates = texts + texts.zipWithNext { a, b -> "$a $b" }
+        for ((i, t) in candidates.withIndex()) {
             if (subgradeWords.containsMatchIn(t)) continue
+            val joined = i >= texts.size // "#3" + "NM-MT" must not read as grade 3: word first only
             val m = gradeAfterWords.find(t)?.let { it.groupValues[2] to it.groupValues[1] }
-                ?: gradeBeforeWords.find(t)?.let { it.groupValues[1] to it.groupValues[2] }
+                ?: gradeBeforeWords.find(t)?.takeUnless { joined }?.let { it.groupValues[1] to it.groupValues[2] }
             // "GRADE 8" / "NOTE 8" alone are only trusted on something that is clearly a slab.
             if (m != null && (slab || m.second !in setOf("GRADE", "NOTE"))) {
                 grade = m.first
@@ -318,6 +326,8 @@ object CardTextParser {
             grader != null -> grader
             // "GEM MT 10" is PSA's wording; other companies write "GEM MINT".
             words.startsWith("GEM MT") -> "PSA"
+            // the PSA logo is a picture, so OCR often misses it; its label layout gives it away
+            labelStyle && grade != null && texts.any { psaCert.containsMatchIn(it) } -> "PSA"
             else -> null
         }
         return GradeInfo(company, grade, qualifier, texts.firstNotNullOfOrNull { cert.find(it)?.groupValues?.get(1) })

@@ -921,7 +921,10 @@ class CardRepository(
             }
         }.mapNotNull { it.await() }
         val readable = texts.filter { t -> t.count(Char::isLetter) >= 3 }
-        if (readable.isEmpty()) cards else cards.sortedByDescending { CardTextParser.nameOnCard(it.name, readable) && it.name.length >= 3 }
+        if (readable.isEmpty()) return@coroutineScope cards
+        // When the name printed on the card matches some of the pictures, the others are only look-alikes.
+        val named = cards.filter { it.name.length >= 3 && CardTextParser.nameOnCard(it.name, readable) }
+        named.ifEmpty { cards }
     }
 
     private companion object {
