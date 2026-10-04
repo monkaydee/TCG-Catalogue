@@ -461,17 +461,25 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
             Modifier.align(Alignment.TopCenter).padding(12.dp).background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp)).padding(horizontal = 10.dp, vertical = 6.dp),
             color = Color.White, style = MaterialTheme.typography.bodyMedium,
         )
+        fun shoot() {
+            val ic = capture[0] ?: return
+            if (taking) return
+            taking = true
+            scope.launch {
+                val photo = takePhoto(ic, executor)
+                taking = false
+                if (photo == null) onError() else onPhoto(photo, guideFractions(viewSize.first, viewSize.second))
+            }
+        }
+        // Takes the photo by itself once the phone has stayed flat for a moment (steady hands, no tap shake).
+        LaunchedEffect(level) {
+            if (level) {
+                kotlinx.coroutines.delay(AUTO_SHOT_MS)
+                shoot()
+            }
+        }
         FilledIconButton(
-            onClick = {
-                val ic = capture[0] ?: return@FilledIconButton
-                if (taking) return@FilledIconButton
-                taking = true
-                scope.launch {
-                    val photo = takePhoto(ic, executor)
-                    taking = false
-                    if (photo == null) onError() else onPhoto(photo, guideFractions(viewSize.first, viewSize.second))
-                }
-            },
+            onClick = { shoot() },
             modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp).size(72.dp),
             shape = CircleShape,
         ) {
@@ -501,6 +509,9 @@ private suspend fun takePhoto(ic: ImageCapture, executor: java.util.concurrent.E
 
 /** Tilt below this many degrees counts as flat (the frame turns green). */
 private const val LEVEL_DEGREES = 3.0
+
+/** How long the phone must stay flat before the photo is taken automatically. */
+private const val AUTO_SHOT_MS = 900L
 
 /** How far the phone is from lying flat: total angle, and the sideways/forward share of gravity (-1..1). */
 private data class Tilt(val degrees: Double, val x: Float, val y: Float)
