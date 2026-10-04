@@ -19,12 +19,14 @@ describe("monthly budget spreading", () => {
   const justtcg = { daily: 90, monthly: 900 };
 
   it("spreads the month evenly: 900 over 31 days ≈ 29 per day on day 1", () => {
-    expect(dailyAllowance(justtcg, 0, at("2026-10-01T08:00:00Z"))).toBe(29);
+    expect(dailyAllowance(justtcg, 0, at("2026-10-01T08:00:00Z"))).toBe(30); // 900 × 1/31, rounded up
   });
 
   it("never lets day 10 use up the month", () => {
-    // Even if 600 were used in the first 9 days, the rest is spread over the 22 days left.
-    expect(dailyAllowance(justtcg, 600, at("2026-10-10T08:00:00Z"))).toBe(Math.floor(300 / 22));
+    // 600 used in the first 9 days is ahead of the pace (291 by day 10): nothing more today.
+    expect(dailyAllowance(justtcg, 600, at("2026-10-10T08:00:00Z"))).toBe(0);
+    // Back on pace later in the month.
+    expect(dailyAllowance(justtcg, 600, at("2026-10-22T08:00:00Z"))).toBe(39);
   });
 
   it("rolls unused calls over to later days", () => {
@@ -44,16 +46,17 @@ describe("monthly budget spreading", () => {
   });
 
   it("subtracts calls already made today", () => {
-    expect(remainingToday(justtcg, 10, 0, at("2026-10-01T08:00:00Z"))).toBe(19);
+    expect(remainingToday(justtcg, 10, 0, at("2026-10-01T08:00:00Z"))).toBe(20);
     expect(remainingToday(justtcg, 40, 0, at("2026-10-01T08:00:00Z"))).toBe(0);
   });
 
-  it("small monthly budgets still allow at least one call on most days", () => {
-    // RapidAPI: 45 a month → 1 per day on a 31-day month
-    expect(dailyAllowance({ daily: 5, monthly: 45 }, 0, at("2026-10-01T00:00:00Z"))).toBe(1);
-    // Ximilar: 90 a month → 2 per day at the start of a 31-day month, 3 in a 30-day one
-    expect(dailyAllowance({ daily: 10, monthly: 90 }, 0, at("2026-10-01T00:00:00Z"))).toBe(2);
-    expect(dailyAllowance({ daily: 10, monthly: 90 }, 0, at("2026-11-01T00:00:00Z"))).toBe(3);
+  it("small monthly budgets still allow calls, carried over between days", () => {
+    // RapidAPI: 22 a month → 1 on the 1st, 3 by the 4th if nothing was used
+    expect(dailyAllowance({ daily: 3, monthly: 22 }, 0, at("2026-10-01T00:00:00Z"))).toBe(1);
+    expect(dailyAllowance({ daily: 3, monthly: 22 }, 0, at("2026-10-04T00:00:00Z"))).toBe(3);
+    expect(dailyAllowance({ daily: 3, monthly: 22 }, 3, at("2026-10-04T00:00:00Z"))).toBe(0);
+    // Ximilar: 90 a month → 3 on the 1st
+    expect(dailyAllowance({ daily: 10, monthly: 90 }, 0, at("2026-10-01T00:00:00Z"))).toBe(3);
   });
 
   it("a whole month of steady use stays within the monthly budget", () => {

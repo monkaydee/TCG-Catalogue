@@ -26,13 +26,16 @@ export function daysInMonth(now: Date): number {
 
 /**
  * How many calls are allowed in total today (including the ones already made today).
+ * The monthly budget is paced over the month: by the end of day d, at most d/days-in-month of it
+ * may be used. Days with fewer calls leave the rest for later days, so even a tiny budget
+ * (22 a month) can be used: about one call every day and a half.
  * @param usedEarlierThisMonth calls made this month before today
  */
 export function dailyAllowance(budget: Budget, usedEarlierThisMonth: number, now: Date): number {
   if (budget.monthly <= 0) return budget.daily;
-  const daysLeft = daysInMonth(now) - now.getUTCDate() + 1; // today counts as a day left
+  const pacedUntilToday = Math.ceil((budget.monthly * now.getUTCDate()) / daysInMonth(now));
   const monthLeft = Math.max(0, budget.monthly - usedEarlierThisMonth);
-  return Math.max(0, Math.min(budget.daily, Math.floor(monthLeft / daysLeft)));
+  return Math.max(0, Math.min(budget.daily, monthLeft, pacedUntilToday - usedEarlierThisMonth));
 }
 
 /** Calls still allowed right now for one provider. */
