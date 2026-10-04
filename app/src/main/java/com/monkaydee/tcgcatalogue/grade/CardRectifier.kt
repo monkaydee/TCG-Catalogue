@@ -61,7 +61,9 @@ object CardRectifier {
             q.takeIf { support >= 0.5 && plausible(it) }?.let { it to support }
         }
         val top = refined.maxOfOrNull { it.second } ?: return null
-        return refined.filter { it.second >= 0.8 * top }.maxByOrNull { abs(area(it.first)) }?.first
+        // Only near-equal outlines compete on size: a side on mat texture or a shadow is weaker than
+        // the card's own cut, and must not stretch the outline past the card.
+        return refined.filter { it.second >= 0.93 * top }.maxByOrNull { abs(area(it.first)) }?.first
     }
 
     private fun area(q: Quad): Double {

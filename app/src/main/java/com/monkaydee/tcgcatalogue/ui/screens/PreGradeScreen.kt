@@ -56,6 +56,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -436,12 +437,24 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
                 view
             },
         )
+        val tilt = rememberTilt()
+        val level = tilt.degrees < LEVEL_DEGREES
+        val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
+        LaunchedEffect(level) { if (level) haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove) }
         Canvas(Modifier.fillMaxSize()) {
             val g = guideFractions(size.width, size.height)
+            val frame = if (level) Color(0xFF4CAF50) else Color.White.copy(alpha = 0.9f)
             drawRoundRect(
-                Color.White.copy(alpha = 0.9f), Offset(g[0] * size.width, g[1] * size.height),
+                frame, Offset(g[0] * size.width, g[1] * size.height),
                 Size((g[2] - g[0]) * size.width, (g[3] - g[1]) * size.height), CornerRadius(20f), style = Stroke(3.dp.toPx()),
             )
+            // Spirit level: the bubble sits in the ring when the phone is flat above the card.
+            val c = Offset(size.width / 2, size.height / 2)
+            val r = 28.dp.toPx()
+            drawCircle(frame, r, c, style = Stroke(2.dp.toPx()))
+            val k = (r * 2.5f).coerceAtMost(size.minDimension / 3)
+            val bubble = Offset((c.x + tilt.x * k).coerceIn(c.x - 3 * r, c.x + 3 * r), (c.y - tilt.y * k).coerceIn(c.y - 3 * r, c.y + 3 * r))
+            drawCircle(frame.copy(alpha = 0.8f), 9.dp.toPx(), bubble)
         }
         Text(
             label + " · " + stringResource(R.string.grade_fill_guide),
@@ -484,4 +497,33 @@ private suspend fun takePhoto(ic: ImageCapture, executor: java.util.concurrent.E
 
         override fun onError(exception: ImageCaptureException) = cont.resume(null)
     })
+}
+
+/** Tilt below this many degrees counts as flat (the frame turns green). */
+private const val LEVEL_DEGREES = 3.0
+
+/** How far the phone is from lying flat: total angle, and the sideways/forward share of gravity (-1..1). */
+private data class Tilt(val degrees: Double, val x: Float, val y: Float)
+
+@Composable
+private fun rememberTilt(): Tilt {
+    val context = LocalContext.current
+    var tilt by remember { mutableStateOf(Tilt(90.0, 0f, 0f)) }
+    DisposableEffect(Unit) {
+        val sm = context.getSystemService(android.content.Context.SENSOR_SERVICE) as android.hardware.SensorManager
+        val sensor = sm.getDefaultSensor(android.hardware.Sensor.TYPE_GRAVITY) ?: sm.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER)
+        val listener = object : android.hardware.SensorEventListener {
+            override fun onSensorChanged(e: android.hardware.SensorEvent) {
+                val (x, y, z) = e.values
+                val g = kotlin.math.sqrt(x * x + y * y + z * z).takeIf { it > 0.1f } ?: return
+                val deg = Math.toDegrees(kotlin.math.acos((kotlin.math.abs(z) / g).toDouble().coerceAtMost(1.0)))
+                tilt = Tilt(deg, x / g, y / g)
+            }
+            override fun onAccuracyChanged(s: android.hardware.Sensor?, a: Int) {}
+        }
+        if (sensor != null) sm.registerListener(listener, sensor, android.hardware.SensorManager.SENSOR_DELAY_UI)
+        else tilt = Tilt(0.0, 0f, 0f) // no sensor: don't show the phone as tilted
+        onDispose { sm.unregisterListener(listener) }
+    }
+    return tilt
 }
