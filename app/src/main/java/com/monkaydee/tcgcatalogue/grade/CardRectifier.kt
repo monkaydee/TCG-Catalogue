@@ -35,7 +35,7 @@ object CardRectifier {
      * should be (e.g. the camera's card guide); without it the photo is searched.
      */
     fun findQuad(p: Pixels, hint: Quad? = null): Quad? {
-        val gray = Gray(p)
+        val gray = Channels(p)
         // The guide is only roughly where the card is: start with a wider search band.
         if (hint != null) return best(gray, listOf(hint), doubleArrayOf(0.10, 0.03, 0.012))
         // Straight-line search (finds tilted cards, ignores round logos). Nothing is better than a
@@ -55,7 +55,7 @@ object CardRectifier {
      * boxes are too small, lines on the mat outside the box are out of bounds.
      */
     fun findQuadIn(p: Pixels, guide: Quad): Quad? {
-        val gray = Gray(p)
+        val gray = Channels(p)
         val g = guide.corners
         val gx0 = g.minOf { it.x }; val gx1 = g.maxOf { it.x }; val gy0 = g.minOf { it.y }; val gy1 = g.maxOf { it.y }
         val mx = 0.06 * (gx1 - gx0); val my = 0.06 * (gy1 - gy0)
@@ -72,7 +72,7 @@ object CardRectifier {
     }
 
     private fun best(
-        gray: Gray,
+        gray: Channels,
         starts: List<Quad>,
         bands: DoubleArray = doubleArrayOf(0.03, 0.012),
         accept: (Quad) -> Boolean = { true },
@@ -113,7 +113,7 @@ object CardRectifier {
     }
 
     /** The outline refined around [q], and how well its sides are supported (0..1). */
-    private fun refine(g: Gray, q: Quad, band: Double): Pair<Quad, Double>? {
+    private fun refine(g: Channels, q: Quad, band: Double): Pair<Quad, Double>? {
         val c = q.corners
         val size = (dist(c[0], c[1]) + dist(c[1], c[2])) / 2
         val reach = band * size
@@ -145,14 +145,14 @@ object CardRectifier {
     }
 
     /** The card's cut edge on a line through ([px], [py]) along the outward normal. */
-    private fun edgeAlong(g: Gray, px: Double, py: Double, nx: Double, ny: Double, reach: Double): Pt? {
+    private fun edgeAlong(g: Channels, px: Double, py: Double, nx: Double, ny: Double, reach: Double): Pt? {
         val steps = max(8, reach.roundToInt())
-        val v = DoubleArray(2 * steps + 1) { i ->
-            val s = (i - steps).toDouble()
-            g.at(px + nx * s, py + ny * s)
-        }
+        // per colour channel, the strongest change counts (blue backs on dark tables differ in colour)
+        val v = Array(3) { k -> DoubleArray(2 * steps + 1) { i -> val s = (i - steps).toDouble(); g.at(k, px + nx * s, py + ny * s) } }
         // smoothed derivative
-        val d = DoubleArray(v.size) { i -> if (i < 2 || i > v.size - 3) 0.0 else abs((v[i + 1] + v[i + 2]) - (v[i - 1] + v[i - 2])) / 2 }
+        val d = DoubleArray(2 * steps + 1) { i ->
+            if (i < 2 || i > 2 * steps - 2) 0.0 else v.maxOf { c -> abs((c[i + 1] + c[i + 2]) - (c[i - 1] + c[i - 2])) / 2 }
+        }
         val peak = d.maxOrNull() ?: return null
         if (peak < 12) return null
         // The strongest change, preferring ones near the expected line (a printed box just inside
@@ -307,18 +307,19 @@ object CardRectifier {
         return Pixels(w, h, out)
     }
 
-    /** Brightness of a picture, sampled between pixels. */
-    private class Gray(p: Pixels) {
+    /** The colour channels of a picture (red, green, blue), sampled between pixels. */
+    private class Channels(p: Pixels) {
         private val w = p.width
         private val h = p.height
-        private val v = FloatArray(w * h) { i -> val c = p.argb[i]; (((c shr 16) and 0xFF) * 0.299f + ((c shr 8) and 0xFF) * 0.587f + (c and 0xFF) * 0.114f) }
-        fun at(x: Double, y: Double): Double {
+        private val v = Array(3) { k -> val s = 16 - 8 * k; FloatArray(w * h) { i -> ((p.argb[i] shr s) and 0xFF).toFloat() } }
+        fun at(k: Int, x: Double, y: Double): Double {
             if (x < 0 || y < 0 || x > w - 1 || y > h - 1) return 0.0
+            val c = v[k]
             val x0 = x.toInt(); val y0 = y.toInt()
             val x1 = min(x0 + 1, w - 1); val y1 = min(y0 + 1, h - 1)
             val fx = x - x0; val fy = y - y0
-            val a = v[y0 * w + x0] * (1 - fx) + v[y0 * w + x1] * fx
-            val b = v[y1 * w + x0] * (1 - fx) + v[y1 * w + x1] * fx
+            val a = c[y0 * w + x0] * (1 - fx) + c[y0 * w + x1] * fx
+            val b = c[y1 * w + x0] * (1 - fx) + c[y1 * w + x1] * fx
             return a * (1 - fy) + b * fy
         }
     }

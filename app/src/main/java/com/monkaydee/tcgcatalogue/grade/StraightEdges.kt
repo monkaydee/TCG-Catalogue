@@ -32,15 +32,19 @@ object StraightEdges {
         val w = p.width
         val h = p.height
         if (w < 32 || h < 32) return emptyList()
-        val g = FloatArray(w * h) { i -> val c = p.argb[i]; (((c shr 16) and 0xFF) * 0.299f + ((c shr 8) and 0xFF) * 0.587f + (c and 0xFF) * 0.114f) }
+        // Colour channels apart: a blue card back on a dark table differs in blue, hardly in brightness.
+        val ch = Array(3) { k -> val s = 16 - 8 * k; FloatArray(w * h) { i -> ((p.argb[i] shr s) and 0xFF).toFloat() } }
         val mag = FloatArray(w * h)
         val dir = FloatArray(w * h)
         for (y in 1 until h - 1) for (x in 1 until w - 1) {
             val i = y * w + x
-            val gx = (g[i - w + 1] + 2 * g[i + 1] + g[i + w + 1]) - (g[i - w - 1] + 2 * g[i - 1] + g[i + w - 1])
-            val gy = (g[i + w - 1] + 2 * g[i + w] + g[i + w + 1]) - (g[i - w - 1] + 2 * g[i - w] + g[i - w + 1])
-            mag[i] = hypot(gx, gy)
-            dir[i] = atan2(gy, gx)
+            // the channel that changes most decides strength and direction
+            for (g in ch) {
+                val gx = (g[i - w + 1] + 2 * g[i + 1] + g[i + w + 1]) - (g[i - w - 1] + 2 * g[i - 1] + g[i + w - 1])
+                val gy = (g[i + w - 1] + 2 * g[i + w] + g[i + w + 1]) - (g[i - w - 1] + 2 * g[i - w] + g[i - w + 1])
+                val m = hypot(gx, gy)
+                if (m > mag[i]) { mag[i] = m; dir[i] = atan2(gy, gx) }
+            }
         }
         val sorted = mag.copyOf().also { it.sort() }
         val strong = max(40f, 0.5f * sorted[(sorted.size * 0.85).toInt()])
