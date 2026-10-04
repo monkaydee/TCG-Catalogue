@@ -942,7 +942,26 @@ class CardRepository(
         if (readable.isEmpty()) return@coroutineScope cards
         // When the name printed on the card matches some of the pictures, the others are only look-alikes.
         val named = cards.filter { it.name.length >= 3 && CardTextParser.nameOnCard(it.name, readable) }
-        named.ifEmpty { cards }
+        if (named.isNotEmpty()) return@coroutineScope named
+        // None of the pictures carries the printed name (glare, a toploader, an unread promo number):
+        // look the name up, preferring the card whose number can be read somewhere.
+        cardsByPrintedName(readable, warning).ifEmpty { cards }
+    }
+
+    /** Pokémon cards named by a word printed on the card ("Ogerpon"), the one whose number was read first. */
+    private suspend fun cardsByPrintedName(texts: List<String>, warning: String): List<CardCandidate> = coroutineScope {
+        val numbers = texts.flatMap { Regex("""\d{1,3}""").findAll(it).map { m -> m.value.trimStart('0') }.toList() }.toSet()
+        val words = texts.take(8).flatMap { it.split(Regex("""[^\p{L}]+""")) }.filter { it.length >= 5 }.distinct().take(5)
+        for (word in words) {
+            val briefs = attempt { tcgdex.searchByName(word, 80) }.getOrDefault(emptyList())
+                .filter { it.name.contains(word, ignoreCase = true) }
+            if (briefs.isEmpty() || briefs.size >= 80) continue // none, or a common word
+            val ranked = briefs.sortedByDescending { it.number.trimStart('0') in numbers }.take(8)
+            return@coroutineScope ranked.map { b -> async { attempt { tcgdex.card(b.cardId) }.getOrNull() } }
+                .mapNotNull { it.await() }
+                .map { pokemonFixed(it).copy(warning = warning) }
+        }
+        emptyList()
     }
 
     private companion object {
