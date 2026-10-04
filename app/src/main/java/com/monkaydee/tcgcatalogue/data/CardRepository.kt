@@ -1035,10 +1035,13 @@ class CardRepository(
         val words = texts.take(8).flatMap { it.split(Regex("""[^\p{L}]+""")) }.filter { it.length >= 5 }.distinct().take(6)
         val language = CardTextParser.detectLanguage(texts)?.lowercase()?.takeIf { it in setOf("de", "fr", "it", "es", "pt") }
         for (word in words) {
-            val briefs = (language?.let { attempt { tcgdex.searchByNameIn(it, word) }.getOrDefault(emptyList()) }.orEmpty() +
-                attempt { tcgdex.searchByName(word, 250) }.getOrDefault(emptyList()))
-                .filter { it.name.contains(word, ignoreCase = true) }
-                .distinctBy { it.cardId }
+            // The daily name index (all languages, offline); live TCGdex searches only without it.
+            val local = attempt { cardIndex.pokemonByName(word) }.getOrNull()
+            val briefs = local?.map { CardBrief(Game.POKEMON, it.id, it.names.firstOrNull().orEmpty(), it.number, null) }
+                ?: (language?.let { attempt { tcgdex.searchByNameIn(it, word) }.getOrDefault(emptyList()) }.orEmpty() +
+                    attempt { tcgdex.searchByName(word, 250) }.getOrDefault(emptyList()))
+                    .filter { it.name.contains(word, ignoreCase = true) }
+                    .distinctBy { it.cardId }
             if (briefs.isEmpty() || briefs.size >= 400) continue // none, or a common word
             val exact = briefs.filter { digits(it.number) in numbers }
             val ranked = (if (exact.size == 1) exact else exact + (briefs - exact.toSet())).take(8)

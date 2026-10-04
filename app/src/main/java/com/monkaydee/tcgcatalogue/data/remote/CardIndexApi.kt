@@ -54,6 +54,29 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         file.takeIf { it.exists() }
     }
 
+    /** One Pokémon card in the name index: TCGdex id, number, and its names (English first). */
+    data class NamedCard(val id: String, val number: String, val names: List<String>)
+
+    @Volatile private var pokemonNames: List<NamedCard>? = null
+
+    /**
+     * Pokémon cards whose name in English, German, French, Italian, Spanish or Portuguese contains
+     * [word] (from the daily name index; null when it isn't downloaded yet).
+     */
+    suspend fun pokemonByName(word: String): List<NamedCard>? {
+        val all = pokemonNames ?: withContext(Dispatchers.IO) {
+            val file = dailyFile("NAMES_POKEMON.json") ?: return@withContext null
+            runCatching {
+                http.json.parseToJsonElement(file.readText())["cards"].arr().orEmpty().mapNotNull { c ->
+                    val a = c.arr() ?: return@mapNotNull null
+                    NamedCard(a.getOrNull(0).str() ?: return@mapNotNull null, a.getOrNull(1).str().orEmpty(), a.drop(2).mapNotNull { it.str() })
+                }
+            }.getOrNull()
+        }?.also { pokemonNames = it } ?: return null
+        val w = word.lowercase()
+        return all.filter { card -> card.names.any { it.lowercase().contains(w) } }
+    }
+
     /** Index already in memory (used by the scanner, which can't wait for a download). */
     fun cached(game: Game): Index? = loaded[game]
 
