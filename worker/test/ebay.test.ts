@@ -24,6 +24,12 @@ describe("ebay", () => {
     const json = { itemSummaries: [item("Flareon 3/64 PSA 9", "100"), item("Flareon #3 PSA 9 Jungle", "140"), item("Flareon 3/64 PSA 9", "120"), item("Flareon 3/64 PSA 8", "60"), item("Flareon lot 3/64 PSA 9", "5")] };
     const out = parseEbay(json, flareon);
     expect(out.find((g) => g.grade === "9")).toMatchObject({ grader: "PSA", price: 120, source: "eBay listings (asking)" });
-    expect(out.find((g) => g.grade === "8")?.price).toBe(60);
+    expect(out.find((g) => g.grade === "8")).toBeUndefined(); // one listing only
+  });
+
+  it("keeps 1st Edition apart", () => {
+    expect(titleMatches("Flareon 3/64 1st Edition Holo PSA 9", flareon)).toBe(false);
+    expect(titleMatches("Flareon 3/64 1st Edition Holo PSA 9", { ...flareon, printing: "firstEdition" })).toBe(true);
+    expect(titleMatches("Flareon 3/64 Holo PSA 9", { ...flareon, printing: "firstEdition" })).toBe(false);
   });
 });

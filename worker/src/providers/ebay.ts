@@ -54,9 +54,16 @@ function shortNumber(n: string): string {
   return n.split("/")[0].replace(/^0+(?=\d)/, "");
 }
 
+const FIRST_EDITION = /\b(1st|first)\s*(ed\.?|edition)\b/i;
+const SHADOWLESS = /\bshadowless\b/i;
+
 export function titleMatches(title: string, card: CardRequest): boolean {
   const t = title.toLowerCase();
   if (NOT_A_SINGLE.test(title)) return false;
+  // 1st Edition and Shadowless sell for many times the regular print: only for that printing.
+  const first = /first|1st/i.test(card.printing ?? "");
+  if (FIRST_EDITION.test(title) !== first) return false;
+  if (SHADOWLESS.test(title) && !/shadowless/i.test(card.printing ?? "")) return false;
   // every word of the name (ignoring short ones and punctuation)
   const words = card.name.toLowerCase().split(/[^a-z0-9éè]+/).filter((w) => w.length > 1);
   if (!words.every((w) => t.includes(w))) return false;
@@ -80,7 +87,8 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
     by.set(k, [...(by.get(k) ?? []), value]);
   }
   const date = new Date().toISOString().slice(0, 10);
-  return [...by].map(([k, list]) => {
+  // one listing alone is no price: a single seller can ask anything
+  return [...by].filter(([, list]) => list.length >= 2).map(([k, list]) => {
     const [grader, grade] = k.split("|");
     const s = [...list].sort((a, b) => a - b);
     const median = s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;

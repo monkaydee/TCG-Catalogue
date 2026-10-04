@@ -56,6 +56,11 @@ class GameRecognitionTest {
         assertEquals(GradeInfo("PSA", "8", null, "74004211"), g)
     }
 
+    @Test fun psaLabelOcrVariants() {
+        assertEquals(GradeInfo("PSA", "8", null, "74004211"), CardTextParser.parseGrade(lines("1999 POKÉMON JUNGLE", "FLAREON-HOLO", "NM MT", "8", "74004211")))
+        assertEquals(GradeInfo("PSA", "8", null, "74004211"), CardTextParser.parseGrade(lines("FLAREON-HOLO", "#3", "NMMT 8", "74004211")))
+    }
+
     @Test fun psaWordingWithoutLogo() {
         assertEquals("PSA", CardTextParser.parseGrade(lines("CHESPIN", "GEM MT 10", "12345678"))!!.grader)
         assertEquals("9", CardTextParser.parseGrade(lines("PSA", "MINT 9"))!!.grade)

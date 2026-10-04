@@ -183,7 +183,12 @@ class CardRepository(
                 else -> -0.3
             }
             pokemonFixed(c).copy(score = nameScore + setScore, preferredVariant = printingFor(c, hit.firstEdition))
-        }.sortedByDescending { it.score }
+        }.sortedByDescending { it.score }.let { list ->
+            // Several sets have a card 3/64; when the printed name matches one, the others are wrong.
+            val guess = hit.nameGuess
+            if (guess == null || list.none { CardTextParser.similarity(guess, it.name) >= 0.8 }) list
+            else list.filter { CardTextParser.similarity(guess, it.name) >= 0.5 }
+        }
     }
 
     /**
@@ -287,7 +292,7 @@ class CardRepository(
 
     /** All graded prices the price server has for a printing (every company and grade). */
     suspend fun gradedPrices(card: CardCandidate, variant: Variant): List<PriceServerApi.Graded> =
-        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant))
+        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key)
 
     /** Graded prices for a card in the collection, for its card page. */
     suspend fun gradedPricesFor(row: OwnedCard): List<PriceServerApi.Graded> {

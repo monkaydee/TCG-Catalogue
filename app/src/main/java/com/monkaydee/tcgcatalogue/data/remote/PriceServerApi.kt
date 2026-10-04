@@ -60,7 +60,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     suspend fun reachable(): Boolean = runCatching { get("/v1/status") != null }.getOrDefault(false)
 
     /** Graded prices of a card (TCGplayer product [tcgplayerId]), or an empty list when there are none. */
-    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?): List<Graded> {
+    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null): List<Graded> {
         val body = buildJsonObject {
             putJsonArray("cards") {
                 add(
@@ -71,6 +71,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         put("set", setName)
                         put("number", number)
                         tcgplayerId?.let { put("tcgplayerId", it) }
+                        printing?.let { put("printing", it) }
                         put("graded", true)
                     },
                 )

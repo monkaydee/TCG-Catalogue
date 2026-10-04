@@ -283,15 +283,26 @@ object CardTextParser {
     private val cert = Regex("""(?<!\d)(\d{7,12})(?!\d)""")
     private val psaTopLine = Regex("""^(19|20)\d\d\s+(POKEMON|ONE PIECE|MAGIC|YU-GI-OH|DRAGON BALL|WEISS|UNION ARENA)\b""")
     private val loneWords = Regex("""^(GEM\s*MT|NM-MT\+?|MINT\+?|EX-MT\+?|VG-EX\+?|EX\+?|VG\+?|GOOD\+?)$""")
+    private val labelWord = Regex("""\b(GEM MT|NM-MT|MINT|EX-MT|VG-EX)\b""")
+
+    /** OCR spellings of label words: "NM MT", "NMMT", "NM–MT" → "NM-MT", "POKÉMON" → "POKEMON". */
+    private fun normaliseLabel(t: String) = t
+        .replace(Regex("""\bNM\s*[-–—]?\s*MT\b"""), "NM-MT")
+        .replace(Regex("""\bEX\s*[-–—]?\s*MT\b"""), "EX-MT")
+        .replace(Regex("""\bVG\s*[-–—]?\s*EX\b"""), "VG-EX")
+        .replace(Regex("""\bGEM\s*[-–—]?\s*MT\b"""), "GEM MT")
+        .replace("POKÉMON", "POKEMON")
+
     private val psaCert = Regex("""(?<!\d)\d{8,9}(?!\d)""")
     private val subgradeWords = Regex("""CENTER|CORNER|EDGE|SURFACE""")
 
     /** Reads the grading company, grade and cert number from a slab label, or null for a raw card. */
     fun parseGrade(lines: List<OcrLine>): GradeInfo? {
-        val texts = lines.map { it.text.uppercase().trim() }
+        val texts = lines.map { normaliseLabel(it.text.uppercase().trim()) }
         val grader = graders.firstOrNull { (_, re) -> texts.any { re.containsMatchIn(it) } }?.first
         // PSA's label: "1999 POKEMON JUNGLE" on top and a grade word ("NM-MT") on a line of its own
-        val labelStyle = texts.any { psaTopLine.containsMatchIn(it) } || texts.any { loneWords.matches(it) }
+        val labelStyle = texts.any { psaTopLine.containsMatchIn(it) } || texts.any { loneWords.matches(it) } ||
+            (texts.any { psaCert.matches(it) } && texts.any { labelWord.containsMatchIn(it) })
         val slab = grader != null || labelStyle || texts.any { slabWords.containsMatchIn(it) }
         var grade: String? = null
         var words = ""
