@@ -159,9 +159,11 @@ class CardRepository(
         // A Black Star promo: the promo set and number say it all.
         hit.promoSet?.let { set ->
             val card = attempt { tcgdex.cardInSet(set, hit.number) }.getOrNull()
-            return@coroutineScope listOfNotNull(card?.let { pokemonFixed(it).copy(score = 1.0) })
+            if (card != null) return@coroutineScope listOf(pokemonFixed(card).copy(score = 1.0))
+            // Brand-new promos (e.g. MEP 091) reach TCGdex late: TCGplayer's list has them from day one.
+            return@coroutineScope newPokemon(set.uppercase(), hit.number)
         }
-        // Sets whose printed size matches the number after the slash.
+        // Sets whose printed size matches the number after the slash (new sets: TCGplayer's list below).
         val sets = tcgdex.sets().filter { it.official == hit.total }
         val found = sets.map { set -> async { runCatching { tcgdex.cardInSet(set.id, localId) }.getOrNull() } }
             .mapNotNull { it.await() }
@@ -179,6 +181,7 @@ class CardRepository(
         } else {
             found.map { "" }
         }
+        if (found.isEmpty() && hit.setCode != null) return@coroutineScope newPokemon(hit.setCode, hit.number)
         found.mapIndexed { i, c ->
             val nameScore = hit.nameGuess?.let { CardTextParser.similarity(it, c.name) } ?: 0.5
             val setScore = when {
@@ -680,8 +683,17 @@ class CardRepository(
     }
 
     /** Fetches the current data of a card in the collection. */
+    /** Pokémon cards TCGdex doesn't have yet, from TCGplayer's daily list ("MEP" + "091" → MEP-091). */
+    private suspend fun newPokemon(setCode: String, number: String): List<CardCandidate> {
+        val digits = number.filter(Char::isDigit).trimStart('0').ifEmpty { return emptyList() }
+        val code = "${setCode.uppercase()}-${digits.padStart(3, '0')}"
+        return attempt { cardIndex.lookup(Game.POKEMON, code) }.getOrDefault(emptyList())
+            .map { it.copy(warning = AppStrings.get(R.string.data_new_card)) }
+    }
+
     private suspend fun fetch(game: Game, cardId: String): CardCandidate? = when (game) {
-        Game.POKEMON -> pokemonApi(cardId).card(cardId)?.let { pokemonFixed(it) }
+        // Numeric ids are TCGplayer products of brand-new cards (see newPokemon)
+        Game.POKEMON -> if (cardId.all(Char::isDigit)) cardIndex.byProduct(Game.POKEMON, cardId.toLong()) else pokemonApi(cardId).card(cardId)?.let { pokemonFixed(it) }
         Game.ONE_PIECE -> onePiece.card(cardId)
         Game.MAGIC -> cardId.split('/').takeIf { it.size == 2 }?.let { (set, n) -> scryfall.card(set, n) }
         else -> cardId.toLongOrNull()?.let { cardIndex.byProduct(game, it) }

@@ -210,6 +210,50 @@ def build_cardmarket_pokemon():
     return {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "cards": rows}
 
 
+# Pokémon cards come from TCGdex, which adds new sets and promos with a delay. This index holds
+# only the promo sets and the sets of the last half year, coded "MEP-091" / "PFL-012", so brand-new
+# cards can be found until TCGdex has them.
+POKEMON_PROMO_GROUPS = {22872, 24451}  # SV: Scarlet & Violet Promo Cards, ME: Mega Evolution Promo
+POKEMON_RECENT_DAYS = 180
+
+
+def build_pokemon_new():
+    from datetime import timedelta
+    groups = get("https://tcgcsv.com/tcgplayer/3/groups")
+    since = datetime.now(timezone.utc) - timedelta(days=POKEMON_RECENT_DAYS)
+    out_groups, cards = {}, []
+    for g in groups:
+        published = (g.get("publishedOn") or "")[:10]
+        recent = published and datetime.strptime(published, "%Y-%m-%d").replace(tzinfo=timezone.utc) >= since
+        if g["groupId"] not in POKEMON_PROMO_GROUPS and not recent:
+            continue
+        abbr = (g.get("abbreviation") or "").strip().upper()
+        if not abbr:
+            continue
+        products = get(f"https://tcgcsv.com/tcgplayer/3/{g['groupId']}/products")
+        prices = get(f"https://tcgcsv.com/tcgplayer/3/{g['groupId']}/prices")
+        by_product = {}
+        for p in prices:
+            value = p.get("marketPrice") or p.get("midPrice") or p.get("lowPrice")
+            if value:
+                by_product.setdefault(p["productId"], {})[p["subTypeName"]] = round(value, 2)
+        count = 0
+        for p in products:
+            number = number_of(p)
+            if not number:
+                continue
+            digits = re.sub(r"\D", "", number.split("/")[0])
+            if not digits:
+                continue
+            name = re.sub(r"\s+-\s+[A-Z]*\d+[a-z]?(?=\s|$)", "", p["name"]).strip()  # "Mega Dragonite ex - 091" → "Mega Dragonite ex"
+            cards.append([f"{abbr}-{int(digits):03d}", name, g["groupId"], rarity_of(p), p["productId"], by_product.get(p["productId"], {})])
+            count += 1
+        if count:
+            out_groups[str(g["groupId"])] = [g["name"], abbr, count]
+        time.sleep(0.05)
+    return {"game": "POKEMON", "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "groups": out_groups, "cards": cards}
+
+
 def main():
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "index")
     out.mkdir(parents=True, exist_ok=True)
@@ -224,6 +268,11 @@ def main():
         print(f"{game} sealed (category {category})")
         _, sealed = build(game, category, cards_too=False)
         write_sealed(out, game, sealed)
+    print("POKEMON (new sets and promos)")
+    data = build_pokemon_new()
+    path = out / "POKEMON.json"
+    path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    print(f"  {len(data['groups'])} sets, {len(data['cards'])} cards, {path.stat().st_size // 1024} KB")
     print("CARDMARKET_POKEMON")
     data = build_cardmarket_pokemon()
     path = out / "CARDMARKET_POKEMON.json"
