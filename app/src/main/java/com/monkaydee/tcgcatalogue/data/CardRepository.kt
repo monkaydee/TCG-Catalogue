@@ -238,9 +238,16 @@ class CardRepository(
     }
 
     /** A Pokémon card with the Cardmarket prices of the right print (see [CardmarketPokemon]). */
-    private suspend fun pokemonFixed(c: CardCandidate): CardCandidate =
+    private suspend fun pokemonFixed(c: CardCandidate): CardCandidate {
         // The look-alike correction uses the English Cardmarket catalogue.
-        if (c.cardId.startsWith(tcgdexJa.idPrefix)) c else attempt { cardmarketPokemon.fix(c) }.getOrDefault(c)
+        val fixed = if (c.cardId.startsWith(tcgdexJa.idPrefix)) c else attempt { cardmarketPokemon.fix(c) }.getOrDefault(c)
+        // Newest promos have neither a TCGdex nor a pokemontcg.io picture yet: TCGplayer's (daily list).
+        val promo = Regex("^(svp|mep)-(\\d+)$").find(fixed.cardId)
+        if (promo != null && fixed.imageUrl?.contains("pokemontcg.io") != false) {
+            newPokemon(promo.groupValues[1], promo.groupValues[2]).firstOrNull()?.imageUrl?.let { return fixed.copy(imageUrl = it) }
+        }
+        return fixed
+    }
 
     suspend fun details(brief: CardBrief): CardCandidate? = brief.candidate ?: when (brief.game) {
         Game.POKEMON -> pokemonApi(brief.cardId).card(brief.cardId)?.let { pokemonFixed(it) }
@@ -742,6 +749,8 @@ class CardRepository(
                                 priceUpdatedAt = System.currentTimeMillis(),
                                 priceNote = price.note,
                                 rarity = fresh.rarity ?: row.rarity,
+                                // cards added before a picture fallback existed get one now
+                                imageUrl = row.imageUrl ?: variant.imageUrl ?: fresh.imageUrl,
                             )
                             db.cards().update(next)
                             alertFor(row, next, s)?.let { alerts += it }

@@ -96,7 +96,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
                 cardId = idPrefix + id,
                 name = c["name"].str().orEmpty(),
                 number = c["localId"].str().orEmpty(),
-                imageUrl = c["image"].str()?.let { "$it/low.webp" },
+                imageUrl = c["image"].str()?.let { "$it/low.webp" } ?: pokemonTcgImage(idPrefix + id, large = false),
             )
         }
     }
@@ -126,7 +126,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
             setName = set["name"].str().orEmpty(),
             setTotal = official,
             rarity = c["rarity"].str(),
-            imageUrl = c["image"].str()?.let { "$it/high.webp" },
+            imageUrl = c["image"].str()?.let { "$it/high.webp" } ?: pokemonTcgImage(id, large = true),
             variants = variants,
             cardmarketId = pricing["cardmarket"]["idProduct"].str()?.toLongOrNull(),
             attacks = c["attacks"].arr().orEmpty().mapNotNull { it["name"].str() },
@@ -150,7 +150,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
     suspend fun setChecklist(setId: String): List<ChecklistEntry> =
         http.getJson("$base/sets/${enc(raw(setId))}")?.get("cards").arr().orEmpty().mapNotNull { c ->
             val id = idPrefix + (c["id"].str() ?: return@mapNotNull null)
-            ChecklistEntry(id, c["localId"].str().orEmpty(), c["name"].str().orEmpty(), c["image"].str()?.let { "$it/low.webp" })
+            ChecklistEntry(id, c["localId"].str().orEmpty(), c["name"].str().orEmpty(), c["image"].str()?.let { "$it/low.webp" } ?: pokemonTcgImage(id, large = false))
         }
 
     /** [card], cached for the session (used to compare look-alike cards of a set). */
@@ -225,3 +225,20 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
 
     private fun enc(s: String) = URLEncoder.encode(s, "UTF-8").replace("+", "%20")
 }
+
+/**
+ * The picture of an English card on pokemontcg.io, for the ~7 % of cards TCGdex has no picture of
+ * (trainer galleries, shiny vaults, many promos). TCGdex set ids map to theirs: "sv03.5" → "sv3pt5",
+ * "swsh12.5gg" → "swsh12pt5gg", "sm7.5" → "sm75"; numbers without leading zeros. Null for other
+ * languages (their ids carry a prefix such as "ja:").
+ */
+fun pokemonTcgImage(cardId: String, large: Boolean): String? {
+    if (':' in cardId) return null
+    val cut = cardId.lastIndexOf('-').takeIf { it > 0 } ?: return null
+    var set = cardId.substring(0, cut).replace(Regex("^sv0(\\d)"), "sv$1")
+    set = if (Regex("^(sv\\d|swsh12\\.5)").containsMatchIn(set)) set.replace(".5", "pt5") else set.replace(".", "")
+    val raw = cardId.substring(cut + 1)
+    val number = if (raw.all(Char::isDigit)) raw.trimStart('0').ifEmpty { "0" } else raw
+    return "https://images.pokemontcg.io/$set/$number${if (large) "_hires" else ""}.png"
+}
+

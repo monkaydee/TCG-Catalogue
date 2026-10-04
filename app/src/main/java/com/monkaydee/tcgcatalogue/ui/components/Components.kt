@@ -46,6 +46,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -76,7 +77,21 @@ fun GameChips(
 }
 
 /** Low-resolution URL for list thumbnails (TCGdex serves several sizes). */
-fun thumbUrl(url: String?): String? = url?.replace("/high.webp", "/low.webp")
+fun thumbUrl(url: String?): String? = url?.replace("/high.webp", "/low.webp")?.replace("_hires.png", ".png")
+
+/**
+ * Picture addresses to try in turn: the picture itself, the full-size one when a thumbnail fails,
+ * and pokemontcg.io's copy of an English TCGdex picture (some TCGdex pictures are missing or fail).
+ */
+fun imageChain(url: String?, thumb: Boolean): List<String> {
+    if (url == null) return emptyList()
+    val tcgdex = Regex("assets\\.tcgdex\\.net/en/[^/]+/([^/]+)/([^/]+)/").find(url)
+    return listOfNotNull(
+        if (thumb) thumbUrl(url) else url,
+        url.takeIf { thumb },
+        tcgdex?.let { com.monkaydee.tcgcatalogue.data.remote.pokemonTcgImage("${it.groupValues[1]}-${it.groupValues[2]}", large = !thumb) },
+    ).distinct()
+}
 
 /** A card-shaped placeholder with a soft moving highlight, shown while content loads. */
 @Composable
@@ -109,7 +124,9 @@ fun SkeletonBox(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape
 
 @Composable
 fun CardImage(url: String?, modifier: Modifier = Modifier, thumb: Boolean = false) {
-    val model = if (thumb) thumbUrl(url) else url
+    val chain = remember(url, thumb) { imageChain(url, thumb) }
+    var attempt by remember(chain) { mutableIntStateOf(0) }
+    val model = chain.getOrNull(attempt)
     val shape = RoundedCornerShape(if (thumb) 4.dp else 12.dp)
     // Loading until Coil reports a result; an error leaves the plain background.
     var loading by remember(model) { mutableStateOf(model != null) }
@@ -127,6 +144,8 @@ fun CardImage(url: String?, modifier: Modifier = Modifier, thumb: Boolean = fals
             contentDescription = null,
             contentScale = ContentScale.Fit,
             onState = { state ->
+                // a failed picture: try the next address of the chain
+                if (state is AsyncImagePainter.State.Error && attempt < chain.size - 1) attempt++
                 loaded = state is AsyncImagePainter.State.Success
                 loading = model != null && (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Empty)
             },

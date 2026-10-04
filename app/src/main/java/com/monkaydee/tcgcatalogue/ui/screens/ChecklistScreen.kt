@@ -292,8 +292,11 @@ private fun ChecklistCell(e: ChecklistEntry, copies: Int, wished: Boolean, onCli
                 if (e.imageUrl == null) {
                     Text(e.number, style = MaterialTheme.typography.labelLarge, color = colors.onSurfaceVariant)
                 } else {
+                    val chain = remember(e.imageUrl) { com.monkaydee.tcgcatalogue.ui.components.imageChain(e.imageUrl, thumb = true) }
+                    var attempt by remember(chain) { androidx.compose.runtime.mutableIntStateOf(0) }
                     AsyncImage(
-                        model = thumbUrl(e.imageUrl),
+                        model = chain.getOrNull(attempt),
+                        onError = { if (attempt < chain.size - 1) attempt++ },
                         contentDescription = e.name,
                         contentScale = ContentScale.Fit,
                         colorFilter = if (have) null else Greyscale,
