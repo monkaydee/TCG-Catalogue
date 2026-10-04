@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">收集辨識測試案例</string>
+    <string name="settings_collect_cases_hint">在本機保存已確認的照片匯入（含正確卡牌）以改進辨識。更正的配對一律保存。匯出前不會傳送任何內容。</string>
+    <plurals name="settings_export_cases">
+        <item quantity="other">匯出 %d 個測試案例</item>
+    </plurals>
+    <string name="settings_clear_cases">刪除案例</string>
+    <string name="import_details_title">辨識方式</string>
+    <string name="import_details_by_picture">透過圖片找到</string>
+    <string name="import_details_by_number">透過編號 %1$s 找到</string>
+    <string name="import_details_read">卡牌上讀取到的內容：</string>
+</resources>

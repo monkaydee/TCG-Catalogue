@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Собирать тестовые случаи распознавания</string>
+    <string name="settings_collect_cases_hint">Сохранять на телефоне подтверждённые импорты фото (с правильной картой) для улучшения распознавания. Исправления сохраняются всегда. Ничего не отправляется до экспорта.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">Экспортировать %d тестовый случай</item>
+        <item quantity="few">Экспортировать %d тестовых случаев</item>
+        <item quantity="many">Экспортировать %d тестовых случаев</item>
+        <item quantity="other">Экспортировать %d тестовых случаев</item>
+    </plurals>
+    <string name="settings_clear_cases">Удалить случаи</string>
+    <string name="import_details_title">Как распознано</string>
+    <string name="import_details_by_picture">Найдено по изображению</string>
+    <string name="import_details_by_number">Найдено по номеру %1$s</string>
+    <string name="import_details_read">Прочитано на карте:</string>
+</resources>

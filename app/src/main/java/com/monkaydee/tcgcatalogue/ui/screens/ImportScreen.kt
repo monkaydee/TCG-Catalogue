@@ -1,5 +1,10 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.remember
 import android.content.Context
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import android.net.Uri
@@ -104,6 +109,8 @@ data class ImportItem(
     val note: String? = null,
     /** Everything read on the card (name, numbers, rules), to check and to search by. */
     val texts: List<String> = emptyList(),
+    /** True when the matches come from the picture alone. */
+    val byPicture: Boolean = false,
 )
 
 data class ImportState(
@@ -178,7 +185,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             found == null -> item.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_lookup_failed))
             candidates.isEmpty() -> item.copy(status = ImportStatus.NOT_FOUND)
             // found by the picture after the number led nowhere: always for review
-            found.byPicture -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, note = null)
+            found.byPicture -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, note = null, byPicture = true)
             repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
                 val grade = item.grade?.takeIf { it.grader != null && it.grade != null }
@@ -215,7 +222,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         return when {
             found.pictureUnavailable -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_unavailable))
             found.candidates.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_none))
-            else -> item.copy(status = ImportStatus.REVIEW, candidates = found.candidates, note = null)
+            else -> item.copy(status = ImportStatus.REVIEW, candidates = found.candidates, note = null, byPicture = true)
         }
     }
 
@@ -262,11 +269,16 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     fun closeReview() = state.update { it.copy(reviewing = null) }
     fun remove(item: ImportItem) = state.update { s -> s.copy(items = s.items.filterNot { it.key == item.key }) }
 
-    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing? = null, paid: Double? = null, own: Double? = null) {
+    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing? = null, paid: Double? = null, own: Double? = null, language: String = c.language ?: "EN") {
         state.update { it.copy(reviewing = null) }
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade, listing, paid, own) }.onSuccess {
+            runCatching { repo.add(c, v, qty, condition, grade, listing, paid, own, language) }.onSuccess {
                 state.value.items.firstOrNull { it.key == key }?.let { item ->
+                    // A corrected match is a recognition test case; confirmed ones too when the user collects them.
+                    val corrected = item.candidates.firstOrNull()?.cardId != c.cardId
+                    if (corrected || repo.settings.current().collectCases) {
+                        com.monkaydee.tcgcatalogue.data.GoldenCases.save(context, item.photo, c.cardId, language, grade?.grader, grade?.grade, if (corrected) "correction" else "confirmed")
+                    }
                     val extra = listOfNotNull(grade?.label, AppStrings.get(R.string.import_quantity, qty).takeIf { qty > 1 })
                     replace(key, listOf(item.copy(status = ImportStatus.ADDED, note = (listOf("${c.name} · ${c.setName}") + extra).joinToString(" · "))))
                 }
@@ -386,7 +398,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
             settings,
             repo,
             initialGrade = reviewing.grade,
-            onAdd = { r -> vm.add(reviewing.key, r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice, r.manualValue) },
+            onAdd = { r -> vm.add(reviewing.key, r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice, r.manualValue, r.language) },
             onDismiss = vm::closeReview,
         )
     }
@@ -394,11 +406,18 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
 
 private fun ScanHit.label() = describeHit(this)
 
-@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardRepository, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit, onPicture: () -> Unit = {}, onIdentify: () -> Unit = {}) {
     val top = item.candidates.firstOrNull()
-    Card(Modifier.fillMaxWidth().clickable(enabled = item.status == ImportStatus.REVIEW, onClick = onReview)) {
+    var details by remember { mutableStateOf(false) }
+    if (details) RecognitionDetails(item) { details = false }
+    Card(
+        Modifier.fillMaxWidth().combinedClickable(
+            onClick = { if (item.status == ImportStatus.REVIEW) onReview() },
+            onLongClick = { details = true },
+        ),
+    ) {
         Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = item.photo,
@@ -470,3 +489,32 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
         }
     }
 }
+
+/** Long-press on an imported photo: what was read on the card and how the matches were found. */
+@Composable
+private fun RecognitionDetails(item: ImportItem, onDismiss: () -> Unit) {
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.ok)) } },
+        title = { Text(stringResource(R.string.import_details_title)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    when {
+                        item.byPicture || item.hit == null -> stringResource(R.string.import_details_by_picture)
+                        else -> stringResource(R.string.import_details_by_number, item.hit.label())
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                item.hit?.language?.let { Text("🌐 $it", style = MaterialTheme.typography.bodySmall) }
+                item.grade?.label?.let { Text("🏷 $it", style = MaterialTheme.typography.bodySmall) }
+                item.candidates.take(5).forEachIndexed { i, c ->
+                    Text("${i + 1}. ${c.name} · ${c.setName} · ${c.number}", style = MaterialTheme.typography.bodySmall)
+                }
+                Text(stringResource(R.string.import_details_read), style = MaterialTheme.typography.labelLarge)
+                Text(item.texts.take(25).joinToString(" | ").ifBlank { "–" }, style = MaterialTheme.typography.bodySmall)
+            }
+        },
+    )
+}
+

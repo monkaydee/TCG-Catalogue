@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Збирати тестові випадки розпізнавання</string>
+    <string name="settings_collect_cases_hint">Зберігати на телефоні підтверджені імпорти фото (з правильною карткою), щоб покращити розпізнавання. Виправлення зберігаються завжди. Нічого не надсилається до експорту.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">Експортувати %d тестовий випадок</item>
+        <item quantity="few">Експортувати %d тестових випадків</item>
+        <item quantity="many">Експортувати %d тестових випадків</item>
+        <item quantity="other">Експортувати %d тестових випадків</item>
+    </plurals>
+    <string name="settings_clear_cases">Видалити випадки</string>
+    <string name="import_details_title">Як розпізнано</string>
+    <string name="import_details_by_picture">Знайдено за зображенням</string>
+    <string name="import_details_by_number">Знайдено за номером %1$s</string>
+    <string name="import_details_read">Прочитано на картці:</string>
+</resources>

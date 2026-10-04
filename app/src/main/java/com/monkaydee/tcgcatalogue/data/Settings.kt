@@ -26,6 +26,8 @@ data class AppSettings(
     val lastPriceRefresh: Long = 0,
     /** Add a confidently recognised card straight away and keep scanning. */
     val quickAdd: Boolean = false,
+    /** Keep confirmed imports as recognition test cases (corrections are always kept). */
+    val collectCases: Boolean = false,
     val defaultCondition: String = "NM",
     /** Games the scanner looks for; indexed games download their card list when enabled. */
     val enabledGames: Set<Game> = Game.entries.toSet(),
@@ -92,6 +94,7 @@ class SettingsStore(private val context: Context) {
         val usdToEur = doublePreferencesKey("usd_to_eur")
         val lastRefresh = longPreferencesKey("last_refresh")
         val quickAdd = booleanPreferencesKey("quick_add")
+        val collectCases = booleanPreferencesKey("collect_cases")
         val condition = stringPreferencesKey("default_condition")
         val games = stringSetPreferencesKey("enabled_games")
         val fullScreen = booleanPreferencesKey("full_screen")
@@ -117,6 +120,7 @@ class SettingsStore(private val context: Context) {
             usdToEur = p[Keys.usdToEur] ?: d.usdToEur,
             lastPriceRefresh = p[Keys.lastRefresh] ?: d.lastPriceRefresh,
             quickAdd = p[Keys.quickAdd] ?: d.quickAdd,
+            collectCases = p[Keys.collectCases] ?: d.collectCases,
             defaultCondition = p[Keys.condition] ?: d.defaultCondition,
             fullScreen = p[Keys.fullScreen] ?: d.fullScreen,
             binderGrid = p[Keys.binderGrid]?.takeIf { it in Binder.GRIDS } ?: d.binderGrid,
@@ -144,6 +148,7 @@ class SettingsStore(private val context: Context) {
     suspend fun setUsdToEur(v: Double) = context.dataStore.edit { it[Keys.usdToEur] = v }
     suspend fun setLastRefresh(v: Long) = context.dataStore.edit { it[Keys.lastRefresh] = v }
     suspend fun setQuickAdd(v: Boolean) = context.dataStore.edit { it[Keys.quickAdd] = v }
+    suspend fun setCollectCases(v: Boolean) = context.dataStore.edit { it[Keys.collectCases] = v }
     suspend fun setDefaultCondition(v: String) = context.dataStore.edit { it[Keys.condition] = v }
     suspend fun setFullScreen(v: Boolean) = context.dataStore.edit { it[Keys.fullScreen] = v }
     suspend fun setBinderGrid(v: Int) = context.dataStore.edit { it[Keys.binderGrid] = v }

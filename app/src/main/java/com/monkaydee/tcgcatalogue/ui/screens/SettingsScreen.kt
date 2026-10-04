@@ -1,5 +1,7 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.res.pluralStringResource
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -296,6 +298,20 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                 }
                 SwitchRow(stringResource(R.string.settings_quick_add), stringResource(R.string.settings_quick_add_hint), s.quickAdd) { v ->
                     scope.launch { repo.settings.setQuickAdd(v) }
+                }
+                // Recognition test cases (golden set): corrections are always kept, confirmed imports when this is on.
+                SwitchRow(stringResource(R.string.settings_collect_cases), stringResource(R.string.settings_collect_cases_hint), s.collectCases) { v ->
+                    scope.launch { repo.settings.setCollectCases(v) }
+                }
+                val ctx = androidx.compose.ui.platform.LocalContext.current
+                var cases by remember { mutableIntStateOf(com.monkaydee.tcgcatalogue.data.GoldenCases.count(ctx)) }
+                if (cases > 0) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = { scope.launch { com.monkaydee.tcgcatalogue.data.GoldenCases.share(ctx) } }) {
+                            Text(pluralStringResource(R.plurals.settings_export_cases, cases, cases))
+                        }
+                        TextButton(onClick = { com.monkaydee.tcgcatalogue.data.GoldenCases.clear(ctx); cases = 0 }) { Text(stringResource(R.string.settings_clear_cases)) }
+                    }
                 }
                 Label(stringResource(R.string.settings_default_condition))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
