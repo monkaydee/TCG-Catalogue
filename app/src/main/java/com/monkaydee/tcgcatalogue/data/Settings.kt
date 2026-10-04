@@ -52,6 +52,7 @@ enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 /** Colour themes: the phone's wallpaper colours (Android 12+), presets, or the user's own accent. */
 enum class Palette(val seed: Long) {
+    CARDNAVO(0xFF29DBC6),
     DYNAMIC(0xFF3D5AFE),
     INDIGO(0xFF3D5AFE),
     OCEAN(0xFF0277BD),
@@ -75,7 +76,7 @@ enum class Area { ACCENT, BACKGROUND, CARDS, TOP_BAR, BOTTOM_BAR, BINDER_PAGE }
  */
 data class Look(
     val mode: ThemeMode = ThemeMode.SYSTEM,
-    val palette: Palette = Palette.DYNAMIC,
+    val palette: Palette = Palette.CARDNAVO,
     val colors: Map<Area, Long> = emptyMap(),
     val homeImage: String? = null,
     val binderImage: String? = null,

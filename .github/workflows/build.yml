@@ -46,12 +46,12 @@ jobs:
           PRICE_SERVER_KEY: ${{ secrets.APP_KEY }}
 
       - name: Rename APK
-        run: cp app/build/outputs/apk/release/app-release.apk tcg-catalogue-${{ github.run_number }}.apk
+        run: cp app/build/outputs/apk/release/app-release.apk cardnavo-${{ github.run_number }}.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: tcg-catalogue-apk
-          path: tcg-catalogue-*.apk
+          name: cardnavo-apk
+          path: cardnavo-*.apk
 
       # Every push publishes a GitHub Release with the APK attached, so it can be
       # downloaded straight from the phone. Builds from branches other than main
@@ -64,10 +64,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v0.1.${{ github.run_number }}
-          name: TCG Catalogue 0.1.${{ github.run_number }}
+          name: CardNavo 0.1.${{ github.run_number }}
           target_commitish: ${{ github.sha }}
           prerelease: ${{ github.ref != 'refs/heads/main' }}
-          files: tcg-catalogue-*.apk
+          files: cardnavo-*.apk
           body: |
             Built from `${{ github.ref_name }}` @ ${{ github.sha }}.
             Download the `.apk` below on your Android phone and open it to install

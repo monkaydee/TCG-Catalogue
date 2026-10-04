@@ -31,7 +31,7 @@
     <string name="cloud_stopped">Cloud-back-up gestopt</string>
     <string name="cloud_error">Probleem met cloud-back-up: %1$s</string>
     <string name="cloud_error_permission">De toegang tot het bestand is ingetrokken. Kies het bestand opnieuw.</string>
-    <string name="cloud_error_not_backup">Het bestand is geen TCG Catalogue-back-up en is daarom ongemoeid gelaten.</string>
+    <string name="cloud_error_not_backup">Het bestand is geen CardNavo-back-up en is daarom ongemoeid gelaten.</string>
     <string name="cloud_error_blocked">Er wacht een nieuwere collectie van een andere telefoon. Laad of voeg die eerst samen, of negeer haar.</string>
     <string name="cloud_error_unknown">onbekende fout</string>
     <string name="cloud_pending_title">Nieuwere collectie van een andere telefoon</string>

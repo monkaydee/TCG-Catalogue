@@ -33,7 +33,7 @@
     <string name="import_title">Importa foto</string>
     <string name="import_back">Indietro</string>
     <string name="import_add_photos">Aggiungi foto</string>
-    <string name="import_intro">Hai fotografato delle carte mentre eri in giro? Importale qui e verranno riconosciute proprio come con una scansione dal vivo.\n\n• Una carta per foto funziona meglio; le pagine del raccoglitore vanno bene se i numeri sono nitidi\n• Assicurati che il numero in basso sulla carta sia leggibile\n• Puoi anche condividere foto con TCG Catalogue dalla galleria o da un\'app di messaggistica</string>
+    <string name="import_intro">Hai fotografato delle carte mentre eri in giro? Importale qui e verranno riconosciute proprio come con una scansione dal vivo.\n\n• Una carta per foto funziona meglio; le pagine del raccoglitore vanno bene se i numeri sono nitidi\n• Assicurati che il numero in basso sulla carta sia leggibile\n• Puoi anche condividere foto con CardNavo dalla galleria o da un\'app di messaggistica</string>
     <string name="import_choose_photos">Scegli foto</string>
     <plurals name="import_count_added">
         <item quantity="one">%d aggiunta</item>

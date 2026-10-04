@@ -35,7 +35,7 @@
     <string name="cloud_stopped">클라우드 백업을 중지했어요</string>
     <string name="cloud_error">클라우드 백업 문제: %1$s</string>
     <string name="cloud_error_permission">파일 접근 권한이 취소되었어요. 파일을 다시 선택하세요.</string>
-    <string name="cloud_error_not_backup">이 파일은 TCG Catalogue 백업이 아니라서 그대로 두었어요.</string>
+    <string name="cloud_error_not_backup">이 파일은 CardNavo 백업이 아니라서 그대로 두었어요.</string>
     <string name="cloud_error_blocked">다른 휴대폰의 더 최신 컬렉션이 대기 중이에요. 먼저 불러오기, 병합 또는 무시를 선택하세요.</string>
     <string name="cloud_error_unknown">알 수 없는 오류</string>
     <string name="cloud_pending_title">다른 휴대폰의 더 최신 컬렉션</string>

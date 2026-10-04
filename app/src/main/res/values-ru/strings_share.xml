@@ -35,7 +35,7 @@
     <string name="cloud_stopped">Облачное копирование остановлено</string>
     <string name="cloud_error">Проблема с облачной копией: %1$s</string>
     <string name="cloud_error_permission">Доступ к файлу отозван. Выберите файл снова.</string>
-    <string name="cloud_error_not_backup">Этот файл не является резервной копией TCG Catalogue, поэтому он не был изменён.</string>
+    <string name="cloud_error_not_backup">Этот файл не является резервной копией CardNavo, поэтому он не был изменён.</string>
     <string name="cloud_error_blocked">Ожидает более новая коллекция с другого телефона. Сначала загрузите её, объедините или проигнорируйте.</string>
     <string name="cloud_error_unknown">неизвестная ошибка</string>
     <string name="cloud_pending_title">Более новая коллекция с другого телефона</string>

@@ -34,7 +34,7 @@
     <string name="import_title">Importuj zdjęcia</string>
     <string name="import_back">Wstecz</string>
     <string name="import_add_photos">Dodaj zdjęcia</string>
-    <string name="import_intro">Masz zdjęcia kart zrobione w drodze? Zaimportuj je tutaj — zostaną rozpoznane tak samo jak podczas skanowania na żywo.\n\n• Najlepiej działa jedna karta na zdjęcie; strony klasera też się sprawdzą, jeśli numery są ostre\n• Upewnij się, że numer na dole karty jest czytelny\n• Zdjęcia możesz też udostępnić do TCG Catalogue z galerii lub komunikatora</string>
+    <string name="import_intro">Masz zdjęcia kart zrobione w drodze? Zaimportuj je tutaj — zostaną rozpoznane tak samo jak podczas skanowania na żywo.\n\n• Najlepiej działa jedna karta na zdjęcie; strony klasera też się sprawdzą, jeśli numery są ostre\n• Upewnij się, że numer na dole karty jest czytelny\n• Zdjęcia możesz też udostępnić do CardNavo z galerii lub komunikatora</string>
     <string name="import_choose_photos">Wybierz zdjęcia</string>
     <plurals name="import_count_added">
         <item quantity="one">%d dodana</item>

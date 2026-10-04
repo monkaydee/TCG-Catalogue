@@ -32,7 +32,7 @@
     <string name="import_title">Importera foton</string>
     <string name="import_back">Tillbaka</string>
     <string name="import_add_photos">Lägg till foton</string>
-    <string name="import_intro">Tog du bilder på kort när du var ute? Importera dem här så känns de igen precis som vid en liveskanning.\n\n• Ett kort per foto fungerar bäst; binder-sidor går bra om numren är skarpa\n• Se till att numret längst ned på kortet är läsbart\n• Du kan också dela foton till TCG Catalogue från galleriet eller en chattapp</string>
+    <string name="import_intro">Tog du bilder på kort när du var ute? Importera dem här så känns de igen precis som vid en liveskanning.\n\n• Ett kort per foto fungerar bäst; binder-sidor går bra om numren är skarpa\n• Se till att numret längst ned på kortet är läsbart\n• Du kan också dela foton till CardNavo från galleriet eller en chattapp</string>
     <string name="import_choose_photos">Välj foton</string>
     <plurals name="import_count_added">
         <item quantity="one">%d tillagt</item>

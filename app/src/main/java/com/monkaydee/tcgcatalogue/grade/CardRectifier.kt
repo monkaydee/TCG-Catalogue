@@ -49,7 +49,33 @@ object CardRectifier {
      * well supported by straight edges, the biggest wins: printed boxes inside a card have straight
      * edges too, but the card's outline encloses them.
      */
-    private fun best(gray: Gray, starts: List<Quad>, bands: DoubleArray = doubleArrayOf(0.03, 0.012)): Quad? {
+    /**
+     * The card inside the camera guide: the user holds it in the box with a small margin, so only
+     * outlines that lie within the box (plus a little) and fill most of it count. Inner printed
+     * boxes are too small, lines on the mat outside the box are out of bounds.
+     */
+    fun findQuadIn(p: Pixels, guide: Quad): Quad? {
+        val gray = Gray(p)
+        val g = guide.corners
+        val gx0 = g.minOf { it.x }; val gx1 = g.maxOf { it.x }; val gy0 = g.minOf { it.y }; val gy1 = g.maxOf { it.y }
+        val mx = 0.06 * (gx1 - gx0); val my = 0.06 * (gy1 - gy0)
+        val guideArea = abs(area(guide))
+        val fits = { q: Quad ->
+            q.corners.all { it.x in (gx0 - mx)..(gx1 + mx) && it.y in (gy0 - my)..(gy1 + my) } &&
+                abs(area(q)) in (0.55 * guideArea)..(1.15 * guideArea)
+        }
+        val lineScale = LINE_SIDE.toDouble() / max(p.width, p.height)
+        val starts = StraightEdges.quads(downscale(p, lineScale), 8).map { it.scaled(1 / lineScale) }.filter(fits) + guide
+        return best(gray, starts, doubleArrayOf(0.06, 0.03, 0.012), accept = fits, share = 0.8)
+    }
+
+    private fun best(
+        gray: Gray,
+        starts: List<Quad>,
+        bands: DoubleArray = doubleArrayOf(0.03, 0.012),
+        accept: (Quad) -> Boolean = { true },
+        share: Double = 0.93,
+    ): Quad? {
         val refined = starts.mapNotNull { start ->
             var q = start
             var support = 0.0
@@ -58,12 +84,12 @@ object CardRectifier {
                 q = r.first
                 support = r.second
             }
-            q.takeIf { support >= 0.5 && plausible(it) }?.let { it to support }
+            q.takeIf { support >= 0.5 && plausible(it) && accept(it) }?.let { it to support }
         }
         val top = refined.maxOfOrNull { it.second } ?: return null
         // Only near-equal outlines compete on size: a side on mat texture or a shadow is weaker than
         // the card's own cut, and must not stretch the outline past the card.
-        return refined.filter { it.second >= 0.93 * top }.maxByOrNull { abs(area(it.first)) }?.first
+        return refined.filter { it.second >= share * top }.maxByOrNull { abs(area(it.first)) }?.first
     }
 
     private fun area(q: Quad): Double {

@@ -35,7 +35,7 @@
     <string name="cloud_stopped">تم إيقاف النسخ الاحتياطي السحابي</string>
     <string name="cloud_error">مشكلة في النسخ الاحتياطي السحابي: %1$s</string>
     <string name="cloud_error_permission">تم إلغاء الوصول إلى الملف. اختر الملف مرة أخرى.</string>
-    <string name="cloud_error_not_backup">الملف ليس نسخة احتياطية من TCG Catalogue، لذا لم يتم المساس به.</string>
+    <string name="cloud_error_not_backup">الملف ليس نسخة احتياطية من CardNavo، لذا لم يتم المساس به.</string>
     <string name="cloud_error_blocked">توجد مجموعة أحدث من هاتف آخر بانتظارك. حمّلها أو ادمجها أو تجاهلها أولًا.</string>
     <string name="cloud_error_unknown">خطأ غير معروف</string>
     <string name="cloud_pending_title">مجموعة أحدث من هاتف آخر</string>

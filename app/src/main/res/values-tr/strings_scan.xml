@@ -32,7 +32,7 @@
     <string name="import_title">Fotoğrafları içe aktar</string>
     <string name="import_back">Geri</string>
     <string name="import_add_photos">Fotoğraf ekle</string>
-    <string name="import_intro">Dışarıdayken kartların fotoğrafını mı çektiniz? Buradan içe aktarın; canlı tarama gibi tanınırlar.\n\n• Fotoğraf başına bir kart en iyi sonucu verir; numaralar net ise binder sayfaları da olur\n• Kartın altındaki numaranın okunaklı olduğundan emin olun\n• Fotoğrafları galerinizden veya bir sohbet uygulamasından TCG Catalogue\'a da paylaşabilirsiniz</string>
+    <string name="import_intro">Dışarıdayken kartların fotoğrafını mı çektiniz? Buradan içe aktarın; canlı tarama gibi tanınırlar.\n\n• Fotoğraf başına bir kart en iyi sonucu verir; numaralar net ise binder sayfaları da olur\n• Kartın altındaki numaranın okunaklı olduğundan emin olun\n• Fotoğrafları galerinizden veya bir sohbet uygulamasından CardNavo\'a da paylaşabilirsiniz</string>
     <string name="import_choose_photos">Fotoğraf seç</string>
     <plurals name="import_count_added">
         <item quantity="one">%d eklendi</item>

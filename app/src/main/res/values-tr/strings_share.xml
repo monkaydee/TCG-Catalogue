@@ -35,7 +35,7 @@
     <string name="cloud_stopped">Bulut yedekleme durduruldu</string>
     <string name="cloud_error">Bulut yedekleme sorunu: %1$s</string>
     <string name="cloud_error_permission">Dosyaya erişim iptal edildi. Dosyayı yeniden seçin.</string>
-    <string name="cloud_error_not_backup">Dosya bir TCG Catalogue yedeği değil, bu yüzden dokunulmadı.</string>
+    <string name="cloud_error_not_backup">Dosya bir CardNavo yedeği değil, bu yüzden dokunulmadı.</string>
     <string name="cloud_error_blocked">Başka bir telefondan daha yeni bir koleksiyon bekliyor. Önce yükleyin, birleştirin veya yok sayın.</string>
     <string name="cloud_error_unknown">bilinmeyen hata</string>
     <string name="cloud_pending_title">Başka bir telefondan daha yeni koleksiyon</string>

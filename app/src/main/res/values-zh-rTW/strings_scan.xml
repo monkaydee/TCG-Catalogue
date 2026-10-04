@@ -31,7 +31,7 @@
     <string name="import_title">匯入照片</string>
     <string name="import_back">返回</string>
     <string name="import_add_photos">新增照片</string>
-    <string name="import_intro">外出時拍了卡片照片嗎？在這裡匯入，辨識效果與即時掃描相同。\n\n• 一張照片一張卡效果最好；卡冊頁面只要編號清晰也可以\n• 請確保卡片底部的編號清晰可讀\n• 你也可以從相簿或通訊軟體將照片分享到 TCG Catalogue</string>
+    <string name="import_intro">外出時拍了卡片照片嗎？在這裡匯入，辨識效果與即時掃描相同。\n\n• 一張照片一張卡效果最好；卡冊頁面只要編號清晰也可以\n• 請確保卡片底部的編號清晰可讀\n• 你也可以從相簿或通訊軟體將照片分享到 CardNavo</string>
     <string name="import_choose_photos">選擇照片</string>
     <plurals name="import_count_added">
         <item quantity="other">已新增 %d 張</item>

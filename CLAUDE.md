@@ -1,4 +1,4 @@
-# TCG Catalogue — notes for Claude
+# CardNavo (repo: TCG-Catalogue) — notes for Claude
 
 Android app (Kotlin 2.1, Compose, Room, CameraX, ML Kit, LiteRT) that scans and prices trading cards
 (Pokémon, One Piece, Magic, Dragon Ball, Union Arena, Weiss Schwarz, Naruto). Free sources only.

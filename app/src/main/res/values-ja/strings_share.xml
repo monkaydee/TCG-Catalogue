@@ -35,7 +35,7 @@
     <string name="cloud_stopped">クラウドバックアップを停止しました</string>
     <string name="cloud_error">クラウドバックアップの問題：%1$s</string>
     <string name="cloud_error_permission">ファイルへのアクセスが取り消されました。ファイルを選び直してください。</string>
-    <string name="cloud_error_not_backup">このファイルはTCG Catalogueのバックアップではないため、変更しませんでした。</string>
+    <string name="cloud_error_not_backup">このファイルはCardNavoのバックアップではないため、変更しませんでした。</string>
     <string name="cloud_error_blocked">別の端末の新しいコレクションが待機中です。先に読み込み、統合、または無視してください。</string>
     <string name="cloud_error_unknown">不明なエラー</string>
     <string name="cloud_pending_title">別の端末の新しいコレクション</string>

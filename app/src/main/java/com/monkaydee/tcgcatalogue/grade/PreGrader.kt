@@ -45,7 +45,8 @@ object PreGrader {
         }
         // The card's own straight edges first: the guide is only roughly where the card lies (and a
         // refined guide can settle on the guide itself), so it is only the fallback.
-        val quad = (CardRectifier.findQuad(p) ?: hint?.let { CardRectifier.findQuad(p, it) }) ?: return Outcome.NoCard
+        // With the camera guide, the card is what lies in the box; a gallery photo is searched whole.
+        val quad = (hint?.let { CardRectifier.findQuadIn(p, it) } ?: CardRectifier.findQuad(p)) ?: return Outcome.NoCard
         val upright = upright(quad)
         val flat = trimmed(CardRectifier.warp(p, upright))
         val c = upright.corners

@@ -31,7 +31,7 @@
     <string name="cloud_stopped">Zatrzymano kopię zapasową w chmurze</string>
     <string name="cloud_error">Problem z kopią zapasową w chmurze: %1$s</string>
     <string name="cloud_error_permission">Dostęp do pliku został cofnięty. Wybierz plik ponownie.</string>
-    <string name="cloud_error_not_backup">Ten plik nie jest kopią zapasową TCG Catalogue, więc nie został zmieniony.</string>
+    <string name="cloud_error_not_backup">Ten plik nie jest kopią zapasową CardNavo, więc nie został zmieniony.</string>
     <string name="cloud_error_blocked">Czeka nowsza kolekcja z innego telefonu. Najpierw ją wczytaj, scal lub zignoruj.</string>
     <string name="cloud_error_unknown">nieznany błąd</string>
     <string name="cloud_pending_title">Nowsza kolekcja z innego telefonu</string>

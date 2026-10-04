@@ -28,7 +28,7 @@
     <string name="cloud_stopped">Sauvegarde cloud arrêtée</string>
     <string name="cloud_error">Problème de sauvegarde cloud : %1$s</string>
     <string name="cloud_error_permission">L\'accès au fichier a été révoqué. Choisissez à nouveau le fichier.</string>
-    <string name="cloud_error_not_backup">Ce fichier n\'est pas une sauvegarde de TCG Catalogue, il n\'a donc pas été modifié.</string>
+    <string name="cloud_error_not_backup">Ce fichier n\'est pas une sauvegarde de CardNavo, il n\'a donc pas été modifié.</string>
     <string name="cloud_error_blocked">Une collection plus récente d\'un autre téléphone est en attente. Chargez-la, fusionnez-la ou ignorez-la d\'abord.</string>
     <string name="cloud_error_unknown">erreur inconnue</string>
     <string name="cloud_pending_title">Collection plus récente d\'un autre téléphone</string>

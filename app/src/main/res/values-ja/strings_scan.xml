@@ -32,7 +32,7 @@
     <string name="import_title">写真を取り込む</string>
     <string name="import_back">戻る</string>
     <string name="import_add_photos">写真を追加</string>
-    <string name="import_intro">外出先でカードを撮影しましたか？ここで取り込むと、ライブスキャンと同じように認識されます。\n\n• 写真1枚につきカード1枚が最適です。番号が鮮明ならバインダーのページも認識できます\n• カード下部の番号が読み取れることを確認してください\n• ギャラリーやチャットアプリからTCG Catalogueに写真を共有することもできます</string>
+    <string name="import_intro">外出先でカードを撮影しましたか？ここで取り込むと、ライブスキャンと同じように認識されます。\n\n• 写真1枚につきカード1枚が最適です。番号が鮮明ならバインダーのページも認識できます\n• カード下部の番号が読み取れることを確認してください\n• ギャラリーやチャットアプリからCardNavoに写真を共有することもできます</string>
     <string name="import_choose_photos">写真を選択</string>
     <plurals name="import_count_added">
         <item quantity="other">%d件追加</item>

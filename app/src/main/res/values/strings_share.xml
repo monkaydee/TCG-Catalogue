@@ -36,7 +36,7 @@
     <string name="cloud_stopped">Cloud backup stopped</string>
     <string name="cloud_error">Cloud backup problem: %1$s</string>
     <string name="cloud_error_permission">Access to the file was revoked. Choose the file again.</string>
-    <string name="cloud_error_not_backup">The file is not a TCG Catalogue backup, so it was left untouched.</string>
+    <string name="cloud_error_not_backup">The file is not a CardNavo backup, so it was left untouched.</string>
     <string name="cloud_error_blocked">A newer collection from another phone is waiting. Load it, merge it or ignore it first.</string>
     <string name="cloud_error_unknown">unknown error</string>
     <string name="cloud_pending_title">Newer collection from another phone</string>

@@ -35,7 +35,7 @@
     <string name="cloud_stopped">云备份已停止</string>
     <string name="cloud_error">云备份出现问题：%1$s</string>
     <string name="cloud_error_permission">文件访问权限已被撤销，请重新选择文件。</string>
-    <string name="cloud_error_not_backup">该文件不是 TCG Catalogue 备份，因此未做任何改动。</string>
+    <string name="cloud_error_not_backup">该文件不是 CardNavo 备份，因此未做任何改动。</string>
     <string name="cloud_error_blocked">另一部手机上有更新的收藏待处理。请先加载、合并或忽略它。</string>
     <string name="cloud_error_unknown">未知错误</string>
     <string name="cloud_pending_title">另一部手机上更新的收藏</string>

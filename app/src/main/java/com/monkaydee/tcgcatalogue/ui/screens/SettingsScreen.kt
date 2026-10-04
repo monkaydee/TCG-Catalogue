@@ -385,6 +385,7 @@ private fun Color.toArgbLong(): Long = toArgb().toLong() and 0xFFFFFFFFL
 
 private fun paletteName(p: Palette) = when (p) {
     Palette.DYNAMIC -> R.string.palette_dynamic
+    Palette.CARDNAVO -> R.string.app_name
     Palette.INDIGO -> R.string.palette_indigo
     Palette.OCEAN -> R.string.palette_ocean
     Palette.TEAL -> R.string.palette_teal

@@ -33,7 +33,7 @@
     <string name="import_title">Importar fotos</string>
     <string name="import_back">Voltar</string>
     <string name="import_add_photos">Adicionar fotos</string>
-    <string name="import_intro">Tirou fotos de cartas por aí? Importe aqui e elas serão reconhecidas como em um scan ao vivo.\n\n• Uma carta por foto funciona melhor; páginas de fichário funcionam se os números estiverem nítidos\n• Confira se o número na parte de baixo da carta está legível\n• Você também pode compartilhar fotos com o TCG Catalogue pela galeria ou por um app de mensagens</string>
+    <string name="import_intro">Tirou fotos de cartas por aí? Importe aqui e elas serão reconhecidas como em um scan ao vivo.\n\n• Uma carta por foto funciona melhor; páginas de fichário funcionam se os números estiverem nítidos\n• Confira se o número na parte de baixo da carta está legível\n• Você também pode compartilhar fotos com o CardNavo pela galeria ou por um app de mensagens</string>
     <string name="import_choose_photos">Escolher fotos</string>
     <plurals name="import_count_added">
         <item quantity="one">%d adicionada</item>

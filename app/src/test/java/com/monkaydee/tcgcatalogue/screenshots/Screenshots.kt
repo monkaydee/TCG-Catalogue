@@ -169,8 +169,8 @@ class Screenshots {
 
     @Test fun launcherIcon() {
         rule.setContent {
-            Box(Modifier.size(192.dp).clip(RoundedCornerShape(48.dp)).background(colorResource(R.color.ic_launcher_background))) {
-                Image(painterResource(R.drawable.ic_launcher_foreground), null, Modifier.fillMaxSize())
+            Box(Modifier.size(192.dp).clip(RoundedCornerShape(48.dp)).background(colorResource(R.color.cardnavo_navy))) {
+                Image(painterResource(R.drawable.cardnavo_foreground), null, Modifier.fillMaxSize())
             }
         }
         save("launcher_icon")

@@ -58,8 +58,8 @@
     <string name="import_title">Import photos</string>
     <string name="import_back">Back</string>
     <string name="import_add_photos">Add photos</string>
-    <!-- Shown before any photo is imported. TCG Catalogue is the app\'s name. Keep the line breaks (\n) and bullets. -->
-    <string name="import_intro">Took photos of cards while you were out? Import them here and they\'re recognised just like a live scan.\n\n• One card per photo works best; binder pages work if the numbers are sharp\n• Make sure the number at the bottom of the card is readable\n• You can also share photos to TCG Catalogue from your gallery or a chat app</string>
+    <!-- Shown before any photo is imported. CardNavo is the app\'s name. Keep the line breaks (\n) and bullets. -->
+    <string name="import_intro">Took photos of cards while you were out? Import them here and they\'re recognised just like a live scan.\n\n• One card per photo works best; binder pages work if the numbers are sharp\n• Make sure the number at the bottom of the card is readable\n• You can also share photos to CardNavo from your gallery or a chat app</string>
     <string name="import_choose_photos">Choose photos</string>
     <!-- Progress summary parts, shown joined with " · ", e.g. "3 added · 2 to review" -->
     <plurals name="import_count_added">

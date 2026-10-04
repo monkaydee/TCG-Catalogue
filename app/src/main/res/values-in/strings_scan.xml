@@ -31,7 +31,7 @@
     <string name="import_title">Impor foto</string>
     <string name="import_back">Kembali</string>
     <string name="import_add_photos">Tambah foto</string>
-    <string name="import_intro">Memotret kartu saat bepergian? Impor di sini dan kartunya dikenali sama seperti pemindaian langsung.\n\n• Satu kartu per foto memberi hasil terbaik; halaman binder bisa dipakai jika nomornya tajam\n• Pastikan nomor di bagian bawah kartu terbaca\n• Anda juga bisa membagikan foto ke TCG Catalogue dari galeri atau aplikasi chat</string>
+    <string name="import_intro">Memotret kartu saat bepergian? Impor di sini dan kartunya dikenali sama seperti pemindaian langsung.\n\n• Satu kartu per foto memberi hasil terbaik; halaman binder bisa dipakai jika nomornya tajam\n• Pastikan nomor di bagian bawah kartu terbaca\n• Anda juga bisa membagikan foto ke CardNavo dari galeri atau aplikasi chat</string>
     <string name="import_choose_photos">Pilih foto</string>
     <plurals name="import_count_added">
         <item quantity="other">%d ditambahkan</item>

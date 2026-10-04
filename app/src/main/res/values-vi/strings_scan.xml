@@ -31,7 +31,7 @@
     <string name="import_title">Nhập ảnh</string>
     <string name="import_back">Quay lại</string>
     <string name="import_add_photos">Thêm ảnh</string>
-    <string name="import_intro">Đã chụp ảnh thẻ khi đi ngoài? Hãy nhập vào đây, thẻ sẽ được nhận diện như khi quét trực tiếp.\n\n• Mỗi ảnh một thẻ cho kết quả tốt nhất; trang album vẫn dùng được nếu số thẻ rõ nét\n• Đảm bảo số ở cuối thẻ đọc được\n• Bạn cũng có thể chia sẻ ảnh sang TCG Catalogue từ thư viện ảnh hoặc ứng dụng chat</string>
+    <string name="import_intro">Đã chụp ảnh thẻ khi đi ngoài? Hãy nhập vào đây, thẻ sẽ được nhận diện như khi quét trực tiếp.\n\n• Mỗi ảnh một thẻ cho kết quả tốt nhất; trang album vẫn dùng được nếu số thẻ rõ nét\n• Đảm bảo số ở cuối thẻ đọc được\n• Bạn cũng có thể chia sẻ ảnh sang CardNavo từ thư viện ảnh hoặc ứng dụng chat</string>
     <string name="import_choose_photos">Chọn ảnh</string>
     <plurals name="import_count_added">
         <item quantity="other">%d đã thêm</item>

@@ -31,7 +31,7 @@
     <string name="import_title">사진 가져오기</string>
     <string name="import_back">뒤로</string>
     <string name="import_add_photos">사진 추가</string>
-    <string name="import_intro">밖에서 카드 사진을 찍으셨나요? 여기서 가져오면 실시간 스캔처럼 인식돼요.\n\n• 사진 한 장에 카드 한 장이 가장 좋아요. 번호가 선명하면 바인더 페이지도 가능해요\n• 카드 하단의 번호가 잘 보이는지 확인하세요\n• 갤러리나 메신저 앱에서 TCG Catalogue로 사진을 공유할 수도 있어요</string>
+    <string name="import_intro">밖에서 카드 사진을 찍으셨나요? 여기서 가져오면 실시간 스캔처럼 인식돼요.\n\n• 사진 한 장에 카드 한 장이 가장 좋아요. 번호가 선명하면 바인더 페이지도 가능해요\n• 카드 하단의 번호가 잘 보이는지 확인하세요\n• 갤러리나 메신저 앱에서 CardNavo로 사진을 공유할 수도 있어요</string>
     <string name="import_choose_photos">사진 선택</string>
     <plurals name="import_count_added">
         <item quantity="other">%d장 추가됨</item>

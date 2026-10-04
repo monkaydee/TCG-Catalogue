@@ -31,7 +31,7 @@
     <string name="cloud_stopped">Molnsäkerhetskopieringen stoppades</string>
     <string name="cloud_error">Problem med molnsäkerhetskopian: %1$s</string>
     <string name="cloud_error_permission">Åtkomsten till filen drogs tillbaka. Välj filen igen.</string>
-    <string name="cloud_error_not_backup">Filen är ingen TCG Catalogue-säkerhetskopia och lämnades därför orörd.</string>
+    <string name="cloud_error_not_backup">Filen är ingen CardNavo-säkerhetskopia och lämnades därför orörd.</string>
     <string name="cloud_error_blocked">En nyare samling från en annan telefon väntar. Läs in den, slå ihop den eller ignorera den först.</string>
     <string name="cloud_error_unknown">okänt fel</string>
     <string name="cloud_pending_title">Nyare samling från en annan telefon</string>

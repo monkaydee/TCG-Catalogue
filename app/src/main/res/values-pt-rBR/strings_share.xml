@@ -28,7 +28,7 @@
     <string name="cloud_stopped">Backup na nuvem parado</string>
     <string name="cloud_error">Problema no backup na nuvem: %1$s</string>
     <string name="cloud_error_permission">O acesso ao arquivo foi revogado. Escolha o arquivo novamente.</string>
-    <string name="cloud_error_not_backup">O arquivo não é um backup do TCG Catalogue, por isso não foi alterado.</string>
+    <string name="cloud_error_not_backup">O arquivo não é um backup do CardNavo, por isso não foi alterado.</string>
     <string name="cloud_error_blocked">Uma coleção mais recente de outro celular está aguardando. Carregue, mescle ou ignore primeiro.</string>
     <string name="cloud_error_unknown">erro desconhecido</string>
     <string name="cloud_pending_title">Coleção mais recente de outro celular</string>

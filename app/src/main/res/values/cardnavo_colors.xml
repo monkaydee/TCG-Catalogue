@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cardnavo_navy">#0B1426</color>
+    <color name="cardnavo_teal">#29DBC6</color>
+    <color name="cardnavo_cyan">#78CBFF</color>
+    <color name="cardnavo_white">#F4F8FF</color>
+</resources>

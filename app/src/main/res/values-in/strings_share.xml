@@ -32,7 +32,7 @@
     <string name="cloud_stopped">Cadangan cloud dihentikan</string>
     <string name="cloud_error">Masalah cadangan cloud: %1$s</string>
     <string name="cloud_error_permission">Akses ke file dicabut. Pilih file lagi.</string>
-    <string name="cloud_error_not_backup">File ini bukan cadangan TCG Catalogue, jadi tidak diubah.</string>
+    <string name="cloud_error_not_backup">File ini bukan cadangan CardNavo, jadi tidak diubah.</string>
     <string name="cloud_error_blocked">Koleksi yang lebih baru dari ponsel lain sedang menunggu. Muat, gabungkan, atau abaikan terlebih dahulu.</string>
     <string name="cloud_error_unknown">error tidak diketahui</string>
     <string name="cloud_pending_title">Koleksi lebih baru dari ponsel lain</string>

@@ -32,7 +32,7 @@
     <string name="import_title">Foto\'s importeren</string>
     <string name="import_back">Terug</string>
     <string name="import_add_photos">Foto\'s toevoegen</string>
-    <string name="import_intro">Onderweg foto\'s van kaarten gemaakt? Importeer ze hier en ze worden net zo herkend als bij een live scan.\n\n• Eén kaart per foto werkt het best; binderpagina\'s lukken als de nummers scherp zijn\n• Zorg dat het nummer onderaan de kaart leesbaar is\n• Je kunt foto\'s ook vanuit je galerij of een chat-app delen met TCG Catalogue</string>
+    <string name="import_intro">Onderweg foto\'s van kaarten gemaakt? Importeer ze hier en ze worden net zo herkend als bij een live scan.\n\n• Eén kaart per foto werkt het best; binderpagina\'s lukken als de nummers scherp zijn\n• Zorg dat het nummer onderaan de kaart leesbaar is\n• Je kunt foto\'s ook vanuit je galerij of een chat-app delen met CardNavo</string>
     <string name="import_choose_photos">Foto\'s kiezen</string>
     <plurals name="import_count_added">
         <item quantity="one">%d toegevoegd</item>

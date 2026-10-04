@@ -32,7 +32,7 @@
     <string name="cloud_stopped">Đã dừng sao lưu đám mây</string>
     <string name="cloud_error">Sự cố sao lưu đám mây: %1$s</string>
     <string name="cloud_error_permission">Quyền truy cập tệp đã bị thu hồi. Hãy chọn lại tệp.</string>
-    <string name="cloud_error_not_backup">Tệp này không phải bản sao lưu của TCG Catalogue nên đã được giữ nguyên.</string>
+    <string name="cloud_error_not_backup">Tệp này không phải bản sao lưu của CardNavo nên đã được giữ nguyên.</string>
     <string name="cloud_error_blocked">Đang có bộ sưu tập mới hơn từ điện thoại khác. Hãy tải, gộp hoặc bỏ qua trước.</string>
     <string name="cloud_error_unknown">lỗi không xác định</string>
     <string name="cloud_pending_title">Bộ sưu tập mới hơn từ điện thoại khác</string>

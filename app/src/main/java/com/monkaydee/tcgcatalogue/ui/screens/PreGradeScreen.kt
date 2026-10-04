@@ -103,6 +103,24 @@ private fun guideFractions(viewW: Float, viewH: Float): FloatArray {
     return floatArrayOf(left / viewW, top / viewH, (left + w) / viewW, (top + h) / viewH)
 }
 
+/**
+ * The guide (fractions of the preview) as fractions of the photo. The preview shows the middle of
+ * the camera image scaled to fill the screen (FILL_CENTER); a photo already cropped to the preview
+ * has the screen's shape and the fractions stay as they are.
+ */
+private fun guideInPhoto(g: FloatArray, viewW: Float, viewH: Float, photoW: Int, photoH: Int): FloatArray {
+    if (viewW <= 0f || viewH <= 0f) return g
+    val scale = maxOf(viewW / photoW, viewH / photoH)
+    val shownW = viewW / scale
+    val shownH = viewH / scale
+    val offX = (photoW - shownW) / 2
+    val offY = (photoH - shownH) / 2
+    return floatArrayOf(
+        (offX + g[0] * shownW) / photoW, (offY + g[1] * shownH) / photoH,
+        (offX + g[2] * shownW) / photoW, (offY + g[3] * shownH) / photoH,
+    )
+}
+
 private enum class Step { FRONT, BACK, RESULT }
 
 /**
@@ -481,7 +499,7 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
             scope.launch {
                 val photo = takePhoto(ic, executor)
                 taking = false
-                if (photo == null) onError() else onPhoto(photo, guideFractions(viewSize.first, viewSize.second))
+                if (photo == null) onError() else onPhoto(photo, guideInPhoto(guideFractions(viewSize.first, viewSize.second), viewSize.first, viewSize.second, photo.width, photo.height))
             }
         }
         // Takes the photo by itself once the phone has stayed flat for a moment (steady hands, no tap shake).

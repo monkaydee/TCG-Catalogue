@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CardNavo.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/cardnavo_navy</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/cardnavo_splash_animated</item>
+        <item name="windowSplashScreenAnimationDuration">540</item>
+        <item name="postSplashScreenTheme">@style/Theme.TcgCatalogue</item>
+    </style>
+</resources>

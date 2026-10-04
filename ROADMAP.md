@@ -1,6 +1,6 @@
 # Roadmap
 
-What comes next for TCG Catalogue, in the order we plan to build it. Rough effort:
+What comes next for CardNavo, in the order we plan to build it. Rough effort:
 S = a day or less, M = a few days, L = a week or more.
 
 Two rules apply to everything here:

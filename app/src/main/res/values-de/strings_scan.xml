@@ -32,7 +32,7 @@
     <string name="import_title">Fotos importieren</string>
     <string name="import_back">Zurück</string>
     <string name="import_add_photos">Fotos hinzufügen</string>
-    <string name="import_intro">Du hast unterwegs Karten fotografiert? Importiere die Fotos hier — sie werden genauso erkannt wie bei einem Live-Scan.\n\n• Eine Karte pro Foto funktioniert am besten; Binder-Seiten klappen, wenn die Nummern scharf sind\n• Achte darauf, dass die Nummer unten auf der Karte lesbar ist\n• Du kannst Fotos auch aus deiner Galerie oder einer Chat-App mit TCG Catalogue teilen</string>
+    <string name="import_intro">Du hast unterwegs Karten fotografiert? Importiere die Fotos hier — sie werden genauso erkannt wie bei einem Live-Scan.\n\n• Eine Karte pro Foto funktioniert am besten; Binder-Seiten klappen, wenn die Nummern scharf sind\n• Achte darauf, dass die Nummer unten auf der Karte lesbar ist\n• Du kannst Fotos auch aus deiner Galerie oder einer Chat-App mit CardNavo teilen</string>
     <string name="import_choose_photos">Fotos auswählen</string>
     <plurals name="import_count_added">
         <item quantity="one">%d hinzugefügt</item>

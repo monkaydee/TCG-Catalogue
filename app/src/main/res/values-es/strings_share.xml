@@ -28,7 +28,7 @@
     <string name="cloud_stopped">Copia en la nube detenida</string>
     <string name="cloud_error">Problema con la copia en la nube: %1$s</string>
     <string name="cloud_error_permission">Se revocó el acceso al archivo. Elige el archivo de nuevo.</string>
-    <string name="cloud_error_not_backup">El archivo no es una copia de TCG Catalogue, así que no se ha tocado.</string>
+    <string name="cloud_error_not_backup">El archivo no es una copia de CardNavo, así que no se ha tocado.</string>
     <string name="cloud_error_blocked">Hay una colección más reciente de otro teléfono esperando. Cárgala, combínala o ignórala primero.</string>
     <string name="cloud_error_unknown">error desconocido</string>
     <string name="cloud_pending_title">Colección más reciente de otro teléfono</string>

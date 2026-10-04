@@ -28,7 +28,7 @@
     <string name="cloud_stopped">Backup cloud interrotto</string>
     <string name="cloud_error">Problema con il backup cloud: %1$s</string>
     <string name="cloud_error_permission">L\'accesso al file è stato revocato. Scegli di nuovo il file.</string>
-    <string name="cloud_error_not_backup">Il file non è un backup di TCG Catalogue, quindi non è stato toccato.</string>
+    <string name="cloud_error_not_backup">Il file non è un backup di CardNavo, quindi non è stato toccato.</string>
     <string name="cloud_error_blocked">Una collezione più recente da un altro telefono è in attesa. Caricala, uniscila o ignorala prima.</string>
     <string name="cloud_error_unknown">errore sconosciuto</string>
     <string name="cloud_pending_title">Collezione più recente da un altro telefono</string>

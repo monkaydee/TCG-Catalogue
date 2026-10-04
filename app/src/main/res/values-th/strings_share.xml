@@ -32,7 +32,7 @@
     <string name="cloud_stopped">หยุดการสำรองข้อมูลบนคลาวด์แล้ว</string>
     <string name="cloud_error">การสำรองข้อมูลบนคลาวด์มีปัญหา: %1$s</string>
     <string name="cloud_error_permission">สิทธิ์เข้าถึงไฟล์ถูกเพิกถอน โปรดเลือกไฟล์อีกครั้ง</string>
-    <string name="cloud_error_not_backup">ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ TCG Catalogue จึงไม่มีการแก้ไขไฟล์</string>
+    <string name="cloud_error_not_backup">ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ CardNavo จึงไม่มีการแก้ไขไฟล์</string>
     <string name="cloud_error_blocked">มีคอลเลกชันที่ใหม่กว่าจากโทรศัพท์เครื่องอื่นรออยู่ โปรดโหลด รวม หรือข้ามก่อน</string>
     <string name="cloud_error_unknown">ข้อผิดพลาดที่ไม่ทราบสาเหตุ</string>
     <string name="cloud_pending_title">คอลเลกชันที่ใหม่กว่าจากโทรศัพท์เครื่องอื่น</string>

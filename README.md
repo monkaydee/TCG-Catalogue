@@ -1,4 +1,4 @@
-# TCG Catalogue
+# CardNavo
 
 An Android app to catalogue trading cards: **Pokémon, One Piece, Magic: The Gathering,
 Dragon Ball Super (Masters and Fusion World), Union Arena, Weiss Schwarz and Naruto**. Scan a
@@ -52,7 +52,7 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   wear of each corner and edge, and shows a likely PSA range. Everything runs on the phone; no photo
   is uploaded. It's an estimate: surface scratches and dents are not checked.
 - **Import photos**: took pictures while you were out? Pick them from the gallery (Scan →
-  *From photos*, or the photo icon on the Collection screen), or share them to TCG Catalogue
+  *From photos*, or the photo icon on the Collection screen), or share them to CardNavo (formerly TCG Catalogue)
   from any app. Each photo is read on the phone, tried in all four orientations, and can contain
   several cards (e.g. a binder page). You review the matches or add them all at once.
 - **Stack scan**: scan a pile of cards one after another. Each recognised card goes into a

@@ -43,7 +43,7 @@ object CrashReporter {
     }
 
     fun share(context: Context, report: String) {
-        val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT, "TCG Catalogue crash report").putExtra(Intent.EXTRA_TEXT, report)
+        val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT, "CardNavo crash report").putExtra(Intent.EXTRA_TEXT, report)
         context.startActivity(Intent.createChooser(send, null).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
