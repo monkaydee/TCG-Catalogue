@@ -69,7 +69,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
         http.getJson("$base/sets/${enc(raw(setId))}/${enc(localId)}")?.let(::parseCard)
 
     /** Card ids (same as the English ones) and names whose name in [language] contains [name] ("de", "Evoli"). */
-    suspend fun searchByNameIn(language: String, name: String, limit: Int = 80): List<CardBrief> =
+    suspend fun searchByNameIn(language: String, name: String, limit: Int = 250): List<CardBrief> =
         http.getJson("https://api.tcgdex.net/v2/${language.lowercase()}/cards?name=${enc(name)}&pagination:itemsPerPage=$limit").arr().orEmpty().mapNotNull { c ->
             CardBrief(
                 game = Game.POKEMON,

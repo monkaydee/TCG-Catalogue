@@ -102,6 +102,8 @@ data class ImportItem(
     val status: ImportStatus,
     val candidates: List<CardCandidate> = emptyList(),
     val note: String? = null,
+    /** Everything read on the card (name, numbers, rules), to check and to search by. */
+    val texts: List<String> = emptyList(),
 )
 
 data class ImportState(
@@ -166,7 +168,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             return
         }
         val items = found.hits.mapIndexed { i, hit ->
-            ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, found.grade, found.picture, ImportStatus.LOOKING_UP)
+            ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, found.grade, found.picture, ImportStatus.LOOKING_UP, texts = found.texts)
         }
         replace(placeholder.key, items)
         items.forEach { lookUp(it) }
@@ -174,12 +176,12 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     private suspend fun lookUp(item: ImportItem) {
         val hit = item.hit ?: return
-        val result = runCatching { VisualMatcher.rank(context, item.picture, repo.resolve(hit), VisualMatcher.Source.PHOTO) }
+        val result = runCatching { VisualMatcher.rank(context, item.picture, repo.checkedByName(repo.resolve(hit), item.texts), VisualMatcher.Source.PHOTO) }
         val candidates = result.getOrDefault(emptyList())
         val updated = when {
             result.isFailure -> item.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_lookup_failed))
             // The number led nowhere (misread, or a print the databases don't have): try the picture.
-            candidates.isEmpty() -> byPicture(item, emptyList()).let { if (it.candidates.isEmpty()) item.copy(status = ImportStatus.NOT_FOUND) else it }
+            candidates.isEmpty() -> byPicture(item, item.texts).let { if (it.candidates.isEmpty()) item.copy(status = ImportStatus.NOT_FOUND) else it }
             repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
                 val grade = item.grade?.takeIf { it.grader != null && it.grade != null }

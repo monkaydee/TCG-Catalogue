@@ -480,6 +480,18 @@ class CardRepository(
         return id
     }
 
+    /** One copy of a card added straight from a set checklist (default printing and condition); null when it can't be loaded. */
+    suspend fun quickAdd(game: Game, cardId: String): Long? {
+        val card = attempt { fetch(game, cardId) }.getOrNull() ?: return null
+        return add(card, card.defaultVariant, 1, settings.current().defaultCondition, language = card.language ?: if (cardId.startsWith("ja:")) "JA" else "EN")
+    }
+
+    /** Takes back one copy added by [quickAdd]. */
+    suspend fun undoQuickAdd(rowId: Long) {
+        val row = db.cards().get(rowId) ?: return
+        update(row.copy(quantity = row.quantity - 1))
+    }
+
     suspend fun add(r: AddRequest): Long = add(r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice, r.manualValue, r.language)
 
     /** Current data of a card in the collection, for editing it (null when offline). */
@@ -980,6 +992,19 @@ class CardRepository(
      * Pokémon cards named by a word printed on the card ("Ogerpon", "Evoli"), searched in the card's
      * language and in English. When the number printed on the card picks out one of them, only that one.
      */
+    /**
+     * Cards found by a number, checked against the name printed on the card: a misread number
+     * ("2/101" from damage text) points to a card whose name isn't there. Then the printed name is
+     * searched (in the card's language too) and wins when it finds something.
+     */
+    suspend fun checkedByName(found: List<CardCandidate>, texts: List<String>): List<CardCandidate> {
+        val readable = texts.filter { t -> t.count(Char::isLetter) >= 3 }
+        if (found.isEmpty() || readable.isEmpty() || found.first().game != Game.POKEMON) return found
+        if (found.any { it.name.length >= 3 && CardTextParser.nameOnCard(it.name, readable) }) return found
+        val byName = cardsByPrintedName(readable, com.monkaydee.tcgcatalogue.ui.AppStrings.get(R.string.picture_check))
+        return byName.ifEmpty { found }
+    }
+
     private suspend fun cardsByPrintedName(texts: List<String>, warning: String): List<CardCandidate> = coroutineScope {
         fun digits(s: String) = s.filter(Char::isDigit).trimStart('0')
         val numbers = texts.flatMap { Regex("""\d{1,3}""").findAll(it).map { m -> m.value.trimStart('0') }.toList() }.filter { it.isNotEmpty() }.toSet()
@@ -987,10 +1012,10 @@ class CardRepository(
         val language = CardTextParser.detectLanguage(texts)?.lowercase()?.takeIf { it in setOf("de", "fr", "it", "es", "pt") }
         for (word in words) {
             val briefs = (language?.let { attempt { tcgdex.searchByNameIn(it, word) }.getOrDefault(emptyList()) }.orEmpty() +
-                attempt { tcgdex.searchByName(word, 80) }.getOrDefault(emptyList()))
+                attempt { tcgdex.searchByName(word, 250) }.getOrDefault(emptyList()))
                 .filter { it.name.contains(word, ignoreCase = true) }
                 .distinctBy { it.cardId }
-            if (briefs.isEmpty() || briefs.size >= 120) continue // none, or a common word
+            if (briefs.isEmpty() || briefs.size >= 400) continue // none, or a common word
             val exact = briefs.filter { digits(it.number) in numbers }
             val ranked = (if (exact.size == 1) exact else exact + (briefs - exact.toSet())).take(8)
             return@coroutineScope ranked.map { b -> async { attempt { tcgdex.card(b.cardId) }.getOrNull() } }

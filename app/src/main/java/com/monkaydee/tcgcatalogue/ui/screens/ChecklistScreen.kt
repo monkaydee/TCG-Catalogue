@@ -118,6 +118,8 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
         entries = repo.setChecklist(game, setId).distinctBy { it.cardId }
     }
     var filter by rememberSaveable { mutableStateOf(ChecklistFilter.ALL) }
+    // "+1 per tap": every tap adds a copy at once, with Undo in the snackbar
+    var quickAdd by rememberSaveable { mutableStateOf(false) }
     var picked by remember { mutableStateOf<ChecklistEntry?>(null) }
     var adding by remember { mutableStateOf<List<CardCandidate>>(emptyList()) }
     val snackbar = remember { SnackbarHostState() }
@@ -191,6 +193,7 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
                                 modifier = Modifier.fillMaxWidth(),
                             )
                             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                FilterChip(quickAdd, { quickAdd = !quickAdd }, { Text(stringResource(R.string.checklist_quick_add)) })
                                 ChecklistFilter.entries.forEach { f ->
                                     FilterChip(f == filter, { filter = f }, { Text(stringResource(f.label, counts[f] ?: 0)) })
                                 }
@@ -209,7 +212,20 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
                     items(shown, key = { it.cardId }) { e ->
                         val rows = owned[e.cardId].orEmpty()
                         ChecklistCell(e, rows.sumOf { it.quantity }, e.cardId in wished) {
-                            if (rows.isNotEmpty()) CardBrowse.open(browseIds, rows.first().id, onOpenCard) else picked = e
+                            when {
+                                quickAdd -> scope.launch {
+                                    val id = repo.quickAdd(game, e.cardId)
+                                    if (id == null) {
+                                        snackbar.showSnackbar(AppStrings.get(R.string.wish_add_failed))
+                                    } else {
+                                        snackbar.currentSnackbarData?.dismiss()
+                                        val r = snackbar.showSnackbar(AppStrings.get(R.string.checklist_added, e.name), AppStrings.get(R.string.stack_undo), duration = androidx.compose.material3.SnackbarDuration.Short)
+                                        if (r == androidx.compose.material3.SnackbarResult.ActionPerformed) repo.undoQuickAdd(id)
+                                    }
+                                }
+                                rows.isNotEmpty() -> CardBrowse.open(browseIds, rows.first().id, onOpenCard)
+                                else -> picked = e
+                            }
                         }
                     }
                 }

@@ -51,7 +51,7 @@ object PhotoRecognizer {
                 if (hits.isNotEmpty()) {
                     val single = hits.size == 1
                     val picture = if (single) runCatching { uprightSmall(bitmap, rotation) }.getOrNull() else null
-                    return Result(hits, CardTextParser.parseGrade(lines).takeIf { single }, picture)
+                    return Result(hits, CardTextParser.parseGrade(lines).takeIf { single }, picture, texts)
                 }
             }
             return Result(emptyList(), null, texts = bestTexts)

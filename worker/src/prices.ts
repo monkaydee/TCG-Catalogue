@@ -16,7 +16,7 @@ const text = (v: unknown, max = 200) => (typeof v === "string" ? v.trim().slice(
 export function cacheKey(c: Omit<CardRequest, "key">): string {
   const id = c.tcgplayerId ? `tcg${c.tcgplayerId}` : `id${c.id}`;
   const printing = c.printing ? `:${c.printing.toLowerCase().replace(/[^a-z0-9]/g, "")}` : "";
-  const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
+  const language = c.language && c.language !== "EN" ? `@${c.language}2` : "";
   return `${c.game}:${id}${printing}${language}`;
 }
 

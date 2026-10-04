@@ -32,13 +32,14 @@ describe("ebay", () => {
   it("prices ungraded copies without slabs", () => {
     const json = { itemSummaries: [item("Flareon 3/64 Holo Jungle", "50"), item("Flareon 3/64 Holo NM", "60"), item("Flareon Holo 3/64", "70"), item("Flareon 3/64 PSA 9", "300")] };
     expect(parseEbayRaw(json, flareon)?.market).toBe(60);
-    expect(parseEbayRaw({ itemSummaries: [item("Flareon 3/64", "50")] }, flareon)).toBeNull();
+    expect(parseEbayRaw({ itemSummaries: [item("Flareon 3/64", "50")] }, flareon)).toBeNull(); // one listing only
   });
 
   it("matches the card language", () => {
     expect(titleMatches("Flareon 3/64 Holo Japanese PSA 9", flareon)).toBe(false);
     expect(titleMatches("Flamara 3/64 Holo Jungle Deutsch PSA 9", { ...flareon, language: "DE", localName: "Flamara" })).toBe(true);
-    expect(titleMatches("Flareon 3/64 Holo PSA 9", { ...flareon, language: "DE" })).toBe(false);
+    expect(titleMatches("Flamara 3/64 Holo PSA 9", { ...flareon, language: "DE", localName: "Flamara" })).toBe(true); // ebay.de, unmarked = German
+    expect(titleMatches("Flareon 3/64 Holo Englisch PSA 9", { ...flareon, language: "DE" })).toBe(false);
   });
 
   it("keeps 1st Edition apart", () => {

@@ -61,6 +61,7 @@ const SHADOWLESS = /\bshadowless\b/i;
 
 /** Words sellers use for a card's language (English and the local eBay site's language). */
 const LANGUAGE_WORDS: Record<string, RegExp> = {
+  EN: /\b(english|englisch|anglais|inglese|ingl[eé]s|eng)\b/i,
   DE: /\b(german|deutsch|deutsche|ger)\b/i,
   FR: /\b(french|fran[cç]ais|fran[cç]aise|franz[oö]sisch|fr)\b/i,
   IT: /\b(italian|italiano|italiana|italienisch|ita)\b/i,
@@ -85,10 +86,18 @@ export function marketplace(language?: string): { site: string; currency: string
   }
 }
 
-/** English listings name no other language; other languages must be named in the title. */
+/** The language a listing on a local eBay site has when its title names none (ebay.de → German). */
+const SITE_LANGUAGE: Record<string, string> = { EBAY_DE: "DE", EBAY_FR: "FR", EBAY_IT: "IT", EBAY_ES: "ES", EBAY_NL: "NL", EBAY_US: "EN" };
+
+/**
+ * A title naming a language must name the card's; a title naming none counts as the site's own
+ * language (on ebay.de an unmarked card is German, on ebay.com English).
+ */
 export function languageMatches(title: string, language?: string): boolean {
-  if (!language || language === "EN") return !Object.values(LANGUAGE_WORDS).some((re) => re.test(title));
-  return LANGUAGE_WORDS[language]?.test(title) ?? false;
+  const lang = language ?? "EN";
+  const named = Object.entries(LANGUAGE_WORDS).filter(([, re]) => re.test(title)).map(([code]) => code);
+  if (named.length > 0) return named.includes(lang);
+  return SITE_LANGUAGE[marketplace(lang).site] === lang;
 }
 
 export function titleMatches(title: string, card: CardRequest): boolean {
@@ -153,14 +162,14 @@ export function parseEbayRaw(json: unknown, card: CardRequest): RawPrice | null 
     if (value === null || str(p.currency) !== marketplace(card.language).currency || SLAB.test(title) || !titleMatches(title, card)) continue;
     prices.push(value);
   }
-  return prices.length >= 3 ? { conditions: emptyConditions(), market: median(prices), source: "eBay listings (asking)", currency: marketplace(card.language).currency } : null;
+  return prices.length >= 2 ? { conditions: emptyConditions(), market: median(prices), source: "eBay listings (asking)", currency: marketplace(card.language).currency } : null;
 }
 
 async function search(card: CardRequest, key: string, extra: string): Promise<unknown> {
   const first = /first|1st/i.test(card.printing ?? "") ? "1st edition" : "";
   const { site } = marketplace(card.language);
-  const languageWord = { DE: "deutsch", FR: "français", IT: "italiano", ES: "español", PT: "portuguese", NL: "nederlands", PL: "polish", JA: "japanese", KO: "korean", ZH: "chinese" }[card.language ?? ""] ?? "";
-  const q = [card.localName ?? card.name, card.number ? shortNumber(card.number) : "", card.set, first, languageWord, extra].filter(Boolean).join(" ");
+  const languageWord = { PT: "portuguese", PL: "polish", JA: "japanese", KO: "korean", ZH: "chinese" }[card.language ?? ""] ?? "";
+  const q = [card.localName ?? card.name, card.number ? shortNumber(card.number) : "", first, SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
   const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
   return fetchJson("ebay", `${API}/buy/browse/v1/item_summary/search?${params}`, {
     headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": site },
