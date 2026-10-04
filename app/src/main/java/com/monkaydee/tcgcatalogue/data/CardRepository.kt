@@ -314,10 +314,11 @@ class CardRepository(
     /** The price of a copy in [language] from listings in that language, if the server has one. */
     private suspend fun languagePrice(card: CardCandidate, variant: Variant, language: String): Price? {
         if (!server.isSetUp()) return null
-        val (amount, source, currency) = attempt {
+        val r = attempt {
             server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key, language, localName(card, language))
         }.getOrNull() ?: return null
-        return Price(amount, if (currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = source.takeIf { it.isNotBlank() })
+        val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
+        return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = note.ifBlank { null })
     }
 
     /** Graded prices for a card in the collection, for its card page. */
@@ -369,8 +370,18 @@ class CardRepository(
         "${g.grader} ${g.grade}",
         g.source.takeIf { it.isNotBlank() },
         g.sales?.let { AppStrings.context().resources.getQuantityString(R.plurals.data_graded_sales_count, it, it) },
+        listingsNote(g.listings, g.low, g.high, g.currency),
         g.date?.take(10),
     ).joinToString(" · ")
+
+    /** "6 listings · $80–$140": how much an asking price rests on. */
+    private fun listingsNote(listings: Int?, low: Double?, high: Double?, currency: String): String? {
+        if (listings == null || listings <= 0) return null
+        val count = AppStrings.context().resources.getQuantityString(R.plurals.data_listings_count, listings, listings)
+        if (low == null || high == null || low == high) return count
+        val symbol = if (currency == "EUR") "€" else "$"
+        return "$count · $symbol${"%.0f".format(low)}–$symbol${"%.0f".format(high)}"
+    }
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
     suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings, listing: CardmarketApi.Listing? = null, language: String = "EN"): Price? {
@@ -389,9 +400,10 @@ class CardRepository(
     /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */
     private suspend fun serverRawPrice(card: CardCandidate, variant: Variant): Price? {
         if (!server.isSetUp()) return null
-        val (amount, source) = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key) }
+        val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key) }
             .getOrNull() ?: return null
-        return Price(amount, PriceSource.SERVER, note = source.takeIf { it.isNotBlank() })
+        val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
+        return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = note.ifBlank { null })
     }
 
     /**

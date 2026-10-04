@@ -69,6 +69,10 @@ export interface RawPrice {
   source: string;
   /** Currency of the prices (default USD). */
   currency?: string;
+  /** For asking prices: how many listings, and their lowest and highest price. */
+  listings?: number;
+  low?: number;
+  high?: number;
 }
 
 /** One graded price. Only ever filled from data the provider labels as graded. */
@@ -80,6 +84,9 @@ export interface GradedPrice {
   source: string;
   date?: string; // ISO date of the price, when known
   sales?: number; // number of sales the price is based on, when known
+  listings?: number; // number of current listings an asking price is based on
+  low?: number; // lowest and highest of those prices
+  high?: number;
 }
 
 /** The provider names, also used as the budget counter names in D1. */

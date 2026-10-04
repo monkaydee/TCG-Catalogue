@@ -243,6 +243,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
       conditions: p ? p.conditions : null,
       market: p ? p.market : null,
       currency: p?.currency ?? "USD",
+      ...(p?.listings ? { listings: p.listings, low: p.low, high: p.high } : {}),
       graded: gradedList,
       source: p ? p.source : null,
       fetchedAt: rawEntry ? new Date(rawEntry.fetchedAt).toISOString() : null,

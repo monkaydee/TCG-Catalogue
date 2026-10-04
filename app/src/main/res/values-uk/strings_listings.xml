@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="data_listings_count">
+        <item quantity="one">%d оголошення</item>
+        <item quantity="few">%d оголошень</item>
+        <item quantity="many">%d оголошень</item>
+        <item quantity="other">%d оголошень</item>
+    </plurals>
+</resources>

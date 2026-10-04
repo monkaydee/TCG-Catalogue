@@ -139,7 +139,7 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
     const [grader, grade] = k.split("|");
     const s = [...list].sort((a, b) => a - b);
     const median = s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
-    return { grader, grade, price: Math.round(median * 100) / 100, currency: marketplace(card.language).currency, source: "eBay listings (asking)", date };
+    return { grader, grade, price: Math.round(median * 100) / 100, currency: marketplace(card.language).currency, source: "eBay listings (asking)", date, listings: s.length, low: s[0], high: s[s.length - 1] };
   });
 }
 
@@ -162,7 +162,9 @@ export function parseEbayRaw(json: unknown, card: CardRequest): RawPrice | null 
     if (value === null || str(p.currency) !== marketplace(card.language).currency || SLAB.test(title) || !titleMatches(title, card)) continue;
     prices.push(value);
   }
-  return prices.length >= 2 ? { conditions: emptyConditions(), market: median(prices), source: "eBay listings (asking)", currency: marketplace(card.language).currency } : null;
+  if (prices.length < 2) return null;
+  const sorted = [...prices].sort((a, b) => a - b);
+  return { conditions: emptyConditions(), market: median(prices), source: "eBay listings (asking)", currency: marketplace(card.language).currency, listings: sorted.length, low: sorted[0], high: sorted[sorted.length - 1] };
 }
 
 async function search(card: CardRequest, key: string, extra: string): Promise<unknown> {
