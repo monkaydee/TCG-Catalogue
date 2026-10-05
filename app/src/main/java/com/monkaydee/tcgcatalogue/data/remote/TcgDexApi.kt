@@ -203,8 +203,9 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
         }
         val p = detailed["pricing"]
         val tcg = p["tcgplayer"] ?: pricing["tcgplayer"]
-        val tcgPrice = listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition", "holofoil", "normal")
-            .firstNotNullOfOrNull { k -> tcg[k]["marketPrice"].dbl() }
+        val firstKey = listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition")
+            .firstOrNull { k -> tcg[k]["marketPrice"].dbl() != null }
+        val tcgPrice = firstKey?.let { tcg[it]["marketPrice"].dbl() }
         // Cardmarket often sells 1st Edition as the same product as Unlimited; its price is then the
         // Unlimited one, so only a separate product counts (otherwise TCGplayer's 1st Edition price is used).
         val ownProduct = p["cardmarket"]["idProduct"].str()?.takeIf { it != pricing["cardmarket"]["idProduct"].str() }
@@ -213,7 +214,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
             ?: tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal").firstNotNullOfOrNull { t[it]["productId"].str()?.toLongOrNull() } }
         val tcgFirst = tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition").firstNotNullOfOrNull { k -> t[k].takeIf { it != null } } }
         return Variant(
-            "firstEdition", AppStrings.get(R.string.data_variant_first_edition), prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = "1st Edition Holofoil",
+            "firstEdition", AppStrings.get(R.string.data_variant_first_edition), prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = if (firstKey == "1stEditionHolofoil") "1st Edition Holofoil" else "1st Edition",
             details = (if (ownProduct != null) cardmarketDetails(p["cardmarket"], "") else emptyList()) + tcgplayerDetails(tcgFirst),
         )
     }

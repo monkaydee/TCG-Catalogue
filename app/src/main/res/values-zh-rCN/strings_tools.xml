@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">采集工具</string>
+  <string name="tools_costs">成本台账</string>
+  <string name="tools_grading">发送卡片进行评分</string>
+  <string name="tools_shipping">每份运费</string>
+  <string name="tools_tax">每份税费</string>
+  <string name="tools_grading_cost">每份分级成本</string>
+  <string name="tools_pnl">未实现盈亏</string>
+  <string name="tools_unknown">价格或成本未知</string>
+  <string name="tools_blank">将未知成本留空。输入 0，无需付费。</string>
+  <string name="tools_reference">提交参考</string>
+  <string name="tools_notes">注释</string>
+  <string name="tools_export">保险出口</string>
+  <string name="tools_review">待处理的照片评论</string>
+  <string name="tools_evidence">价格证据</string>
+  <string name="tools_stale">过时的市场价格</string>
+  <string name="tools_current">目前市场价格</string>
+  <string name="tools_fees">销售费用</string>
+  <string name="tools_learning">帮助提高识别度</string>
+  <string name="tools_photos">分享批准的卡片作物</string>
+  <string name="tools_send">发送待处理报告</string>
+  <string name="tools_delete">删除共享报告</string>
+  <string name="tools_consent">可选。文本报告包括卡片详细信息和您的更正。照片需要单独预览和批准。报告保留 90 天。</string>
+  <string name="tools_preview">批准卡片裁剪</string>
+  <string name="tools_preparing">准备中</string>
+  <string name="tools_shipped">已发货</string>
+  <string name="tools_received">已收到</string>
+  <string name="tools_grading_status">卡片评分正在进行中</string>
+  <string name="tools_returned">已退回</string>
+  <string name="tools_cancelled">取消</string>
+  <string name="tools_complete">完成</string>
+  <string name="tools_price_challenge">报告错误价格</string>
+  <string name="tools_confirm_outline">确认整张卡片轮廓</string>
+  <string name="tools_outline_hint">确认前请检查四个角是否均为外卡角。</string>
+  <string name="tools_duplicate_cert">该分级证书已在您的收藏中。</string>
+</resources>

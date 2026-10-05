@@ -167,7 +167,7 @@ object Centering {
         PSA(
             "PSA",
             listOf(
-                Triple("10", 60.0, 75.0), Triple("9", 65.0, 90.0), Triple("8", 70.0, 90.0), Triple("7", 75.0, 90.0),
+                Triple("10", 55.0, 75.0), Triple("9", 65.0, 90.0), Triple("8", 70.0, 90.0), Triple("7", 75.0, 90.0),
                 Triple("6", 80.0, 90.0), Triple("5", 85.0, 90.0), Triple("4", 85.0, 90.0), Triple("3", 90.0, 90.0),
             ),
         ),

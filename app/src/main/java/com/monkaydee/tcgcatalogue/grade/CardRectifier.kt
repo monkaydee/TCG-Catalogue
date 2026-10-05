@@ -41,7 +41,8 @@ object CardRectifier {
         // Straight-line search (finds tilted cards, ignores round logos). Nothing is better than a
         // wrong outline for measuring, so there is no looser fallback.
         val lineScale = LINE_SIDE.toDouble() / max(p.width, p.height)
-        return best(gray, StraightEdges.quads(downscale(p, lineScale), 3).map { it.scaled(1 / lineScale) })
+        return best(gray, StraightEdges.quads(downscale(p, lineScale), 24).map { it.scaled(1 / lineScale) },
+            accept = { q -> q.corners.all { it.x > 2 && it.y > 2 && it.x < p.width - 3 && it.y < p.height - 3 } })
     }
 
     /**
@@ -294,8 +295,8 @@ object CardRectifier {
         val bottom = dist(c[2], c[3])
         val left = dist(c[3], c[0])
         val ratio = (top + bottom) / (left + right)
-        val upright = ratio in 0.6..0.85
-        val lying = ratio in 1.18..1.65
+        val upright = ratio in (1.0 / 1.5)..(1.0 / 1.3)
+        val lying = ratio in 1.3..1.5
         return (upright || lying) && min(top, bottom) / max(top, bottom) > 0.8 && min(left, right) / max(left, right) > 0.8
     }
 
@@ -377,7 +378,7 @@ object CardRectifier {
         private val h = p.height
         private val v = Array(3) { k -> val s = 16 - 8 * k; FloatArray(w * h) { i -> ((p.argb[i] shr s) and 0xFF).toFloat() } }
         fun at(k: Int, x: Double, y: Double): Double {
-            if (x < 0 || y < 0 || x > w - 1 || y > h - 1) return 0.0
+            if (x < 0 || y < 0 || x > w - 1 || y > h - 1) return at(k, x.coerceIn(0.0, w - 1.0), y.coerceIn(0.0, h - 1.0))
             val c = v[k]
             val x0 = x.toInt(); val y0 = y.toInt()
             val x1 = min(x0 + 1, w - 1); val y1 = min(y0 + 1, h - 1)

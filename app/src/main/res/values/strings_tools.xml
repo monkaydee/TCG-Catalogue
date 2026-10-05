@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Collection tools</string>
+  <string name="tools_costs">Cost ledger</string>
+  <string name="tools_grading">Cards sent for grading</string>
+  <string name="tools_shipping">Shipping per copy</string>
+  <string name="tools_tax">Tax per copy</string>
+  <string name="tools_grading_cost">Grading cost per copy</string>
+  <string name="tools_pnl">Unrealized PnL</string>
+  <string name="tools_unknown">Unknown price or cost</string>
+  <string name="tools_blank">Leave unknown costs blank. Enter 0 for no cost.</string>
+  <string name="tools_reference">Submission reference</string>
+  <string name="tools_notes">Notes</string>
+  <string name="tools_export">Insurance export</string>
+  <string name="tools_review">Pending photo reviews</string>
+  <string name="tools_evidence">Price evidence</string>
+  <string name="tools_stale">Outdated market price</string>
+  <string name="tools_current">Current market price</string>
+  <string name="tools_fees">Sale fees</string>
+  <string name="tools_learning">Help improve recognition</string>
+  <string name="tools_photos">Share approved card crops</string>
+  <string name="tools_send">Send pending reports</string>
+  <string name="tools_delete">Delete shared reports</string>
+  <string name="tools_consent">Optional. Text reports include card details and your correction. Photos require a separate preview and approval. Reports are retained for 90 days.</string>
+  <string name="tools_preview">Approve card crop</string>
+  <string name="tools_preparing">Preparing</string>
+  <string name="tools_shipped">Shipped</string>
+  <string name="tools_received">Received</string>
+  <string name="tools_grading_status">Card grading in progress</string>
+  <string name="tools_returned">Returned</string>
+  <string name="tools_cancelled">Cancelled</string>
+  <string name="tools_complete">Complete</string>
+  <string name="tools_price_challenge">Report incorrect price</string>
+  <string name="tools_confirm_outline">Confirm whole card outline</string>
+  <string name="tools_outline_hint">Check that all four corners are the outer card corners before confirming.</string>
+  <string name="tools_duplicate_cert">This grading certificate is already in your collection.</string>
+</resources>

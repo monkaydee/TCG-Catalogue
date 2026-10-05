@@ -33,15 +33,16 @@ object PhotoRecognizer {
 
     suspend fun recognize(context: Context, uri: Uri, parse: (List<OcrLine>) -> List<ScanHit>): Result {
         val bitmap = withContext(Dispatchers.IO) { decode(context, uri) }
-        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        val recognizer = MultilingualOcr()
         try {
             // Photos taken sideways or upside down: try the other orientations when nothing is found.
             var bestTexts = emptyList<String>()
             var bestLines = emptyList<OcrLine>()
+            var bestRotation = 0
             for (rotation in listOf(0, 90, 270, 180)) {
                 val text = recognizer.process(InputImage.fromBitmap(bitmap, rotation)).await()
                 val height = (if (rotation % 180 == 0) bitmap.height else bitmap.width).toFloat()
-                val lines = text.textBlocks.flatMap { it.lines }.map { line ->
+                val lines = text.textBlocks.flatMap { it.lines }.distinctBy { it.text to it.boundingBox?.top }.map { line ->
                     val box = line.boundingBox
                     OcrLine(line.text, (box?.top ?: 0) / height, (box?.height() ?: 0) / height)
                 }
@@ -51,6 +52,7 @@ object PhotoRecognizer {
                 if (texts.sumOf { t -> t.count(Char::isLetter) } > bestTexts.sumOf { t -> t.count(Char::isLetter) }) {
                     bestTexts = texts
                     bestLines = lines
+                    bestRotation = rotation
                 }
                 if (hits.isNotEmpty()) {
                     val single = hits.size == 1
@@ -60,17 +62,19 @@ object PhotoRecognizer {
             }
             // No number anywhere: read the card's bottom strip again, enlarged. Collector numbers and
             // promo codes ("SVP DE 123", "TG03/TG30") are tiny and often lost behind a toploader.
-            val strip = smallPrint(recognizer, bitmap)
+            val upright = if (bestRotation == 0) bitmap else Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height,
+                Matrix().apply { postRotate(bestRotation.toFloat()) }, true)
+            val strip = try { smallPrint(recognizer, upright) } finally { if (upright !== bitmap) upright.recycle() }
             if (strip.isNotEmpty()) {
                 val lines = bestLines + strip
                 val hits = parse(lines)
                 if (hits.isNotEmpty()) {
                     val single = hits.size == 1
-                    val picture = if (single) runCatching { uprightSmall(bitmap, 0) }.getOrNull() else null
+                    val picture = if (single) runCatching { uprightSmall(bitmap, bestRotation) }.getOrNull() else null
                     return Result(hits, CardTextParser.parseGrade(lines).takeIf { single }, picture, lines.map { it.text })
                 }
             }
-            return Result(emptyList(), null, texts = bestTexts + strip.map { it.text })
+            return Result(emptyList(), CardTextParser.parseGrade(bestLines + strip), texts = bestTexts + strip.map { it.text })
         } finally {
             recognizer.close()
             bitmap.recycle()
@@ -82,7 +86,7 @@ object PhotoRecognizer {
      * under the card's outline (straight-edge search, works behind toploaders) and, in case the
      * outline is off, two bands across the lower half of the photo.
      */
-    private suspend fun smallPrint(recognizer: com.google.mlkit.vision.text.TextRecognizer, photo: Bitmap): List<OcrLine> {
+    private suspend fun smallPrint(recognizer: MultilingualOcr, photo: Bitmap): List<OcrLine> {
         val regions = ArrayList<android.graphics.Rect>()
         val scale = minOf(1f, 1600f / max(photo.width, photo.height))
         val work = if (scale < 1f) Bitmap.createScaledBitmap(photo, (photo.width * scale).toInt(), (photo.height * scale).toInt(), true) else photo
@@ -104,7 +108,7 @@ object PhotoRecognizer {
             val text = runCatching { recognizer.process(InputImage.fromBitmap(crop, 0)).await() }.getOrNull()
             crop.recycle()
             // Placed at the bottom of the card, where the parser expects collector numbers and set codes.
-            text?.textBlocks?.flatMap { it.lines }?.forEach { out += OcrLine(it.text, 0.95f, 0.02f) }
+            text?.textBlocks?.flatMap { it.lines }?.distinctBy { it.text to it.boundingBox?.top }?.forEach { out += OcrLine(it.text, 0.95f, 0.02f) }
         }
         return out
     }

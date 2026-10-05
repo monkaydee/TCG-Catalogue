@@ -3,7 +3,7 @@
     <string name="add_no_price">sin precio</string>
     <string name="add_grader_other">Otra</string>
     <string name="add_confirm">Añadir</string>
-    <string name="add_graded_missing">No se encontró precio de carta graduada (%1$s). Se usa el precio sin graduar, salvo que indiques tu propio valor abajo.</string>
+    <string name="add_graded_missing">No se encontró precio graduado (%1$s). Introduce tu valor abajo; no se usa el precio sin graduar.</string>
     <string name="add_no_sales_found">no se encontraron ventas</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d posible coincidencia — toca la correcta</item>

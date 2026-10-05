@@ -216,10 +216,10 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
 
     val toSell = sellId?.let { id -> cards.firstOrNull { it.id == id } }
     if (toSell != null) {
-        SellDialog(toSell, s, onDismiss = { sellId = null }) { quantity, each ->
+        SellDialog(toSell, s, onDismiss = { sellId = null }) { quantity, each, fees ->
             sellId = null
             scope.launch {
-                runCatching { repo.sell(toSell, quantity, each, s.currency) }
+                runCatching { repo.sell(toSell, quantity, each, s.currency, fees = fees) }
                     .onSuccess { Toast.makeText(context, AppStrings.get(R.string.sold_done, quantity, toSell.name), Toast.LENGTH_SHORT).show() }
             }
         }
@@ -297,19 +297,7 @@ private fun CardDetail(
                 )
             }
             c.priceNote?.takeIf { c.manualPrice == null }?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
-            c.purchasePrice?.let { paid ->
-                val paidShown = Money.convert(paid, c.priceCurrency, s.currency, s.usdToEur)
-                val now = Money.unit(c, s.currency, s.usdToEur)
-                val diff = now - paidShown
-                val paidText = Money.format(paidShown, s.currency)
-                val diffText = (if (diff >= 0) "+" else "") + Money.format(diff, s.currency)
-                Text(
-                    if (paidShown > 0) stringResource(R.string.card_bought_for_with_percent, paidText, diffText, diff / paidShown * 100)
-                    else stringResource(R.string.card_bought_for, paidText, diffText),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (diff >= 0) com.monkaydee.tcgcatalogue.ui.theme.Gain else com.monkaydee.tcgcatalogue.ui.theme.Loss,
-                )
-            }
+            CardLedgerPanel(repo, c, s)
             if (c.graded) {
                 Text(
                     listOfNotNull(c.condition, c.certNumber?.let { stringResource(R.string.card_cert, it) }).joinToString(" · "),
@@ -441,10 +429,10 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 prices?.isEmpty() == true -> Text(stringResource(R.string.graded_none), style = MaterialTheme.typography.bodySmall)
             }
             prices.orEmpty().sortedWith(compareBy({ it.grader }, { -(it.grade.toDoubleOrNull() ?: 0.0) })).forEach { g ->
-                val mine = c.graded && g.grader.equals(c.grader, ignoreCase = true) && g.grade.toDoubleOrNull() == c.grade?.toDoubleOrNull() && c.gradeQualifier == null
+                val mine = c.graded && g.grader.equals(c.grader, ignoreCase = true) && g.grade.toDoubleOrNull() == c.grade?.toDoubleOrNull() && c.gradeQualifier == g.qualifier
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        stringResource(R.string.graded_row_source, "${g.grader} ${g.grade}", g.source) + if (mine) " · " + stringResource(R.string.graded_yours) else "",
+                        stringResource(R.string.graded_row_source, listOfNotNull(g.grader, g.grade, g.qualifier).joinToString(" "), g.source) + if (mine) " · " + stringResource(R.string.graded_yours) else "",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = if (mine) FontWeight.Bold else FontWeight.Normal,
                         modifier = Modifier.weight(1f),

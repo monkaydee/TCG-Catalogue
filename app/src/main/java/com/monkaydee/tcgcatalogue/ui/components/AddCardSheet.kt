@@ -70,7 +70,7 @@ fun Price?.display(s: AppSettings): String =
 /** The special 10s that are priced separately. */
 fun qualifiersFor(grader: String?): List<String> = when (grader) {
     "BGS" -> listOf("Black Label")
-    "CGC" -> listOf("Pristine")
+    "CGC" -> listOf("Pristine", "Perfect")
     else -> emptyList()
 }
 
@@ -168,7 +168,8 @@ fun AddCardSheet(
             return@LaunchedEffect
         }
         conditionLoading = true
-        conditionQuote = attempt { repo.conditionPrice(card, variant, condition, settings, listing, language) }.getOrNull() ?: raw
+        conditionQuote = null
+        conditionQuote = attempt { repo.conditionPrice(card, variant, condition, settings, listing, language) }.getOrNull()
         conditionLoading = false
     }
     var gradedQuote by remember { mutableStateOf<Price?>(null) }
@@ -185,7 +186,7 @@ fun AddCardSheet(
         gradedProblem = result.getOrNull()?.problem ?: result.exceptionOrNull()?.message
         gradedLoading = false
     }
-    val shown = if (graded) gradedQuote ?: raw.takeIf { !gradedLoading } else conditionQuote ?: raw
+    val shown = if (graded) gradedQuote else conditionQuote
     val loading = if (graded) gradedLoading else conditionLoading
     val gradedMissing = graded && !gradedLoading && gradedQuote == null
     val note = if (gradedMissing) stringResource(R.string.add_graded_missing, gradedProblem ?: stringResource(R.string.add_no_sales_found)) else shown?.note
@@ -234,7 +235,7 @@ fun AddCardSheet(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text(
-                        if (graded) "${gradeInfo.label} · ${if (gradedMissing) stringResource(R.string.add_raw_price) else shown?.source?.label ?: stringResource(R.string.add_looking_up_sales)}" else stringResource(R.string.add_price_details, variant.label, condition, shown?.source?.label.orEmpty()),
+                        if (graded) "${gradeInfo.label} · ${if (gradedMissing) stringResource(R.string.add_no_price) else shown?.source?.label ?: stringResource(R.string.add_looking_up_sales)}" else stringResource(R.string.add_price_details, variant.label, condition, shown?.source?.label.orEmpty()),
                         style = MaterialTheme.typography.bodySmall,
                     )
                     note?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
@@ -313,7 +314,7 @@ fun AddCardSheet(
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CARD_LANGUAGES.forEach { (code, name) -> FilterChip(selected = code == language, onClick = { language = code }, label = { Text(name) }) }
             }
-            OutlinedTextField(
+            if (initial == null) OutlinedTextField(
                 value = paid,
                 onValueChange = { paid = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.take(10) },
                 label = { Text(stringResource(R.string.add_purchase_price, settings.currency)) },

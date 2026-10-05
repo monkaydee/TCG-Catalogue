@@ -24,8 +24,12 @@ object PreGrader {
         val photo: Bitmap? = null,
         val quad: Quad? = null,
         /** Width of the original photo ([photo] may be scaled down for measuring). */
+        val outlineConfirmed: Boolean = false,
         val photoWidth: Int = photo?.width ?: 0,
-    )
+    ) {
+        /** A grade estimate must not fill missing measurements with training averages. */
+        val usableForGrade: Boolean get() = outlineConfirmed && problems.isEmpty() && centering != null
+    }
 
     sealed interface Outcome {
         data class Ok(val side: Side) : Outcome
@@ -62,6 +66,7 @@ object PreGrader {
      */
     fun adjust(side: Side, quad: Quad): Side {
         val photo = side.photo ?: return side
+        require(quad.corners.all { it.x.isFinite() && it.y.isFinite() && it.x >= 0 && it.y >= 0 && it.x < photo.width && it.y < photo.height })
         val p = Pixels(photo.width, photo.height, IntArray(photo.width * photo.height).also { photo.getPixels(it, 0, photo.width, 0, 0, photo.width, photo.height) })
         val scale = side.photo.width.toDouble() / side.photoWidth
         return measure(photo, p, CardRectifier.snap(p, quad), scale, side.photoWidth)

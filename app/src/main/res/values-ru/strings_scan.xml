@@ -3,7 +3,7 @@
     <string name="add_no_price">нет цены</string>
     <string name="add_grader_other">Другая</string>
     <string name="add_confirm">Добавить</string>
-    <string name="add_graded_missing">Цена с грейдом не найдена (%1$s). Используется цена без грейда, если ниже не указана своя оценка.</string>
+    <string name="add_graded_missing">Цена с грейдом не найдена (%1$s). Укажите свою оценку ниже; цена без грейда не используется.</string>
     <string name="add_no_sales_found">продажи не найдены</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d возможное совпадение — выберите нужное</item>

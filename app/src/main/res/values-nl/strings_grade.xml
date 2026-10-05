@@ -49,4 +49,6 @@
     <string name="grade_centering_good">goed gecentreerd</string>
     <string name="grade_centering_off">uit het midden</string>
     <string name="grade_no_frame">geen gedrukte rand om te meten (normaal voor deze achterkant)</string>
+    <string name="grade_model_unavailable">Kies het kaartspel. Cijferschattingen zijn alleen beschikbaar voor Pokémon; andere spellen tonen metingen.</string>
+    <string name="grade_photos_required">Een schatting vereist scherpe foto’s van voor- en achterkant met meetbare randen. Maak nieuwe foto’s of pas de omtrek aan.</string>
 </resources>

@@ -27,8 +27,8 @@ interface CardDao {
     @Query("SELECT * FROM owned_cards WHERE id = :id")
     suspend fun get(id: Long): OwnedCard?
 
-    @Query("SELECT * FROM owned_cards WHERE game = :game AND cardId = :cardId AND variant = :variant AND condition = :condition AND language = :language LIMIT 1")
-    suspend fun find(game: Game, cardId: String, variant: String, condition: String, language: String = "EN"): OwnedCard?
+    @Query("SELECT * FROM owned_cards WHERE game = :game AND cardId = :cardId AND variant = :variant AND condition = :condition AND language = :language AND copyKey = :copyKey LIMIT 1")
+    suspend fun find(game: Game, cardId: String, variant: String, condition: String, language: String = "EN", copyKey: String = ""): OwnedCard?
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(card: OwnedCard): Long
@@ -48,15 +48,17 @@ interface CardDao {
     /** Adds [card] or bumps the quantity of the matching row. Returns the row id. */
     @Transaction
     suspend fun addOrIncrement(card: OwnedCard): Long {
-        val existing = find(card.game, card.cardId, card.variant, card.condition, card.language)
+        val existing = find(card.game, card.cardId, card.variant, card.condition, card.language, card.copyKey)
         return if (existing != null) {
+            check(!card.graded || card.certNumber.isNullOrBlank()) { com.monkaydee.tcgcatalogue.ui.AppStrings.get(com.monkaydee.tcgcatalogue.R.string.tools_duplicate_cert) }
             update(
                 existing.copy(
                     quantity = existing.quantity + card.quantity,
                     price = card.price ?: existing.price,
                     priceCurrency = if (card.price != null) card.priceCurrency else existing.priceCurrency,
-                    priceSource = card.priceSource ?: existing.priceSource,
-                    priceUpdatedAt = card.priceUpdatedAt ?: existing.priceUpdatedAt,
+                    priceSource = if (card.price != null) card.priceSource else existing.priceSource,
+                    priceNote = if (card.price != null) card.priceNote else existing.priceNote,
+                    priceUpdatedAt = if (card.price != null) card.priceUpdatedAt else existing.priceUpdatedAt,
                 ),
             )
             existing.id

@@ -3,7 +3,7 @@
     <string name="add_no_price">kein Preis</string>
     <string name="add_grader_other">Andere</string>
     <string name="add_confirm">Hinzufügen</string>
-    <string name="add_graded_missing">Kein Graded-Preis gefunden (%1$s). Es wird der Raw-Preis verwendet, sofern du unten keinen eigenen Wert eingibst.</string>
+    <string name="add_graded_missing">Kein Graded-Preis gefunden (%1$s). Gib unten deinen eigenen Wert ein; der Raw-Preis wird nicht verwendet.</string>
     <string name="add_no_sales_found">keine Verkäufe gefunden</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d möglicher Treffer — tippe auf den richtigen</item>

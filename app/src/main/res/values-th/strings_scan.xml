@@ -3,7 +3,7 @@
     <string name="add_no_price">ไม่มีราคา</string>
     <string name="add_grader_other">อื่น ๆ</string>
     <string name="add_confirm">เพิ่ม</string>
-    <string name="add_graded_missing">ไม่พบราคาการ์ดเกรด (%1$s) ระบบจะใช้ราคา Raw เว้นแต่คุณกรอกมูลค่าเองด้านล่าง</string>
+    <string name="add_graded_missing">ไม่พบราคาการ์ดเกรด (%1$s) กรอกมูลค่าเองด้านล่าง ระบบไม่ใช้ราคาการ์ดที่ไม่เกรด</string>
     <string name="add_no_sales_found">ไม่พบยอดขาย</string>
     <plurals name="add_possible_matches">
         <item quantity="other">พบรายการที่อาจตรงกัน %d รายการ — แตะอันที่ถูกต้อง</item>

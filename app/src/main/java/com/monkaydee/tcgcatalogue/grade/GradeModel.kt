@@ -81,7 +81,7 @@ object GradeModel {
 
     /** The weakest of centering, corners and edges, as a message. */
     private fun limiting(front: PreGrader.Side?, back: PreGrader.Side?): Int {
-        val centering = maxOf((front?.centering?.worst ?: 50.0) - 55, ((back?.centering?.worst ?: 50.0) - 70) / 2)
+        val centering = maxOf((front?.centering?.worst ?: 50.0) - 55, ((back?.centering?.worst ?: 50.0) - 75) / 2)
         val corners = listOfNotNull(front, back).maxOfOrNull { s -> s.wear.corners.maxOf { zoneLevel(it) } } ?: 0
         val edges = listOfNotNull(front, back).maxOfOrNull { s -> s.wear.edges.maxOf { zoneLevel(it) } } ?: 0
         return when {

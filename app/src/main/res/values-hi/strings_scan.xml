@@ -3,7 +3,7 @@
     <string name="add_no_price">कीमत नहीं</string>
     <string name="add_grader_other">अन्य</string>
     <string name="add_confirm">जोड़ें</string>
-    <string name="add_graded_missing">ग्रेडेड कीमत नहीं मिली (%1$s)। जब तक आप नीचे अपनी वैल्यू नहीं डालते, Raw कीमत इस्तेमाल होगी।</string>
+    <string name="add_graded_missing">ग्रेडेड कीमत नहीं मिली (%1$s)। नीचे अपनी वैल्यू डालें; बिना ग्रेड की कीमत इस्तेमाल नहीं होती।</string>
     <string name="add_no_sales_found">कोई बिक्री नहीं मिली</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d संभावित मैच — सही वाले पर टैप करें</item>

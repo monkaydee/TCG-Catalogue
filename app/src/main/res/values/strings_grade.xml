@@ -60,4 +60,6 @@
     <string name="grade_centering_good">well centred</string>
     <string name="grade_centering_off">off-centre</string>
     <string name="grade_no_frame">no printed frame to measure (normal for this back)</string>
+    <string name="grade_model_unavailable">Choose the card game. Grade estimates are available only for Pokémon; other games show measurements only.</string>
+    <string name="grade_photos_required">A grade estimate needs clear front and back photos with measurable borders. Retake or adjust the outline.</string>
 </resources>

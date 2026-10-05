@@ -54,8 +54,12 @@ export function chunk<T>(items: T[], size: number): T[][] {
 
 /** Normalizes printing names so "Holofoil", "holo foil" and "HOLOFOIL" compare equal. */
 export function samePrinting(a: string | undefined, b: string | undefined): boolean {
-  if (!a || !b) return true; // no preference on one side
-  const n = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (!b) return true; // no requested preference
+  if (!a) return false; // an unspecified provider printing cannot prove a match
+  const n = (s: string) => {
+    const key = s.toLowerCase().replace(/[^a-z0-9]/g, "");
+    return ({ holo: "holofoil", reverse: "reverseholofoil", reversefoil: "reverseholofoil", foil: "holofoil", nonfoil: "normal", nonholo: "normal" } as Record<string, string>)[key] ?? key;
+  };
   return n(a) === n(b);
 }
 

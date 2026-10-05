@@ -49,4 +49,6 @@
     <string name="grade_centering_good">bien centrada</string>
     <string name="grade_centering_off">descentrada</string>
     <string name="grade_no_frame">sin marco impreso que medir (normal en este reverso)</string>
+    <string name="grade_model_unavailable">Elige el juego. Las estimaciones de nota solo están disponibles para Pokémon; los demás juegos muestran mediciones.</string>
+    <string name="grade_photos_required">Se necesitan fotos claras del anverso y reverso con bordes medibles. Repite las fotos o ajusta el contorno.</string>
 </resources>

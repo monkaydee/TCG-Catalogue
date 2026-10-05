@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Outils de collecte</string>
+  <string name="tools_costs">Grand livre des coûts</string>
+  <string name="tools_grading">Cartes envoyées pour notation</string>
+  <string name="tools_shipping">Expédition par copie</string>
+  <string name="tools_tax">Taxe par copie</string>
+  <string name="tools_grading_cost">Coût de notation par copie</string>
+  <string name="tools_pnl">PnL non réalisé</string>
+  <string name="tools_unknown">Prix ou coût inconnu</string>
+  <string name="tools_blank">Laissez vide les coûts inconnus. Entrez 0 sans frais.</string>
+  <string name="tools_reference">Référence de soumission</string>
+  <string name="tools_notes">Remarques</string>
+  <string name="tools_export">Exportation d\'assurance</string>
+  <string name="tools_review">Examens de photos en attente</string>
+  <string name="tools_evidence">Preuve de prix</string>
+  <string name="tools_stale">Prix du marché obsolète</string>
+  <string name="tools_current">Prix actuel du marché</string>
+  <string name="tools_fees">Frais de vente</string>
+  <string name="tools_learning">Aide à améliorer la reconnaissance</string>
+  <string name="tools_photos">Partager les cultures de cartes approuvées</string>
+  <string name="tools_send">Envoyer les rapports en attente</string>
+  <string name="tools_delete">Supprimer les rapports partagés</string>
+  <string name="tools_consent">Facultatif. Les rapports textuels incluent les détails de la carte et votre correction. Les photos nécessitent un aperçu et une approbation séparés. Les rapports sont conservés pendant 90 jours.</string>
+  <string name="tools_preview">Approuver le recadrage de la carte</string>
+  <string name="tools_preparing">Préparation</string>
+  <string name="tools_shipped">Expédié</string>
+  <string name="tools_received">Reçu</string>
+  <string name="tools_grading_status">Classement des cartes en cours</string>
+  <string name="tools_returned">Retourné</string>
+  <string name="tools_cancelled">Annulé</string>
+  <string name="tools_complete">Terminé</string>
+  <string name="tools_price_challenge">Signaler un prix incorrect</string>
+  <string name="tools_confirm_outline">Confirmer le plan complet de la carte</string>
+  <string name="tools_outline_hint">Vérifiez que les quatre coins sont les coins extérieurs de la carte avant de confirmer.</string>
+  <string name="tools_duplicate_cert">Ce certificat de notation est déjà dans votre collection.</string>
+</resources>

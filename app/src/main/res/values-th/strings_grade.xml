@@ -49,4 +49,6 @@
     <string name="grade_centering_good">อยู่กึ่งกลางดี</string>
     <string name="grade_centering_off">ไม่อยู่กึ่งกลาง</string>
     <string name="grade_no_frame">ไม่มีกรอบพิมพ์ให้วัด (ปกติสำหรับด้านหลังนี้)</string>
+    <string name="grade_model_unavailable">เลือกเกมการ์ด การประมาณเกรดมีเฉพาะ Pokémon เกมอื่นแสดงเฉพาะการวัด</string>
+    <string name="grade_photos_required">ต้องใช้ภาพด้านหน้าและด้านหลังที่ชัดเจนพร้อมขอบที่วัดได้ ถ่ายใหม่หรือปรับกรอบ</string>
 </resources>

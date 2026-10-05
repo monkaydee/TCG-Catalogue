@@ -49,4 +49,6 @@
     <string name="grade_centering_good">良好なセンタリング</string>
     <string name="grade_centering_off">センターずれ</string>
     <string name="grade_no_frame">測れる印刷枠がありません（この裏面では通常です）</string>
+    <string name="grade_model_unavailable">カードゲームを選択してください。グレード予測はPokémonのみ対応し、他のゲームでは測定値だけを表示します。</string>
+    <string name="grade_photos_required">予測には測定可能な枠と鮮明な表裏の写真が必要です。撮り直すか輪郭を調整してください。</string>
 </resources>

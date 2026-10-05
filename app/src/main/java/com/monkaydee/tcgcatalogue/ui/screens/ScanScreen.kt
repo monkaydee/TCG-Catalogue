@@ -187,7 +187,7 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         val offer = hit == null && now0 - lastHitAt > 2500 && frame.card != null &&
             (filter?.let { it in PictureSearch.GAMES } ?: enabled.any { it in PictureSearch.GAMES })
         if (offer != state.value.canFindByPicture) state.update { it.copy(canFindByPicture = offer) }
-        if (hit == null) return
+        if (hit == null) { streak = 0; lastKey = null; return }
         if (state.value.stack && hit.key == lastAddedKey && !gapSinceAdd) return
         frame.card?.let { lastPicture = it }
         // A slab label is read with the card (it sits above it); keep it while the same card stays in view.
@@ -209,7 +209,8 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         state.update { it.copy(loading = true, message = null) }
         viewModelScope.launch {
             val picture = lastPicture
-            val result = runCatching { VisualMatcher.rank(context, picture, repo.resolve(hit), VisualMatcher.Source.CAMERA) }
+            val texts = lastTexts.toList()
+            val result = runCatching { VisualMatcher.rank(context, picture, repo.checkedByName(repo.resolve(hit), texts), VisualMatcher.Source.CAMERA) }
             val candidates = result.getOrDefault(emptyList())
             cooldownKey = hit.key
             cooldownUntil = System.currentTimeMillis() + 2500
@@ -223,8 +224,10 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
                     val grade = state.value.grade?.takeIf { it.grader != null && it.grade != null }
                     if (state.value.stack) {
                         stackResult(hit, candidates, grade, s.defaultCondition)
-                    } else if (s.quickAdd && repo.isConfident(candidates)) {
-                        repo.add(top, top.defaultVariant, 1, s.defaultCondition, grade)
+                    } else if (s.quickAdd && state.value.grade == null && repo.isConfident(candidates)) {
+                        val row = repo.add(top, top.defaultVariant, 1, s.defaultCondition, grade, language = top.language ?: hit.language ?: "EN")
+                        com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, texts, top.cardId, picture)
+                        com.monkaydee.tcgcatalogue.data.SharedLearning.markAutomatic(row)
                         cooldownUntil = System.currentTimeMillis() + 4000
                         state.update {
                             it.copy(loading = false, grade = null, message = grade?.let { g -> AppStrings.get(R.string.scan_added_auto_graded, top.name, top.number, g.label) } ?: AppStrings.get(R.string.scan_added_auto, top.name, top.number), addedCount = it.addedCount + 1)
@@ -243,8 +246,9 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
         val item = SessionItem(nextSessionKey++, top.name, top.number, top.defaultVariant.imageUrl ?: top.imageUrl, grade = grade)
         lastAddedKey = hit.key
         gapSinceAdd = false
-        if (repo.isConfident(candidates)) {
-            val row = runCatching { repo.add(top, top.defaultVariant, 1, condition, grade) }.getOrNull()
+        if (state.value.grade == null && repo.isConfident(candidates)) {
+            val row = runCatching { repo.add(top, top.defaultVariant, 1, condition, grade, language = top.language ?: hit.language ?: "EN") }.getOrNull()
+            if (row != null) { com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, lastTexts, top.cardId, lastAnyPicture); com.monkaydee.tcgcatalogue.data.SharedLearning.markAutomatic(row) }
             state.update {
                 it.copy(
                     loading = false, grade = null, reading = null,
@@ -314,11 +318,15 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
     fun add(r: AddRequest) {
         val c = r.card
         val qty = r.quantity
+        val texts = lastTexts.toList()
+        val suggested = state.value.candidates.firstOrNull()?.cardId
+        val picture = lastAnyPicture
         val reviewed = reviewKey
         reviewKey = null
         viewModelScope.launch {
             if (reviewed != null) {
                 val row = runCatching { repo.add(r) }.getOrNull()
+                if (row != null) com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, texts, suggested, picture)
                 state.update { s ->
                     s.copy(
                         candidates = emptyList(), grade = null,
@@ -330,7 +338,7 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
                 return@launch
             }
             runCatching { repo.add(r) }
-                .onSuccess { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = AppStrings.get(R.string.scan_added_qty, c.name, qty), addedCount = s.addedCount + qty) } }
+                .onSuccess { row -> com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, texts, suggested, picture); state.update { s -> s.copy(candidates = emptyList(), grade = null, message = AppStrings.get(R.string.scan_added_qty, c.name, qty), addedCount = s.addedCount + qty) } }
                 .onFailure { state.update { s -> s.copy(candidates = emptyList(), grade = null, message = AppStrings.get(R.string.scan_could_not_save, it.message.toString())) } }
             cooldownUntil = System.currentTimeMillis() + 3000
         }

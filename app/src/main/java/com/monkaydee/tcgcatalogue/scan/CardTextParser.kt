@@ -156,7 +156,9 @@ object CardTextParser {
 
     fun findPokemon(lines: List<OcrLine>): ScanHit.Pokemon? {
         val (number, total) = allPokemonNumbers(lines).firstOrNull() ?: return null
-        return ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines), japaneseSet(lines))
+        val ja = japaneseSet(lines)
+        return ScanHit.Pokemon(number, total, guessName(lines), pokemonSetCode(lines), firstEdition(lines), ja,
+            language = if (ja != null) "JA" else detectLanguage(lines.map { it.text }))
     }
 
     /** The set code of a Japanese card, read near the number at the bottom ("SV2a"). */
@@ -201,7 +203,9 @@ object CardTextParser {
             kana >= 2 -> return "JA"
             han >= 4 -> return "ZH"
         }
-        return languageWords.map { (code, re) -> code to re.findAll(all).count() }.filter { it.second > 0 }.maxByOrNull { it.second }?.first
+        val scores = languageWords.map { (code, re) -> code to re.findAll(all).count() }.filter { it.second > 0 }
+        val best = scores.maxOfOrNull { it.second } ?: return null
+        return scores.filter { it.second == best }.singleOrNull()?.first
     }
 
     /** The game the card's own small print names ("©2024 Pokémon/Nintendo", "BANDAI", "Wizards of the Coast"), if any. */
@@ -358,6 +362,7 @@ object CardTextParser {
     private val gradeBeforeWords = Regex("""(?<![\d.,])$GRADE\s*($WORDS)(?![A-Z])""")
     private val bareGrade = Regex("""^$GRADE$""")
     private val bareHalfGrade = Regex("""^([1-9][.,]5)$""")
+    private val companyGrade = Regex("""\b(?:PSA|BGS|BECKETT|CGC|SGC|TAG|ACE|AOG|GSG)\s*:?\s*$GRADE(?![\d.,])""")
     private val slabWords = Regex("""\bGRAD(ED|ING)\b|\bCERT\b|\bAUTHENTIC\b""")
     private val cert = Regex("""(?<!\d)(\d{7,12})(?!\d)""")
     private val psaTopLine = Regex("""^(19|20)\d\d\s+(POKEMON|ONE PIECE|MAGIC|YU-GI-OH|DRAGON BALL|WEISS|UNION ARENA)\b""")
@@ -401,14 +406,19 @@ object CardTextParser {
         }
         // Many labels print the grade as a big number on its own; a lone "8.5" only exists on labels.
         if (grade == null) {
-            grade = texts.firstNotNullOfOrNull { t -> (if (slab) bareGrade else bareHalfGrade).find(t)?.groupValues?.get(1) }
+            grade = texts.firstNotNullOfOrNull { t -> companyGrade.find(t)?.groupValues?.get(1) }
+                ?: texts.firstNotNullOfOrNull { t -> (if (slab) bareGrade else bareHalfGrade).find(t)?.groupValues?.get(1) }
         }
         grade = grade?.replace(',', '.')
         if (grader == null && grade == null) return null
         val all = texts.joinToString(" ")
+        val perfectSubgrades = listOf("CENTERING", "CORNERS", "EDGES", "SURFACE").all { label ->
+            texts.any { Regex("""\b$label\s*:?\s*10(?![\d.,])""").containsMatchIn(it) }
+        }
         val qualifier = when {
-            grade == "10" && (all.contains("BLACK LABEL") || grader == "BGS" && words == "PRISTINE") -> "Black Label"
-            grade == "10" && grader == "CGC" && words == "PRISTINE" -> "Pristine"
+            grade == "10" && grader == "BGS" && (all.contains("BLACK LABEL") || perfectSubgrades) -> "Black Label"
+            grade == "10" && grader == "CGC" && Regex("""\bPERFECT\b""").containsMatchIn(all) -> "Perfect"
+            grade == "10" && grader == "CGC" && Regex("""\bPRISTINE\b""").containsMatchIn(all) -> "Pristine"
             else -> null
         }
         val company = when {
@@ -457,7 +467,7 @@ object CardTextParser {
     private fun normalize(s: String) = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD)
         .replace(Regex("\\p{M}"), "")
         .lowercase()
-        .replace(Regex("[^a-z0-9]"), "")
+        .replace(Regex("[^\\p{L}\\p{N}]"), "")
 
     private fun levenshtein(a: String, b: String): Int {
         var prev = IntArray(b.length + 1) { it }

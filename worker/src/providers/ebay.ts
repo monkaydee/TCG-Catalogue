@@ -19,7 +19,6 @@ const API = "https://api.ebay.com";
 const SINGLES = "183454";
 const GRADERS = ["PSA", "BGS", "CGC", "SGC", "TAG", "ACE", "AOG", "GSG"];
 /** Special 10s that sell far above a plain 10: never counted as one. */
-const SPECIAL_TEN = /\b(black\s*label|pristine)\b/i;
 const NOT_A_SINGLE = /\b(lot|bundle|proxy|custom|reprint|orica|fan ?art|digital|choose|pick|you pick|break|box|pack|empty|label only)\b/i;
 
 let token: { value: string; expires: number } | null = null;
@@ -41,14 +40,19 @@ async function accessToken(key: string): Promise<string> {
 }
 
 /** The single grade a listing title names, e.g. "PSA 9" → PSA/9; null when none or several. */
-export function gradeInTitle(title: string): { grader: string; grade: string } | null {
-  const re = new RegExp(`\\b(${GRADERS.join("|")})\\s*(?:GEM\\s*(?:MINT|MT)\\s*|MINT\\s*|NM-?MT\\s*)?(10|9\\.5|[1-9](?:\\.5)?)(?![\\d.])`, "gi");
+export function gradeInTitle(title: string): { grader: string; grade: string; qualifier?: string } | null {
+  const re = new RegExp(`\\b(${GRADERS.join("|")}|BECKETT)\\s*(?:(?:GEM\\s*(?:MINT|MT)|MINT|NM-?MT|PRISTINE|PERFECT|BLACK\\s*LABEL)\\s*)?(10|9\\.5|[1-9](?:\\.5)?)(?![\\d.])`, "gi");
   const found = new Set<string>();
   let m: RegExpExecArray | null;
-  while ((m = re.exec(title))) found.add(`${m[1].toUpperCase()}|${m[2]}`);
+  while ((m = re.exec(title))) found.add(`${m[1].toUpperCase() === "BECKETT" ? "BGS" : m[1].toUpperCase()}|${m[2]}`);
   if (found.size !== 1) return null;
   const [grader, grade] = [...found][0].split("|");
-  return { grader, grade };
+  const qualifier = grade === "10" ? (
+    grader === "BGS" && /\bblack\s*label\b/i.test(title) ? "Black Label" :
+    grader === "CGC" && /\bperfect\b/i.test(title) ? "Perfect" :
+    grader === "CGC" && /\bpristine\b/i.test(title) ? "Pristine" : undefined
+  ) : undefined;
+  return { grader, grade, ...(qualifier ? { qualifier } : {}) };
 }
 
 /** The number before any "/", e.g. "3/64" → "3", "OP05-060" → "OP05-060". */
@@ -86,28 +90,36 @@ export function marketplace(language?: string): { site: string; currency: string
   }
 }
 
-/** The language a listing on a local eBay site has when its title names none (ebay.de → German). */
+/** Used to choose search terms, never to infer card language from the marketplace. */
 const SITE_LANGUAGE: Record<string, string> = { EBAY_DE: "DE", EBAY_FR: "FR", EBAY_IT: "IT", EBAY_ES: "ES", EBAY_NL: "NL", EBAY_US: "EN" };
 
 /**
- * A title naming a language must name the card's; a title naming none counts as the site's own
- * language (on ebay.de an unmarked card is German, on ebay.com English).
+ * Require positive evidence for non-English cards; reject conflicting explicit languages.
  */
 export function languageMatches(title: string, language?: string): boolean {
   const lang = language ?? "EN";
   const named = Object.entries(LANGUAGE_WORDS).filter(([, re]) => re.test(title)).map(([code]) => code);
-  if (named.length > 0) return named.includes(lang);
-  return SITE_LANGUAGE[marketplace(lang).site] === lang;
+  if (named.length > 0) return named.length === 1 && named[0] === lang;
+  // Marketplace is the seller's market, not proof of the language printed on a card.
+  return lang === "EN";
 }
 
 export function titleMatches(title: string, card: CardRequest): boolean {
-  if (!languageMatches(title, card.language)) return false;
+  if (!languageMatches(title, card.language)) {
+    const namedLanguage = Object.values(LANGUAGE_WORDS).some((re) => re.test(title));
+    const localized = card.localName && card.localName.toLowerCase() !== card.name.toLowerCase()
+      && title.toLowerCase().includes(card.localName.toLowerCase());
+    if (namedLanguage || !localized) return false;
+  }
   const t = title.toLowerCase();
   if (NOT_A_SINGLE.test(title)) return false;
   // 1st Edition and Shadowless sell for many times the regular print: only for that printing.
   const first = /first|1st/i.test(card.printing ?? "");
   if (FIRST_EDITION.test(title) !== first) return false;
   if (SHADOWLESS.test(title) && !/shadowless/i.test(card.printing ?? "")) return false;
+  if (/shadowless/i.test(card.printing ?? "") && !SHADOWLESS.test(title)) return false;
+  const reverse = /\breverse\b/i.test(title);
+  if (/reverse/i.test(card.printing ?? "") !== reverse) return false;
   // every word of the name, English or in the card's language
   const named = (name?: string) => {
     const words = (name ?? "").toLowerCase().split(/[^\p{L}0-9]+/u).filter((w) => w.length > 1);
@@ -115,9 +127,14 @@ export function titleMatches(title: string, card: CardRequest): boolean {
   };
   if (!named(card.name) && !named(card.localName)) return false;
   if (!card.number) return true;
+  // The grade itself (PSA 9) is not collector number #9.
+  const numberTitle = t.replace(new RegExp(`\\b(${GRADERS.join("|")}|beckett)\\s*(?:(?:gem\\s*(?:mint|mt)|mint|nm-?mt|pristine|perfect|black\\s*label)\\s*)?(10|[1-9](?:[.,]5)?)(?![\\d.])`, "gi"), "");
+  const requestedTotal = card.number.split("/")[1];
+  const titleTotal = /\b\d+\s*\/\s*(\d+)\b/.exec(numberTitle)?.[1];
+  if (requestedTotal && titleTotal && Number(requestedTotal) !== Number(titleTotal)) return false;
   const n = shortNumber(card.number).toLowerCase();
   const esc = n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(^|[^a-z0-9])0*${esc}([^a-z0-9]|$)`).test(t);
+  return new RegExp(`(^|[^a-z0-9])0*${esc}([^a-z0-9]|$)`).test(numberTitle);
 }
 
 export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
@@ -129,21 +146,21 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
     const value = price(typeof p.value === "string" ? Number(p.value) : p.value);
     if (value === null || str(p.currency) !== marketplace(card.language).currency || !titleMatches(title, card)) continue;
     const g = gradeInTitle(title);
-    if (!g || (g.grade === "10" && SPECIAL_TEN.test(title))) continue;
-    const k = `${g.grader}|${g.grade}`;
+    if (!g) continue;
+    const k = `${g.grader}|${g.grade}|${g.qualifier ?? ""}`;
     by.set(k, [...(by.get(k) ?? []), value]);
   }
   const date = new Date().toISOString().slice(0, 10);
   // one listing alone is no price: a single seller can ask anything
   return [...by].filter(([, list]) => list.length >= 2).map(([k, list]) => {
-    const [grader, grade] = k.split("|");
+    const [grader, grade, qualifier] = k.split("|");
     const s = [...list].sort((a, b) => a - b);
     const median = s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
-    return { grader, grade, price: Math.round(median * 100) / 100, currency: marketplace(card.language).currency, source: "eBay listings (asking)", date, listings: s.length, low: s[0], high: s[s.length - 1] };
+    return { grader, grade, ...(qualifier ? { qualifier } : {}), price: Math.round(median * 100) / 100, currency: marketplace(card.language).currency, source: "eBay listings (asking)", date, listings: s.length, low: s[0], high: s[s.length - 1] };
   });
 }
 
-const SLAB = /\b(psa|bgs|beckett|cgc|sgc|tag|ace|graded|slab)\b/i;
+const SLAB = /\b(psa|bgs|beckett|cgc|sgc|tag|ace|aog|gsg|graded|slab)\b/i;
 
 function median(list: number[]): number {
   const s = [...list].sort((a, b) => a - b);
@@ -171,7 +188,7 @@ async function search(card: CardRequest, key: string, extra: string): Promise<un
   const first = /first|1st/i.test(card.printing ?? "") ? "1st edition" : "";
   const { site } = marketplace(card.language);
   const languageWord = { PT: "portuguese", PL: "polish", JA: "japanese", KO: "korean", ZH: "chinese" }[card.language ?? ""] ?? "";
-  const q = [card.localName ?? card.name, card.number ? shortNumber(card.number) : "", first, SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
+  const q = [card.localName ?? card.name, card.number || "", card.set, first, SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
   const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
   return fetchJson("ebay", `${API}/buy/browse/v1/item_summary/search?${params}`, {
     headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": site },
@@ -195,6 +212,7 @@ export function ebay(): GradedProvider {
   return {
     name: "ebay",
     batchSize: 1,
+    callsPerBatch: 2,
     supports: (card) => !!card.name,
     async fetch(cards, key): Promise<BatchResult<GradedPrice[]>> {
       const card = cards[0];

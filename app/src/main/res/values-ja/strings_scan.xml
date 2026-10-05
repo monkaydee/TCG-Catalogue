@@ -3,7 +3,7 @@
     <string name="add_no_price">価格なし</string>
     <string name="add_grader_other">その他</string>
     <string name="add_confirm">追加</string>
-    <string name="add_graded_missing">鑑定品の価格が見つかりません（%1$s）。下に自分の評価額を入力しない場合は、未鑑定価格が使われます。</string>
+    <string name="add_graded_missing">鑑定済み価格が見つかりません（%1$s）。下に評価額を入力してください。未鑑定価格は使用しません。</string>
     <string name="add_no_sales_found">取引が見つかりません</string>
     <plurals name="add_possible_matches">
         <item quantity="other">候補が%d件あります。正しいものをタップしてください</item>

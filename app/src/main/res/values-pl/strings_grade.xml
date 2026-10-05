@@ -49,4 +49,6 @@
     <string name="grade_centering_good">dobrze wyśrodkowana</string>
     <string name="grade_centering_off">niewyśrodkowana</string>
     <string name="grade_no_frame">brak nadrukowanej ramki do pomiaru (normalne dla tego rewersu)</string>
+    <string name="grade_model_unavailable">Wybierz grę. Szacowanie oceny jest dostępne tylko dla Pokémon; inne gry pokazują pomiary.</string>
+    <string name="grade_photos_required">Szacowanie wymaga wyraźnych zdjęć przodu i tyłu z mierzalnymi brzegami. Zrób nowe zdjęcia lub popraw obrys.</string>
 </resources>

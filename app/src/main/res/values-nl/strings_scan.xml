@@ -3,7 +3,7 @@
     <string name="add_no_price">geen prijs</string>
     <string name="add_grader_other">Overig</string>
     <string name="add_confirm">Toevoegen</string>
-    <string name="add_graded_missing">Geen graded prijs gevonden (%1$s). De raw-prijs wordt gebruikt, tenzij je hieronder je eigen waarde invult.</string>
+    <string name="add_graded_missing">Geen graded-prijs gevonden (%1$s). Voer hieronder je eigen waarde in; de raw-prijs wordt niet gebruikt.</string>
     <string name="add_no_sales_found">geen verkopen gevonden</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d mogelijke match — tik op de juiste</item>

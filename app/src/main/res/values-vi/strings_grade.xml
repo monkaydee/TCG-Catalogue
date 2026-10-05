@@ -49,4 +49,6 @@
     <string name="grade_centering_good">căn giữa tốt</string>
     <string name="grade_centering_off">lệch tâm</string>
     <string name="grade_no_frame">không có khung in để đo (bình thường với mặt sau này)</string>
+    <string name="grade_model_unavailable">Chọn trò chơi. Chỉ Pokémon có ước tính điểm; các trò khác chỉ hiển thị số đo.</string>
+    <string name="grade_photos_required">Ước tính cần ảnh rõ mặt trước và sau với viền đo được. Chụp lại hoặc chỉnh đường viền.</string>
 </resources>

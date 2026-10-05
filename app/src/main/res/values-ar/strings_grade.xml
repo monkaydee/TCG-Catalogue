@@ -49,4 +49,6 @@
     <string name="grade_centering_good">متمركزة جيدًا</string>
     <string name="grade_centering_off">غير متمركزة</string>
     <string name="grade_no_frame">لا يوجد إطار مطبوع للقياس (طبيعي لهذا الظهر)</string>
+    <string name="grade_model_unavailable">اختر لعبة البطاقات. تقدير الدرجة متاح فقط لـ Pokémon؛ تعرض الألعاب الأخرى القياسات فقط.</string>
+    <string name="grade_photos_required">يتطلب التقدير صورًا واضحة للوجه والظهر بحواف قابلة للقياس. أعد التصوير أو اضبط الإطار.</string>
 </resources>

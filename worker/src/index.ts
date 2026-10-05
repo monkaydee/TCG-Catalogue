@@ -2,10 +2,11 @@
 // shares results between all users through a D1 cache, and keeps every provider within its
 // free-tier limits. See docs/CLOUDFLARE.md for setup and the API contract.
 
+import { feedback, moderate, expireFeedback } from "./feedback";
 import { Budgets } from "./budget";
 import { Cache } from "./cache";
 import { settings, type Settings } from "./config";
-import { getPrices, hours, MAX_CARDS, parseCard, type ChainProvider } from "./prices";
+import { gradedForSchema, getPrices, hours, MAX_CARDS, parseCard, type ChainProvider } from "./prices";
 import { justTcgGraded, justTcgRaw } from "./providers/justtcg";
 import { poketrace } from "./providers/poketrace";
 import { ppt } from "./providers/ppt";
@@ -114,7 +115,8 @@ async function prices(req: Request, env: Env, s: Settings): Promise<Response> {
     maxCalls: s.maxProviderCallsPerRequest,
     now: Date.now(),
   });
-  return json({ results, ...(invalid.length ? { invalid } : {}) });
+  const schemaVersion = (body as { schemaVersion?: unknown })?.schemaVersion;
+  return json({ results: results.map((r) => ({ ...r, graded: gradedForSchema(r.graded, schemaVersion) })), ...(invalid.length ? { invalid } : {}) });
 }
 
 /**
@@ -240,6 +242,7 @@ async function status(env: Env): Promise<Response> {
     time: new Date().toISOString(),
     providers: budgets.report((p) => !!keyOf(env, p)),
     cache: await new Cache(env.DB).count(),
+    learning: { textReports: true, privatePhotos: !!env.FEEDBACK_IMAGES, moderationConfigured: !!env.FEEDBACK_ADMIN_KEY, retentionDays: 90 },
   });
 }
 
@@ -257,6 +260,8 @@ export default {
     try {
       if (!(await ipAllowed(req, env, s.ipDailyLimit))) return fail(429, "daily_limit_reached");
 
+      if (path === "/v1/feedback/moderate") return await moderate(req, env);
+      if (path === "/v1/feedback" || path === "/v1/feedback/rules") return await feedback(req, env, path);
       if (path === "/v1/prices" && req.method === "POST") return await prices(req, env, s);
       if (path === "/v1/identify" && req.method === "POST") return await identify(req, env);
       if (path === "/v1/status" && req.method === "GET") return await status(env);
@@ -272,6 +277,7 @@ export default {
 
   /** Daily clean-up (cron in wrangler.toml): drop very old cache rows and counters. */
   async scheduled(_event: ScheduledController, env: Env): Promise<void> {
+    await expireFeedback(env);
     const now = Date.now();
     const old = (days: number) => new Date(now - days * DAY).toISOString().slice(0, 10);
     await env.DB.batch([

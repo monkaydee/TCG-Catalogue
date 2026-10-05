@@ -3,7 +3,7 @@
     <string name="add_no_price">pas de prix</string>
     <string name="add_grader_other">Autre</string>
     <string name="add_confirm">Ajouter</string>
-    <string name="add_graded_missing">Aucun prix gradé trouvé (%1$s). Le prix de la carte non gradée est utilisé, sauf si vous indiquez votre propre valeur ci-dessous.</string>
+    <string name="add_graded_missing">Aucun prix gradé trouvé (%1$s). Saisissez votre valeur ci-dessous ; aucun prix non gradé n’est utilisé.</string>
     <string name="add_no_sales_found">aucune vente trouvée</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d correspondance possible — touchez la bonne</item>

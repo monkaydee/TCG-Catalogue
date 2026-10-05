@@ -38,13 +38,37 @@ describe("ebay", () => {
   it("matches the card language", () => {
     expect(titleMatches("Flareon 3/64 Holo Japanese PSA 9", flareon)).toBe(false);
     expect(titleMatches("Flamara 3/64 Holo Jungle Deutsch PSA 9", { ...flareon, language: "DE", localName: "Flamara" })).toBe(true);
-    expect(titleMatches("Flamara 3/64 Holo PSA 9", { ...flareon, language: "DE", localName: "Flamara" })).toBe(true); // ebay.de, unmarked = German
+    expect(titleMatches("Flamara 3/64 Holo PSA 9", { ...flareon, language: "DE", localName: "Flamara" })).toBe(true); // localized name is evidence
     expect(titleMatches("Flareon 3/64 Holo Englisch PSA 9", { ...flareon, language: "DE" })).toBe(false);
+    expect(titleMatches("Flareon 3/64 Holo PSA 9", { ...flareon, language: "DE" })).toBe(false);
+    expect(titleMatches("Flamara 3/64 German English PSA 9", { ...flareon, language: "DE", localName: "Flamara" })).toBe(false);
   });
 
   it("keeps 1st Edition apart", () => {
     expect(titleMatches("Flareon 3/64 1st Edition Holo PSA 9", flareon)).toBe(false);
     expect(titleMatches("Flareon 3/64 1st Edition Holo PSA 9", { ...flareon, printing: "firstEdition" })).toBe(true);
     expect(titleMatches("Flareon 3/64 Holo PSA 9", { ...flareon, printing: "firstEdition" })).toBe(false);
+  });
+
+  it("keeps Black Label and CGC Pristine prices separate from ordinary tens", () => {
+    expect(gradeInTitle("Flareon 3/64 Beckett Pristine 10")).toEqual({ grader: "BGS", grade: "10" });
+    expect(gradeInTitle("Flareon 3/64 BGS 10 Black Label")).toEqual({ grader: "BGS", grade: "10", qualifier: "Black Label" });
+    const out = parseEbay({ itemSummaries: [
+      item("Flareon 3/64 CGC 10", "80"), item("Flareon 3/64 CGC 10", "100"),
+      item("Flareon 3/64 CGC Pristine 10", "200"), item("Flareon 3/64 CGC 10 Pristine", "300"),
+      item("Flareon 3/64 BGS Pristine 10", "400"), item("Flareon 3/64 BGS 10 Pristine", "500"),
+      item("Flareon 3/64 BGS 10 Black Label", "900"), item("Flareon 3/64 Beckett 10 Black Label", "1100"),
+    ] }, flareon);
+    expect(out).toContainEqual(expect.objectContaining({ grader: "CGC", price: 90 }));
+    expect(out).toContainEqual(expect.objectContaining({ grader: "CGC", qualifier: "Pristine", price: 250 }));
+    expect(out).toContainEqual(expect.objectContaining({ grader: "BGS", price: 450 }));
+    expect(out).toContainEqual(expect.objectContaining({ grader: "BGS", qualifier: "Black Label", price: 1000 }));
+  });
+
+  it("does not confuse a grade or another set's number with the collector number", () => {
+    expect(titleMatches("Flareon PSA 3", flareon)).toBe(false);
+    expect(titleMatches("Flareon 3/165 PSA 9", flareon)).toBe(false);
+    expect(titleMatches("Flareon 3/64 Reverse Holo PSA 9", flareon)).toBe(false);
+    expect(titleMatches("Flareon 3/64 Reverse Holo PSA 9", { ...flareon, printing: "reverse" })).toBe(true);
   });
 });

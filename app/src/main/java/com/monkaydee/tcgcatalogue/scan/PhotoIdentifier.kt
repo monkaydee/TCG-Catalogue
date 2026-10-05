@@ -42,7 +42,7 @@ class PhotoIdentifier(private val context: Context, private val repo: CardReposi
     /** Everything in one go (the recognition test uses this). */
     suspend fun identify(photo: Uri, filter: Game? = null): List<Found> {
         val read = read(photo, filter)
-        if (read.hits.isEmpty()) return listOf(byPicture(photo, read.texts, filter, null))
+        if (read.hits.isEmpty()) return listOf(byPicture(photo, read.texts, filter, null).copy(grade = read.grade))
         return read.hits.map { hit -> lookUp(photo, hit, read.grade, read.picture, read.texts, filter) }
     }
 
@@ -62,6 +62,7 @@ class PhotoIdentifier(private val context: Context, private val repo: CardReposi
             val crops = PictureSearch.crops(small, fromCamera = false)
             val printed = CardTextParser.gameFromPrint(texts)?.takeIf { it in games }
             repo.candidatesFromPicture(PictureSearch.find(context, crops, printed?.let { setOf(it) } ?: games), texts)
+                .map { it.copy(language = it.language ?: hit?.language ?: CardTextParser.detectLanguage(texts)) }
         }
         return Found(hit, null, null, texts, result.getOrDefault(emptyList()), byPicture = true, pictureUnavailable = result.isFailure)
     }

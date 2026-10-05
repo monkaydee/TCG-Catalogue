@@ -174,9 +174,11 @@ fun ActiveAlerts(card: OwnedCard, s: AppSettings, onClick: () -> Unit) {
  * prefilled with the current value. Shows the total and, when the purchase price is known, the profit.
  */
 @Composable
-fun SellDialog(card: OwnedCard, s: AppSettings, onDismiss: () -> Unit, onConfirm: (quantity: Int, pricePerCopy: Double) -> Unit) {
+fun SellDialog(card: OwnedCard, s: AppSettings, onDismiss: () -> Unit, onConfirm: (quantity: Int, pricePerCopy: Double, fees: Double) -> Unit) {
     var quantity by remember(card.id) { mutableIntStateOf(1) }
     var price by remember(card.id) { mutableStateOf(amountInput(Money.unit(card, s.currency, s.usdToEur))) }
+    var fees by remember(card.id) { mutableStateOf("0") }
+    val fee = parseAmount(fees)
     val each = parseAmount(price)
     val count = quantity.coerceIn(1, card.quantity.coerceAtLeast(1))
     AlertDialog(
@@ -196,21 +198,15 @@ fun SellDialog(card: OwnedCard, s: AppSettings, onDismiss: () -> Unit, onConfirm
                     price, { price = it }, stringResource(R.string.sold_price_each, s.currency),
                     isError = price.isNotBlank() && each == null,
                 )
+                AmountField(fees, { fees = it }, stringResource(R.string.tools_fees), isError = fee == null)
                 if (each != null) {
                     Text(stringResource(R.string.sold_total_line, Money.format(each * count, s.currency)), style = MaterialTheme.typography.titleMedium)
-                    card.purchasePrice?.let { paid ->
-                        val profit = (each - Money.convert(paid, card.priceCurrency, s.currency, s.usdToEur)) * count
-                        Text(
-                            stringResource(R.string.sold_profit_line, signedMoney(profit, s.currency)),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (profit >= 0) Gain else Loss,
-                        )
-                    }
+
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = { each?.let { onConfirm(count, it) } }, enabled = each != null) { Text(stringResource(R.string.sold_confirm)) }
+            TextButton(onClick = { each?.let { onConfirm(count, it, fee ?: 0.0) } }, enabled = each != null && fee != null) { Text(stringResource(R.string.sold_confirm)) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.lists_cancel)) } },
     )

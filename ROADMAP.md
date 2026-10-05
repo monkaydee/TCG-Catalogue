@@ -8,6 +8,41 @@ Two rules apply to everything here:
 - **No API key ever goes into the APK.** Anyone can unpack an APK and copy a key, and every user would then share that key's daily limit. Keys live either on a small server (a free Cloudflare Worker) or are the user's own.
 - **Free tiers of price APIs are for personal / non-commercial use.** That's fine while the app is free and in testing. Once the Play Store version earns money (pro tier), the shared server needs a paid commercial plan. That cost is small and the pro tier pays for it.
 
+## Audit update — 5 October 2026
+
+See [the audit and feature proposals](docs/RECOGNITION-PRICING-AUDIT.md) for evidence, sources and remaining limits. This update takes precedence over older “Done” claims below: shipped does not mean reliably validated.
+
+### P0 — corrections implemented locally, awaiting device/provider validation
+- Match language and printing explicitly; missing prices stay unknown. Slabs must never inherit raw-card prices. Keep BGS Black Label and CGC Pristine/Perfect separate from ordinary 10s.
+- Merge graded-provider coverage instead of stopping after the first company has a result; count both eBay searches against the budget.
+- Apply the printed-name check to camera scans, preserve language and grade through photo fallback, require consecutive camera matches and review slabs before bulk/automatic add.
+- Capture full-resolution pre-grading photos. Reject photo-boundary edges and implausible shapes; withhold estimates for unresolved partial/artwork outlines, guard tiny-image checks, and use PSA's current 55/45 front centering threshold for 10. Do not show the Pokémon model's estimates for other games or incomplete/unusable measurements.
+- Use current company label styles for PSA, BGS, CGC and SGC; add screenshot coverage. Historical label versions and remaining companies require references.
+
+### P1 — validation and data coverage
+- Build a consented, labeled camera/photo set across games, languages, printings and slab companies. Measure top-1 accuracy, correct candidate recall and incorrect auto-add rate separately. Bundled Chinese/Japanese/Korean recognizers are implemented; measure device runtime and recognition quality.
+- Validate real provider responses and pricing access in the deployed Worker. Browse API asking prices are not completed sales; preserve that distinction. Prefer supported licensed sources for exact language/printing/grade data.
+- Calibrate pre-grading on phone photos with verified grades; split evaluation by card/certificate and capture source. Add reference-aware border detection and glare checks so printed white regions and artwork do not count as damage. Until calibrated, retain measurements and cautious estimates only for supported usable inputs.
+
+### Authorized and implemented — validate in this release
+1. **Real PnL and grading-cost ledger:** per-copy purchase cost and original currency, manually entered grading fee/shipping/tax, current exact-print raw/graded valuation, realized proceeds/fees. Unrealized PnL today = today's value − purchase cost − grading costs; today's movement is a separate number. Missing costs/prices remain unknown, not zero. Quantity, split sales and currency conversions must preserve basis. Implemented with separate cost lots and transactional FIFO sales.
+2. **Price evidence panel:** date, asking vs sold, matching language/printing/grade, sample count and range; allow price challenges. Implemented; see docs/COLLECTION-TOOLS.md.
+3. **Recognition review queue:** show read number/set/language and reasons for the best candidates; retain unfinished imports for correction. Implemented; see docs/COLLECTION-TOOLS.md.
+4. **Grading submission tracker:** status and actual costs per card, linked to the PnL ledger. Do not present expected grading returns until the pre-grader is calibrated. Implemented; see docs/COLLECTION-TOOLS.md.
+5. **Insurance/export report:** photos, certificate, basis and dated valuation evidence; work offline where possible. Implemented; see docs/COLLECTION-TOOLS.md.
+
+### Shared recognition learning
+Implemented separate default-off consent, reviewed rectified card crops, private D1/R2 reporting,
+rate/storage limits, deletion/retention and moderated daily hints. Automated additions do not count
+as human confirmations. Three installation IDs flag a candidate for manual review, not automatic
+publication. See [Shared learning](docs/SHARED-LEARNING.md) for deployment and moderation setup.
+Training new visual or grading weights remains gated on curated labels and held-out evaluation.
+
+### Release policy
+Every push continues to publish `v0.1.<GitHub build number>` with the signed update-compatible APK.
+Publication failures now fail the workflow. Server tests and Android lint run before release.
+Production Worker deployment is restricted to the existing app branch and main.
+
 ## Done
 
 - **Recognition:**
@@ -164,14 +199,15 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 - **Language detection is unreliable:** collect wrong cases via "Wrong card?", add more rule words per language, weigh the set code.
 - **Raw prices too low for EU (e.g. Zekrom LTR 115 gold ≈ 160 € vs. NM from 300 € on eBay):** TCGplayer US market is not the EU price. Combine sources: Cardmarket trend for EU users, eBay listings as a cross-check; when sources differ by more than 30 %, show the range and the sources.
 
-### P1: Learning from every user (shared corrections) — decided 5 Oct 2026
-- **Opt-in** switch in Settings ("Help improve recognition"), off by default (GDPR); explained in the privacy policy.
-- **Sent per added card:** read text (name, number, set code), the app's first suggestion, the card the user chose (scan, photo import or typed search), language, grade label; plus the **cut-out card picture** (card only, no background, max 800 px, EXIF removed). No email, account, location or device ID (random install ID only, for rate limits).
-- **Server:** Worker endpoint `/feedback` (app key, 200/day per install), text in D1, pictures in a private R2 bucket (free 10 GB). Nothing public, nothing on GitHub.
-- **Learning, daily:** when ≥ 3 installs agree (same read text → same card), a rule is published in `RULES.json`; apps download it daily (like the name index) and apply it before the normal lookup. Conflicting votes → no rule, flagged for review.
-- **Learning, monthly:** confirmed pictures feed the picture index and the recognition model, and become the golden test set (CI must not get worse).
-- **Same for the pre-grader:** "Adjust corners" corrections (photo + right corners) train and test the outline search for every game.
-- **Same for prices:** "price looks wrong" button sends card, shown price and the user's note; repeated reports put the card on a check list for the price sources.
+### P1: Learning from every user (text and card pictures) — scope agreed, not built
+- Separate default-off text and photo consent, with a clear preview of the card crop. Cover camera scans, imports and manually corrected searches. Manual searches without a photo send no invented image.
+- Send OCR text, original suggestion, confirmed card/printing/language, optional grade context and an opt-in crop (maximum 800 px, EXIF removed). Redact non-card text and background. Never include account/email/location. A random install identifier is pseudonymous, not “fully anonymous”; document its purpose and rotation/retention.
+- Store text in D1 and crops in private R2 through the Worker; validate payload size/content, rate-limit and provide retention/deletion controls. R2 has a free tier, not an unlimited storage guarantee. An APK app key is extractable and is not sufficient anti-abuse protection.
+- At least three independent install reports are an initial review signal, not proof of three independent users. Deduplicate repeated submissions, require game/set/number/language/printing context, detect conflicts and review rules before promotion. Start with candidate-ranking hints; do not let unreviewed votes override a stronger identifier or trigger auto-add.
+- Publish signed/versioned rules with rollback and a held-out regression evaluation before rollout. Daily download is possible; publication depends on sufficient reviewed evidence.
+- Retrain models only with consented, reviewed, licensed data and a measured improvement. Split by card/certificate/capture source and exclude training photos from the evaluation set. Monthly retraining is an operational option, not an automatic learning guarantee.
+- Outline corrections may later improve the pre-grader; grading-model training additionally needs verified grades and standardized captures. Price reports feed a review queue, not direct price changes.
+- Implementation phases: schema/consent/crop review → private ingestion and abuse controls → moderation and export → evaluated rule distribution → model training. This is several work sessions with testing, not a dependable one-session estimate.
 
 ### More ideas
 - **Set completion helpers:** "missing cards from this set" with total cost to complete; buy links to Cardmarket/eBay (affiliate later).

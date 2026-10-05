@@ -3,7 +3,7 @@
     <string name="add_no_price">inget pris</string>
     <string name="add_grader_other">Annat</string>
     <string name="add_confirm">Lägg till</string>
-    <string name="add_graded_missing">Inget graded-pris hittades (%1$s). Raw-priset används om du inte anger ett eget värde nedan.</string>
+    <string name="add_graded_missing">Inget graderat pris hittades (%1$s). Ange ditt eget värde nedan; ograderat pris används inte.</string>
     <string name="add_no_sales_found">inga försäljningar hittades</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d möjlig träff — tryck på rätt</item>

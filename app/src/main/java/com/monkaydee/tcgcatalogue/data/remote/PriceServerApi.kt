@@ -32,6 +32,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         val grader: String, val grade: String, val price: Double, val currency: String, val source: String, val date: String?, val sales: Int?,
         /** Asking prices: how many listings, and their lowest and highest price. */
         val listings: Int? = null, val low: Double? = null, val high: Double? = null,
+        val qualifier: String? = null,
     )
 
     /** A raw price from the server: amount, where from, currency, and for asking prices the listings behind it. */
@@ -69,6 +70,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     /** The price server's raw (ungraded) price of a printing: NM or a blended market price, in USD, and its source. */
     suspend fun raw(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String?, language: String = "EN", localName: String? = null): Raw? {
         val body = buildJsonObject {
+            put("schemaVersion", 2)
             putJsonArray("cards") {
                 add(
                     buildJsonObject {
@@ -86,6 +88,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
             }
         }
         val result = post("/v1/prices", body.toString().toRequestBody(JSON))?.get("results").arr()?.firstOrNull() ?: return null
+        if (result["reason"].str() == "unavailable") throw IOException("Price providers unavailable")
         val amount = (result["conditions"]?.let { it as? kotlinx.serialization.json.JsonObject }?.get("NM").dbl() ?: result["market"].dbl())
             ?.takeIf { it > 0 } ?: return null
         return Raw(amount, result["source"].str().orEmpty(), result["currency"].str() ?: "USD", result["listings"].int(), result["low"].dbl(), result["high"].dbl())
@@ -94,6 +97,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     /** Graded prices of a card (TCGplayer product [tcgplayerId]), or an empty list when there are none. */
     suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null, language: String = "EN", localName: String? = null): List<Graded> {
         val body = buildJsonObject {
+            put("schemaVersion", 2)
             putJsonArray("cards") {
                 add(
                     buildJsonObject {
@@ -112,6 +116,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
             }
         }
         val result = post("/v1/prices", body.toString().toRequestBody(JSON))?.get("results").arr()?.firstOrNull() ?: return emptyList()
+        if (result["gradedReason"].str() == "unavailable") throw IOException("Graded price providers unavailable")
         return result["graded"].arr().orEmpty().mapNotNull { g ->
             Graded(
                 grader = g["grader"].str() ?: return@mapNotNull null,
@@ -124,6 +129,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                 listings = g["listings"].int(),
                 low = g["low"].dbl(),
                 high = g["high"].dbl(),
+                qualifier = g["qualifier"].str(),
             )
         }
     }

@@ -3,7 +3,7 @@
     <string name="add_no_price">brak ceny</string>
     <string name="add_grader_other">Inna</string>
     <string name="add_confirm">Dodaj</string>
-    <string name="add_graded_missing">Nie znaleziono ceny karty graded (%1$s). Użyta zostanie cena raw, chyba że poniżej podasz własną wartość.</string>
+    <string name="add_graded_missing">Nie znaleziono ceny z oceną (%1$s). Wpisz własną wartość poniżej; cena bez oceny nie jest używana.</string>
     <string name="add_no_sales_found">nie znaleziono sprzedaży</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d możliwe dopasowanie — wybierz właściwe</item>

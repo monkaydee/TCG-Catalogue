@@ -40,18 +40,23 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.serialization.Serializable
+import androidx.room.withTransaction
+import com.monkaydee.tcgcatalogue.data.db.CostLot
+import com.monkaydee.tcgcatalogue.data.db.GradingSubmission
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicInteger
 
 @Serializable
 data class Backup(
-    val version: Int = 2,
+    val version: Int = 3,
     val cards: List<OwnedCard>,
     val snapshots: List<com.monkaydee.tcgcatalogue.data.db.PortfolioSnapshot>,
     val history: List<PriceHistory> = emptyList(),
     val wishlist: List<WishCard> = emptyList(),
     val sold: List<SoldCard> = emptyList(),
     val sealed: List<SealedItem> = emptyList(),
+    val costLots: List<CostLot> = emptyList(),
+    val submissions: List<GradingSubmission> = emptyList(),
     /** When and on which install the backup was written (for sync between phones). */
     val savedAt: Long = 0,
     val device: String = "",
@@ -79,6 +84,8 @@ class CardRepository(
 
     /** The TCGdex client for a Pokémon card or set id (Japanese ids start with "ja:"). */
     private fun pokemonApi(id: String) = if (id.startsWith(tcgdexJa.idPrefix)) tcgdexJa else tcgdex
+    val costLots = db.tools().observeLots()
+    val submissions = db.tools().observeSubmissions()
     val cards = db.cards().observeAll()
     val sets = db.sets().observeAll()
     val snapshots = db.snapshots().observeAll()
@@ -284,7 +291,7 @@ class CardRepository(
     }
 
     /** A graded price, or why there is none. */
-    data class GradedResult(val price: Price?, val problem: String?)
+    data class GradedResult(val price: Price?, val problem: String?, val unavailable: Boolean = false)
 
     suspend fun gradedPrice(card: CardCandidate, variant: Variant, grade: GradeInfo): Price? = gradedLookup(card, variant, grade).price
 
@@ -297,10 +304,8 @@ class CardRepository(
         val grader = grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
         val value = grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
         if (!server.isSetUp()) return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
-        // A Black Label or Pristine 10 sells far above a plain 10: never priced as one.
-        if (grade.qualifier != null) return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
-        val prices = attempt { gradedPrices(card, variant, language) }.getOrElse { return GradedResult(null, AppStrings.get(R.string.data_graded_server_error)) }
-        val match = prices.firstOrNull { it.grader.equals(grader, ignoreCase = true) && sameGrade(it.grade, value) && it.currency in setOf("USD", "EUR") }
+        val prices = attempt { gradedPrices(card, variant, language) }.getOrElse { return GradedResult(null, AppStrings.get(R.string.data_graded_server_error), unavailable = true) }
+        val match = prices.firstOrNull { it.grader.equals(grader, ignoreCase = true) && sameGrade(it.grade, value) && it.qualifier == grade.qualifier && it.currency in setOf("USD", "EUR") }
             ?: return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
         val source = if (match.currency == "EUR") PriceSource.GRADED_EUR else PriceSource.GRADED
         return GradedResult(Price(match.price, source, note = gradedNote(match)), null)
@@ -308,7 +313,7 @@ class CardRepository(
 
     /** All graded prices the price server has for a printing (every company and grade). */
     suspend fun gradedPrices(card: CardCandidate, variant: Variant, language: String = "EN"): List<PriceServerApi.Graded> =
-        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key, language, localName(card, language))
+        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language))
 
     /** The card's name in [language] for searching listings ("Flamara"), Pokémon only. */
     private suspend fun localName(card: CardCandidate, language: String): String? =
@@ -322,8 +327,8 @@ class CardRepository(
     private suspend fun languagePrice(card: CardCandidate, variant: Variant, language: String): Price? {
         if (!server.isSetUp()) return null
         val r = attempt {
-            server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key, language, localName(card, language))
-        }.getOrNull() ?: return null
+            server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language))
+        }.getOrThrow() ?: return null
         val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
         return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = note.ifBlank { null })
     }
@@ -333,7 +338,7 @@ class CardRepository(
         if (!server.isSetUp()) return emptyList()
         val card = fetch(row.game, row.cardId) ?: return emptyList()
         val variant = card.variants.firstOrNull { it.key == row.variant } ?: card.defaultVariant
-        return gradedPrices(card, variant)
+        return gradedPrices(card, variant, row.language)
     }
 
     /** PSA's record of a cert number (card, grade, population), through the price server. */
@@ -375,6 +380,7 @@ class CardRepository(
 
     private fun gradedNote(g: PriceServerApi.Graded) = listOfNotNull(
         "${g.grader} ${g.grade}",
+        g.qualifier,
         g.source.takeIf { it.isNotBlank() },
         g.sales?.let { AppStrings.context().resources.getQuantityString(R.plurals.data_graded_sales_count, it, it) },
         listingsNote(g.listings, g.low, g.high, g.currency),
@@ -395,8 +401,7 @@ class CardRepository(
         if (!ownLanguage(card, language)) {
             val local = languagePrice(card, variant, language)
             if (local != null) return if (condition == "NM") local else Pricing.forCondition(local, condition, null, PriceTexts.App)
-            // nothing for this language: the English price, said so
-            return conditionPrice(card, variant, condition, s, listing)?.copy(note = AppStrings.get(R.string.price_note_english_price))
+            return null // An English price is not a valuation of this language.
         }
         val base = rawPrice(card, variant, s, listing) ?: serverRawPrice(card, variant)
         if (condition == "NM") return base
@@ -407,7 +412,7 @@ class CardRepository(
     /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */
     private suspend fun serverRawPrice(card: CardCandidate, variant: Variant): Price? {
         if (!server.isSetUp()) return null
-        val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.key) }
+        val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key) }
             .getOrNull() ?: return null
         val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
         return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = note.ifBlank { null })
@@ -442,8 +447,8 @@ class CardRepository(
     ): Price? {
         if (grade?.grader == null || grade.grade == null) return conditionPrice(card, variant, condition, s, listing, language)
         val result = gradedLookup(card, variant, grade, language)
-        // Grader and grade are set here, so a missing graded price means there is no graded price source.
-        return result.price ?: rawPrice(card, variant, s, listing)?.copy(note = AppStrings.get(R.string.price_note_raw_no_graded_source))
+        if (result.unavailable) throw java.io.IOException("Graded price lookup unavailable")
+        return result.price // A raw price is not a valuation of a slab.
     }
 
     private suspend fun listingOf(card: OwnedCard): CardmarketApi.Listing? =
@@ -461,12 +466,18 @@ class CardRepository(
         purchasePrice: Double? = null,
         manualValue: Double? = null,
         language: String = "EN",
+        reviewToken: String? = null,
     ): Long {
         val s = settings.current()
         val graded = grade?.grader != null && grade.grade != null
+        require(!graded || grade?.cert.isNullOrBlank() || quantity == 1)
         val chosen = listing ?: defaultListing(cardmarketListings(candidate), variant, s)
         val price = runCatching { priceFor(candidate, variant, grade, condition, s, chosen, language) }.getOrNull()
-        val id = db.cards().addOrIncrement(
+        require(quantity in 1..100000)
+        require(purchasePrice == null || purchasePrice.isFinite() && purchasePrice >= 0)
+        val id = db.withTransaction {
+        if (reviewToken != null) check(db.tools().receipt(com.monkaydee.tcgcatalogue.data.db.ReviewReceipt(reviewToken)) != -1L) { "Photo already added" }
+        val rowId = db.cards().addOrIncrement(
             OwnedCard(
                 game = candidate.game,
                 cardId = candidate.cardId,
@@ -481,9 +492,9 @@ class CardRepository(
                 quantity = quantity,
                 condition = if (graded) grade!!.label else condition,
                 price = price?.amount,
-                priceCurrency = price?.currency ?: "USD",
+                priceCurrency = price?.currency ?: s.currency,
                 priceSource = price?.source?.label,
-                priceUpdatedAt = System.currentTimeMillis(),
+                priceUpdatedAt = price?.let { System.currentTimeMillis() },
                 grader = grade?.grader.takeIf { graded },
                 grade = grade?.grade.takeIf { graded },
                 gradeQualifier = grade?.qualifier.takeIf { graded },
@@ -495,8 +506,13 @@ class CardRepository(
                 manualPrice = manualValue,
                 manualCurrency = manualValue?.let { s.currency },
                 language = language,
+                copyKey = if (!graded) "" else grade?.cert?.trim()?.takeIf { it.isNotEmpty() }?.let { "cert:$it" } ?: "slab:${java.util.UUID.randomUUID()}",
             ),
         )
+        db.tools().put(CostLot(cardRowId = rowId, quantity = quantity, purchase = purchasePrice, grading = if (graded) null else 0.0, shipping = 0.0, tax = 0.0, currency = s.currency))
+        rowId
+        }
+        runCatching { SharedLearning.record(this, id, candidate, variant, language, grade) }
         runCatching { ensureSet(candidate) }
         runCatching { snapshot() }
         return id
@@ -527,10 +543,12 @@ class CardRepository(
     suspend fun saveEdit(original: OwnedCard, r: AddRequest) {
         val s = settings.current()
         val graded = r.grade?.grader != null && r.grade.grade != null
+        require(!graded || r.grade?.cert.isNullOrBlank() || r.quantity == 1)
         val condition = if (graded) r.grade!!.label else r.condition
         val price = runCatching { priceFor(r.card, r.variant, r.grade, r.condition, s, r.listing, r.language) }.getOrNull()
         val edited = original.copy(
             language = r.language,
+            copyKey = if (!graded) "" else r.grade?.cert?.trim()?.takeIf { it.isNotEmpty() }?.let { "cert:$it" } ?: original.copyKey.takeIf { original.graded && it.isNotBlank() } ?: "slab:${java.util.UUID.randomUUID()}",
             game = r.card.game,
             cardId = r.card.cardId,
             variant = r.variant.key,
@@ -543,9 +561,9 @@ class CardRepository(
             imageUrl = r.variant.imageUrl ?: r.card.imageUrl,
             quantity = r.quantity,
             condition = condition,
-            price = price?.amount ?: original.price,
+            price = price?.amount,
             priceCurrency = price?.currency ?: original.priceCurrency,
-            priceSource = price?.source?.label ?: original.priceSource,
+            priceSource = price?.source?.label,
             priceNote = price?.note,
             priceUpdatedAt = System.currentTimeMillis(),
             grader = r.grade?.grader.takeIf { graded },
@@ -558,12 +576,19 @@ class CardRepository(
             manualPrice = r.manualValue,
             manualCurrency = r.manualValue?.let { s.currency },
         )
-        val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition, edited.language)?.takeIf { it.id != original.id }
+        db.withTransaction {
+        ensureCostLots(original)
+        resizeLots(original, edited.quantity)
+        val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition, edited.language, edited.copyKey)?.takeIf { it.id != original.id }
         if (clash != null) {
+            check(!edited.graded || edited.certNumber.isNullOrBlank()) { AppStrings.get(R.string.tools_duplicate_cert) }
             db.cards().update(clash.copy(quantity = clash.quantity + edited.quantity))
+            db.tools().moveLots(original.id, clash.id)
+            db.tools().moveSubmissions(original.id, clash.id)
             db.cards().delete(original)
         } else {
             db.cards().update(edited)
+        }
         }
         runCatching { ensureSet(r.card) }
         runCatching { snapshot() }
@@ -572,7 +597,10 @@ class CardRepository(
     suspend fun card(id: Long): OwnedCard? = db.cards().get(id)
 
     suspend fun update(card: OwnedCard) {
-        if (card.quantity <= 0) db.cards().delete(card) else db.cards().update(card)
+        db.withTransaction {
+            db.cards().get(card.id)?.let { original -> ensureCostLots(original); resizeLots(original, card.quantity.coerceAtLeast(0)) }
+            if (card.quantity <= 0) db.cards().delete(card) else db.cards().update(card)
+        }
         runCatching { snapshot() }
     }
 
@@ -584,8 +612,13 @@ class CardRepository(
         if (card.graded || card.condition == condition) return
         val existing = db.cards().find(card.game, card.cardId, card.variant, condition, card.language)
         if (existing != null) {
+            db.withTransaction {
+            ensureCostLots(existing); ensureCostLots(card)
             db.cards().update(existing.copy(quantity = existing.quantity + card.quantity))
+            db.tools().moveLots(card.id, existing.id)
+            db.tools().moveSubmissions(card.id, existing.id)
             db.cards().delete(card)
+            }
             runCatching { snapshot() }
             return
         }
@@ -594,18 +627,15 @@ class CardRepository(
         val variant = fresh?.variants?.firstOrNull { it.key == card.variant }
         val price = if (fresh != null && variant != null) runCatching { conditionPrice(fresh, variant, condition, s, listingOf(card), card.language) }.getOrNull() else null
         db.cards().update(
-            if (price == null) {
-                card.copy(condition = condition)
-            } else {
-                card.copy(
-                    condition = condition,
-                    price = price.amount,
-                    priceCurrency = price.currency,
-                    priceSource = price.source.label,
-                    priceNote = price.note,
-                    priceUpdatedAt = System.currentTimeMillis(),
-                )
-            },
+            card.copy(
+                condition = condition,
+                price = price?.amount,
+                purchasePrice = card.purchasePrice?.let { Money.convert(it, card.priceCurrency, price?.currency ?: card.priceCurrency, s.usdToEur) },
+                priceCurrency = price?.currency ?: card.priceCurrency,
+                priceSource = price?.source?.label,
+                priceNote = price?.note,
+                priceUpdatedAt = System.currentTimeMillis(),
+            ),
         )
         runCatching { snapshot() }
     }
@@ -621,9 +651,10 @@ class CardRepository(
             card.copy(
                 marketProductId = listing.productId,
                 marketLabel = listing.label,
-                price = price?.amount ?: card.price,
+                price = price?.amount,
+                purchasePrice = card.purchasePrice?.let { Money.convert(it, card.priceCurrency, price?.currency ?: card.priceCurrency, s.usdToEur) },
                 priceCurrency = price?.currency ?: card.priceCurrency,
-                priceSource = price?.source?.label ?: card.priceSource,
+                priceSource = price?.source?.label,
                 priceNote = price?.note,
                 priceUpdatedAt = System.currentTimeMillis(),
             ),
@@ -683,7 +714,7 @@ class CardRepository(
         if (card.game == Game.ONE_PIECE) runCatching { cardmarket.listings(card.number) }.getOrDefault(emptyList()) else emptyList()
 
     suspend fun delete(card: OwnedCard) {
-        db.cards().delete(card)
+        db.withTransaction { db.tools().removeLots(card.id); db.cards().delete(card) }
         db.history().deleteFor(card.id)
         runCatching { snapshot() }
     }
@@ -741,13 +772,16 @@ class CardRepository(
                         for (row in rows) {
                             val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: continue
                             val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
-                            val price = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row), row.language) }.getOrNull() ?: continue
+                            val lookup = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row), row.language) }
+                            if (lookup.isFailure) continue
+                            val price = lookup.getOrNull()
                             val next = row.copy(
-                                price = price.amount,
-                                priceCurrency = price.currency,
-                                priceSource = price.source.label,
+                                price = price?.amount,
+                                purchasePrice = row.purchasePrice?.let { Money.convert(it, row.priceCurrency, price?.currency ?: row.priceCurrency, s.usdToEur) },
+                                priceCurrency = price?.currency ?: row.priceCurrency,
+                                priceSource = price?.source?.label,
                                 priceUpdatedAt = System.currentTimeMillis(),
-                                priceNote = price.note,
+                                priceNote = price?.note,
                                 rarity = fresh.rarity ?: row.rarity,
                                 // cards added before a picture fallback existed get one now
                                 imageUrl = row.imageUrl ?: variant.imageUrl ?: fresh.imageUrl,
@@ -785,19 +819,34 @@ class CardRepository(
         )
     }
 
-    suspend fun exportBackup(device: String = ""): Backup = Backup(
+    suspend fun exportBackup(device: String = ""): Backup = db.withTransaction { Backup(
         cards = db.cards().getAll(),
         snapshots = db.snapshots().getAll(),
         history = db.history().getAll(),
         wishlist = db.wishlist().getAll(),
         sold = db.sold().getAll(),
         sealed = db.sealed().getAll(),
+        costLots = db.tools().lots(),
+        submissions = db.tools().submissions(),
         savedAt = System.currentTimeMillis(),
         device = device,
-    )
+    ) }
+
+    private fun validateBackup(backup: Backup) {
+        require(backup.version in 1..3)
+        require(backup.cards.map { it.id }.toSet().size == backup.cards.size)
+        require(backup.cards.all { it.quantity in 1..100000 && it.language.matches(Regex("[A-Z]{2}")) })
+        require(backup.costLots.map { it.id }.toSet().size == backup.costLots.size)
+        val rows = backup.cards.associateBy { it.id }
+        require(backup.costLots.all { it.cardRowId in rows && it.quantity > 0 && it.currency in setOf("EUR", "USD") && listOf(it.purchase, it.grading, it.shipping, it.tax).all { cost -> cost == null || cost.isFinite() && cost in 0.0..1e9 } })
+        require(backup.costLots.groupBy { it.cardRowId }.all { (row, lots) -> lots.sumOf { it.quantity.toLong() } <= rows.getValue(row).quantity })
+    }
 
     /** Replaces the whole collection with [backup]. */
     suspend fun importBackup(backup: Backup) {
+        validateBackup(backup)
+        db.withTransaction {
+        db.tools().clearLots(); db.tools().clearSubmissions()
         db.cards().deleteAll()
         db.cards().insertAll(backup.cards)
         db.snapshots().insertAll(backup.snapshots)
@@ -809,6 +858,10 @@ class CardRepository(
         db.sold().insertAll(backup.sold)
         db.sealed().deleteAll()
         db.sealed().insertAll(backup.sealed)
+        backup.costLots.forEach { db.tools().put(it) }
+        backup.submissions.forEach { db.tools().put(it) }
+        backup.cards.forEach { ensureCostLots(it) }
+        }
         backup.cards.distinctBy { it.game to it.setId }.forEach { c ->
             runCatching {
                 if (db.sets().get(c.game, c.setId) == null) {
@@ -824,11 +877,25 @@ class CardRepository(
      * sealed products by their details. Nothing on this phone is removed.
      */
     suspend fun mergeBackup(backup: Backup) {
+        validateBackup(backup)
+        val rowMapping = mutableMapOf<Long, Long>()
+        db.withTransaction {
         val mine = db.cards().getAll()
         for (c in backup.cards) {
-            val match = mine.firstOrNull { it.game == c.game && it.cardId == c.cardId && it.variant == c.variant && it.condition == c.condition }
-            if (match == null) db.cards().insert(c.copy(id = 0)) else if (c.quantity > match.quantity) db.cards().update(match.copy(quantity = c.quantity))
+            val match = mine.firstOrNull { it.game == c.game && it.cardId == c.cardId && it.variant == c.variant && it.condition == c.condition && it.language == c.language && it.copyKey == c.copyKey }
+            val id = if (match == null) db.cards().insert(c.copy(id = 0)) else match.id
+            rowMapping[c.id] = id
+            if (match != null && c.quantity > match.quantity) db.cards().update(match.copy(quantity = c.quantity))
         }
+        val knownLots = db.tools().lots().map { it.id }.toSet()
+        for (lot in backup.costLots) if (lot.id !in knownLots) {
+            val row = rowMapping[lot.cardRowId]?.let { db.cards().get(it) } ?: continue
+            val covered = db.tools().lots(row.id).sumOf { it.quantity }
+            val n = minOf(lot.quantity, row.quantity - covered)
+            if (n > 0) db.tools().put(lot.copy(cardRowId = row.id, quantity = n))
+        }
+        backup.submissions.forEach { sub -> rowMapping[sub.cardRowId]?.let { db.tools().put(sub.copy(cardRowId = it)) } }
+        db.cards().getAll().forEach { ensureCostLots(it) }
         db.snapshots().insertAll(backup.snapshots.filter { s -> db.snapshots().getAll().none { it.day == s.day } })
         for (w in backup.wishlist) if (db.wishlist().find(w.game, w.cardId, w.variant) == null) db.wishlist().upsert(w.copy(id = 0))
         val sold = db.sold().getAll()
@@ -836,6 +903,7 @@ class CardRepository(
         for (x in backup.sealed) {
             val match = db.sealed().find(x.game, x.productId)
             if (match == null) db.sealed().upsert(x.copy(id = 0)) else if (x.quantity > match.quantity) db.sealed().update(match.copy(quantity = x.quantity))
+        }
         }
         runCatching { snapshot() }
     }
@@ -882,22 +950,63 @@ class CardRepository(
      * Sells [quantity] copies of [card] for [pricePerCopy] (in [currency]): they move to the sold
      * list (with the purchase price, for the profit) and leave the collection.
      */
-    suspend fun sell(card: OwnedCard, quantity: Int, pricePerCopy: Double, currency: String, soldAt: Long = System.currentTimeMillis()) {
-        val n = quantity.coerceIn(1, card.quantity)
-        db.sold().insert(
-            SoldCard(
-                game = card.game, cardId = card.cardId, variant = card.variant, variantLabel = card.variantLabel,
-                name = card.name, number = card.number, setName = card.setName, imageUrl = card.imageUrl,
-                quantity = n, condition = card.condition,
-                purchasePrice = card.purchasePrice, purchaseCurrency = card.priceCurrency,
-                salePrice = pricePerCopy, saleCurrency = currency, soldAt = soldAt,
-            ),
-        )
-        if (n >= card.quantity) delete(card) else {
-            db.cards().update(card.copy(quantity = card.quantity - n))
-            runCatching { snapshot() }
+    suspend fun sell(card: OwnedCard, quantity: Int, pricePerCopy: Double, currency: String, soldAt: Long = System.currentTimeMillis(), fees: Double = 0.0) {
+        require(pricePerCopy.isFinite() && pricePerCopy >= 0 && fees.isFinite() && fees >= 0)
+        val s = settings.current()
+        db.withTransaction {
+            val current = db.cards().get(card.id) ?: error("Card no longer owned")
+            require(quantity in 1..current.quantity)
+            ensureCostLots(current)
+            val (taken, kept) = CostLedger.allocate(db.tools().lots(current.id), quantity)
+            val costs = taken.map { CostLedger.basis(it, currency, s.usdToEur) }
+            val basis = if (costs.all { it != null }) costs.filterNotNull().sum() else null
+            db.sold().insert(SoldCard(game = current.game, cardId = current.cardId, variant = current.variant,
+                variantLabel = current.variantLabel, name = current.name, number = current.number,
+                setName = current.setName, imageUrl = current.imageUrl, quantity = quantity, condition = current.condition,
+                purchasePrice = basis?.div(quantity), purchaseCurrency = currency, totalBasis = basis,
+                salePrice = pricePerCopy, saleCurrency = currency, saleFees = fees, soldAt = soldAt))
+            db.tools().removeLots(current.id); kept.forEach { db.tools().put(it) }
+            if (quantity == current.quantity) db.cards().delete(current)
+            else db.cards().update(current.copy(quantity = current.quantity - quantity))
         }
+        runCatching { snapshot() }
     }
+
+    /** Backfills historical copies without inventing unknown grading fees. */
+    private suspend fun ensureCostLots(card: OwnedCard) {
+        val covered = db.tools().lots(card.id).sumOf { it.quantity }
+        if (covered < card.quantity) db.tools().put(CostLot(cardRowId = card.id,
+            quantity = card.quantity - covered, purchase = card.purchasePrice,
+            grading = if (card.graded) null else 0.0, shipping = 0.0, tax = 0.0,
+            currency = card.priceCurrency, acquiredAt = card.addedAt))
+    }
+    suspend fun reviewed(token: String) = db.tools().reviewed(token)
+    suspend fun discardReview(token: String) { db.tools().receipt(com.monkaydee.tcgcatalogue.data.db.ReviewReceipt(token)) }
+    suspend fun initializeLedger() = db.withTransaction { db.cards().getAll().forEach { ensureCostLots(it) } }
+    private suspend fun resizeLots(card: OwnedCard, quantity: Int) {
+        val lots = db.tools().lots(card.id)
+        if (quantity < card.quantity) {
+            val kept = if (quantity == 0) emptyList() else CostLedger.allocate(lots, card.quantity - quantity).second
+            db.tools().removeLots(card.id); kept.forEach { db.tools().put(it) }
+        } else if (quantity > card.quantity) db.tools().put(CostLot(cardRowId = card.id,
+            quantity = quantity - card.quantity, grading = if (card.graded) null else 0.0, currency = settings.current().currency))
+    }
+    suspend fun editCostLot(original: CostLot, edited: CostLot) = db.withTransaction {
+        val stored = db.tools().lots(original.cardRowId).firstOrNull { it.id == original.id } ?: error("Cost lot changed")
+        require(stored == original && edited.quantity in 1..stored.quantity && edited.cardRowId == stored.cardRowId)
+        require(edited.currency in setOf("USD", "EUR"))
+        require(listOf(edited.purchase, edited.grading, edited.shipping, edited.tax).all { it == null || it.isFinite() && it in 0.0..1e9 })
+        db.tools().put(edited.copy(id = stored.id, acquiredAt = stored.acquiredAt))
+        if (edited.quantity < stored.quantity) db.tools().put(stored.copy(id = java.util.UUID.randomUUID().toString(), quantity = stored.quantity - edited.quantity))
+    }
+    suspend fun saveSubmission(submission: GradingSubmission) {
+        require(submission.company in setOf("PSA", "CGC", "BGS", "SGC"))
+        require(submission.status in setOf("PREPARING", "SHIPPED", "RECEIVED", "GRADING", "RETURNED", "CANCELLED"))
+        require(submission.reference.length <= 200 && submission.notes.length <= 2000)
+        require(db.cards().get(submission.cardRowId) != null)
+        db.tools().put(submission.copy(updatedAt = System.currentTimeMillis()))
+    }
+    suspend fun removeSubmission(id: String) = db.tools().removeSubmission(id)
 
     suspend fun deleteSold(card: SoldCard) = db.sold().delete(card)
 
@@ -1030,7 +1139,8 @@ class CardRepository(
      * ("2/101" from damage text) points to a card whose name isn't there. Then the printed name is
      * searched (in the card's language too) and wins when it finds something.
      */
-    suspend fun checkedByName(found: List<CardCandidate>, texts: List<String>): List<CardCandidate> {
+    suspend fun checkedByName(initial: List<CardCandidate>, texts: List<String>): List<CardCandidate> {
+        val found = SharedLearning.rank(this, initial, texts)
         val readable = texts.filter { t -> t.count(Char::isLetter) >= 3 }
         if (found.isEmpty() || readable.isEmpty() || found.first().game != Game.POKEMON) return found
         if (found.any { it.name.length >= 3 && CardTextParser.nameOnCard(it.name, readable) }) return found

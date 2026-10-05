@@ -3,7 +3,7 @@
     <string name="add_no_price">가격 없음</string>
     <string name="add_grader_other">기타</string>
     <string name="add_confirm">추가</string>
-    <string name="add_graded_missing">그레이딩 가격을 찾지 못했어요 (%1$s). 아래에 내 평가액을 입력하지 않으면 Raw 가격이 사용돼요.</string>
+    <string name="add_graded_missing">등급 가격을 찾지 못했습니다 (%1$s). 아래에 직접 가치를 입력하세요. 미등급 가격은 사용하지 않습니다.</string>
     <string name="add_no_sales_found">판매 내역 없음</string>
     <plurals name="add_possible_matches">
         <item quantity="other">일치 후보 %d개 — 올바른 카드를 탭하세요</item>

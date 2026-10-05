@@ -49,4 +49,6 @@
     <string name="grade_centering_good">добре відцентрована</string>
     <string name="grade_centering_off">зміщена</string>
     <string name="grade_no_frame">немає друкованої рамки для вимірювання (нормально для цієї сорочки)</string>
+    <string name="grade_model_unavailable">Оберіть гру. Оцінка грейда доступна лише для Pokémon; інші ігри показують вимірювання.</string>
+    <string name="grade_photos_required">Для оцінки потрібні чіткі фото обох сторін із вимірюваними рамками. Перезніміть або виправте контур.</string>
 </resources>

@@ -49,4 +49,6 @@
     <string name="grade_centering_good">ben centrata</string>
     <string name="grade_centering_off">decentrata</string>
     <string name="grade_no_frame">nessuna cornice stampata da misurare (normale per questo retro)</string>
+    <string name="grade_model_unavailable">Scegli il gioco. Le stime del voto sono disponibili solo per Pokémon; gli altri giochi mostrano le misurazioni.</string>
+    <string name="grade_photos_required">Servono foto nitide del fronte e del retro con bordi misurabili. Ripeti le foto o regola il contorno.</string>
 </resources>

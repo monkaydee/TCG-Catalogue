@@ -28,3 +28,27 @@ CREATE TABLE IF NOT EXISTS ip_hits (
   hits    INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (ip_hash, day)
 );
+
+CREATE TABLE IF NOT EXISTS learning_installs (id TEXT PRIMARY KEY, token_hash TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS recognition_reports (
+ id TEXT PRIMARY KEY, install_hash TEXT NOT NULL, kind TEXT NOT NULL, context TEXT NOT NULL,
+ card_id TEXT NOT NULL, game TEXT NOT NULL, language TEXT NOT NULL, payload TEXT NOT NULL,
+ image_key TEXT, created_at INTEGER NOT NULL, confirmed INTEGER NOT NULL DEFAULT 1
+);
+CREATE INDEX IF NOT EXISTS recognition_reports_install ON recognition_reports(install_hash,created_at);
+CREATE INDEX IF NOT EXISTS recognition_reports_consensus ON recognition_reports(context,card_id);
+CREATE TABLE IF NOT EXISTS recognition_rules (
+ context TEXT PRIMARY KEY, card_id TEXT NOT NULL, game TEXT NOT NULL, language TEXT NOT NULL,
+ version INTEGER NOT NULL, enabled INTEGER NOT NULL DEFAULT 1
+);
+
+-- Keep the free-tier storage guard constant-time rather than scanning all reports per upload.
+CREATE TABLE IF NOT EXISTS learning_totals (id INTEGER PRIMARY KEY CHECK(id=1), reports INTEGER NOT NULL DEFAULT 0);
+INSERT OR IGNORE INTO learning_totals(id,reports) SELECT 1,COUNT(*) FROM recognition_reports;
+CREATE TRIGGER IF NOT EXISTS learning_report_cap BEFORE INSERT ON recognition_reports
+WHEN (SELECT reports FROM learning_totals WHERE id=1)>=20000
+BEGIN SELECT RAISE(ABORT,'recognition storage limit'); END;
+CREATE TRIGGER IF NOT EXISTS learning_report_added AFTER INSERT ON recognition_reports
+BEGIN UPDATE learning_totals SET reports=reports+1 WHERE id=1; END;
+CREATE TRIGGER IF NOT EXISTS learning_report_removed AFTER DELETE ON recognition_reports
+BEGIN UPDATE learning_totals SET reports=reports-1 WHERE id=1; END;

@@ -39,7 +39,7 @@ class TextAnalyzer(
     private val isEnabled: () -> Boolean,
     private val onFrame: (ScanFrame) -> Unit,
 ) : ImageAnalysis.Analyzer {
-    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+    private val recognizer = MultilingualOcr()
     private var lastRun = 0L
 
     override fun analyze(proxy: ImageProxy) {
@@ -57,7 +57,7 @@ class TextAnalyzer(
         val guide = CardGuide.rect(upright.width.toFloat(), upright.height.toFloat())
         recognizer.process(InputImage.fromBitmap(upright, 0))
             .addOnSuccessListener { text ->
-                val all = text.textBlocks.flatMap { it.lines }.mapNotNull { line ->
+                val all = text.textBlocks.flatMap { it.lines }.distinctBy { it.text to it.boundingBox?.top }.mapNotNull { line ->
                     val box = line.boundingBox ?: return@mapNotNull null
                     line.text to box
                 }

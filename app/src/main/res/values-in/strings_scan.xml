@@ -3,7 +3,7 @@
     <string name="add_no_price">tanpa harga</string>
     <string name="add_grader_other">Lainnya</string>
     <string name="add_confirm">Tambah</string>
-    <string name="add_graded_missing">Harga graded tidak ditemukan (%1$s). Harga Raw dipakai kecuali Anda mengisi nilai sendiri di bawah.</string>
+    <string name="add_graded_missing">Harga kartu graded tidak ditemukan (%1$s). Masukkan nilai sendiri di bawah; harga tanpa grading tidak digunakan.</string>
     <string name="add_no_sales_found">penjualan tidak ditemukan</string>
     <plurals name="add_possible_matches">
         <item quantity="other">%d kemungkinan cocok — ketuk yang benar</item>

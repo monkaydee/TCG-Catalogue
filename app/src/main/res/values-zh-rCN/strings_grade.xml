@@ -49,4 +49,6 @@
     <string name="grade_centering_good">居中良好</string>
     <string name="grade_centering_off">偏心</string>
     <string name="grade_no_frame">没有可测量的印刷边框（该背面属正常）</string>
+    <string name="grade_model_unavailable">请选择卡牌游戏。仅支持Pokémon的评级估计，其他游戏只显示测量结果。</string>
+    <string name="grade_photos_required">估计需要清晰的正反面照片及可测量的边框。请重新拍摄或调整轮廓。</string>
 </resources>

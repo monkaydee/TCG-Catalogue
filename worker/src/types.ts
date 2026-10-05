@@ -3,6 +3,8 @@
 /** The secrets and settings Cloudflare hands to the Worker. Every secret is optional. */
 export interface Env {
   DB: D1Database;
+  FEEDBACK_IMAGES?: R2Bucket;
+  FEEDBACK_ADMIN_KEY?: string;
 
   // Secrets (set with `wrangler secret put` or by the GitHub workflow). Missing = provider skipped.
   APP_KEY?: string;
@@ -79,6 +81,7 @@ export interface RawPrice {
 export interface GradedPrice {
   grader: string; // "PSA", "BGS", "CGC", "SGC", ...
   grade: string; // "10", "9.5", "Authentic", ...
+  qualifier?: string; // "Black Label", "Pristine", "Perfect"; never a plain 10
   price: number;
   currency: string;
   source: string;
@@ -124,6 +127,7 @@ export interface RawProvider {
   name: ProviderName;
   /** How many cards fit in one call (1 = no batching). */
   batchSize: number;
+  callsPerBatch?: number;
   /** Wait at least this long between two calls in the same request (provider burst limits). */
   minIntervalMs?: number;
   /** Is this card something the provider can look up (right game, needed identifier present)? */
@@ -136,6 +140,7 @@ export interface RawProvider {
 export interface GradedProvider {
   name: ProviderName;
   batchSize: number;
+  callsPerBatch?: number;
   minIntervalMs?: number;
   supports(card: CardRequest): boolean;
   fetch(cards: CardRequest[], key: string): Promise<BatchResult<GradedPrice[]>>;

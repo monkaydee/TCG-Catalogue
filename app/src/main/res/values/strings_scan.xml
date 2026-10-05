@@ -10,7 +10,7 @@
     <!-- Confirm button of the sheet when adding a card to the collection -->
     <string name="add_confirm">Add</string>
     <!-- %1$s = the reason, e.g. "no sales found" (add_no_sales_found) or a message from the price service -->
-    <string name="add_graded_missing">No graded price found (%1$s). The raw price is used unless you enter your own value below.</string>
+    <string name="add_graded_missing">No graded price found (%1$s). Enter your own value below; no raw price is used.</string>
     <!-- Reason inside the brackets of add_graded_missing -->
     <string name="add_no_sales_found">no sales found</string>
     <plurals name="add_possible_matches">

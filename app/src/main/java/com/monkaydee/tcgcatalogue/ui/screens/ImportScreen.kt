@@ -126,13 +126,18 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
     val state = MutableStateFlow(ImportState())
     private val queue = Channel<Uri>(Channel.UNLIMITED)
     private var nextKey = 0L
-    private val dir = File(context.cacheDir, "imports").apply { mkdirs() }
+    private val dir = File(context.filesDir, "pending-imports").apply { mkdirs() }
     private val identifier = com.monkaydee.tcgcatalogue.scan.PhotoIdentifier(context, repo)
 
     init {
         // Photos are read one at a time to keep memory use low.
         viewModelScope.launch {
             repo.prepareIndexes()
+            dir.listFiles()?.filter { it.isFile }?.sortedBy { it.lastModified() }?.forEach { file ->
+                val photo = Uri.fromFile(file)
+                state.update { it.copy(items = it.items + ImportItem(nextKey++, photo, status = ImportStatus.READING)) }
+                process(photo)
+            }
             for (uri in queue) process(uri)
         }
     }
@@ -148,9 +153,10 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
                         val file = File(dir, "photo-${System.nanoTime()}")
                         context.contentResolver.openInputStream(uri)!!.use { input -> file.outputStream().use { input.copyTo(it) } }
                         Uri.fromFile(file)
-                    }.getOrDefault(uri)
+                    }.getOrNull()
                 }
                 val key = nextKey++
+                if (local == null) { state.update { it.copy(items = it.items + ImportItem(key, uri, status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_could_not_open_photo))) }; continue }
                 state.update { it.copy(items = it.items + ImportItem(key, local, status = ImportStatus.READING)) }
                 queue.send(local)
             }
@@ -166,12 +172,15 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
         }
         val found = result.getOrThrow()
         if (found.hits.isEmpty()) {
+            if (repo.reviewed(token(photo, null))) { remove(placeholder); return }
             // No number could be read: look the card up by its picture straight away.
             replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.LOOKING_UP, texts = found.texts)))
-            replace(placeholder.key, listOf(byPicture(placeholder.copy(texts = found.texts), found.texts)))
+            replace(placeholder.key, listOf(byPicture(placeholder.copy(texts = found.texts, grade = found.grade), found.texts)))
             return
         }
-        val items = found.hits.mapIndexed { i, hit ->
+        val remaining = found.hits.filterNot { repo.reviewed(token(photo, it)) }
+        if (remaining.isEmpty()) { remove(placeholder); return }
+        val items = remaining.mapIndexed { i, hit ->
             ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, found.grade, found.picture, ImportStatus.LOOKING_UP, texts = found.texts)
         }
         replace(placeholder.key, items)
@@ -188,25 +197,35 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
             candidates.isEmpty() -> item.copy(status = ImportStatus.NOT_FOUND)
             // found by the picture after the number led nowhere: always for review
             found.byPicture -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, note = null, byPicture = true)
-            repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
+            item.grade == null && repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
                 val top = candidates.first()
                 val grade = item.grade?.takeIf { it.grader != null && it.grade != null }
-                runCatching { repo.add(top, top.defaultVariant, 1, repo.settings.current().defaultCondition, grade) }
+                runCatching { repo.add(top, top.defaultVariant, 1, repo.settings.current().defaultCondition, grade, language = top.language ?: item.hit?.language ?: "EN", reviewToken = token(item.photo, item.hit)) }
                     .fold(
-                        onSuccess = {
+                        onSuccess = { row ->
+                            com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, item.texts, top.cardId, item.picture)
+                            com.monkaydee.tcgcatalogue.data.SharedLearning.markAutomatic(row)
                             item.copy(status = ImportStatus.ADDED, candidates = candidates, note = "${top.name} · ${top.setName}" + (if (top.variants.size > 1) " · ${top.defaultVariant.label}" else "") + (grade?.let { g -> " · ${g.label}" } ?: ""))
                         },
                         onFailure = { item.copy(status = ImportStatus.REVIEW, candidates = candidates) },
                     )
             }
-            else -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, sure = repo.isConfident(candidates))
+            else -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, sure = item.grade == null && repo.isConfident(candidates))
         }
         replace(item.key, listOf(updated))
     }
 
-    private fun replace(key: Long, with: List<ImportItem>) = state.update { s ->
+    private fun token(photo: Uri, hit: ScanHit?) = photo.path.orEmpty() + "|" + (hit?.key ?: "picture")
+
+    private fun cleanup(photo: Uri) {
+        if (state.value.items.none { it.photo == photo && it.status != ImportStatus.ADDED }) File(photo.path.orEmpty()).takeIf { it.parentFile == dir }?.delete()
+    }
+    private fun replace(key: Long, with: List<ImportItem>) {
+        state.update { s ->
         val i = s.items.indexOfFirst { it.key == key }
         if (i < 0) s else s.copy(items = s.items.take(i) + with + s.items.drop(i + 1))
+        }
+        with.filter { it.status == ImportStatus.ADDED }.forEach { cleanup(it.photo) }
     }
 
     /** A photo without a readable number: look the card up by its picture alone. */
@@ -269,13 +288,20 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     fun review(item: ImportItem) = state.update { it.copy(reviewing = item.key) }
     fun closeReview() = state.update { it.copy(reviewing = null) }
-    fun remove(item: ImportItem) = state.update { s -> s.copy(items = s.items.filterNot { it.key == item.key }) }
+    fun remove(item: ImportItem) {
+        viewModelScope.launch {
+            repo.discardReview(token(item.photo, item.hit))
+            state.update { s -> s.copy(items = s.items.filterNot { it.key == item.key }) }
+            cleanup(item.photo)
+        }
+    }
 
     fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing? = null, paid: Double? = null, own: Double? = null, language: String = c.language ?: "EN") {
         state.update { it.copy(reviewing = null) }
         viewModelScope.launch {
-            runCatching { repo.add(c, v, qty, condition, grade, listing, paid, own, language) }.onSuccess {
+            runCatching { repo.add(c, v, qty, condition, grade, listing, paid, own, language, reviewToken = state.value.items.firstOrNull { it.key == key }?.let { token(it.photo, it.hit) }) }.onSuccess { row ->
                 state.value.items.firstOrNull { it.key == key }?.let { item ->
+                    com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, item.texts, item.candidates.firstOrNull()?.cardId, item.picture)
                     // A corrected match is a recognition test case; confirmed ones too when the user collects them.
                     val corrected = item.candidates.firstOrNull()?.cardId != c.cardId
                     if (corrected || repo.settings.current().collectCases) {
@@ -302,7 +328,7 @@ class ImportViewModel(private val repo: CardRepository, private val context: Con
 
     override fun onCleared() {
         queue.close()
-        dir.deleteRecursively()
+        // Unfinished private copies survive process death and are removed only on completion/discard.
     }
 }
 
@@ -532,4 +558,3 @@ private fun RecognitionDetails(item: ImportItem, onDismiss: () -> Unit) {
         },
     )
 }
-

@@ -63,7 +63,7 @@ private fun SoldCard.saleIn(s: AppSettings) = Money.convert(salePrice, saleCurre
 private fun SoldCard.paidIn(s: AppSettings) = purchasePrice?.let { Money.convert(it, purchaseCurrency, s.currency, s.usdToEur) }
 
 /** Profit of the whole entry (all copies) in the display currency, null without a purchase price. */
-private fun SoldCard.profitIn(s: AppSettings) = paidIn(s)?.let { (saleIn(s) - it) * quantity }
+private fun SoldCard.profitIn(s: AppSettings) = (totalBasis?.let { Money.convert(it, saleCurrency, s.currency, s.usdToEur) } ?: paidIn(s)?.takeIf { condition in setOf("NM", "LP", "MP", "HP", "DMG") }?.times(quantity))?.let { saleIn(s) * quantity - it - Money.convert(saleFees, saleCurrency, s.currency, s.usdToEur) }
 
 /**
  * Cards the user sold: sale price, purchase price and profit per entry, and the realised profit
@@ -99,7 +99,7 @@ fun SoldScreen(repo: CardRepository, onBack: () -> Unit) {
         val sorted = sold.sortedByDescending { it.soldAt }
         val profit = sold.sumOf { it.profitIn(s) ?: 0.0 }
         val revenue = sold.sumOf { it.saleIn(s) * it.quantity }
-        val unknown = sold.count { it.purchasePrice == null }
+        val unknown = sold.count { it.profitIn(s) == null }
         LazyColumn(
             Modifier.padding(padding).fillMaxSize(),
             contentPadding = PaddingValues(16.dp),

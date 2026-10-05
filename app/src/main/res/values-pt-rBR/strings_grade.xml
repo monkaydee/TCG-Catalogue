@@ -49,4 +49,6 @@
     <string name="grade_centering_good">bem centralizada</string>
     <string name="grade_centering_off">descentralizada</string>
     <string name="grade_no_frame">sem moldura impressa para medir (normal neste verso)</string>
+    <string name="grade_model_unavailable">Escolha o jogo. Estimativas de nota estão disponíveis apenas para Pokémon; os outros jogos mostram medições.</string>
+    <string name="grade_photos_required">A estimativa exige fotos nítidas da frente e do verso com bordas mensuráveis. Tire novas fotos ou ajuste o contorno.</string>
 </resources>

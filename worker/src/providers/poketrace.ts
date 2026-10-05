@@ -10,7 +10,7 @@
 //
 // Graded tiers (PSA_10 …) are a paid feature, so they are not used here.
 // Uncertain: one TCGplayer product can come back as several PokeTrace cards (one per variant);
-// we pick the one whose `variant` matches the requested printing, else the first.
+// we require the requested printing when one is supplied.
 
 import type { BatchResult, CardRequest, Conditions, RawPrice, RawProvider } from "../types";
 import { arr, conditionCode, emptyConditions, fetchJson, hasAnyCondition, obj, price, samePrinting, str } from "../util";
@@ -37,7 +37,8 @@ export function parsePoketrace(json: unknown, cards: CardRequest[]): BatchResult
   for (const card of cards) {
     const matches = data.filter((d) => str(obj(d.refs).tcgplayerId) === card.tcgplayerId);
     if (matches.length === 0) continue;
-    const best = matches.find((d) => card.printing && samePrinting(str(d.variant), card.printing)) ?? matches[0];
+    const best = card.printing ? matches.find((d) => samePrinting(str(d.variant), card.printing)) : matches[0];
+    if (!best) continue;
     if ((str(best.currency) ?? "USD") !== "USD") continue;
     const conditions = poketraceConditions(best);
     if (hasAnyCondition(conditions)) out.set(card.key, { conditions, market: null, source: "poketrace" });

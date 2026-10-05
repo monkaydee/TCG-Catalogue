@@ -49,4 +49,6 @@
     <string name="grade_centering_good">tengah dengan baik</string>
     <string name="grade_centering_off">tidak di tengah</string>
     <string name="grade_no_frame">tidak ada bingkai cetak untuk diukur (normal untuk sisi belakang ini)</string>
+    <string name="grade_model_unavailable">Pilih permainan kartu. Perkiraan grade hanya tersedia untuk Pokémon; permainan lain menampilkan pengukuran.</string>
+    <string name="grade_photos_required">Perkiraan membutuhkan foto depan dan belakang yang jelas dengan tepi terukur. Foto ulang atau sesuaikan garis tepi.</string>
 </resources>

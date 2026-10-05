@@ -27,7 +27,7 @@ export function justTcgIdentifier(card: CardRequest): { tcgplayerId: string } | 
 
 /**
  * Picks one printing's conditions from a JustTCG card's variants. Uses the requested printing
- * when the card has it, otherwise the printing with the most priced conditions. English only.
+ * when supplied; without a preference, uses the most priced conditions. English only.
  */
 export function pickConditions(variants: unknown[], printing?: string): Conditions | null {
   const byPrinting = new Map<string, Conditions>();
@@ -45,6 +45,7 @@ export function pickConditions(variants: unknown[], printing?: string): Conditio
   }
   if (byPrinting.size === 0) return null;
   if (printing) for (const [pr, c] of byPrinting) if (samePrinting(pr, printing)) return c;
+  if (printing) return null; // Never substitute a cheaper/different printing.
   const count = (c: Conditions) => Object.values(c).filter((x) => x !== null).length;
   return [...byPrinting.values()].sort((a, b) => count(b) - count(a))[0];
 }
@@ -74,17 +75,21 @@ export function parseJustTcgGraded(json: unknown, card: CardRequest): GradedPric
       const g = obj(v.grading);
       if (v.type !== "graded" || !str(g.company)) continue;
       if (str(g.qualifier)) continue; // qualified grades (e.g. "OC") are a different, cheaper market
-      if (card.printing && str(v.printing) && !samePrinting(str(v.printing), card.printing)) continue;
-      if (str(v.language)) continue; // non-English printing
-      const m = obj(arr(v.markets)[0]);
+      if (card.printing && !samePrinting(str(v.printing), card.printing)) continue;
+      const language = str(v.language)?.toLowerCase();
+      if (language && language !== "english" && language !== "en") continue;
+      const m = arr(v.markets).map(obj).find((m) => (m.currency === "USD" || m.currency === "EUR") && price(m.price) !== null) ?? {};
       const p = price(m.price);
       if (p === null) continue;
       const grade = str(g.grade) ?? str(g.grade_label) ?? "Authentic";
       const label = str(g.grade_label);
+      const qualifier = label && (/black\s*label/i.test(label) || str(g.company)?.toUpperCase() === "CGC" && /pristine|perfect/i.test(label))
+        ? (/black\s*label/i.test(label) ? "Black Label" : /perfect/i.test(label) ? "Perfect" : "Pristine") : undefined;
       const updated = typeof m.updated_at === "number" ? new Date(m.updated_at * 1000).toISOString().slice(0, 10) : undefined;
       out.push({
         grader: str(g.company)!,
-        grade: label && str(g.grade) ? `${grade} ${label}` : grade,
+        grade,
+        ...(qualifier ? { qualifier } : {}),
         price: p,
         currency: str(m.currency) ?? "USD",
         source: "justtcg",

@@ -45,8 +45,8 @@ describe("helpers", () => {
 
 describe("request parsing and cache keys", () => {
   it("prefers the TCGplayer id in the key and includes the printing", () => {
-    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("pokemon:tcg42382:reverseholofoil");
-    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("magic:idabc");
+    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v3:pokemon:tcg42382:reverseholofoil");
+    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v3:magic:idabc");
   });
   it("accepts the app's enum names in any case and rejects unknown games", () => {
     expect(parseCard({ game: "ONE_PIECE", id: "OP01-024" })?.game).toBe("one_piece");
@@ -57,6 +57,22 @@ describe("request parsing and cache keys", () => {
 });
 
 describe("JustTCG", () => {
+  it("never substitutes another printing when the requested printing has no price", () => {
+    const requested = card({ tcgplayerId: "42382", printing: "Reverse Holofoil" });
+    expect(parseJustTcgBatch(justV1, [requested]).has(requested.key)).toBe(false);
+  });
+  it("keeps numeric grades and special qualifiers as separate fields", () => {
+    const variants = [
+      { type: "graded", language: "English", grading: { company: "CGC", grade: 10, grade_label: "Pristine" }, markets: [{ currency: "USD", price: 200 }] },
+      { type: "graded", grading: { company: "BGS", grade: 10, grade_label: "Pristine" }, markets: [{ currency: "USD", price: 100 }] },
+      { type: "graded", grading: { company: "BGS", grade: 10, grade_label: "Black Label" }, markets: [{ currency: "USD", price: 500 }] },
+    ];
+    const result = parseJustTcgGraded({ data: [{ variants }] }, card({}));
+    expect(result[0]).toMatchObject({ grade: "10", qualifier: "Pristine" });
+    expect(result[1].grade).toBe("10");
+    expect(result[1].qualifier).toBeUndefined();
+    expect(result[2]).toMatchObject({ grade: "10", qualifier: "Black Label" });
+  });
   it("normalizes a v1 batch, matching cards by TCGplayer id and printing", () => {
     const holo = card({ tcgplayerId: "42382", printing: "Holofoil" });
     const first = card({ tcgplayerId: "42382", printing: "1st Edition Holofoil" });
@@ -187,5 +203,21 @@ describe("Ximilar", () => {
     expect(ximilarGame("One Piece")).toBe("one_piece");
     expect(ximilarGame("Yu-Gi-Oh!")).toBe("yu-gi-oh!");
     expect(toBase64(new Uint8Array([0xff, 0xd8, 0xff]))).toBe("/9j/");
+  });
+});
+
+
+describe("printing availability", () => {
+  it("does not replace unavailable PokeTrace first editions with another printing", () => {
+    const first = card({ tcgplayerId: "502000", printing: "1st Edition Holofoil" });
+    expect(parsePoketrace(poke, [first]).has(first.key)).toBe(false);
+  });
+  it("does not replace missing foil rows or premium prints with normal TCG API prices", () => {
+    const foil = card({ printing: "Holofoil" });
+    const onlyNormal = { data: { prices: [{ printing: "Normal", market_price: 1 }] } };
+    expect(parseTcgApi(onlyNormal, foil)).toBeNull();
+    for (const printing of ["1st Edition Holofoil", "Shadowless", "Reverse Holofoil"]) {
+      expect(parseTcgApi(tcgapi, card({ printing }))).toBeNull();
+    }
   });
 });

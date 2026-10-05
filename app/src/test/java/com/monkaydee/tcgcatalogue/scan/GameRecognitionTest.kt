@@ -2,6 +2,7 @@ package com.monkaydee.tcgcatalogue.scan
 
 import com.monkaydee.tcgcatalogue.data.db.Game
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -92,6 +93,29 @@ class GameRecognitionTest {
         val g = CardTextParser.parseGrade(lines("BECKETT GRADING SERVICES", "CENTERING 9.5", "9.5 GEM MINT"))!!
         assertEquals("9.5", g.grade)
         assertNull(g.qualifier)
+    }
+
+    @Test fun bgsPristineIsNotAutomaticallyBlackLabel() {
+        assertNull(CardTextParser.parseGrade(lines("BECKETT", "PRISTINE 10"))!!.qualifier)
+        assertNull(CardTextParser.parseGrade(lines("BECKETT", "CENTERING 9.5", "CORNERS 10", "EDGES 10", "SURFACE 10", "PRISTINE 10"))!!.qualifier)
+        assertEquals("Black Label", CardTextParser.parseGrade(lines("BGS 10 BLACK LABEL"))!!.qualifier)
+    }
+
+    @Test fun directCompanyGradesAndSeparatePristineText() {
+        assertEquals("10", CardTextParser.parseGrade(lines("PSA 10", "12345678"))!!.grade)
+        assertEquals("9.5", CardTextParser.parseGrade(lines("BGS 9.5"))!!.grade)
+        assertEquals("Pristine", CardTextParser.parseGrade(lines("CGC", "10", "PRISTINE"))!!.qualifier)
+        assertEquals("Perfect", CardTextParser.parseGrade(lines("CGC", "PERFECT", "10"))!!.qualifier)
+    }
+
+    @Test fun conflictingLanguageEvidenceDoesNotChooseByListOrder() {
+        assertNull(CardTextParser.detectLanguage(listOf("BASIC", "SCHWÄCHE")))
+        assertEquals("DE", CardTextParser.detectLanguage(listOf("PAL DE", "BASIC", "SCHWÄCHE")))
+    }
+
+    @Test fun asianNamesAreComparedInsteadOfBeingDiscarded() {
+        assertTrue(CardTextParser.similarity("リザードン", "リザードン") > 0.99)
+        assertFalse(CardTextParser.nameOnCard("リザードン", listOf("ピカチュウ")))
     }
 
     @Test fun cgcPristineAndBareNumber() {

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Herramientas de recolección</string>
+  <string name="tools_costs">Libro mayor de costos</string>
+  <string name="tools_grading">Tarjetas enviadas para calificar</string>
+  <string name="tools_shipping">Envío por copia</string>
+  <string name="tools_tax">Impuesto por copia</string>
+  <string name="tools_grading_cost">Costo de calificación por copia</string>
+  <string name="tools_pnl">PnL no realizado</string>
+  <string name="tools_unknown">Precio o costo desconocido</string>
+  <string name="tools_blank">Deje en blanco los costos desconocidos. Ingrese 0 sin costo.</string>
+  <string name="tools_reference">Referencia de envío</string>
+  <string name="tools_notes">Notas</string>
+  <string name="tools_export">Exportación de seguros</string>
+  <string name="tools_review">Revisiones de fotos pendientes</string>
+  <string name="tools_evidence">Evidencia de precios</string>
+  <string name="tools_stale">Precio de mercado desactualizado</string>
+  <string name="tools_current">Precio de mercado actual</string>
+  <string name="tools_fees">Tarifas de venta</string>
+  <string name="tools_learning">Ayuda a mejorar el reconocimiento</string>
+  <string name="tools_photos">Compartir cultivos de tarjetas aprobados</string>
+  <string name="tools_send">Enviar informes pendientes</string>
+  <string name="tools_delete">Eliminar informes compartidos</string>
+  <string name="tools_consent">Opcional. Los informes de texto incluyen los detalles de la tarjeta y su corrección. Las fotos requieren una vista previa y aprobación por separado. Los informes se conservan durante 90 días.</string>
+  <string name="tools_preview">Aprobar recorte de tarjetas</string>
+  <string name="tools_preparing">preparando</string>
+  <string name="tools_shipped">Enviado</string>
+  <string name="tools_received">Recibido</string>
+  <string name="tools_grading_status">Calificación de tarjetas en progreso</string>
+  <string name="tools_returned">Devuelto</string>
+  <string name="tools_cancelled">Cancelado</string>
+  <string name="tools_complete">completo</string>
+  <string name="tools_price_challenge">Informar precio incorrecto</string>
+  <string name="tools_confirm_outline">Confirmar todo el esquema de la tarjeta</string>
+  <string name="tools_outline_hint">Verifique que las cuatro esquinas sean las esquinas exteriores de la tarjeta antes de confirmar.</string>
+  <string name="tools_duplicate_cert">Este certificado de calificación ya está en su colección.</string>
+</resources>

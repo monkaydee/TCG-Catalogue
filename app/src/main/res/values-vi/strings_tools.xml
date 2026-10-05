@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Công cụ thu thập</string>
+  <string name="tools_costs">Sổ cái chi phí</string>
+  <string name="tools_grading">Thẻ được gửi để chấm điểm</string>
+  <string name="tools_shipping">Vận chuyển mỗi bản sao</string>
+  <string name="tools_tax">Thuế trên mỗi bản sao</string>
+  <string name="tools_grading_cost">Chi phí chấm điểm cho mỗi bản sao</string>
+  <string name="tools_pnl">LNST chưa thực hiện</string>
+  <string name="tools_unknown">Giá hoặc chi phí không xác định</string>
+  <string name="tools_blank">Để trống chi phí không xác định. Nhập 0 miễn phí.</string>
+  <string name="tools_reference">Tài liệu tham khảo gửi</string>
+  <string name="tools_notes">Ghi chú</string>
+  <string name="tools_export">Xuất khẩu bảo hiểm</string>
+  <string name="tools_review">Đang chờ đánh giá ảnh</string>
+  <string name="tools_evidence">Bằng chứng về giá</string>
+  <string name="tools_stale">Giá thị trường lỗi thời</string>
+  <string name="tools_current">Giá thị trường hiện tại</string>
+  <string name="tools_fees">Phí bán hàng</string>
+  <string name="tools_learning">Giúp cải thiện khả năng nhận dạng</string>
+  <string name="tools_photos">Chia sẻ cây trồng thẻ đã được phê duyệt</string>
+  <string name="tools_send">Gửi báo cáo đang chờ xử lý</string>
+  <string name="tools_delete">Xóa báo cáo được chia sẻ</string>
+  <string name="tools_consent">Tùy chọn. Báo cáo văn bản bao gồm chi tiết thẻ và chỉnh sửa của bạn. Ảnh yêu cầu xem trước và phê duyệt riêng. Báo cáo được lưu giữ trong 90 ngày.</string>
+  <string name="tools_preview">Phê duyệt cắt thẻ</string>
+  <string name="tools_preparing">chuẩn bị</string>
+  <string name="tools_shipped">Đã vận chuyển</string>
+  <string name="tools_received">Đã nhận</string>
+  <string name="tools_grading_status">Đang tiến hành phân loại thẻ</string>
+  <string name="tools_returned">Đã trả lại</string>
+  <string name="tools_cancelled">Đã hủy</string>
+  <string name="tools_complete">Hoàn thành</string>
+  <string name="tools_price_challenge">Báo giá sai</string>
+  <string name="tools_confirm_outline">Xác nhận toàn bộ phác thảo thẻ</string>
+  <string name="tools_outline_hint">Kiểm tra xem tất cả bốn góc có phải là góc thẻ bên ngoài hay không trước khi xác nhận.</string>
+  <string name="tools_duplicate_cert">Giấy chứng nhận chấm điểm này đã có trong bộ sưu tập của bạn.</string>
+</resources>

@@ -150,6 +150,7 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             CloudPendingCard()
+            Section(stringResource(R.string.tools_learning)) { LearningPanel(repo) }
 
             Section(stringResource(R.string.appearance_title)) {
                 Label(stringResource(R.string.appearance_mode))

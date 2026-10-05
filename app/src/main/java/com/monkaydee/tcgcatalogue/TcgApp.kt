@@ -51,6 +51,8 @@ class TcgApp : Application() {
             fx = FxApi(http),
             settings = SettingsStore(this),
         )
+        com.monkaydee.tcgcatalogue.data.SharedLearning.initialize(this, repository)
+        appScope.launch { repository.initializeLedger() }
         PriceRefreshWorker.scheduleDaily(this)
 
         CloudBackup.init(this, repository)

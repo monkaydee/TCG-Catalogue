@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Toplama araçları</string>
+  <string name="tools_costs">Maliyet defteri</string>
+  <string name="tools_grading">Not verme için gönderilen kartlar</string>
+  <string name="tools_shipping">Kopya başına gönderim</string>
+  <string name="tools_tax">Kopya başına vergi</string>
+  <string name="tools_grading_cost">Kopya başına derecelendirme maliyeti</string>
+  <string name="tools_pnl">Gerçekleşmemiş PnL</string>
+  <string name="tools_unknown">Bilinmeyen fiyat veya maliyet</string>
+  <string name="tools_blank">Bilinmeyen maliyetleri boş bırakın. Ücretsiz olarak 0 girin.</string>
+  <string name="tools_reference">Gönderim referansı</string>
+  <string name="tools_notes">Notlar</string>
+  <string name="tools_export">Sigorta ihracatı</string>
+  <string name="tools_review">Bekleyen fotoğraf incelemeleri</string>
+  <string name="tools_evidence">Fiyat kanıtı</string>
+  <string name="tools_stale">Güncel olmayan piyasa fiyatı</string>
+  <string name="tools_current">Güncel piyasa fiyatı</string>
+  <string name="tools_fees">Satış ücretleri</string>
+  <string name="tools_learning">Tanınmayı iyileştirmeye yardımcı olun</string>
+  <string name="tools_photos">Onaylı tarak ürünlerini paylaşın</string>
+  <string name="tools_send">Bekleyen raporları gönder</string>
+  <string name="tools_delete">Paylaşılan raporları sil</string>
+  <string name="tools_consent">İsteğe bağlı. Metin raporları kart ayrıntılarını ve düzeltmenizi içerir. Fotoğraflar ayrı bir önizleme ve onay gerektirir. Raporlar 90 gün süreyle saklanır.</string>
+  <string name="tools_preview">Kart kırpmayı onayla</string>
+  <string name="tools_preparing">Hazırlanıyor</string>
+  <string name="tools_shipped">Gönderildi</string>
+  <string name="tools_received">Alındı</string>
+  <string name="tools_grading_status">Kart sınıflandırma işlemi devam ediyor</string>
+  <string name="tools_returned">İade edildi</string>
+  <string name="tools_cancelled">İptal edildi</string>
+  <string name="tools_complete">Tamamlandı</string>
+  <string name="tools_price_challenge">Yanlış fiyatı bildir</string>
+  <string name="tools_confirm_outline">Kart taslağının tamamını onaylayın</string>
+  <string name="tools_outline_hint">Onaylamadan önce dört köşenin de kartın dış köşeleri olduğunu kontrol edin.</string>
+  <string name="tools_duplicate_cert">Bu derecelendirme sertifikası zaten koleksiyonunuzda mevcut.</string>
+</resources>

@@ -49,4 +49,6 @@
     <string name="grade_centering_good">хорошо отцентрована</string>
     <string name="grade_centering_off">смещена</string>
     <string name="grade_no_frame">нет печатной рамки для измерения (нормально для этой рубашки)</string>
+    <string name="grade_model_unavailable">Выберите игру. Оценка грейда доступна только для Pokémon; другие игры показывают измерения.</string>
+    <string name="grade_photos_required">Для оценки нужны чёткие фото обеих сторон с измеримыми рамками. Переснимите или исправьте контур.</string>
 </resources>

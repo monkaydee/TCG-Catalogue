@@ -49,4 +49,6 @@
     <string name="grade_centering_good">gut zentriert</string>
     <string name="grade_centering_off">dezentriert</string>
     <string name="grade_no_frame">kein gedruckter Rahmen zum Messen (normal bei dieser Rückseite)</string>
+    <string name="grade_model_unavailable">Wähle das Kartenspiel. Notenschätzungen sind nur für Pokémon verfügbar; andere Spiele zeigen nur Messwerte.</string>
+    <string name="grade_photos_required">Eine Notenschätzung benötigt klare Vorder- und Rückseitenfotos mit messbaren Rändern. Fotografiere erneut oder passe die Kontur an.</string>
 </resources>

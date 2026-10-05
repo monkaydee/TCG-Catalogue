@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -38,6 +39,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.monkaydee.tcgcatalogue.data.CardRepository
+import com.monkaydee.tcgcatalogue.data.SharedLearning
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.scan.SharedPhotos
 import com.monkaydee.tcgcatalogue.ui.screens.BinderScreen
@@ -61,6 +63,7 @@ private data class Tab(val route: String, @androidx.annotation.StringRes val lab
 private val tabs = listOf(
     Tab("home", R.string.nav_collection, Icons.Default.Collections),
     Tab("scan", R.string.nav_scan, Icons.Default.CameraAlt),
+    Tab("tools", R.string.tools_title, Icons.Default.Assessment),
     Tab("settings", R.string.nav_settings, Icons.Default.Settings),
 )
 
@@ -68,6 +71,7 @@ private val tabs = listOf(
 fun AppNav(repo: CardRepository) {
     val nav = rememberNavController()
     val context = LocalContext.current
+    LaunchedEffect(repo) { repo.initializeLedger() }
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
     val refreshState by remember { PriceRefreshWorker.observeNow(context).map { it.firstOrNull()?.state } }.collectAsState(initial = null)
@@ -177,6 +181,7 @@ fun AppNav(repo: CardRepository) {
                     onManual = { nav.navigate("search") },
                 )
             }
+            composable("tools") { com.monkaydee.tcgcatalogue.ui.screens.CollectionToolsScreen(repo, { nav.navigate("card/$it") }, { nav.navigate("import") }) }
             composable("settings") { SettingsScreen(repo, onRefresh = refresh) }
             composable(
                 "search?replace={replace}",

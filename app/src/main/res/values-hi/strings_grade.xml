@@ -49,4 +49,6 @@
     <string name="grade_centering_good">अच्छी तरह केंद्रित</string>
     <string name="grade_centering_off">केंद्र से हटी</string>
     <string name="grade_no_frame">मापने के लिए छपा फ़्रेम नहीं (इस पिछले हिस्से के लिए सामान्य)</string>
+    <string name="grade_model_unavailable">कार्ड गेम चुनें। ग्रेड का अनुमान केवल Pokémon के लिए उपलब्ध है; अन्य गेम में केवल माप दिखते हैं।</string>
+    <string name="grade_photos_required">अनुमान के लिए आगे और पीछे की साफ़ तस्वीरें और मापने योग्य किनारे चाहिए। फिर से फ़ोटो लें या रूपरेखा ठीक करें।</string>
 </resources>

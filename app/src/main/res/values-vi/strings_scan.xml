@@ -3,7 +3,7 @@
     <string name="add_no_price">chưa có giá</string>
     <string name="add_grader_other">Khác</string>
     <string name="add_confirm">Thêm</string>
-    <string name="add_graded_missing">Không tìm thấy giá thẻ đã grade (%1$s). Sẽ dùng giá Raw trừ khi bạn nhập giá trị riêng bên dưới.</string>
+    <string name="add_graded_missing">Không tìm thấy giá thẻ đã chấm điểm (%1$s). Nhập giá trị riêng bên dưới; không dùng giá thẻ chưa chấm điểm.</string>
     <string name="add_no_sales_found">không tìm thấy giao dịch</string>
     <plurals name="add_possible_matches">
         <item quantity="other">%d kết quả có thể khớp — chạm vào kết quả đúng</item>

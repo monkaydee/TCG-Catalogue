@@ -14,7 +14,8 @@ object PhotoCheck {
     fun sharpness(card: Pixels): Double {
         val w = card.width
         val h = card.height
-        val m = (0.03 * w).toInt()
+        if (w < 3 || h < 3) return 0.0
+        val m = maxOf(1, (0.03 * minOf(w, h)).toInt())
         fun l(x: Int, y: Int): Int { val c = card.argb[y * w + x]; return (((c shr 16) and 0xFF) * 299 + ((c shr 8) and 0xFF) * 587 + (c and 0xFF) * 114) / 1000 }
         var sum = 0.0
         var n = 0
@@ -28,7 +29,7 @@ object PhotoCheck {
             }
             y += 2
         }
-        return sum / n
+        return if (n > 0) sum / n else 0.0
     }
 
     /** Share of nearly white, colourless pixels (reflections of a lamp or window). */

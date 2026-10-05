@@ -370,3 +370,7 @@ number of saved results.
   `RAPIDAPI_POP_HOST` in `worker/wrangler.toml` and deploy again. Without it, `/v1/pop` uses PSA.
 - **TCG API** gives per-condition prices only on its paid Pro plan; on the free plan we get one
   market price per printing, returned as `market`.
+
+## Recognition learning
+
+The release also enables private opt-in reports. See [SHARED-LEARNING.md](SHARED-LEARNING.md) for the private R2 bucket, separate moderation key, retention/deletion and operator review commands. `/v1/status` now reports whether private photos and moderation are configured, without returning secret values.

@@ -3,7 +3,7 @@
     <string name="add_no_price">无价格</string>
     <string name="add_grader_other">其他</string>
     <string name="add_confirm">添加</string>
-    <string name="add_graded_missing">未找到评级价格（%1$s）。除非在下方输入自定价值，否则将使用裸卡价格。</string>
+    <string name="add_graded_missing">未找到评级价格（%1$s）。请在下方输入自定义价值；不会使用未评级价格。</string>
     <string name="add_no_sales_found">未找到成交记录</string>
     <plurals name="add_possible_matches">
         <item quantity="other">%d 个可能的匹配，请点选正确的一个</item>

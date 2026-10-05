@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Rect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +31,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +47,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -80,6 +84,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.grade.Centering
 import com.monkaydee.tcgcatalogue.grade.GradeModel
 import com.monkaydee.tcgcatalogue.grade.PhotoCheck
@@ -116,6 +121,7 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(Step.FRONT) }
+    var game by remember { mutableStateOf<Game?>(null) }
     var front by remember { mutableStateOf<PreGrader.Side?>(null) }
     var back by remember { mutableStateOf<PreGrader.Side?>(null) }
     var camera by remember { mutableStateOf(false) }
@@ -178,7 +184,7 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                     onPhoto = { photo, guide -> analyse(photo, guide) },
                     onError = { camera = false; error = context.getString(R.string.grade_camera_failed) },
                 )
-                step == Step.RESULT -> GradeResult(front, back, onRedo = { front = null; back = null; step = Step.FRONT })
+                step == Step.RESULT -> GradeResult(front, back, game, onGame = { game = it }, onRedo = { front = null; back = null; step = Step.FRONT })
                 adjusting && (if (step == Step.FRONT) front else back)?.let { it.photo != null && it.quad != null } == true -> {
                     val side = (if (step == Step.FRONT) front else back)!!
                     Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
@@ -202,6 +208,7 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                     val side = if (step == Step.FRONT) front else back
                     CaptureStep(
                         onAdjust = { adjusting = true },
+                        onConfirm = { if (step == Step.FRONT) front = front?.copy(outlineConfirmed = true) else back = back?.copy(outlineConfirmed = true) },
                         step = step,
                         side = side,
                         busy = busy,
@@ -233,6 +240,7 @@ private fun CaptureStep(
     onNext: () -> Unit,
     onSkip: (() -> Unit)?,
     onAdjust: () -> Unit,
+    onConfirm: () -> Unit,
 ) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -251,6 +259,20 @@ private fun CaptureStep(
                 Text(stringResource(R.string.grade_analysing), style = MaterialTheme.typography.bodyMedium)
             }
             side != null -> {
+                side.photo?.let { original ->
+                    Box(Modifier.fillMaxWidth().aspectRatio(original.width.toFloat() / original.height)) {
+                        Image(original.asImageBitmap(), stringResource(R.string.tools_confirm_outline), Modifier.fillMaxSize())
+                        Canvas(Modifier.fillMaxSize()) {
+                            val sx = size.width / original.width; val sy = size.height / original.height
+                            side.quad?.corners?.let { corners ->
+                                for (i in corners.indices) {
+                                    val a = corners[i]; val b = corners[(i + 1) % corners.size]
+                                    drawLine(Color(0xFF00E676), Offset(a.x.toFloat() * sx, a.y.toFloat() * sy), Offset(b.x.toFloat() * sx, b.y.toFloat() * sy), strokeWidth = 3.dp.toPx())
+                                }
+                            }
+                        }
+                    }
+                }
                 FlatCard(side, Modifier.fillMaxWidth(0.8f))
                 side.problems.forEach { p ->
                     Text(
@@ -266,9 +288,11 @@ private fun CaptureStep(
                 }
                 Text(stringResource(R.string.grade_check_outline), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
                 if (side.photo != null) TextButton(onClick = onAdjust) { Text(stringResource(R.string.grade_adjust)) }
+                Text(stringResource(R.string.tools_outline_hint))
+                if (!side.outlineConfirmed) OutlinedButton(onClick = onConfirm) { Text(stringResource(R.string.tools_confirm_outline)) }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = onRetake) { Text(stringResource(R.string.grade_retake)) }
-                    Button(onClick = onNext) { Text(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.grade_show_result)) }
+                    Button(onClick = onNext, enabled = side.outlineConfirmed) { Text(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.grade_show_result)) }
                 }
             }
             else -> {
@@ -325,13 +349,22 @@ private fun FlatCard(side: PreGrader.Side, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, onRedo: () -> Unit) {
-    val estimate = remember(front, back) { GradeModel.estimate(front, back) }
+private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, onGame: (Game) -> Unit, onRedo: () -> Unit) {
+    val usable = front?.usableForGrade == true && back?.usableForGrade == true
+    val estimate = remember(front, back, game) { if (usable && game == Game.POKEMON) GradeModel.estimate(front, back) else null }
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // Likely grade
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(Game.entries) { g -> FilterChip(selected = game == g, onClick = { onGame(g) }, label = { Text(g.short) }) }
+        }
+        if (estimate == null) {
+            Text(stringResource(if (game != Game.POKEMON) R.string.grade_model_unavailable else R.string.grade_photos_required),
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        // Do not substitute training averages for missing/unusable photos or unsupported games.
+        if (estimate != null) {
         Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(stringResource(R.string.grade_likely), style = MaterialTheme.typography.labelLarge)
@@ -352,13 +385,14 @@ private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, onRedo: (
                 Text(stringResource(R.string.grade_limiting, stringResource(estimate.limiting)), style = MaterialTheme.typography.bodySmall)
             }
         }
+        }
         // Centering
         Section(stringResource(R.string.grade_centering)) {
             CenteringLine(stringResource(R.string.grade_front), front?.centering, limit = 55.0)
             CenteringLine(stringResource(R.string.grade_back), back?.centering, limit = 75.0)
             Text(stringResource(R.string.grade_centering_explain), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
-            Centering.Company.entries.forEach { co ->
+            Centering.Company.entries.filter { usable && game == Game.POKEMON }.forEach { co ->
                 Text(
                     stringResource(R.string.grade_centering_allows, co.label, co.bestGrade(front?.centering?.worst, back?.centering?.worst)),
                     style = MaterialTheme.typography.bodySmall,
@@ -445,6 +479,7 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
     val lifecycleOwner = LocalLifecycleOwner.current
     val executor = remember { Executors.newSingleThreadExecutor() }
     val previewRef = remember { arrayOfNulls<PreviewView>(1) }
+    val captureRef = remember { arrayOfNulls<ImageCapture>(1) }
     var viewSize by remember { mutableStateOf(0f to 0f) }
     var taking by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -453,7 +488,7 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { ctx ->
-                // COMPATIBLE (TextureView) so the frame on screen can be read back as a bitmap.
+                // TextureView preview; grading photos come from the full-resolution ImageCapture use case.
                 val view = PreviewView(ctx).apply {
                     scaleType = PreviewView.ScaleType.FILL_CENTER
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
@@ -464,7 +499,7 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
                     viewSize = view.width.toFloat() to view.height.toFloat()
                     future.addListener({
                         val provider = future.get()
-                        // A sharp preview (Full HD or the closest): the analysed frame is the preview itself.
+                        // Capture a sensor-resolution still; the screen preview loses corner detail.
                         val selector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
                             .setResolutionStrategy(
                                 androidx.camera.core.resolutionselector.ResolutionStrategy(
@@ -473,9 +508,13 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
                                 ),
                             ).build()
                         val preview = Preview.Builder().setResolutionSelector(selector).build().also { it.setSurfaceProvider(view.surfaceProvider) }
+                        val capture = ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build()
+                        captureRef[0] = capture
                         runCatching {
                             provider.unbindAll()
-                            provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview)
+                            val group = UseCaseGroup.Builder().addUseCase(preview).addUseCase(capture)
+                            view.viewPort?.let { group.setViewPort(it) }
+                            provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, group.build())
                         }.onFailure { onError() }
                     }, ContextCompat.getMainExecutor(context))
                 }
@@ -509,12 +548,35 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
         fun shoot() {
             if (taking) return
             val view = previewRef[0] ?: return
+            val capture = captureRef[0] ?: return
+            if (view.width == 0 || view.height == 0) return
+            val guide = guideFractions(view.width.toFloat(), view.height.toFloat())
             taking = true
-            // The frame exactly as shown on screen: the guide box is the same pixels in it, so the card
-            // is where the user put it (no mapping between camera photo and preview to get wrong).
-            val frame = view.bitmap
-            taking = false
-            if (frame == null || view.width == 0) onError() else onPhoto(frame, guideFractions(view.width.toFloat(), view.height.toFloat()))
+            capture.takePicture(executor, object : ImageCapture.OnImageCapturedCallback() {
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    val result = runCatching {
+                        val full = image.toBitmap()
+                        val crop = image.cropRect
+                        val rect = if (full.width == crop.width() && full.height == crop.height()) {
+                            Rect(0, 0, full.width, full.height)
+                        } else {
+                            Rect(crop).apply { if (!intersect(0, 0, full.width, full.height)) set(0, 0, full.width, full.height) }
+                        }
+                        val frame = Bitmap.createBitmap(full, rect.left, rect.top, rect.width(), rect.height(),
+                            Matrix().apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }, true)
+                        if (frame !== full) full.recycle()
+                        frame
+                    }
+                    image.close()
+                    scope.launch {
+                        taking = false
+                        result.fold(onSuccess = { onPhoto(it, guide) }, onFailure = { onError() })
+                    }
+                }
+                override fun onError(exception: ImageCaptureException) {
+                    scope.launch { taking = false; onError() }
+                }
+            })
         }
         // Takes the photo by itself once the phone has stayed flat for a moment (steady hands, no tap shake).
         LaunchedEffect(level) {

@@ -99,6 +99,31 @@ class Screenshots {
         save("binder_9x9")
     }
 
+    @Test fun gradingCompanySlabs() {
+        var spec by mutableStateOf(Triple("PSA", "10", null as String?))
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("${spec.first} ${spec.second} ${spec.third.orEmpty()}", color = Color.White)
+                    com.monkaydee.tcgcatalogue.ui.components.GradedSlab(
+                        null, spec.first, spec.second, spec.third, "Flareon · English", "Jungle #3/64", "74004211",
+                        Modifier.fillMaxWidth(0.75f),
+                    )
+                    com.monkaydee.tcgcatalogue.ui.components.GradedSlab(
+                        null, spec.first, spec.second, spec.third, "Flareon", "Jungle #3", "74004211",
+                        Modifier.size(90.dp, 160.dp), thumb = true,
+                    )
+                }
+            }
+        }
+        for (s in listOf(Triple("PSA", "10", null), Triple("BGS", "9.5", null), Triple("BGS", "10", null),
+            Triple("BGS", "10", "Black Label"), Triple("CGC", "10", null), Triple("CGC", "10", "Pristine"), Triple("SGC", "10", null))) {
+            rule.runOnUiThread { spec = s }
+            save("slab_${s.first}_${s.second}_${s.third ?: "standard"}")
+        }
+    }
+
     @Test fun binderPageTurn() {
         val state = PageTurnState(1)
         rule.setContent {
@@ -210,4 +235,3 @@ class Screenshots {
         }
     }
 }
-

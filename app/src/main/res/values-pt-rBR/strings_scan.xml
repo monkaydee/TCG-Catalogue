@@ -3,7 +3,7 @@
     <string name="add_no_price">sem preço</string>
     <string name="add_grader_other">Outra</string>
     <string name="add_confirm">Adicionar</string>
-    <string name="add_graded_missing">Nenhum preço gradeado encontrado (%1$s). O preço sem gradação é usado, a menos que você informe seu próprio valor abaixo.</string>
+    <string name="add_graded_missing">Nenhum preço graduado encontrado (%1$s). Insira seu valor abaixo; o preço sem graduação não é usado.</string>
     <string name="add_no_sales_found">nenhuma venda encontrada</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d possível correspondência — toque na certa</item>

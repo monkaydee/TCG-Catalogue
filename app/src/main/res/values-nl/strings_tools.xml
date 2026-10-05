@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Verzamelhulpmiddelen</string>
+  <string name="tools_costs">Kostenboek</string>
+  <string name="tools_grading">Kaarten verzonden voor beoordeling</string>
+  <string name="tools_shipping">Verzending per exemplaar</string>
+  <string name="tools_tax">Belasting per exemplaar</string>
+  <string name="tools_grading_cost">Beoordelingskosten per exemplaar</string>
+  <string name="tools_pnl">Niet-gerealiseerde PnL</string>
+  <string name="tools_unknown">Onbekende prijs of kosten</string>
+  <string name="tools_blank">Laat onbekende kosten blanco. Vul gratis 0 in.</string>
+  <string name="tools_reference">Inzendingsreferentie</string>
+  <string name="tools_notes">Opmerkingen</string>
+  <string name="tools_export">Export van verzekeringen</string>
+  <string name="tools_review">In afwachting van fotorecensies</string>
+  <string name="tools_evidence">Prijs bewijs</string>
+  <string name="tools_stale">Verouderde marktprijs</string>
+  <string name="tools_current">Huidige marktprijs</string>
+  <string name="tools_fees">Verkoopkosten</string>
+  <string name="tools_learning">Help de herkenning te verbeteren</string>
+  <string name="tools_photos">Deel goedgekeurde kaartgewassen</string>
+  <string name="tools_send">Verzend openstaande rapporten</string>
+  <string name="tools_delete">Gedeelde rapporten verwijderen</string>
+  <string name="tools_consent">Optioneel. Tekstrapporten bevatten kaartgegevens en uw correctie. Foto\'s vereisen een afzonderlijk voorbeeld en goedkeuring. Rapporten worden 90 dagen bewaard.</string>
+  <string name="tools_preview">Kaartuitsnede goedkeuren</string>
+  <string name="tools_preparing">Voorbereiden</string>
+  <string name="tools_shipped">Verzonden</string>
+  <string name="tools_received">Ontvangen</string>
+  <string name="tools_grading_status">Kaartbeoordeling wordt uitgevoerd</string>
+  <string name="tools_returned">Teruggekeerd</string>
+  <string name="tools_cancelled">Geannuleerd</string>
+  <string name="tools_complete">Compleet</string>
+  <string name="tools_price_challenge">Geef onjuiste prijs door</string>
+  <string name="tools_confirm_outline">Bevestig de volledige kaartomtrek</string>
+  <string name="tools_outline_hint">Controleer of alle vier de hoeken de buitenste kaarthoeken zijn voordat u bevestigt.</string>
+  <string name="tools_duplicate_cert">Dit beoordelingscertificaat bevindt zich al in uw verzameling.</string>
+</resources>

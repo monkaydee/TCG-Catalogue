@@ -49,4 +49,6 @@
     <string name="grade_centering_good">iyi ortalanmış</string>
     <string name="grade_centering_off">ortalanmamış</string>
     <string name="grade_no_frame">ölçülecek baskılı çerçeve yok (bu arka yüz için normal)</string>
+    <string name="grade_model_unavailable">Kart oyununu seçin. Not tahminleri yalnızca Pokémon için kullanılabilir; diğer oyunlar ölçümleri gösterir.</string>
+    <string name="grade_photos_required">Tahmin için ölçülebilir kenarlara sahip net ön ve arka fotoğraflar gerekir. Yeniden çekin veya dış çizgiyi ayarlayın.</string>
 </resources>

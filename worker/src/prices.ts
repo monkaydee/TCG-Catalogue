@@ -16,8 +16,9 @@ const text = (v: unknown, max = 200) => (typeof v === "string" ? v.trim().slice(
 export function cacheKey(c: Omit<CardRequest, "key">): string {
   const id = c.tcgplayerId ? `tcg${c.tcgplayerId}` : `id${c.id}`;
   const printing = c.printing ? `:${c.printing.toLowerCase().replace(/[^a-z0-9]/g, "")}` : "";
-  const language = c.language && c.language !== "EN" ? `@${c.language}2` : "";
-  return `${c.game}:${id}${printing}${language}`;
+  const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
+  // Version the cache after fixing language, printing and qualified-grade matching.
+  return `v3:${c.game}:${id}${printing}${language}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -28,6 +29,8 @@ export function parseCard(v: unknown): CardRequest | null {
   if (!GAMES.includes(game)) return null;
   const id = text(o.id, 100);
   const tcg = text(o.tcgplayerId, 20);
+  const language = text(o.language, 10).toUpperCase();
+  if (o.language !== undefined && !/^[A-Z]{2}$/.test(language)) return null;
   const card: Omit<CardRequest, "key"> = {
     game,
     id,
@@ -37,7 +40,7 @@ export function parseCard(v: unknown): CardRequest | null {
     ...(/^\d+$/.test(tcg) ? { tcgplayerId: tcg } : {}),
     ...(text(o.printing, 60) ? { printing: text(o.printing, 60) } : {}),
     ...(text(o.localName, 120) ? { localName: text(o.localName, 120) } : {}),
-    ...(typeof o.language === "string" && /^[A-Z]{2}$/.test(o.language) ? { language: o.language } : {}),
+    ...(language ? { language } : {}),
     ...(o.graded === true ? { graded: true } : {}),
   };
   if (!card.id && !card.tcgplayerId) return null;
@@ -56,6 +59,8 @@ export interface Gate {
 export interface ChainProvider<T> {
   name: ProviderName;
   batchSize: number;
+  /** HTTP search calls made by one batch (OAuth token acquisition has separate headroom). */
+  callsPerBatch?: number;
   minIntervalMs?: number;
   supports(card: CardRequest): boolean;
   fetch(cards: CardRequest[], key: string): Promise<Map<string, T>>;
@@ -83,17 +88,22 @@ export async function runChain<T>(
   gate: Gate,
   calls: { left: number },
   wait: (ms: number) => Promise<unknown> = sleep,
+  merge?: (previous: T | undefined, next: T) => T,
 ): Promise<ChainOutcome<T>> {
   const found = new Map<string, T>();
   const unchecked = new Set<string>(); // a provider that supports the card could not ask about it
 
   for (const { provider, key } of providers) {
-    const pending = cards.filter((c) => !found.has(c.key) && provider.supports(c));
+    const pending = cards.filter((c) => (merge || !found.has(c.key)) && provider.supports(c));
     if (pending.length === 0) continue;
     const batches = chunk(pending, provider.batchSize);
-    const wanted = Math.min(batches.length, Math.max(0, calls.left));
-    const granted = wanted > 0 ? await gate.reserve(provider.name, wanted) : 0;
-    calls.left -= granted;
+    const cost = provider.callsPerBatch ?? 1;
+    const wanted = Math.min(batches.length, Math.floor(Math.max(0, calls.left) / cost)) * cost;
+    const reserved = wanted > 0 ? await gate.reserve(provider.name, wanted) : 0;
+    const granted = Math.floor(reserved / cost);
+    const remainder = reserved - granted * cost;
+    if (remainder > 0) await gate.refund(provider.name, remainder);
+    calls.left -= granted * cost;
     let used = 0;
     let stop = false;
     for (let i = 0; i < batches.length; i++) {
@@ -108,7 +118,7 @@ export async function runChain<T>(
         const result = await provider.fetch(batch, key);
         for (const c of batch) {
           const v = result.get(c.key);
-          if (v !== undefined) found.set(c.key, v);
+          if (v !== undefined) found.set(c.key, merge ? merge(found.get(c.key), v) : v);
         }
       } catch (e) {
         batch.forEach((c) => unchecked.add(c.key));
@@ -119,7 +129,7 @@ export async function runChain<T>(
         console.log(`provider error: ${e instanceof Error ? e.message : "unknown"}`);
       }
     }
-    if (granted > used) await gate.refund(provider.name, granted - used);
+    if (granted > used) await gate.refund(provider.name, (granted - used) * cost);
   }
 
   const notFound = new Set<string>();
@@ -132,6 +142,16 @@ export async function runChain<T>(
   return { found, notFound, unsupported };
 }
 
+/** Keep the preferred provider for each grader/grade/qualifier, fill gaps from later ones. */
+export function mergeGraded(previous: GradedPrice[] = [], next: GradedPrice[]): GradedPrice[] {
+  const byGrade = new Map<string, GradedPrice>();
+  for (const g of [...previous, ...next]) {
+    const key = `${g.grader.toUpperCase()}|${g.grade}|${g.qualifier ?? ""}|${g.currency}`;
+    if (!byGrade.has(key)) byGrade.set(key, g);
+  }
+  return [...byGrade.values()];
+}
+
 // ---------- The whole /v1/prices flow ----------
 
 export interface CardPrice {
@@ -140,6 +160,7 @@ export interface CardPrice {
   market: number | null;
   currency: string;
   graded: GradedPrice[];
+  gradedReason: "not_found" | "unsupported" | "unavailable" | null;
   source: string | null;
   fetchedAt: string | null;
   stale: boolean;
@@ -174,7 +195,9 @@ export const hours = (h: number) => h * HOUR;
 
 export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<CardPrice[]> {
   // The same card may be listed twice; only look it up once.
-  const unique = [...new Map(cards.map((c) => [c.key, c])).values()];
+  const byKey = new Map<string, CardRequest>();
+  for (const c of cards) byKey.set(c.key, { ...c, graded: c.graded || byKey.get(c.key)?.graded });
+  const unique = [...byKey.values()];
   const rawKey = (c: CardRequest) => `raw|${c.key}`;
   const gradedKey = (c: CardRequest) => `graded|${c.key}`;
 
@@ -187,7 +210,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
   const calls = { left: d.maxCalls };
   // Graded first: those are the cards people care most about, and their providers are scarcer.
   const gradedMiss = unique.filter((c) => c.graded && !fresh(gradedKey(c)));
-  const graded = await runChain(gradedMiss, d.graded, d.gate, calls, d.wait);
+  const graded = await runChain(gradedMiss, d.graded, d.gate, calls, d.wait, mergeGraded);
   const rawMiss = unique.filter((c) => !fresh(rawKey(c)));
   const raw = await runChain(rawMiss, d.raw, d.gate, calls, d.wait);
 
@@ -245,10 +268,18 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
       currency: p?.currency ?? "USD",
       ...(p?.listings ? { listings: p.listings, low: p.low, high: p.high } : {}),
       graded: gradedList,
+      gradedReason: !c.graded || gradedList.length ? null
+        : graded.notFound.has(c.key) || fresh(gradedKey(c)) ? "not_found"
+        : graded.unsupported.has(c.key) ? "unsupported" : "unavailable",
       source: p ? p.source : null,
       fetchedAt: rawEntry ? new Date(rawEntry.fetchedAt).toISOString() : null,
       stale: (rawEntry?.stale ?? false) || gradedStale,
       reason,
     };
   });
+}
+
+/** Legacy apps ignore qualifier fields and must never see premium grades as ordinary 10s. */
+export function gradedForSchema(grades: GradedPrice[], schemaVersion: unknown): GradedPrice[] {
+  return schemaVersion === 2 ? grades : grades.filter((g) => !g.qualifier);
 }

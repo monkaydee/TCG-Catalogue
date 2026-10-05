@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">เครื่องมือสะสม</string>
+  <string name="tools_costs">บัญชีแยกประเภทต้นทุน</string>
+  <string name="tools_grading">การ์ดที่ส่งมาเพื่อให้คะแนน</string>
+  <string name="tools_shipping">ค่าจัดส่งต่อสำเนา</string>
+  <string name="tools_tax">ภาษีต่อสำเนา</string>
+  <string name="tools_grading_cost">ต้นทุนการให้คะแนนต่อสำเนา</string>
+  <string name="tools_pnl">PnL ที่ยังไม่เกิดขึ้นจริง</string>
+  <string name="tools_unknown">ไม่ทราบราคาหรือต้นทุน</string>
+  <string name="tools_blank">เว้นค่าใช้จ่ายที่ไม่ทราบค่าว่างไว้ ใส่ 0 ไม่มีค่าใช้จ่าย</string>
+  <string name="tools_reference">การอ้างอิงการส่ง</string>
+  <string name="tools_notes">หมายเหตุ</string>
+  <string name="tools_export">การส่งออกประกันภัย</string>
+  <string name="tools_review">อยู่ระหว่างการรีวิวรูปภาพ</string>
+  <string name="tools_evidence">หลักฐานราคา</string>
+  <string name="tools_stale">ราคาตลาดล้าสมัย</string>
+  <string name="tools_current">ราคาตลาดปัจจุบัน</string>
+  <string name="tools_fees">ค่าธรรมเนียมการขาย</string>
+  <string name="tools_learning">ช่วยปรับปรุงการรับรู้</string>
+  <string name="tools_photos">แบ่งปันพืชผลบัตรที่ได้รับอนุมัติ</string>
+  <string name="tools_send">ส่งรายงานที่รอดำเนินการ</string>
+  <string name="tools_delete">ลบรายงานที่แชร์</string>
+  <string name="tools_consent">ไม่จำเป็น รายงานข้อความประกอบด้วยรายละเอียดการ์ดและการแก้ไขของคุณ รูปภาพต้องมีการแสดงตัวอย่างและการอนุมัติแยกต่างหาก รายงานจะถูกเก็บไว้เป็นเวลา 90 วัน</string>
+  <string name="tools_preview">อนุมัติการครอบตัดการ์ด</string>
+  <string name="tools_preparing">กำลังเตรียมตัว</string>
+  <string name="tools_shipped">จัดส่งแล้ว</string>
+  <string name="tools_received">ได้รับแล้ว</string>
+  <string name="tools_grading_status">อยู่ระหว่างการให้คะแนนบัตร</string>
+  <string name="tools_returned">กลับมาแล้ว</string>
+  <string name="tools_cancelled">ยกเลิกแล้ว</string>
+  <string name="tools_complete">เสร็จสมบูรณ์</string>
+  <string name="tools_price_challenge">แจ้งราคาไม่ถูกต้อง</string>
+  <string name="tools_confirm_outline">ยืนยันโครงร่างการ์ดทั้งหมด</string>
+  <string name="tools_outline_hint">ตรวจสอบว่ามุมทั้งสี่เป็นมุมการ์ดด้านนอกก่อนยืนยัน</string>
+  <string name="tools_duplicate_cert">ใบรับรองการให้เกรดนี้อยู่ในคอลเล็กชันของคุณแล้ว</string>
+</resources>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CacheEntry } from "../src/cache";
-import { getPrices, parseCard, runChain, type CacheLike, type ChainProvider, type Gate } from "../src/prices";
+import { gradedForSchema, getPrices, parseCard, runChain, type CacheLike, type ChainProvider, type Gate } from "../src/prices";
 import { QuotaError, type CardRequest, type GradedPrice, type ProviderName, type RawPrice } from "../src/types";
 import { chunk, emptyConditions } from "../src/util";
 
@@ -194,6 +194,35 @@ function deps(cache: CacheLike, rawProviders: ChainProvider<RawPrice>[], gate: G
 }
 
 describe("getPrices", () => {
+  it("fills CGC/BGS gaps after a PSA-only provider without replacing preferred PSA prices", async () => {
+    const [c] = cards(1, { graded: true });
+    const grade = (grader: string, amount: number): GradedPrice => ({ grader, grade: "10", price: amount, currency: "USD", source: "test" });
+    const provider = (name: ProviderName, values: GradedPrice[]): ChainProvider<GradedPrice[]> => ({
+      name, batchSize: 1, supports: () => true, async fetch(list) { return new Map(list.map((c) => [c.key, values])); },
+    });
+    const [r] = await getPrices([c], deps(memoryCache(), [], fakeGate({ ppt: 2, ebay: 2 }), [
+      provider("ppt", [grade("PSA", 100)]),
+      provider("ebay", [grade("PSA", 200), grade("CGC", 150), grade("BGS", 180)]),
+    ]));
+    expect(r.graded.map((g) => [g.grader, g.price])).toEqual([["PSA", 100], ["CGC", 150], ["BGS", 180]]);
+  });
+
+  it("retains a graded lookup when a duplicate raw request comes last", async () => {
+    const [c] = cards(1, { graded: true });
+    let calls = 0;
+    const provider: ChainProvider<GradedPrice[]> = { name: "ppt", batchSize: 1, supports: () => true,
+      async fetch(list) { calls++; return new Map(list.map((c) => [c.key, [{ grader: "PSA", grade: "9", price: 80, currency: "USD", source: "test" }]])); } };
+    const out = await getPrices([c, { ...c, graded: false }], deps(memoryCache(), [], fakeGate({ ppt: 2 }), [provider]));
+    expect(calls).toBe(1);
+    expect(out[0].graded).toHaveLength(1);
+    expect(out[1].graded).toHaveLength(0);
+  });
+
+  it("normalizes language codes and rejects malformed languages rather than pricing English", () => {
+    expect(parseCard({ game: "pokemon", id: "c", language: "de" })?.language).toBe("DE");
+    expect(parseCard({ game: "pokemon", id: "c", language: "German" })).toBeNull();
+  });
+
   it("serves fresh cache without calling any provider", async () => {
     const [c] = cards(1);
     const cache = memoryCache({ [`raw|${c.key}`]: { value: { price: raw("justtcg", 7) }, source: "justtcg", fetchedAt: NOW - H, expiresAt: NOW + H } });
@@ -270,4 +299,51 @@ describe("getPrices", () => {
     expect(jt.batches).toEqual([[c.key]]);
     expect(res.length).toBe(2);
   });
+});
+
+
+describe("multi-search budgets", () => {
+  it("reserves both searches and refunds an unusable partial batch", async () => {
+    const provider = { ...fakeProvider("ebay", 1, () => true), callsPerBatch: 2 };
+    const gate = fakeGate({ ebay: 3 });
+    const calls = { left: 10 };
+    const out = await runChain(cards(3), [{ provider, key: "k" }], gate, calls, noWait);
+    expect(provider.batches).toHaveLength(1);
+    expect(out.found.size).toBe(1);
+    expect(gate.left.ebay).toBe(1);
+    expect(calls.left).toBe(8);
+  });
+  it("does not launch two searches when the request only has one call left", async () => {
+    const provider = { ...fakeProvider("ebay", 1, () => true), callsPerBatch: 2 };
+    const gate = fakeGate({ ebay: 10 });
+    const out = await runChain(cards(1), [{ provider, key: "k" }], gate, { left: 1 }, noWait);
+    expect(provider.batches).toHaveLength(0);
+    expect(out.notFound.size).toBe(0);
+  });
+});
+
+
+describe("graded availability", () => {
+  it("distinguishes exhausted budgets, confirmed absence and unsupported cards", async () => {
+    const [c] = cards(1, { graded: true });
+    const provider: ChainProvider<GradedPrice[]> = { name: "ppt", batchSize: 1, supports: () => true,
+      async fetch() { return new Map(); } };
+    const [unavailable] = await getPrices([c], deps(memoryCache(), [], fakeGate({ ppt: 0 }), [provider]));
+    expect(unavailable.gradedReason).toBe("unavailable");
+    const cache = memoryCache();
+    const [missing] = await getPrices([c], deps(cache, [], fakeGate({ ppt: 1 }), [provider]));
+    expect(missing.gradedReason).toBe("not_found");
+    const [cached] = await getPrices([c], deps(cache, [], fakeGate({ ppt: 0 }), [provider]));
+    expect(cached.gradedReason).toBe("not_found");
+    const [unsupported] = await getPrices([c], deps(memoryCache(), [], fakeGate({})));
+    expect(unsupported.gradedReason).toBe("unsupported");
+  });
+});
+
+
+it("hides premium grades from legacy clients that ignore qualifiers", () => {
+  const ordinary: GradedPrice = { grader: "BGS", grade: "10", price: 100, currency: "USD", source: "test" };
+  const premium = { ...ordinary, qualifier: "Black Label", price: 1000 };
+  expect(gradedForSchema([premium, ordinary], undefined)).toEqual([ordinary]);
+  expect(gradedForSchema([premium, ordinary], 2)).toEqual([premium, ordinary]);
 });

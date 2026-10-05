@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Sammlungswerkzeuge</string>
+  <string name="tools_costs">Kostenbuch</string>
+  <string name="tools_grading">Karten zur Bewertung geschickt</string>
+  <string name="tools_shipping">Versand pro Exemplar</string>
+  <string name="tools_tax">Steuer pro Exemplar</string>
+  <string name="tools_grading_cost">Bewertungskosten pro Exemplar</string>
+  <string name="tools_pnl">Nicht realisierter PnL</string>
+  <string name="tools_unknown">Unbekannter Preis oder Kosten</string>
+  <string name="tools_blank">Lassen Sie unbekannte Kosten leer. Geben Sie 0 ein, ohne dass Kosten anfallen.</string>
+  <string name="tools_reference">Einreichungsreferenz</string>
+  <string name="tools_notes">Notizen</string>
+  <string name="tools_export">Versicherungsexport</string>
+  <string name="tools_review">Ausstehende Fotobewertungen</string>
+  <string name="tools_evidence">Preisnachweis</string>
+  <string name="tools_stale">Veralteter Marktpreis</string>
+  <string name="tools_current">Aktueller Marktpreis</string>
+  <string name="tools_fees">Verkaufsgebühren</string>
+  <string name="tools_learning">Helfen Sie mit, die Erkennung zu verbessern</string>
+  <string name="tools_photos">Teilen Sie genehmigte Kartenzuschnitte</string>
+  <string name="tools_send">Senden Sie ausstehende Berichte</string>
+  <string name="tools_delete">Geteilte Berichte löschen</string>
+  <string name="tools_consent">Optional. Textberichte enthalten Kartendetails und Ihre Korrektur. Fotos bedürfen einer gesonderten Vorschau und Freigabe. Berichte werden 90 Tage lang aufbewahrt.</string>
+  <string name="tools_preview">Kartenzuschnitt genehmigen</string>
+  <string name="tools_preparing">Vorbereiten</string>
+  <string name="tools_shipped">Ausgeliefert</string>
+  <string name="tools_received">Erhalten</string>
+  <string name="tools_grading_status">Kartenbewertung läuft</string>
+  <string name="tools_returned">Zurückgegeben</string>
+  <string name="tools_cancelled">Abgesagt</string>
+  <string name="tools_complete">Komplett</string>
+  <string name="tools_price_challenge">Falschen Preis melden</string>
+  <string name="tools_confirm_outline">Bestätigen Sie den gesamten Kartenumriss</string>
+  <string name="tools_outline_hint">Überprüfen Sie vor der Bestätigung, dass alle vier Ecken die äußeren Kartenecken sind.</string>
+  <string name="tools_duplicate_cert">Dieses Notenzertifikat befindet sich bereits in Ihrer Sammlung.</string>
+</resources>

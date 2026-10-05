@@ -10,6 +10,7 @@ name: Deploy price server
 on:
   workflow_dispatch:
   push:
+    branches: [main, claude/tcg-card-scanner-app-e2tlar]
     paths:
       - "worker/**"
       - ".github/workflows/worker.yml"
@@ -93,6 +94,15 @@ jobs:
       - name: Apply database schema
         run: npx wrangler d1 execute "$DB_NAME" --remote --file schema.sql --yes
 
+      - name: Enable private recognition photo storage
+        run: |
+          if npx wrangler r2 bucket create cardnavo-recognition-private > r2.log 2>&1 || grep -qi "already exists" r2.log; then
+            printf '\n[[r2_buckets]]\nbinding = "FEEDBACK_IMAGES"\nbucket_name = "cardnavo-recognition-private"\n' >> wrangler.toml
+            echo "Private recognition photo storage enabled."
+          else
+            echo "::warning::Private photo storage unavailable. Enable R2 and grant Workers R2 Storage Edit to the deployment token, then rerun. Text reports remain available."
+          fi
+
       - name: Deploy
         id: deploy
         run: |
@@ -114,6 +124,7 @@ jobs:
       - name: Upload secrets
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
+          FEEDBACK_ADMIN_KEY: ${{ secrets.FEEDBACK_ADMIN_KEY }}
           JUSTTCG_KEY: ${{ secrets.JUSTTCG_KEY }}
           POKETRACE_KEY: ${{ secrets.POKETRACE_KEY }}
           TCGAPI_KEY: ${{ secrets.TCGAPI_KEY }}
@@ -124,7 +135,7 @@ jobs:
           EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
           EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
         run: |
-          names="APP_KEY JUSTTCG_KEY POKETRACE_KEY TCGAPI_KEY XIMILAR_KEY PSA_TOKEN RAPIDAPI_KEY PPT_KEY EBAY_CLIENT_ID EBAY_CLIENT_SECRET"
+          names="APP_KEY FEEDBACK_ADMIN_KEY JUSTTCG_KEY POKETRACE_KEY TCGAPI_KEY XIMILAR_KEY PSA_TOKEN RAPIDAPI_KEY PPT_KEY EBAY_CLIENT_ID EBAY_CLIENT_SECRET"
           json='{}'
           for n in $names; do
             v="${!n}"

@@ -49,4 +49,6 @@
     <string name="grade_centering_good">väl centrerad</string>
     <string name="grade_centering_off">snedcentrerad</string>
     <string name="grade_no_frame">ingen tryckt ram att mäta (normalt för denna baksida)</string>
+    <string name="grade_model_unavailable">Välj kortspel. Betygsuppskattningar finns bara för Pokémon; andra spel visar mätningar.</string>
+    <string name="grade_photos_required">En uppskattning kräver tydliga bilder av fram- och baksidan med mätbara kanter. Ta nya bilder eller justera konturen.</string>
 </resources>

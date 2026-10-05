@@ -3,7 +3,7 @@
     <string name="add_no_price">بلا سعر</string>
     <string name="add_grader_other">أخرى</string>
     <string name="add_confirm">إضافة</string>
-    <string name="add_graded_missing">لم يُعثر على سعر للبطاقة المُقيَّمة (%1$s). يُستخدم سعر البطاقة غير المُقيَّمة ما لم تُدخل قيمتك الخاصة أدناه.</string>
+    <string name="add_graded_missing">لم يُعثر على سعر للبطاقة المُقيَّمة (%1$s). أدخل قيمتك أدناه؛ لا يُستخدم سعر البطاقة غير المُقيَّمة.</string>
     <string name="add_no_sales_found">لم يُعثر على مبيعات</string>
     <plurals name="add_possible_matches">
         <item quantity="zero">%d تطابق محتمل — اضغط على الصحيح</item>

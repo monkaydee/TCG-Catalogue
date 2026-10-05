@@ -3,7 +3,7 @@
     <string name="add_no_price">без ціни</string>
     <string name="add_grader_other">Інша</string>
     <string name="add_confirm">Додати</string>
-    <string name="add_graded_missing">Ціну градованої картки не знайдено (%1$s). Використовується ціна негрейдованої, доки ви не вкажете власну оцінку нижче.</string>
+    <string name="add_graded_missing">Ціну з грейдом не знайдено (%1$s). Вкажіть власну оцінку нижче; ціна без грейда не використовується.</string>
     <string name="add_no_sales_found">продажів не знайдено</string>
     <plurals name="add_possible_matches">
         <item quantity="one">%d можливий збіг — торкніться потрібного</item>

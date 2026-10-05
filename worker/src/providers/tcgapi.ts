@@ -24,8 +24,10 @@ export function tcgApiPrinting(printing?: string): "Normal" | "Foil" | undefined
 
 export function parseTcgApi(json: unknown, card: CardRequest): RawPrice | null {
   const rows = arr(obj(obj(json).data).prices).map(obj);
+  // This API cannot distinguish these premium printings from ordinary Normal/Foil.
+  if (/first|1st|shadowless|reverse/i.test(card.printing ?? "")) return null;
   const wanted = tcgApiPrinting(card.printing);
-  const row = (wanted && rows.find((r) => str(r.printing) === wanted)) || rows.find((r) => price(r.market_price) !== null);
+  const row = wanted ? rows.find((r) => str(r.printing) === wanted) : rows.find((r) => price(r.market_price) !== null);
   const market = row ? price(row.market_price) : null;
   return market === null ? null : { conditions: emptyConditions(), market, source: "tcgapi" };
 }
