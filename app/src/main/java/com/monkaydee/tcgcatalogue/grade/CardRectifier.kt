@@ -86,6 +86,11 @@ object CardRectifier {
                 q = r.first
                 support = r.second
             }
+            // A printed edge inside the card (a back's border, a front's art box) can be stronger than
+            // the cut: if a straight edge runs along a side a little further out, that is the cut.
+            pushOut(gray, q)?.let { outer -> refine(gray, outer, bands.last()) }
+                ?.takeIf { (o, s) -> s >= 0.6 * support && plausible(o) && accept(o) }
+                ?.let { (o, s) -> q = o; support = s }
             q.takeIf { support >= 0.5 && plausible(it) && accept(it) }?.let { it to support }
         }
         val top = refined.maxOfOrNull { it.second } ?: return null
@@ -144,6 +149,59 @@ object CardRectifier {
         return Quad(corners[0], corners[1], corners[2], corners[3]) to supported.toDouble() / (4 * n)
     }
 
+    /**
+     * [q] with each side moved out onto a straight edge up to 6 % further out, where one runs along
+     * the whole side; null when no side moves.
+     */
+    private fun pushOut(g: Channels, q: Quad): Quad? {
+        val c = q.corners
+        val size = (dist(c[0], c[1]) + dist(c[1], c[2])) / 2
+        val steps = max(8, (0.06 * size).roundToInt())
+        val n = 40
+        var moved = false
+        val lines = (0 until 4).map { i ->
+            val a = c[i]
+            val b = c[(i + 1) % 4]
+            val dx = b.x - a.x
+            val dy = b.y - a.y
+            val len = hypot(dx, dy)
+            val nx = dy / len
+            val ny = -dx / len
+            val pts = ArrayList<Pt>()
+            for (k in 0 until n) {
+                val t = 0.1 + 0.8 * k / (n - 1)
+                val px = a.x + dx * t
+                val py = a.y + dy * t
+                val v = Array(3) { ch -> DoubleArray(steps + 4) { j -> g.at(ch, px + nx * j, py + ny * j) } }
+                val d = DoubleArray(steps + 4) { j ->
+                    if (j < 4 || j > steps - 1) 0.0 else v.maxOf { ch -> step(ch, j) }
+                }
+                val peak = d.max()
+                if (peak < 12) continue
+                // the outermost clear edge
+                val j = (d.indices).lastOrNull { j -> d[j] >= 0.5 * peak && d[j] >= d[j - 1] && d[j] >= d.getOrElse(j + 1) { 0.0 } } ?: continue
+                pts += Pt(px + nx * j, py + ny * j)
+            }
+            // a side only moves when most of it agrees on one line parallel to it
+            val fit = fitLine(pts)?.takeIf { it.second >= 0.6 * n }?.first
+            val parallel = fit != null && abs(fit[0] * nx + fit[1] * ny) > 0.999
+            if (fit != null && parallel) {
+                moved = true
+                fit
+            } else {
+                // the side as it is: line through a and b
+                val l = doubleArrayOf(nx, ny, nx * a.x + ny * a.y)
+                l
+            }
+        }
+        if (!moved) return null
+        val corners = (0 until 4).map { i -> intersect(lines[(i + 3) % 4], lines[i]) ?: return null }
+        return Quad(corners[0], corners[1], corners[2], corners[3])
+    }
+
+    /** The change at [i]: mean of the 3 values after minus the 3 before (wide enough for blurred edges). */
+    private fun step(v: DoubleArray, i: Int): Double = abs((v[i + 1] + v[i + 2] + v[i + 3]) - (v[i - 1] + v[i - 2] + v[i - 3])) / 3
+
     /** The card's cut edge on a line through ([px], [py]) along the outward normal. */
     private fun edgeAlong(g: Channels, px: Double, py: Double, nx: Double, ny: Double, reach: Double): Pt? {
         val steps = max(8, reach.roundToInt())
@@ -151,7 +209,7 @@ object CardRectifier {
         val v = Array(3) { k -> DoubleArray(2 * steps + 1) { i -> val s = (i - steps).toDouble(); g.at(k, px + nx * s, py + ny * s) } }
         // smoothed derivative
         val d = DoubleArray(2 * steps + 1) { i ->
-            if (i < 2 || i > 2 * steps - 2) 0.0 else v.maxOf { c -> abs((c[i + 1] + c[i + 2]) - (c[i - 1] + c[i - 2])) / 2 }
+            if (i < 3 || i > 2 * steps - 3) 0.0 else v.maxOf { c -> step(c, i) }
         }
         val peak = d.maxOrNull() ?: return null
         if (peak < 12) return null
