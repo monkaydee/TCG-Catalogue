@@ -90,11 +90,11 @@ data class AddRequest(
     val language: String = "EN",
 )
 
-/** Card languages, shown by their own name (no translation needed). */
-val CARD_LANGUAGES = listOf(
-    "EN" to "English", "DE" to "Deutsch", "FR" to "Français", "IT" to "Italiano", "ES" to "Español", "PT" to "Português",
-    "NL" to "Nederlands", "PL" to "Polski", "JA" to "日本語", "KO" to "한국어", "ZH" to "中文",
-)
+/** Card languages, named in the app's language ("Japanese" in English, "Japanisch" in German). */
+val CARD_LANGUAGES: List<Pair<String, String>>
+    get() = listOf("EN", "DE", "FR", "IT", "ES", "PT", "NL", "PL", "JA", "KO", "ZH").map { code ->
+        code to java.util.Locale(code.lowercase()).getDisplayLanguage(java.util.Locale.getDefault()).replaceFirstChar { it.titlecase(java.util.Locale.getDefault()) }
+    }
 
 /**
  * Lets the user confirm the recognised card and pick the printing, condition (or grading
