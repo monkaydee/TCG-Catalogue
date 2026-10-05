@@ -157,3 +157,28 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
   - the data-safety form.
 - **Other stores**: Amazon Appstore, Samsung Galaxy Store and Huawei AppGallery are free to publish on. F-Droid would need a variant without ML Kit.
 - **Trademarks**: game names only in plain text; no game logos in the icon or listing.
+
+## Next ideas (October 2026), by priority
+
+### Now (after P1 live scan)
+- **Pre-grader:** fix the "photo is blurry" false alarm on preview frames (threshold per resolution); take 3 frames and keep the sharpest; collect outline corrections ("Adjust corners") as test cases for every game.
+- **Startup animation:** use the brand pack's animated logo (animated-vector drawable) in the Android 12+ splash screen with a fade into Home; static logo below Android 12. No delay added: the animation ends as soon as data is ready.
+- **Card page:** price history chart per grade (raw, PSA 9, PSA 10), language switch with its own prices, "set complete x/y" link.
+
+### Soon (features)
+- **Portfolio:** profit/loss vs. purchase price, top movers of the week, value by game and by set.
+- **Price alerts** as notifications (target price reached, +/- 20 % in a week).
+- **Binder view:** 3x3 / 4x3 pages like a real binder, drag to reorder, share as an image.
+- **Trade helper:** two collections side by side, fair-trade total in EUR.
+- **Grading helper:** "worth grading?" = PSA 10 price x chance from the pre-grader minus grading fee and shipping.
+- **Export / import** CSV (Collectr, Cardmarket, TCGplayer formats).
+
+### Design
+- One consistent CardNavo look: brand teal accents, card-shaped skeletons while loading, larger card images, haptic feedback on add.
+- Home: value hero with sparkline, quick actions (scan, import, pre-grade), recent cards row.
+- Dark/light/AMOLED themes; tablet layout with two panes.
+
+### Later
+- On-device ML model for card recognition (works offline, < 300 ms).
+- Surface check in the pre-grader (scratches with angled light, two photos).
+- Wishlist sharing link, friends' collections, set-completion badges.
