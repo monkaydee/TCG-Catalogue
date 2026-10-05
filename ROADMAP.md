@@ -164,6 +164,25 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 - **Language detection is unreliable:** collect wrong cases via "Wrong card?", add more rule words per language, weigh the set code.
 - **Raw prices too low for EU (e.g. Zekrom LTR 115 gold ≈ 160 € vs. NM from 300 € on eBay):** TCGplayer US market is not the EU price. Combine sources: Cardmarket trend for EU users, eBay listings as a cross-check; when sources differ by more than 30 %, show the range and the sources.
 
+### P1: Learning from every user (shared corrections) — decided 5 Oct 2026
+- **Opt-in** switch in Settings ("Help improve recognition"), off by default (GDPR); explained in the privacy policy.
+- **Sent per added card:** read text (name, number, set code), the app's first suggestion, the card the user chose (scan, photo import or typed search), language, grade label; plus the **cut-out card picture** (card only, no background, max 800 px, EXIF removed). No email, account, location or device ID (random install ID only, for rate limits).
+- **Server:** Worker endpoint `/feedback` (app key, 200/day per install), text in D1, pictures in a private R2 bucket (free 10 GB). Nothing public, nothing on GitHub.
+- **Learning, daily:** when ≥ 3 installs agree (same read text → same card), a rule is published in `RULES.json`; apps download it daily (like the name index) and apply it before the normal lookup. Conflicting votes → no rule, flagged for review.
+- **Learning, monthly:** confirmed pictures feed the picture index and the recognition model, and become the golden test set (CI must not get worse).
+- **Same for the pre-grader:** "Adjust corners" corrections (photo + right corners) train and test the outline search for every game.
+- **Same for prices:** "price looks wrong" button sends card, shown price and the user's note; repeated reports put the card on a check list for the price sources.
+
+### More ideas
+- **Set completion helpers:** "missing cards from this set" with total cost to complete; buy links to Cardmarket/eBay (affiliate later).
+- **Duplicate finder:** cards owned several times → trade list in one tap.
+- **Collection insurance export:** PDF with photos, values and totals.
+- **Grading tracker:** cards sent to PSA/BGS/CGC with submission number, status and return date.
+- **Sealed product tracker:** booster boxes/ETBs with price history (already started) and opening log (what was pulled).
+- **Widgets:** portfolio value, card of the day, biggest mover.
+- **Search everywhere:** one search across collection, wishlist and all cards, by name in any language.
+- **Accessibility:** larger text option, screen reader labels for card images, colour-blind safe gain/loss colours.
+
 ## Next ideas (October 2026), by priority
 
 ### Now (after P1 live scan)
