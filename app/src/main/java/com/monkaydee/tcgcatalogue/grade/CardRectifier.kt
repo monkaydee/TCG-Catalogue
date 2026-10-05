@@ -71,6 +71,12 @@ object CardRectifier {
         return best(gray, lines.ifEmpty { listOf(guide) }, accept = fits, share = 0.93)
     }
 
+    /** [q] (e.g. corners placed by hand) with each side moved onto the card's edge close by, if one is there. */
+    fun snap(p: Pixels, q: Quad): Quad {
+        val r = refine(Channels(p), q, 0.015) ?: return q
+        return r.first.takeIf { r.second >= 0.4 && plausible(it) && it.corners.zip(q.corners).all { (a, b) -> dist(a, b) < 0.04 * dist(q.tl, q.br) } } ?: q
+    }
+
     private fun best(
         gray: Channels,
         starts: List<Quad>,

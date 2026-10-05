@@ -20,6 +20,11 @@ object PreGrader {
         val problems: List<PhotoCheck.Problem>,
         val centering: Centering.Result?,
         val wear: Wear.Result,
+        /** The photo as measured and the card's outline in it, for adjusting the corners by hand. */
+        val photo: Bitmap? = null,
+        val quad: Quad? = null,
+        /** Width of the original photo ([photo] may be scaled down for measuring). */
+        val photoWidth: Int = photo?.width ?: 0,
     )
 
     sealed interface Outcome {
@@ -48,19 +53,34 @@ object PreGrader {
         // With the camera guide, the card is what lies in the box; a gallery photo is searched whole.
         // Without an outline in the box, ask for a retake rather than measure something else.
         val quad = (if (hint != null) CardRectifier.findQuadIn(p, hint) else CardRectifier.findQuad(p)) ?: return Outcome.NoCard
+        return Outcome.Ok(measure(work, p, quad, scale))
+    }
+
+    /**
+     * [side] measured again with corners placed by hand ([quad], in [Side.photo] pixels). Each
+     * side is first snapped onto the card's edge nearby, as a finger is not pixel-exact.
+     */
+    fun adjust(side: Side, quad: Quad): Side {
+        val photo = side.photo ?: return side
+        val p = Pixels(photo.width, photo.height, IntArray(photo.width * photo.height).also { photo.getPixels(it, 0, photo.width, 0, 0, photo.width, photo.height) })
+        val scale = side.photo.width.toDouble() / side.photoWidth
+        return measure(photo, p, CardRectifier.snap(p, quad), scale, side.photoWidth)
+    }
+
+    private fun measure(work: Bitmap, p: Pixels, quad: Quad, scale: Double, photoWidth: Int = (work.width / scale).roundToInt()): Side {
         val upright = upright(quad)
         val flat = trimmed(CardRectifier.warp(p, upright))
         val c = upright.corners
         val widthInPhoto = (hypot(c[1].x - c[0].x, c[1].y - c[0].y) + hypot(c[2].x - c[3].x, c[2].y - c[3].y)) / 2 / scale
         val bitmap = Bitmap.createBitmap(flat.argb, flat.width, flat.height, Bitmap.Config.ARGB_8888)
-        if (work !== photo) work.recycle()
-        return Outcome.Ok(
-            Side(
-                card = bitmap,
-                problems = PhotoCheck.problems(flat, widthInPhoto),
-                centering = Centering.measure(flat),
-                wear = Wear.measure(flat),
-            ),
+        return Side(
+            card = bitmap,
+            problems = PhotoCheck.problems(flat, widthInPhoto),
+            centering = Centering.measure(flat),
+            wear = Wear.measure(flat),
+            photo = work,
+            quad = quad,
+            photoWidth = photoWidth,
         )
     }
 

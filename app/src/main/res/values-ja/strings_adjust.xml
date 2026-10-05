@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">角を調整</string>
+    <string name="grade_adjust_hint">4つの点をカードの角までドラッグしてください。拡大鏡で正確に合わせられます。</string>
+    <string name="grade_adjust_apply">適用</string>
+</resources>

@@ -121,6 +121,7 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
     var camera by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+    var adjusting by remember { mutableStateOf(false) }
 
     fun accept(outcome: PreGrader.Outcome) {
         busy = false
@@ -178,9 +179,29 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                     onError = { camera = false; error = context.getString(R.string.grade_camera_failed) },
                 )
                 step == Step.RESULT -> GradeResult(front, back, onRedo = { front = null; back = null; step = Step.FRONT })
+                adjusting && (if (step == Step.FRONT) front else back)?.let { it.photo != null && it.quad != null } == true -> {
+                    val side = (if (step == Step.FRONT) front else back)!!
+                    Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
+                        AdjustOutline(
+                            photo = side.photo!!,
+                            start = side.quad!!,
+                            onCancel = { adjusting = false },
+                            onApply = { quad ->
+                                adjusting = false
+                                busy = true
+                                scope.launch {
+                                    val fixed = withContext(Dispatchers.Default) { runCatching { PreGrader.adjust(side, quad) }.getOrNull() }
+                                    busy = false
+                                    if (fixed != null) { if (step == Step.FRONT) front = fixed else back = fixed }
+                                }
+                            },
+                        )
+                    }
+                }
                 else -> {
                     val side = if (step == Step.FRONT) front else back
                     CaptureStep(
+                        onAdjust = { adjusting = true },
                         step = step,
                         side = side,
                         busy = busy,
@@ -211,6 +232,7 @@ private fun CaptureStep(
     onRetake: () -> Unit,
     onNext: () -> Unit,
     onSkip: (() -> Unit)?,
+    onAdjust: () -> Unit,
 ) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -243,6 +265,7 @@ private fun CaptureStep(
                     )
                 }
                 Text(stringResource(R.string.grade_check_outline), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
+                if (side.photo != null) TextButton(onClick = onAdjust) { Text(stringResource(R.string.grade_adjust)) }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = onRetake) { Text(stringResource(R.string.grade_retake)) }
                     Button(onClick = onNext) { Text(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.grade_show_result)) }

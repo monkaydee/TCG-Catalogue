@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">ปรับมุม</string>
+    <string name="grade_adjust_hint">ลากจุดทั้งสี่ไปที่มุมของการ์ด แว่นขยายช่วยให้วางได้แม่นยำ</string>
+    <string name="grade_adjust_apply">ใช้</string>
+</resources>

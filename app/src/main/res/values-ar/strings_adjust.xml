@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">ضبط الزوايا</string>
+    <string name="grade_adjust_hint">اسحب النقاط الأربع إلى زوايا البطاقة. تساعدك العدسة المكبرة على وضعها بدقة.</string>
+    <string name="grade_adjust_apply">تطبيق</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">調整角點</string>
+    <string name="grade_adjust_hint">將四個點拖到卡牌的四個角上。放大鏡可幫助精確放置。</string>
+    <string name="grade_adjust_apply">套用</string>
+</resources>
