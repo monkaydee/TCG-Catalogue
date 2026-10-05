@@ -3,6 +3,8 @@ package com.monkaydee.tcgcatalogue.data
 import com.monkaydee.tcgcatalogue.data.db.*
 
 object CostLedger {
+    /** A raw card's default zero must not assert that newly received grading was free. */
+    fun afterGrading(lot: CostLot): CostLot = if (lot.grading == 0.0) lot.copy(grading = null) else lot
     fun basis(lot: CostLot, currency: String, rate: Double): Double? {
         val costs = listOf(lot.purchase, lot.grading, lot.shipping, lot.tax)
         if (costs.any { it == null }) return null

@@ -6,7 +6,7 @@ per-copy cost editing and splitting: edit a smaller quantity to create a distinc
 
 Each lot retains acquisition currency, purchase cost, grading cost, shipping and tax per copy.
 Blank is unknown and zero is an explicit zero. Raw acquisitions start with no grading cost;
-slabs start with unknown grading cost. Historic rows are backfilled without inventing those fees.
+slabs start with unknown grading cost. Converting a raw card to a slab also requires entering its actual grading fee; the old raw default of zero is not treated as a free grading service. Historic rows are backfilled without inventing those fees.
 Market refreshes do not alter ledger costs. Unrealized PnL is current value minus all lot costs;
 a row with a missing price or any missing cost is excluded and counted as unknown.
 Manual valuations are honored and labeled on the card page. This PnL is distinct from the

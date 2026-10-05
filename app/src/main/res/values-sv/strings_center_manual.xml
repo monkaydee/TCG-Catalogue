@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Justera centreringsguiderna</string>
+  <string name="center_hint">Dra varje stödlinje till samma tryckta ram på alla fyra sidor. Bekräfta först hela kortets kontur. Kort utan jämförbar ram kan inte ge ett tillförlitligt centreringsförhållande.</string>
+  <string name="center_left">Vänster</string>
+  <string name="center_right">Rätt</string>
+  <string name="center_top">Överst</string>
+  <string name="center_bottom">Nederst</string>
+  <string name="center_detail">Vald guide · 2× detalj</string>
+  <string name="center_minus_pixel">−1 bildpixel</string>
+  <string name="center_plus_pixel">+1 bildpixel</string>
+  <string name="center_manual_notice">Manuell centreringsmätning. Placering och fotoperspektiv påverkar förhållandet. Manuella guider ger ingen övergripande betygsuppskattning.</string>
+  <string name="center_cancel">Avbryt</string>
+  <string name="center_apply">Använd dessa guider</string>
+</resources>

@@ -208,6 +208,10 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                     val side = if (step == Step.FRONT) front else back
                     CaptureStep(
                         onAdjust = { adjusting = true },
+                        onCentering = { c ->
+                            if (step == Step.FRONT) front = front?.copy(centering = c, manualCentering = true)
+                            else back = back?.copy(centering = c, manualCentering = true)
+                        },
                         onConfirm = { if (step == Step.FRONT) front = front?.copy(outlineConfirmed = true) else back = back?.copy(outlineConfirmed = true) },
                         step = step,
                         side = side,
@@ -241,6 +245,7 @@ private fun CaptureStep(
     onSkip: (() -> Unit)?,
     onAdjust: () -> Unit,
     onConfirm: () -> Unit,
+    onCentering: (Centering.Result) -> Unit,
 ) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -289,6 +294,7 @@ private fun CaptureStep(
                 Text(stringResource(R.string.grade_check_outline), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
                 if (side.photo != null) TextButton(onClick = onAdjust) { Text(stringResource(R.string.grade_adjust)) }
                 Text(stringResource(R.string.tools_outline_hint))
+                if (side.outlineConfirmed) ManualCenteringPanel(side, onCentering)
                 if (!side.outlineConfirmed) OutlinedButton(onClick = onConfirm) { Text(stringResource(R.string.tools_confirm_outline)) }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = onRetake) { Text(stringResource(R.string.grade_retake)) }
@@ -390,6 +396,9 @@ private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Gam
         Section(stringResource(R.string.grade_centering)) {
             CenteringLine(stringResource(R.string.grade_front), front?.centering, limit = 55.0)
             CenteringLine(stringResource(R.string.grade_back), back?.centering, limit = 75.0)
+            if (front?.manualCentering == true || back?.manualCentering == true) {
+                Text(stringResource(R.string.center_manual_notice), style = MaterialTheme.typography.bodySmall)
+            }
             Text(stringResource(R.string.grade_centering_explain), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
             Centering.Company.entries.filter { usable && game == Game.POKEMON }.forEach { co ->

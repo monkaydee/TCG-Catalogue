@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Ajustar guias de centralização</string>
+  <string name="center_hint">Arraste cada guia para a mesma moldura impressa nos quatro lados. Primeiro confirme todo o contorno do cartão. Cartões sem moldura comparável não podem fornecer uma taxa de centralização confiável.</string>
+  <string name="center_left">Esquerda</string>
+  <string name="center_right">Certo</string>
+  <string name="center_top">Superior</string>
+  <string name="center_bottom">Inferior</string>
+  <string name="center_detail">Guia selecionado · 2× detalhe</string>
+  <string name="center_minus_pixel">−1 pixel de imagem</string>
+  <string name="center_plus_pixel">+1 pixel de imagem</string>
+  <string name="center_manual_notice">Medição de centralização manual. O posicionamento e a perspectiva da foto afetam a proporção. Os guias manuais não produzem uma estimativa geral da nota.</string>
+  <string name="center_cancel">Cancelar</string>
+  <string name="center_apply">Use estes guias</string>
+</resources>

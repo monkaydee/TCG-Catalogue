@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Wyreguluj prowadnice centrujące</string>
+  <string name="center_hint">Przeciągnij każdą prowadnicę do tej samej wydrukowanej ramki ze wszystkich czterech stron. Najpierw potwierdź cały zarys karty. Karty bez porównywalnej ramki nie mogą zapewnić niezawodnego współczynnika centrowania.</string>
+  <string name="center_left">Lewy</string>
+  <string name="center_right">Jasne</string>
+  <string name="center_top">Góra</string>
+  <string name="center_bottom">Dół</string>
+  <string name="center_detail">Wybrany przewodnik · 2× szczegół</string>
+  <string name="center_minus_pixel">−1 piksel obrazu</string>
+  <string name="center_plus_pixel">+1 piksel obrazu</string>
+  <string name="center_manual_notice">Ręczny pomiar centrowania. Umiejscowienie i perspektywa zdjęcia wpływają na proporcje. Podręczniki ręczne nie pozwalają na oszacowanie ogólnej oceny.</string>
+  <string name="center_cancel">Anuluj</string>
+  <string name="center_apply">Skorzystaj z tych przewodników</string>
+</resources>

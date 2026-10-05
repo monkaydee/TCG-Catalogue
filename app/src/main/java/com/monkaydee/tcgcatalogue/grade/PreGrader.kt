@@ -25,10 +25,12 @@ object PreGrader {
         val quad: Quad? = null,
         /** Width of the original photo ([photo] may be scaled down for measuring). */
         val outlineConfirmed: Boolean = false,
+        /** Manual measurements are useful ratios, but are not calibrated model inputs. */
+        val manualCentering: Boolean = false,
         val photoWidth: Int = photo?.width ?: 0,
     ) {
         /** A grade estimate must not fill missing measurements with training averages. */
-        val usableForGrade: Boolean get() = outlineConfirmed && problems.isEmpty() && centering != null
+        val usableForGrade: Boolean get() = outlineConfirmed && !manualCentering && problems.isEmpty() && centering != null
     }
 
     sealed interface Outcome {

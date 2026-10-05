@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">调整居中导轨</string>
+  <string name="center_hint">将每个参考线拖到所有四个侧面的同一打印框架上。首先确认卡片的整体轮廓。没有可比框架的卡片无法提供可靠的居中比。</string>
+  <string name="center_left">左</string>
+  <string name="center_right">右</string>
+  <string name="center_top">顶部</string>
+  <string name="center_bottom">底部</string>
+  <string name="center_detail">精选指南·2×细节</string>
+  <string name="center_minus_pixel">−1 图像像素</string>
+  <string name="center_plus_pixel">+1 图像像素</string>
+  <string name="center_manual_notice">手动对中测量。位置和照片视角会影响比例。手动指南不会产生总体成绩估计。</string>
+  <string name="center_cancel">取消</string>
+  <string name="center_apply">使用这些指南</string>
+</resources>

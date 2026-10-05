@@ -579,6 +579,7 @@ class CardRepository(
         db.withTransaction {
         if (edited.graded && !edited.certNumber.isNullOrBlank()) check(db.cards().certificate(edited.grader!!, edited.certNumber, original.id) == null) { AppStrings.get(R.string.tools_duplicate_cert) }
         ensureCostLots(original)
+        if (!original.graded && edited.graded) db.tools().lots(original.id).forEach { db.tools().put(CostLedger.afterGrading(it)) }
         resizeLots(original, edited.quantity)
         val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition, edited.language, edited.copyKey)?.takeIf { it.id != original.id }
         if (clash != null) {

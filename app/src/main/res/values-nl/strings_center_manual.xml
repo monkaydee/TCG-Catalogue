@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Centreergeleiders aanpassen</string>
+  <string name="center_hint">Sleep elke hulplijn aan alle vier de zijden naar hetzelfde afgedrukte frame. Bevestig eerst de hele kaartomtrek. Kaarten zonder een vergelijkbaar frame kunnen geen betrouwbare centreerverhouding geven.</string>
+  <string name="center_left">Links</string>
+  <string name="center_right">Juist</string>
+  <string name="center_top">Boven</string>
+  <string name="center_bottom">Onderkant</string>
+  <string name="center_detail">Geselecteerde gids · 2× detail</string>
+  <string name="center_minus_pixel">−1 beeldpixel</string>
+  <string name="center_plus_pixel">+1 afbeeldingspixel</string>
+  <string name="center_manual_notice">Handmatige centreringsmeting. Plaatsing en fotoperspectief beïnvloeden de verhouding. Handleidingen geven geen algemene schatting van het cijfer.</string>
+  <string name="center_cancel">Annuleer</string>
+  <string name="center_apply">Gebruik deze handleidingen</string>
+</resources>

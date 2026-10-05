@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">センタリングガイドを調整する</string>
+  <string name="center_hint">各ガイドを、4 辺すべての同じ印刷フレームにドラッグします。まずはカード全体の輪郭を確認します。同等のフレームを持たないカードでは、信頼できるセンタリング比を得ることができません。</string>
+  <string name="center_left">左</string>
+  <string name="center_right">右</string>
+  <string name="center_top">トップへ</string>
+  <string name="center_bottom">下</string>
+  <string name="center_detail">選択されたガイド · 2× 詳細</string>
+  <string name="center_minus_pixel">−1画像ピクセル</string>
+  <string name="center_plus_pixel">+1 画像ピクセル</string>
+  <string name="center_manual_notice">手動センタリング測定。配置と写真の遠近感は比率に影響します。手動ガイドでは全体的なグレードの推定値は生成されません。</string>
+  <string name="center_cancel">キャンセル</string>
+  <string name="center_apply">これらのガイドを使用してください</string>
+</resources>

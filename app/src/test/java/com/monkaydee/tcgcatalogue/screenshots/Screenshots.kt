@@ -1,6 +1,17 @@
 package com.monkaydee.tcgcatalogue.screenshots
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.semantics.SemanticsActions
+import org.junit.Assert.assertEquals
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertFalse
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -83,6 +94,40 @@ class Screenshots {
             number = "$i/165", setId = "s", setName = "151", price = (i + offset) * 1.5, priceCurrency = "EUR", quantity = if (i % 4 == 0) 2 else 1,
             grader = if (i % 5 == 0) "PSA" else null, grade = if (i % 5 == 0) "10" else null,
         )
+    }
+
+    @Test fun manualCenteringGuidesApplyWithoutCreatingAnOverallGrade() {
+        val bitmap = Bitmap.createBitmap(600, 840, Bitmap.Config.ARGB_8888)
+        android.graphics.Canvas(bitmap).apply {
+            drawColor(android.graphics.Color.LTGRAY)
+            drawRect(30f, 42f, 570f, 798f, android.graphics.Paint().apply { color = android.graphics.Color.BLUE })
+        }
+        var side by mutableStateOf(com.monkaydee.tcgcatalogue.grade.PreGrader.Side(bitmap, emptyList(), null,
+            com.monkaydee.tcgcatalogue.grade.Wear.Result(emptyMap()), outlineConfirmed = true))
+        var applied: com.monkaydee.tcgcatalogue.grade.Centering.Result? = null
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+                    .verticalScroll(rememberScrollState()).padding(16.dp)) {
+                    com.monkaydee.tcgcatalogue.ui.screens.ManualCenteringPanel(side) { applied = it; side = side.copy(centering = it, manualCentering = true) }
+                }
+            }
+        }
+        rule.onNodeWithText("Adjust centering guides").performClick()
+        save("manual_centering_guides")
+        rule.onNodeWithText("Use these guides").performScrollTo().performClick()
+        assertNotNull(applied)
+        assertFalse(side.usableForGrade)
+        rule.onNodeWithText("Adjust centering guides").performClick()
+        rule.onNode(SemanticsMatcher.keyIsDefined(SemanticsActions.SetProgress)).performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(0.1f) }
+        rule.onNodeWithText("Use these guides").performScrollTo().performClick()
+        val savedLeft = requireNotNull(applied).left
+        rule.onNodeWithText("Adjust centering guides").performClick()
+        rule.onNode(SemanticsMatcher.keyIsDefined(SemanticsActions.SetProgress)).performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(0.2f) }
+        rule.onNodeWithText("Cancel").performScrollTo().performClick()
+        rule.onNodeWithText("Adjust centering guides").performClick()
+        rule.onNodeWithText("Use these guides").performScrollTo().performClick()
+        assertEquals(savedLeft, requireNotNull(applied).left, 1e-6)
     }
 
     @Test fun binderPages() {

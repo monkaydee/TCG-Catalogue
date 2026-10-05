@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="center_adjust">Adjust centering guides</string>
+    <string name="center_hint">Drag each guide to the same printed frame on all four sides. First confirm the whole card outline. Cards without a comparable frame cannot give a reliable centering ratio.</string>
+    <string name="center_left">Left</string>
+    <string name="center_right">Right</string>
+    <string name="center_top">Top</string>
+    <string name="center_bottom">Bottom</string>
+    <string name="center_detail">Selected guide · 2× detail</string>
+    <string name="center_minus_pixel">−1 image pixel</string>
+    <string name="center_plus_pixel">+1 image pixel</string>
+    <string name="center_manual_notice">Manual centering measurement. Placement and photo perspective affect the ratio. Manual guides do not produce an overall grade estimate.</string>
+    <string name="center_cancel">Cancel</string>
+    <string name="center_apply">Use these guides</string>
+</resources>

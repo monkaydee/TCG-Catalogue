@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Merkezleme kılavuzlarını ayarlayın</string>
+  <string name="center_hint">Her bir kılavuzu dört taraftan da aynı yazdırılan çerçeveye sürükleyin. İlk önce tüm kart taslağını onaylayın. Karşılaştırılabilir bir çerçeveye sahip olmayan taraklar güvenilir bir merkezleme oranı sağlayamaz.</string>
+  <string name="center_left">Sol</string>
+  <string name="center_right">Sağ</string>
+  <string name="center_top">Üst</string>
+  <string name="center_bottom">Alt</string>
+  <string name="center_detail">Seçilen rehber · 2× detay</string>
+  <string name="center_minus_pixel">−1 resim pikseli</string>
+  <string name="center_plus_pixel">+1 resim pikseli</string>
+  <string name="center_manual_notice">Manuel merkezleme ölçümü. Yerleştirme ve fotoğraf perspektifi oranı etkiler. Manuel kılavuzlar genel bir not tahmini üretmez.</string>
+  <string name="center_cancel">İptal</string>
+  <string name="center_apply">Bu kılavuzları kullanın</string>
+</resources>

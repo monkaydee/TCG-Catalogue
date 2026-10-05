@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Điều chỉnh hướng dẫn định tâm</string>
+  <string name="center_hint">Kéo từng hướng dẫn vào cùng một khung in ở cả bốn phía. Đầu tiên xác nhận toàn bộ phác thảo thẻ. Thẻ không có khung tương đương không thể đưa ra tỷ lệ định tâm đáng tin cậy.</string>
+  <string name="center_left">trái</string>
+  <string name="center_right">Đúng</string>
+  <string name="center_top">hàng đầu</string>
+  <string name="center_bottom">Dưới cùng</string>
+  <string name="center_detail">Hướng dẫn đã chọn · Chi tiết 2×</string>
+  <string name="center_minus_pixel">−1 pixel hình ảnh</string>
+  <string name="center_plus_pixel">+1 pixel hình ảnh</string>
+  <string name="center_manual_notice">Đo định tâm bằng tay. Vị trí và phối cảnh ảnh ảnh hưởng đến tỷ lệ. Hướng dẫn thủ công không tạo ra ước tính điểm tổng thể.</string>
+  <string name="center_cancel">Hủy bỏ</string>
+  <string name="center_apply">Sử dụng những hướng dẫn này</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Regolare le guide di centraggio</string>
+  <string name="center_hint">Trascina ciascuna guida sulla stessa cornice stampata su tutti e quattro i lati. Per prima cosa conferma l\'intero contorno della carta. Le carte senza una cornice paragonabile non possono fornire un rapporto di centratura affidabile.</string>
+  <string name="center_left">A sinistra</string>
+  <string name="center_right">Giusto</string>
+  <string name="center_top">In alto</string>
+  <string name="center_bottom">In basso</string>
+  <string name="center_detail">Guida selezionata · 2× dettaglio</string>
+  <string name="center_minus_pixel">−1 pixel dell\'immagine</string>
+  <string name="center_plus_pixel">+1 pixel dell\'immagine</string>
+  <string name="center_manual_notice">Misurazione centratura manuale. Il posizionamento e la prospettiva della foto influiscono sul rapporto. Le guide manuali non producono una stima del voto complessivo.</string>
+  <string name="center_cancel">Annulla</string>
+  <string name="center_apply">Usa queste guide</string>
+</resources>

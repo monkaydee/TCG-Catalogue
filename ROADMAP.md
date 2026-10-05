@@ -243,3 +243,6 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 - On-device ML model for card recognition (works offline, < 300 ms).
 - Surface check in the pre-grader (scratches with angled light, two photos).
 - Wishlist sharing link, friends' collections, set-completion badges.
+
+### Centering tool update
+Implemented adjustable printed-frame guides on the confirmed corrected card, live ratios, 2× detail and one-pixel controls. Manual measurements are marked and excluded from the overall grade model. The supplied Instagram reel could not be accessed; matching its exact interaction awaits an attached video or screenshots.

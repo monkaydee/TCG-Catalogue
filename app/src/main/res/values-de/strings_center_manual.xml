@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Zentrierführungen anpassen</string>
+  <string name="center_hint">Ziehen Sie jede Hilfslinie auf allen vier Seiten auf denselben gedruckten Rahmen. Bestätigen Sie zunächst den gesamten Kartenumriss. Karten ohne vergleichbaren Rahmen können kein zuverlässiges Zentrierverhältnis liefern.</string>
+  <string name="center_left">Links</string>
+  <string name="center_right">Richtig</string>
+  <string name="center_top">Top</string>
+  <string name="center_bottom">Unten</string>
+  <string name="center_detail">Ausgewählter Reiseführer · 2× Detail</string>
+  <string name="center_minus_pixel">−1 Bildpixel</string>
+  <string name="center_plus_pixel">+1 Bildpixel</string>
+  <string name="center_manual_notice">Manuelle Zentriermessung. Platzierung und Fotoperspektive beeinflussen das Verhältnis. Manuelle Leitfäden liefern keine Gesamtbewertung der Note.</string>
+  <string name="center_cancel">Abbrechen</string>
+  <string name="center_apply">Nutzen Sie diese Anleitungen</string>
+</resources>

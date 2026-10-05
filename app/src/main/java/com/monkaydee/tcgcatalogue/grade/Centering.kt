@@ -33,6 +33,16 @@ object Centering {
         val worst: Double get() = maxOf(leftRight, 100 - leftRight, topBottom, 100 - topBottom)
     }
 
+    /** User placed printed-frame guides on a confirmed, flattened whole card.
+     * Fractions are measured inward from its four edges, never from an artwork subject. */
+    fun manual(width: Int, height: Int, borders: List<Double>): Result? {
+        if (width <= 0 || height <= 0 || borders.size != 4) return null
+        if (borders.any { !it.isFinite() || it <= 0.0 || it >= 0.5 }) return null
+        val (l, r, t, b) = borders
+        if (l + r >= 1.0 || t + b >= 1.0) return null
+        return Result(l * width, r * width, t * height, b * height)
+    }
+
     private class Side(val edge: Double, val frame: Double, val spread: Double, val support: Double) {
         val width get() = frame - edge
     }

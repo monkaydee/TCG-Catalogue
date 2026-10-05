@@ -5,6 +5,14 @@ import com.monkaydee.tcgcatalogue.data.db.CostLot
 import org.junit.Assert.*
 import org.junit.Test
 class CostLedgerTest {
+ @Test fun convertingRawCopyToSlabRequiresActualGradingFeeBeforeShowingProfit() {
+  val card = com.monkaydee.tcgcatalogue.data.db.OwnedCard(id=1,game=com.monkaydee.tcgcatalogue.data.db.Game.POKEMON,cardId="x",variant="normal",variantLabel="Normal",name="Test",number="1",setId="s",setName="Set",price=100.0,grader="PSA",grade="10",condition="PSA 10")
+  val rawLot = CostLot(cardRowId=1,quantity=1,purchase=20.0,grading=0.0,shipping=0.0,tax=0.0,currency="EUR")
+  assertNull(CostLedger.pnl(card,listOf(CostLedger.afterGrading(rawLot)),"EUR",0.9))
+  val paid = rawLot.copy(grading=25.0)
+  assertEquals(45.0,CostLedger.pnl(card,listOf(CostLedger.afterGrading(paid)),"EUR",0.9)!!,0.001)
+  assertEquals("EUR",CostLedger.afterGrading(paid).currency)
+ }
  @Test fun pnlRequiresKnownQuoteAndCompleteCostCoverage() {
   val card = com.monkaydee.tcgcatalogue.data.db.OwnedCard(id=1,game=com.monkaydee.tcgcatalogue.data.db.Game.POKEMON,cardId="x",variant="normal",variantLabel="Normal",name="Test",number="1",setId="s",setName="Set",quantity=2,price=25.0)
   val lot = CostLot(cardRowId=1,quantity=2,purchase=10.0,grading=5.0,shipping=2.0,tax=1.0,currency="USD")
