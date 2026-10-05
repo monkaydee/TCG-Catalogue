@@ -158,6 +158,12 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 - **Other stores**: Amazon Appstore, Samsung Galaxy Store and Huawei AppGallery are free to publish on. F-Droid would need a variant without ML Kit.
 - **Trademarks**: game names only in plain text; no game logos in the icon or listing.
 
+### P0 again: price and language bugs (reported 5 Oct 2026, fix first)
+- **Graded cards show the raw price:** the card value must use the graded price (grader + grade) whenever one exists; check list, card page and portfolio total.
+- **Other languages show the English raw price:** use the language price (eBay DE/FR/IT/ES, Cardmarket) and show "no price in this language yet" instead of silently falling back to English.
+- **Language detection is unreliable:** collect wrong cases via "Wrong card?", add more rule words per language, weigh the set code.
+- **Raw prices too low for EU (e.g. Zekrom LTR 115 gold ≈ 160 € vs. NM from 300 € on eBay):** TCGplayer US market is not the EU price. Combine sources: Cardmarket trend for EU users, eBay listings as a cross-check; when sources differ by more than 30 %, show the range and the sources.
+
 ## Next ideas (October 2026), by priority
 
 ### Now (after P1 live scan)
