@@ -242,7 +242,7 @@ async function status(env: Env): Promise<Response> {
     time: new Date().toISOString(),
     providers: budgets.report((p) => !!keyOf(env, p)),
     cache: await new Cache(env.DB).count(),
-    learning: { textReports: true, privatePhotos: !!env.FEEDBACK_IMAGES, moderationConfigured: !!env.FEEDBACK_ADMIN_KEY, retentionDays: 90 },
+    learning: { textReports: true, privatePhotos: true, photoStorage: env.FEEDBACK_IMAGES ? "r2" : "private-d1-32mib", dashboardModeration: true, moderationConfigured: !!env.FEEDBACK_ADMIN_KEY, retentionDays: 90 },
   });
 }
 

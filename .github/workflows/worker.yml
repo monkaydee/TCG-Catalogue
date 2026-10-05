@@ -100,7 +100,7 @@ jobs:
             printf '\n[[r2_buckets]]\nbinding = "FEEDBACK_IMAGES"\nbucket_name = "cardnavo-recognition-private"\n' >> wrangler.toml
             echo "Private recognition photo storage enabled."
           else
-            echo "::warning::Private photo storage unavailable. Enable R2 and grant Workers R2 Storage Edit to the deployment token, then rerun. Text reports remain available."
+            echo "::warning::Private photo storage unavailable. Enable R2 and grant Workers R2 Storage Edit to the deployment token, then rerun. Approved crops use bounded private D1 storage until R2 is enabled."
           fi
 
       - name: Deploy

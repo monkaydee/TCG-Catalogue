@@ -12,21 +12,18 @@ The Worker authenticates the app and separately binds a random installation ID t
 installation token. Neither is an account identity. Reports have a 100/day installation limit and
 an overall 20,000 report storage ceiling, in addition to the existing IP limit. Crops are limited to
 300 KB and 800 pixels, card-shaped JPEGs; EXIF segments are rejected. Crops use a private R2
-bucket without public access. The daily retention job removes reports/photos after 90 days.
+bucket without public access. When R2 is unavailable, a private D1 image table has a strict 32 MiB total cap; reaching it retains uploads on the phone for retry. The daily retention job removes reports/photos after 90 days.
 Deletion and opt-out delete that installation's reports and images; an offline deletion retries.
-Withdrawal also disables rules that no longer have supporting evidence. Install token hashes
-remain as deletion authentication records; no OCR or photos remain in those records.
+Withdrawal also disables rules that no longer have supporting evidence. Installation token hashes are also removed on explicit deletion.
 
 ## Deployment
 
 The existing GitHub Worker workflow creates/attaches `cardnavo-recognition-private`. If R2 is
 not enabled or the deployment token lacks Workers R2 Storage Edit, it deploys text reporting and
-explicitly reports the photo setup failure. The app retains approved crops for a later retry;
-it does not claim they were sent. Add Workers R2 Storage Edit and enable R2 to complete setup.
+reports the R2 setup failure and uses bounded private D1 storage. Add Workers R2 Storage Edit and enable R2 to increase image capacity.
 
-Add repository secret `FEEDBACK_ADMIN_KEY` (a random secret distinct from APP_KEY) for moderation.
-It is uploaded to the Worker only, never built into Android. Without it reports can be collected
-but nobody can publish recognition rules. Existing provider secrets are unchanged.
+Optionally add repository secret `FEEDBACK_ADMIN_KEY` (a random secret distinct from APP_KEY) for HTTP/CLI moderation.
+It is uploaded to the Worker only, never built into Android. Without it HTTP moderation is disabled. The account owner can still inspect reports and publish reviewed rules directly in the existing Cloudflare D1 dashboard; see `scripts/recognition/moderate.sql`. Existing provider secrets are unchanged.
 
 ## Moderation and rollback
 

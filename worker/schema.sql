@@ -52,3 +52,16 @@ CREATE TRIGGER IF NOT EXISTS learning_report_added AFTER INSERT ON recognition_r
 BEGIN UPDATE learning_totals SET reports=reports+1 WHERE id=1; END;
 CREATE TRIGGER IF NOT EXISTS learning_report_removed AFTER DELETE ON recognition_reports
 BEGIN UPDATE learning_totals SET reports=reports-1 WHERE id=1; END;
+
+-- Private, bounded bootstrap storage when the deployment account cannot yet enable R2.
+-- 32 MiB is intentionally small; R2 remains preferred for a growing image corpus.
+CREATE TABLE IF NOT EXISTS recognition_images (id TEXT PRIMARY KEY, data BLOB NOT NULL);
+CREATE TABLE IF NOT EXISTS learning_image_totals (id INTEGER PRIMARY KEY CHECK(id=1), bytes INTEGER NOT NULL DEFAULT 0);
+INSERT OR IGNORE INTO learning_image_totals(id,bytes) SELECT 1,COALESCE(SUM(LENGTH(data)),0) FROM recognition_images;
+CREATE TRIGGER IF NOT EXISTS learning_image_cap BEFORE INSERT ON recognition_images
+WHEN (SELECT bytes FROM learning_image_totals WHERE id=1)+LENGTH(NEW.data)>33554432
+BEGIN SELECT RAISE(ABORT,'private image storage limit'); END;
+CREATE TRIGGER IF NOT EXISTS learning_image_added AFTER INSERT ON recognition_images
+BEGIN UPDATE learning_image_totals SET bytes=bytes+LENGTH(NEW.data) WHERE id=1; END;
+CREATE TRIGGER IF NOT EXISTS learning_image_removed AFTER DELETE ON recognition_images
+BEGIN UPDATE learning_image_totals SET bytes=bytes-LENGTH(OLD.data) WHERE id=1; END;

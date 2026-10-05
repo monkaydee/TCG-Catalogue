@@ -44,10 +44,15 @@ export async function feedback(req: Request, env: Env, path: string): Promise<Re
   if (stored?.token_hash !== token) return json({error:"unauthorized_install"},403);
   if (req.method === "DELETE") {
     const images = (await env.DB.prepare("SELECT image_key FROM recognition_reports WHERE install_hash=? AND image_key IS NOT NULL").bind(install).all<{image_key:string}>()).results;
-    if (env.FEEDBACK_IMAGES) for (let i=0;i<images.length;i+=1000) await env.FEEDBACK_IMAGES.delete(images.slice(i,i+1000).map(image => image.image_key));
+    if (env.FEEDBACK_IMAGES) for (let i=0;i<images.length;i+=1000) {
+      const keys = images.slice(i,i+1000).map(image => image.image_key).filter(key => !key.startsWith("d1:"));
+      if (keys.length) await env.FEEDBACK_IMAGES.delete(keys);
+    }
+    await env.DB.prepare("DELETE FROM recognition_images WHERE id IN (SELECT id FROM recognition_reports WHERE install_hash=?)").bind(install).run();
     await env.DB.prepare("DELETE FROM recognition_reports WHERE install_hash=?").bind(install).run();
     // Disable derived rules once consent withdrawal invalidates the evidence threshold.
     await env.DB.prepare("UPDATE recognition_rules SET enabled=0 WHERE NOT EXISTS (SELECT 1 FROM recognition_reports r WHERE r.context=recognition_rules.context AND r.card_id=recognition_rules.card_id AND r.kind='recognition' AND r.confirmed=1 GROUP BY r.context,r.card_id HAVING COUNT(DISTINCT r.install_hash)>=3)").run();
+    await env.DB.prepare("DELETE FROM learning_installs WHERE id=?").bind(install).run();
     return json({deleted:true});
   }
   if (req.method !== "POST") return json({error:"method_not_allowed"},405);
@@ -65,12 +70,18 @@ export async function feedback(req: Request, env: Env, path: string): Promise<Re
   if ((total?.n || 0) >= 20000) return json({error:"storage_limit"},503);
   let imageKey: string | null = null;
   if (body.image) {
-    if (!env.FEEDBACK_IMAGES) return json({error:"photo_storage_unavailable"},503);
     if (body.photoApproved !== true || typeof body.image !== "string" || body.image.length > 400000) return json({error:"photo_consent_required"},400);
     let bytes: Uint8Array; try { bytes = Uint8Array.from(atob(body.image), c => c.charCodeAt(0)); } catch { return json({error:"invalid_image"},400); }
     if (!validJpeg(bytes)) return json({error:"invalid_crop"},400);
-    imageKey = `${body.id}.jpg`;
-    await env.FEEDBACK_IMAGES.put(imageKey,bytes,{httpMetadata:{contentType:"image/jpeg"}});
+    if (env.FEEDBACK_IMAGES) {
+      imageKey = `${body.id}.jpg`;
+      await env.FEEDBACK_IMAGES.put(imageKey,bytes,{httpMetadata:{contentType:"image/jpeg"}});
+    } else {
+      const used = await env.DB.prepare("SELECT bytes FROM learning_image_totals WHERE id=1").first<{bytes:number}>();
+      if ((used?.bytes || 0) + bytes.byteLength > 33554432) return json({error:"private_image_storage_limit"},503);
+      await env.DB.prepare("INSERT INTO recognition_images(id,data) VALUES (?,?)").bind(body.id,bytes.buffer).run();
+      imageKey = `d1:${body.id}`;
+    }
   }
   const raw = body.evidence && typeof body.evidence === "object" ? body.evidence as Record<string,unknown> : {};
   const chosen = body.selectedGrade && typeof body.selectedGrade === "object" ? body.selectedGrade as Record<string,unknown> : {};
@@ -87,7 +98,7 @@ export async function feedback(req: Request, env: Env, path: string): Promise<Re
   } : null;
   try {
     await env.DB.prepare("INSERT INTO recognition_reports(id,install_hash,kind,context,card_id,game,language,payload,image_key,created_at,confirmed) VALUES (?,?,?,?,?,?,?,?,?,?,?)").bind(body.id,install,kind,context,card.id,card.game,card.language || "EN",JSON.stringify({card,read,evidence,selectedGrade,suggested:typeof body.suggested === "string" ? body.suggested.slice(0,200) : null}),imageKey,Date.now(),body.humanConfirmed === false ? 0 : 1).run();
-  } catch (e) { if (imageKey && env.FEEDBACK_IMAGES) await env.FEEDBACK_IMAGES.delete(imageKey); throw e; }
+  } catch (e) { if (imageKey?.startsWith("d1:")) await env.DB.prepare("DELETE FROM recognition_images WHERE id=?").bind(body.id).run(); else if (imageKey && env.FEEDBACK_IMAGES) await env.FEEDBACK_IMAGES.delete(imageKey); throw e; }
   return json({accepted:true});
 }
 export async function moderate(req: Request, env: Env): Promise<Response> {
@@ -97,9 +108,14 @@ export async function moderate(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const crop = url.searchParams.get("crop");
     if (crop) {
-      if (!uuid.test(crop) || !env.FEEDBACK_IMAGES) return json({error:"not_found"},404);
+      if (!uuid.test(crop)) return json({error:"not_found"},404);
       const row = await env.DB.prepare("SELECT image_key FROM recognition_reports WHERE id=?").bind(crop).first<{image_key:string|null}>();
-      const object = row?.image_key ? await env.FEEDBACK_IMAGES.get(row.image_key) : null;
+      if (row?.image_key?.startsWith("d1:")) {
+        const image = await env.DB.prepare("SELECT data FROM recognition_images WHERE id=?").bind(crop).first<{data:number[]}>();
+        if (!image) return json({error:"not_found"},404);
+        return new Response(new Uint8Array(image.data),{headers:{"content-type":"image/jpeg","cache-control":"private, no-store"}});
+      }
+      const object = row?.image_key && env.FEEDBACK_IMAGES ? await env.FEEDBACK_IMAGES.get(row.image_key) : null;
       if (!object) return json({error:"not_found"},404);
       return new Response(object.body,{headers:{"content-type":"image/jpeg","cache-control":"private, no-store"}});
     }
@@ -121,8 +137,13 @@ export async function moderate(req: Request, env: Env): Promise<Response> {
 }
 export async function expireFeedback(env: Env): Promise<void> {
   const cutoff=Date.now()-90*86400000;
-  const rows = (await env.DB.prepare("SELECT id,image_key FROM recognition_reports WHERE created_at<? LIMIT 500").bind(cutoff).all<{id:string;image_key:string|null}>()).results;
-  const images = rows.flatMap(r => r.image_key ? [r.image_key] : []);
-  if (images.length && env.FEEDBACK_IMAGES) await env.FEEDBACK_IMAGES.delete(images);
-  if (rows.length) await env.DB.batch(rows.map(row => env.DB.prepare("DELETE FROM recognition_reports WHERE id=?").bind(row.id)));
+  // The global 20,000 report limit also bounds a complete retention pass.
+  const rows = (await env.DB.prepare("SELECT id,image_key FROM recognition_reports WHERE created_at<? LIMIT 20000").bind(cutoff).all<{id:string;image_key:string|null}>()).results;
+  const images = rows.flatMap(r => r.image_key && !r.image_key.startsWith("d1:") ? [r.image_key] : []);
+  if (env.FEEDBACK_IMAGES) for (let i=0;i<images.length;i+=1000) await env.FEEDBACK_IMAGES.delete(images.slice(i,i+1000));
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM recognition_images WHERE id IN (SELECT id FROM recognition_reports WHERE created_at<?)").bind(cutoff),
+    env.DB.prepare("DELETE FROM recognition_reports WHERE created_at<?").bind(cutoff),
+    env.DB.prepare("UPDATE recognition_rules SET enabled=0 WHERE NOT EXISTS (SELECT 1 FROM recognition_reports r WHERE r.context=recognition_rules.context AND r.card_id=recognition_rules.card_id AND r.kind='recognition' AND r.confirmed=1 GROUP BY r.context,r.card_id HAVING COUNT(DISTINCT r.install_hash)>=3)"),
+  ]);
 }
