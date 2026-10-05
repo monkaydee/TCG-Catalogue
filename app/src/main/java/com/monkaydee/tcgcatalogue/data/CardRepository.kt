@@ -577,6 +577,7 @@ class CardRepository(
             manualCurrency = r.manualValue?.let { s.currency },
         )
         db.withTransaction {
+        if (edited.graded && !edited.certNumber.isNullOrBlank()) check(db.cards().certificate(edited.grader!!, edited.certNumber, original.id) == null) { AppStrings.get(R.string.tools_duplicate_cert) }
         ensureCostLots(original)
         resizeLots(original, edited.quantity)
         val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition, edited.language, edited.copyKey)?.takeIf { it.id != original.id }
@@ -843,7 +844,8 @@ class CardRepository(
     }
 
     /** Replaces the whole collection with [backup]. */
-    suspend fun importBackup(backup: Backup) {
+    suspend fun importBackup(incoming: Backup) {
+        val backup = incoming.copy(cards = incoming.cards.map(CardIdentity::restored))
         validateBackup(backup)
         db.withTransaction {
         db.tools().clearLots(); db.tools().clearSubmissions()
@@ -876,7 +878,8 @@ class CardRepository(
      * condition (the higher quantity wins), wishlist entries by card and printing, sold cards and
      * sealed products by their details. Nothing on this phone is removed.
      */
-    suspend fun mergeBackup(backup: Backup) {
+    suspend fun mergeBackup(incoming: Backup) {
+        val backup = incoming.copy(cards = incoming.cards.map(CardIdentity::restored))
         validateBackup(backup)
         val rowMapping = mutableMapOf<Long, Long>()
         db.withTransaction {

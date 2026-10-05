@@ -30,6 +30,9 @@ interface CardDao {
     @Query("SELECT * FROM owned_cards WHERE game = :game AND cardId = :cardId AND variant = :variant AND condition = :condition AND language = :language AND copyKey = :copyKey LIMIT 1")
     suspend fun find(game: Game, cardId: String, variant: String, condition: String, language: String = "EN", copyKey: String = ""): OwnedCard?
 
+    @Query("SELECT * FROM owned_cards WHERE UPPER(grader)=UPPER(:grader) AND TRIM(certNumber)=TRIM(:certificate) AND id!=:excluding LIMIT 1")
+    suspend fun certificate(grader: String, certificate: String, excluding: Long = 0): OwnedCard?
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(card: OwnedCard): Long
 
@@ -48,6 +51,7 @@ interface CardDao {
     /** Adds [card] or bumps the quantity of the matching row. Returns the row id. */
     @Transaction
     suspend fun addOrIncrement(card: OwnedCard): Long {
+        if (card.graded && !card.certNumber.isNullOrBlank()) check(certificate(card.grader!!, card.certNumber) == null) { com.monkaydee.tcgcatalogue.ui.AppStrings.get(com.monkaydee.tcgcatalogue.R.string.tools_duplicate_cert) }
         val existing = find(card.game, card.cardId, card.variant, card.condition, card.language, card.copyKey)
         return if (existing != null) {
             check(!card.graded || card.certNumber.isNullOrBlank()) { com.monkaydee.tcgcatalogue.ui.AppStrings.get(com.monkaydee.tcgcatalogue.R.string.tools_duplicate_cert) }

@@ -75,7 +75,4 @@ jobs:
           target_commitish: ${{ github.sha }}
           prerelease: ${{ github.ref != 'refs/heads/main' }}
           files: cardnavo-*.apk
-          body: |
-            Built from `${{ github.ref_name }}` @ ${{ github.sha }}.
-            Download the `.apk` below on your Android phone and open it to install
-            (allow "install unknown apps" for your browser when asked).
+          body_path: RELEASE-NOTES.md

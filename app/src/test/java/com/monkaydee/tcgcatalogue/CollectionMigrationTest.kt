@@ -47,6 +47,8 @@ class CollectionMigrationTest {
             com.monkaydee.tcgcatalogue.ui.AppStrings.init(context)
             try { upgraded.cards().addOrIncrement(card.copy(id = 0)); fail("Duplicate physical certificate must not increment quantity") }
             catch (_: IllegalStateException) { }
+            try { upgraded.cards().addOrIncrement(card.copy(id=0,cardId="other",condition="PSA 9",grade="9",language="EN")); fail("Certificate must remain unique across recognition disagreements") }
+            catch (_: IllegalStateException) { }
             assertEquals(1, upgraded.cards().get(2)!!.quantity)
         } finally { upgraded.close(); context.deleteDatabase("tcg-catalogue.db") }
     }
