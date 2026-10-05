@@ -94,7 +94,7 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 |---|---|---|---|
 | 11 | **Live camera scan like Collectr** | Card outline drawn live, auto-capture when sharp and steady, result in under 1 s, continuous mode for stacks with a running list and sound / vibration per card. | M |
 | 12 | **Performance** | Picture index and name index loaded once in memory (memory-mapped), OCR on a cropped card instead of the full photo, prices fetched in batches of 20, images cached in two sizes. Goal: scan → result < 800 ms on a mid-range phone, app start < 1 s. | M |
-| 13 | **Import review screen** ("add all sure ones" button done) | All imported photos in one list with confidence colours; "add all sure ones" button; unsure ones side by side with the photo. | S |
+| 13 | **Import review screen** ("add all sure ones" and sure / check marks done) | All imported photos in one list with confidence colours; "add all sure ones" button; unsure ones side by side with the photo. | S |
 | 14 | **Edit everything in one place** | Card page: language, printing, condition, grade, cert, price override, notes, purchase date, all inline. | S |
 | 15 | **Pre-grader reliability** | Golden set of our own phone photos with known grades; outline accuracy test in CI; centering for full-art fronts via the printed frame of the set's template; One Piece / other games calibrated separately. | L |
 | 16 | **Offline mode** | Everything except prices works offline; prices refresh when back online, with their age shown. | S |

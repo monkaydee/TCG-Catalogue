@@ -454,6 +454,11 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
                         item.grade?.let { Text(it.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary) }
                         Text("${top.setName} · ${top.number}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (top.variants.size > 1) Text(top.defaultVariant.label, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        // how sure the match is: number and name agree, or only the picture
+                        when {
+                            item.sure -> Text(stringResource(R.string.import_sure_match), style = MaterialTheme.typography.labelSmall, color = Gain, fontWeight = FontWeight.Bold)
+                            item.byPicture -> Text(stringResource(R.string.import_by_picture_check), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary)
+                        }
                         if (top.printingCheck) {
                             Text(stringResource(R.string.import_check_printing), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
                         }

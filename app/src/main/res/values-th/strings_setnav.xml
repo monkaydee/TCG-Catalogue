@@ -3,4 +3,6 @@
     <string name="set_previous">ชุดก่อนหน้า</string>
     <string name="set_next">ชุดถัดไป</string>
     <string name="import_add_all_sure">เพิ่มทั้งหมดที่แน่ใจ (%1$d)</string>
+    <string name="import_sure_match">ตรงกันแน่นอน</string>
+    <string name="import_by_picture_check">พบจากรูปภาพ – โปรดตรวจสอบ</string>
 </resources>

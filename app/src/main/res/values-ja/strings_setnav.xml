@@ -3,4 +3,6 @@
     <string name="set_previous">前のセット</string>
     <string name="set_next">次のセット</string>
     <string name="import_add_all_sure">確実なものをすべて追加 (%1$d)</string>
+    <string name="import_sure_match">確実な一致</string>
+    <string name="import_by_picture_check">画像から検出 – 確認してください</string>
 </resources>

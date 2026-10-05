@@ -3,4 +3,6 @@
     <string name="set_previous">Extension précédente</string>
     <string name="set_next">Extension suivante</string>
     <string name="import_add_all_sure">Ajouter toutes les sûres (%1$d)</string>
+    <string name="import_sure_match">Correspondance sûre</string>
+    <string name="import_by_picture_check">Trouvée par l’image – à vérifier</string>
 </resources>

@@ -3,4 +3,6 @@
     <string name="set_previous">المجموعة السابقة</string>
     <string name="set_next">المجموعة التالية</string>
     <string name="import_add_all_sure">إضافة كل المؤكدة (%1$d)</string>
+    <string name="import_sure_match">تطابق مؤكد</string>
+    <string name="import_by_picture_check">وُجدت بالصورة – يرجى التحقق</string>
 </resources>

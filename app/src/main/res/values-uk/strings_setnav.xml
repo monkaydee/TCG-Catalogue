@@ -3,4 +3,6 @@
     <string name="set_previous">Попередній сет</string>
     <string name="set_next">Наступний сет</string>
     <string name="import_add_all_sure">Додати всі надійні (%1$d)</string>
+    <string name="import_sure_match">Надійний збіг</string>
+    <string name="import_by_picture_check">Знайдено за зображенням – перевірте</string>
 </resources>

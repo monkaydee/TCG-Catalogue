@@ -3,4 +3,6 @@
     <string name="set_previous">Expansión anterior</string>
     <string name="set_next">Expansión siguiente</string>
     <string name="import_add_all_sure">Añadir todas las seguras (%1$d)</string>
+    <string name="import_sure_match">Coincidencia segura</string>
+    <string name="import_by_picture_check">Encontrada por imagen – compruébala</string>
 </resources>
