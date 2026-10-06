@@ -30,7 +30,7 @@ export function sealedType(name: string): string {
   return "unknown";
 }
 export function sealedContentsMatch(title:string, card:SealedRequest):boolean {
-  const units=(s:string)=>[...s.matchAll(/\b(\d+)\s*(?:x|boxes|boxen|displays)\b/gi)].map(m=>Number(m[1])).filter(n=>n>1);
+  const units=(s:string)=>[...s.matchAll(/\b(\d+)\s*(?:x|box(?:es|en)?|displays?)\b/gi)].map(m=>Number(m[1])).filter(n=>n>1);
   const expected=units(card.name), actual=units(title);
   if (actual.some(n=>!expected.includes(n)) || expected.some(n=>!actual.includes(n))) return false;
   const contents=(s:string)=>[...s.matchAll(/\b(\d+)\s*(?:packs?|boosters?)\b(?![- ]?(?:box|display|bundle))/gi)].map(m=>Number(m[1]));
@@ -48,8 +48,8 @@ function normalized(t: string): string { return t.normalize("NFKD").replace(/[\u
 /** Require a sealed unit, exact language, same product family and identifiable set. */
 export function sealedTitleMatches(title: string, card: SealedRequest): boolean {
   if (!languageMatches(title, card.language)) return false;
-  if (/\b(empty|opened|unsealed|reseal(?:ed)?|proxy|custom|replica|break|random|mystery|loose cards|code card|no packs)\b/i.test(title)) return false;
-  if (/shrink(?:wrap)? (?:removed|missing)|no shrink|シュリンクなし|開封済|ohne folie|ge[oö]ffnet/i.test(title)) return false;
+  if (/\b(empty|opened|unsealed|lot|half|partial|loose|reseal(?:ed)?|proxy|custom|replica|break|random|mystery|loose cards|code card|no packs)\b/i.test(title)) return false;
+  if (/shrink(?:wrap)? (?:removed|missing)|no shrink|シュリンクなし|開封済|ohne folie|halb(?:es|er|e)? display|ge[oö]ffnet/i.test(title)) return false;
   if (!/sealed|unopened|ovp|versiegelt|unge[oö]ffnet|未開封|シュリンク/i.test(title)) return false;
   const game = card.game === "pokemon" ? /pok[eé]mon|ポケモン|ポケカ/i : /one\s*piece|ワンピース/i;
   if (!game.test(title)) return false;

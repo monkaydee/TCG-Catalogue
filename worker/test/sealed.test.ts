@@ -9,7 +9,10 @@ describe("exact-language sealed prices", () => {
     for (const title of ["Pokemon Terastal Festival ex English Booster Box sealed", "Pokemon Terastal Festival ex Japanese Booster Pack sealed",
       "Pokemon Terastal Festival ex Japanese Booster Box opened", "Pokemon Terastal Festival ex Japanese Booster Box sealed 2 boxes",
       "Pokemon Terastal Festival ex Japanese Booster Box case sealed", "Pokemon Terastal Festival ex Japanese Booster Box empty sealed",
-      "Pokemon Terastal Festival ex Japanese Booster Box"]) expect(sealedTitleMatches(title,product)).toBe(false);
+      "Pokemon Terastal Festival ex Japanese Booster Box sealed lot of 2",
+      "Pokemon Terastal Festival ex Japanese Booster Box sealed 2 box",
+      "Pokemon Terastal Festival ex Japanese half Booster Box sealed",
+      "Pokemon Terastal Festival ex Japanese Booster Box"]) expect(sealedTitleMatches(title,product),title).toBe(false);
   });
   it("requires three unique matching listings and keeps currency", () => {
     const title="Pokemon Terastal Festival ex Japanese Booster Box sealed";
