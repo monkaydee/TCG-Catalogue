@@ -30,8 +30,11 @@ def main():
         if row.get("market") is not None or any(v is not None for v in (row.get("conditions") or {}).values()):
             assert row.get("source") and row.get("currency") in ["USD","EUR"]
     sealed = []
-    for name, language in [("Terastal Festival ex Booster Box","JA"),("Surging Sparks Booster Box","DE")]:
-        answer=call("/v1/sealed/price",{"game":"POKEMON","productId":"-1","name":name,"language":language})
+    for name, language, product_id, aliases in [
+        ("Terastal Festival ex Booster Box","JA","-1",["SV8a","テラスタルフェスex"]),
+        ("Surging Sparks Booster Box","DE","-784949",["Stürmische Funken"]),
+    ]:
+        answer=call("/v1/sealed/price",{"game":"POKEMON","productId":product_id,"name":name,"language":language,"aliases":aliases})
         p=answer.get("price")
         if p:
             assert p["listings"]>=3 and p["currency"] == ("EUR" if language=="DE" else "USD")
