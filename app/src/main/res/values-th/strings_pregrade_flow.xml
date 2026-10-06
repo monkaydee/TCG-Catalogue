@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">โครงร่างการ์ด · สี่มุม</string>
+  <string name="pre_center_screen">การจัดศูนย์กลาง · แปดคำแนะนำ</string>
+  <string name="pre_open_centering">วัดขอบด้านในและด้านนอก</string>
+  <string name="pre_outline_continue">ยืนยันโครงร่างการ์ดทั้งหมด</string>
+  <string name="pre_outline_adjust">ปรับมุมไพ่ทั้งสี่ใบ</string>
+  <string name="pre_choose_game">เกมไพ่</string>
+  <string name="pre_center_missing">วางตัวกั้นด้านนอกและด้านในไว้ด้านนี้เพื่อทำการวัดศูนย์กลางให้เสร็จสิ้น</string>
+  <string name="pre_center_ready">วัดศูนย์กลาง. คุณสามารถปรับคำแนะนำทั้งแปดได้</string>
+  <string name="pre_edit_front">แก้ไขการจัดกึ่งกลางด้านหน้า</string>
+  <string name="pre_edit_back">แก้ไขการตั้งศูนย์ด้านหลัง</string>
+  <string name="pre_potential_title">ศักยภาพในการเป็นศูนย์กลาง</string>
+  <string name="pre_potential_10">ภายในขีดจำกัดศูนย์กลาง PSA 10</string>
+  <string name="pre_potential_borderline">เส้นเขตแดน PSA 10 อยู่ตรงกลาง</string>
+  <string name="pre_potential_below">นอกขีดจำกัดศูนย์กลาง PSA 10</string>
+  <string name="pre_potential_incomplete">ทำทั้งสองด้านให้สมบูรณ์เพื่อศักยภาพในการอยู่ตรงกลาง</string>
+  <string name="pre_potential_scope">อยู่ตรงกลางเท่านั้น ข้ามเกมไพ่ ใช้ขีดจำกัด PSA ด้านหน้า 55/45 และด้านหลัง 75/25 เส้นเขตแดนหมายความว่าการปรับคำแนะนำแบบพิกเซลหนึ่งภาพอาจทำให้ผลลัพธ์เปลี่ยนแปลงได้ มุม ขอบ พื้นผิว และความถูกต้องสามารถลดเกรดขั้นสุดท้ายได้</string>
+  <string name="pre_model_scope">การทำนายเกรดโดยรวมไม่ได้รับการตรวจสอบสำหรับเกมนี้หรือการวัดผลเหล่านี้ ศักยภาพในการตั้งศูนย์กลางด้านบนยังคงมีอยู่เมื่อวัดทั้งสองด้านแล้ว</string>
+  <string name="pre_experimental_model">การประมาณภาพโปเกมอนทดลอง</string>
+  <string name="pre_quality_blocked">พิจารณาด้านนี้ใหม่: โครงร่างหรือคุณภาพของภาพถ่ายไม่เหมาะสำหรับการประเมินการสึกหรอ</string>
+  <string name="pre_no_wear_detected">ไม่พบการสึกหรอที่มองเห็นได้</string>
+  <string name="pre_assessment_notice">การคัดกรองภาพถ่ายไม่ใช่ใบรับรองการให้เกรด ไม่มีการประเมินรอยขีดข่วนบนพื้นผิว รอยบุบ เส้นพิมพ์ และความถูกต้อง โมเดลโปเกมอนโดยรวมได้รับการฝึกฝนเกี่ยวกับการสแกนใบรับรอง และยังต้องมีการตรวจสอบยืนยันภาพถ่ายในโทรศัพท์</string>
+  <string name="pre_skip_frame">ไม่มีกรอบพิมพ์เทียบเคียงได้</string>
+  <string name="pre_retake_front">ถ่ายรูปด้านหน้าอีกครั้ง</string>
+  <string name="pre_retake_back">ถ่ายรูปกลับมาอีกครั้ง</string>
+</resources>

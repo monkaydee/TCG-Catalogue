@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Contorno do cartão · quatro cantos</string>
+  <string name="pre_center_screen">Centralização · oito guias</string>
+  <string name="pre_open_centering">Meça as fronteiras internas e externas</string>
+  <string name="pre_outline_continue">Confirme o contorno do cartão inteiro</string>
+  <string name="pre_outline_adjust">Ajuste os quatro cantos do cartão</string>
+  <string name="pre_choose_game">Jogo de cartas</string>
+  <string name="pre_center_missing">Coloque as guias externas e internas deste lado para completar a medição de centralização.</string>
+  <string name="pre_center_ready">Centralização medida. Você pode ajustar todas as oito guias.</string>
+  <string name="pre_edit_front">Editar centralização frontal</string>
+  <string name="pre_edit_back">Editar centralização traseira</string>
+  <string name="pre_potential_title">Potencial de centralização</string>
+  <string name="pre_potential_10">Dentro dos limites de centralização PSA 10</string>
+  <string name="pre_potential_borderline">Centralização Borderline PSA 10</string>
+  <string name="pre_potential_below">Fora dos limites de centralização do PSA 10</string>
+  <string name="pre_potential_incomplete">Complete ambos os lados para potencial de centralização</string>
+  <string name="pre_potential_scope">Centralização apenas em jogos de cartas. Usa limites PSA frontal 55/45 e traseiro 75/25. Limite significa que um ajuste de guia de pixel de uma imagem pode alterar o resultado. Cantos, bordas, superfície e autenticidade podem reduzir a nota final.</string>
+  <string name="pre_model_scope">Uma previsão de nota geral não é validada para este jogo ou para estas medições. O potencial de centralização acima permanece disponível quando ambos os lados são medidos.</string>
+  <string name="pre_experimental_model">Estimativa de fotos experimentais de Pokémon</string>
+  <string name="pre_quality_blocked">Refaça este lado: seu contorno ou qualidade fotográfica não são adequados para uma avaliação de desgaste.</string>
+  <string name="pre_no_wear_detected">nenhum desgaste visível detectado</string>
+  <string name="pre_assessment_notice">Triagem de fotos, não um certificado de classificação. Arranhões superficiais, amassados, linhas de impressão e autenticidade não são avaliados. O modelo geral do Pokémon foi treinado em verificações de certificação e ainda precisa de validação nas fotos do telefone.</string>
+  <string name="pre_skip_frame">Nenhuma moldura impressa comparável</string>
+  <string name="pre_retake_front">Retirar foto frontal</string>
+  <string name="pre_retake_back">Retirar foto de volta</string>
+</resources>

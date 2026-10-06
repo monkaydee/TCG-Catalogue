@@ -246,3 +246,11 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 
 ### Centering tool update
 Implemented eight independent outer/inner guides on the confirmed corrected card, four border gap measurements, live ratios, up to 20× draggable detail and one-pixel controls. Manual measurements are marked and excluded from the overall grade model. The supplied Instagram screenshots clarified the paired outer/inner guide interaction now implemented.
+
+### Pre-grading follow-up after v0.1.139
+
+Implemented dedicated outline/centering screens, visible inner/outer controls, direct results
+editing, missing-front recovery, game context and a quality-gated PSA 10 centering criterion
+for all TCGs. Removed unsupported overall-model confidence claims. **P0 still open:** verified-grade
+phone-photo calibration and device validation before selling overall predictions, particularly
+One Piece; acceptance plan in docs/PREGRADING-VALIDATION.md.

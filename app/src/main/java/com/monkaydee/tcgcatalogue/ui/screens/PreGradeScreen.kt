@@ -85,6 +85,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.grade.CenteringPotential
 import com.monkaydee.tcgcatalogue.grade.Centering
 import com.monkaydee.tcgcatalogue.grade.GradeModel
 import com.monkaydee.tcgcatalogue.grade.PhotoCheck
@@ -108,7 +109,7 @@ private fun guideFractions(viewW: Float, viewH: Float): FloatArray {
     return floatArrayOf(left / viewW, top / viewH, (left + w) / viewW, (top + h) / viewH)
 }
 
-private enum class Step { FRONT, BACK, RESULT }
+internal enum class Step { FRONT, BACK, RESULT }
 
 /**
  * Pre-grading (Standard): photos of the front and the back; centering, corners and edges are
@@ -117,16 +118,17 @@ private enum class Step { FRONT, BACK, RESULT }
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreGradeScreen(title: String?, onBack: () -> Unit) {
+fun PreGradeScreen(title: String?, onBack: () -> Unit, initialGame: Game? = null) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(Step.FRONT) }
-    var game by remember { mutableStateOf<Game?>(null) }
+    var game by remember { mutableStateOf<Game?>(initialGame) }
     var front by remember { mutableStateOf<PreGrader.Side?>(null) }
     var back by remember { mutableStateOf<PreGrader.Side?>(null) }
     var camera by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+    var editingCentering by remember { mutableStateOf<Step?>(null) }
     var adjusting by remember { mutableStateOf(false) }
 
     fun accept(outcome: PreGrader.Outcome) {
@@ -167,12 +169,12 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                 colors = appBarColors(),
                 title = {
                     Column {
-                        Text(stringResource(R.string.grade_title))
+                        Text(stringResource(if (editingCentering != null) R.string.pre_center_screen else if (adjusting) R.string.pre_outline_screen else R.string.grade_title))
                         title?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { if (camera) camera = false else onBack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) }
+                    IconButton(onClick = { if (editingCentering != null) editingCentering = null else if (adjusting) adjusting = false else if (camera) camera = false else onBack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) }
                 },
             )
         },
@@ -184,7 +186,22 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                     onPhoto = { photo, guide -> analyse(photo, guide) },
                     onError = { camera = false; error = context.getString(R.string.grade_camera_failed) },
                 )
-                step == Step.RESULT -> GradeResult(front, back, game, onGame = { game = it }, onRedo = { front = null; back = null; step = Step.FRONT })
+                editingCentering != null -> {
+                    val target = editingCentering!!
+                    val side = (if (target == Step.FRONT) front else back)!!
+                    Column(Modifier.fillMaxSize().padding(12.dp)) {
+                        Text(stringResource(if (target == Step.FRONT) R.string.grade_front else R.string.grade_back), style = MaterialTheme.typography.titleMedium)
+                        ManualCenteringPanel(side, fullscreen = true, onCancel = { editingCentering = null }, onSkip = {
+                            val fixed = side.copy(centering = null, manualCentering = false, centeringSkipped = true)
+                            if (target == Step.FRONT) front = fixed else back = fixed
+                            editingCentering = null
+                        }, onApply = { c ->
+                            val fixed = side.copy(centering = c, manualCentering = true, centeringSkipped = false)
+                            if (target == Step.FRONT) front = fixed else back = fixed
+                            editingCentering = null
+                        })
+                    }
+                }
                 adjusting && (if (step == Step.FRONT) front else back)?.let { it.photo != null && it.quad != null } == true -> {
                     val side = (if (step == Step.FRONT) front else back)!!
                     Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
@@ -198,20 +215,24 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                                 scope.launch {
                                     val fixed = withContext(Dispatchers.Default) { runCatching { PreGrader.adjust(side, quad) }.getOrNull() }
                                     busy = false
-                                    if (fixed != null) { if (step == Step.FRONT) front = fixed else back = fixed }
+                                    if (fixed != null) {
+                                        if (step == Step.FRONT) front = fixed else back = fixed
+                                    } else error = context.getString(R.string.grade_no_card)
                                 }
                             },
                         )
                     }
                 }
+                step == Step.RESULT -> GradeResult(front, back, game, onGame = { game = it },
+                    onEdit = { target -> editingCentering = target },
+                    onRetake = { target -> if (target == Step.FRONT) front = null else back = null; step = target },
+                    onRedo = { front = null; back = null; step = Step.FRONT })
                 else -> {
                     val side = if (step == Step.FRONT) front else back
                     CaptureStep(
                         onAdjust = { adjusting = true },
-                        onCentering = { c ->
-                            if (step == Step.FRONT) front = front?.copy(centering = c, manualCentering = true)
-                            else back = back?.copy(centering = c, manualCentering = true)
-                        },
+                        game = game, onGame = { game = it },
+                        onEditCentering = { editingCentering = step },
                         onConfirm = { if (step == Step.FRONT) front = front?.copy(outlineConfirmed = true) else back = back?.copy(outlineConfirmed = true) },
                         step = step,
                         side = side,
@@ -222,7 +243,9 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit) {
                         onRetake = { if (step == Step.FRONT) front = null else back = null },
                         onNext = {
                             error = null
-                            step = if (step == Step.FRONT) Step.BACK else Step.RESULT
+                            val current = if (step == Step.FRONT) front else back
+                            if (current != null && current.centering == null && !current.centeringSkipped) editingCentering = step
+                            else step = if (step == Step.FRONT) Step.BACK else Step.RESULT
                         },
                         onSkip = if (step == Step.BACK) ({ back = null; step = Step.RESULT }) else null,
                     )
@@ -245,7 +268,7 @@ private fun CaptureStep(
     onSkip: (() -> Unit)?,
     onAdjust: () -> Unit,
     onConfirm: () -> Unit,
-    onCentering: (Centering.Result) -> Unit,
+    game: Game?, onGame: (Game) -> Unit, onEditCentering: () -> Unit,
 ) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -264,6 +287,13 @@ private fun CaptureStep(
                 Text(stringResource(R.string.grade_analysing), style = MaterialTheme.typography.bodyMedium)
             }
             side != null -> {
+                if (side.outlineConfirmed) {
+                    Button(onClick = onEditCentering, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_open_centering)) }
+                    Text(stringResource(if (side.centering == null) R.string.pre_center_missing else R.string.pre_center_ready))
+                } else {
+                    Button(onClick = onConfirm, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_outline_continue)) }
+                    if (side.photo != null) OutlinedButton(onClick = onAdjust, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_outline_adjust)) }
+                }
                 side.photo?.let { original ->
                     Box(Modifier.fillMaxWidth().aspectRatio(original.width.toFloat() / original.height)) {
                         Image(original.asImageBitmap(), stringResource(R.string.tools_confirm_outline), Modifier.fillMaxSize())
@@ -292,16 +322,19 @@ private fun CaptureStep(
                     )
                 }
                 Text(stringResource(R.string.grade_check_outline), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
-                if (side.photo != null) TextButton(onClick = onAdjust) { Text(stringResource(R.string.grade_adjust)) }
+                if (side.photo != null && side.outlineConfirmed) TextButton(onClick = onAdjust) { Text(stringResource(R.string.pre_outline_adjust)) }
                 Text(stringResource(R.string.tools_outline_hint))
-                if (side.outlineConfirmed) ManualCenteringPanel(side, onCentering)
-                if (!side.outlineConfirmed) OutlinedButton(onClick = onConfirm) { Text(stringResource(R.string.tools_confirm_outline)) }
+
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = onRetake) { Text(stringResource(R.string.grade_retake)) }
                     Button(onClick = onNext, enabled = side.outlineConfirmed) { Text(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.grade_show_result)) }
                 }
             }
             else -> {
+                Text(stringResource(R.string.pre_choose_game))
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(Game.entries) { g -> FilterChip(selected = game == g, onClick = { onGame(g) }, label = { Text(g.short) }) }
+                }
                 Tips()
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
                 Button(onClick = onCamera, modifier = Modifier.fillMaxWidth()) {
@@ -355,8 +388,10 @@ private fun FlatCard(side: PreGrader.Side, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, onGame: (Game) -> Unit, onRedo: () -> Unit) {
+internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, onGame: (Game) -> Unit, onRedo: () -> Unit, onEdit: (Step) -> Unit, onRetake: (Step) -> Unit = {}) {
     val usable = front?.usableForGrade == true && back?.usableForGrade == true
+    val centerUsable = front?.usableForCentering == true && back?.usableForCentering == true
+    val potential = CenteringPotential.assess(front?.centering, back?.centering, centerUsable)
     val estimate = remember(front, back, game) { if (usable && game == Game.POKEMON) GradeModel.estimate(front, back) else null }
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -365,29 +400,39 @@ private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Gam
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(Game.entries) { g -> FilterChip(selected = game == g, onClick = { onGame(g) }, label = { Text(g.short) }) }
         }
+        Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.pre_potential_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(when (potential) {
+                    CenteringPotential.Status.WITHIN_10 -> R.string.pre_potential_10
+                    CenteringPotential.Status.BORDERLINE_10 -> R.string.pre_potential_borderline
+                    CenteringPotential.Status.BELOW_10 -> R.string.pre_potential_below
+                    null -> if (front?.centering != null && back?.centering != null) R.string.pre_quality_blocked else R.string.pre_potential_incomplete
+                }), style = MaterialTheme.typography.headlineSmall)
+                Text(stringResource(R.string.pre_potential_scope), style = MaterialTheme.typography.bodySmall)
+                listOf(Step.FRONT to front, Step.BACK to back).forEach { (target, side) ->
+                    if (side != null) OutlinedButton(onClick = { onEdit(target) }, modifier = Modifier.fillMaxWidth()) {
+                        Text(stringResource(if (target == Step.FRONT) R.string.pre_edit_front else R.string.pre_edit_back))
+                    }
+                    if (side != null && side.problems.isNotEmpty()) TextButton(onClick = { onRetake(target) }) {
+                        Text(stringResource(if (target == Step.FRONT) R.string.pre_retake_front else R.string.pre_retake_back))
+                    }
+                }
+            }
+        }
         if (estimate == null) {
-            Text(stringResource(if (game != Game.POKEMON) R.string.grade_model_unavailable else R.string.grade_photos_required),
+            Text(stringResource(R.string.pre_model_scope),
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         // Do not substitute training averages for missing/unusable photos or unsupported games.
         if (estimate != null) {
         Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(stringResource(R.string.grade_likely), style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.pre_experimental_model), style = MaterialTheme.typography.labelLarge)
                 Text(
                     if (estimate.low == estimate.high) "PSA ${estimate.low}" else "PSA ${estimate.low} – ${estimate.high}",
                     style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold,
                 )
-                Text(stringResource(R.string.grade_most_likely, estimate.mostLikely, (estimate.probabilities.getValue(estimate.mostLikely) * 100).toInt()), style = MaterialTheme.typography.bodyMedium)
-                estimate.probabilities.entries.sortedByDescending { it.key }.forEach { (g, p) ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("$g", Modifier.width(28.dp), style = MaterialTheme.typography.labelMedium)
-                        Box(Modifier.weight(1f).height(10.dp).background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), RoundedCornerShape(5.dp))) {
-                            Box(Modifier.fillMaxWidth(p.toFloat().coerceIn(0f, 1f)).height(10.dp).background(MaterialTheme.colorScheme.primary, RoundedCornerShape(5.dp)))
-                        }
-                        Text("${(p * 100).toInt()} %", Modifier.width(48.dp), textAlign = TextAlign.End, style = MaterialTheme.typography.labelMedium)
-                    }
-                }
                 Text(stringResource(R.string.grade_limiting, stringResource(estimate.limiting)), style = MaterialTheme.typography.bodySmall)
             }
         }
@@ -401,18 +446,15 @@ private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Gam
             }
             Text(stringResource(R.string.grade_centering_explain), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
-            Centering.Company.entries.filter { usable && game == Game.POKEMON }.forEach { co ->
-                Text(
-                    stringResource(R.string.grade_centering_allows, co.label, co.bestGrade(front?.centering?.worst, back?.centering?.worst)),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
+
         }
         // Corners and edges
         Section(stringResource(R.string.grade_corners_edges)) {
             listOfNotNull(front?.let { stringResource(R.string.grade_front) to it }, back?.let { stringResource(R.string.grade_back) to it }).forEach { (label, side) ->
                 Text(label, style = MaterialTheme.typography.labelLarge)
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
+                if (!side.outlineConfirmed || side.problems.isNotEmpty()) {
+                    Text(stringResource(R.string.pre_quality_blocked), color = MaterialTheme.colorScheme.error)
+                } else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
                     FlatCard(side, Modifier.width(110.dp))
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         ZoneLine(stringResource(R.string.grade_corners), side.wear.corners)
@@ -421,7 +463,7 @@ private fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Gam
                 }
             }
         }
-        Text(stringResource(R.string.grade_disclaimer), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pre_assessment_notice), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         OutlinedButton(onClick = onRedo, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.grade_again)) }
     }
 }
@@ -445,7 +487,7 @@ private fun CenteringLine(label: String, c: Centering.Result?, limit: Double) {
                 c?.let {
                     val lr = it.leftRight
                     val tb = it.topBottom
-                    "↔ %.0f/%.0f · ↕ %.0f/%.0f".format(lr, 100 - lr, tb, 100 - tb)
+                    "↔ %.1f/%.1f · ↕ %.1f/%.1f".format(lr, 100 - lr, tb, 100 - tb)
                 } ?: "–",
                 style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium,
             )
@@ -453,7 +495,7 @@ private fun CenteringLine(label: String, c: Centering.Result?, limit: Double) {
         val good = c != null && c.worst <= limit
         Text(
             when {
-                c == null -> stringResource(R.string.grade_no_frame)
+                c == null -> stringResource(R.string.pre_center_missing)
                 good -> stringResource(R.string.grade_centering_good)
                 else -> stringResource(R.string.grade_centering_off)
             },
@@ -470,7 +512,7 @@ private fun ZoneLine(label: String, zones: List<Wear.Zone>) {
     Text(
         "$label: " + stringResource(
             when (worst) {
-                0 -> R.string.grade_zone_clean
+                0 -> R.string.pre_no_wear_detected
                 1 -> R.string.grade_zone_light
                 2 -> R.string.grade_zone_visible
                 else -> R.string.grade_zone_heavy

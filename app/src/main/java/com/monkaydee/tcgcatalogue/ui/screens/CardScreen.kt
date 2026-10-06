@@ -93,7 +93,7 @@ object CardBrowse {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (Long) -> Unit = {}, onPreGrade: (String) -> Unit = {}) {
+fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (Long) -> Unit = {}, onPreGrade: (String, Game) -> Unit = { _, _ -> }) {
     val all by repo.cards.collectAsState(initial = null)
     val s by repo.settings.flow.collectAsState(initial = AppSettings())
     val scope = rememberCoroutineScope()
@@ -170,7 +170,7 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
                     )
                 },
                 onAlert = { alertId = card.id },
-                onPreGrade = { onPreGrade("${card.name} · ${card.number}") },
+                onPreGrade = { onPreGrade("${card.name} · ${card.number}", card.game) },
             )
         }
     }

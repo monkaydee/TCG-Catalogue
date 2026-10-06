@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Garis besar kartu · empat sudut</string>
+  <string name="pre_center_screen">Pemusatan · delapan panduan</string>
+  <string name="pre_open_centering">Ukur batas dalam dan luar</string>
+  <string name="pre_outline_continue">Konfirmasikan kerangka seluruh kartu</string>
+  <string name="pre_outline_adjust">Sesuaikan keempat sudut kartu</string>
+  <string name="pre_choose_game">Permainan kartu</string>
+  <string name="pre_center_missing">Tempatkan pemandu luar dan dalam pada sisi ini untuk menyelesaikan pengukuran pemusatannya.</string>
+  <string name="pre_center_ready">Pemusatan diukur. Anda dapat menyesuaikan kedelapan panduan tersebut.</string>
+  <string name="pre_edit_front">Sunting pemusatan depan</string>
+  <string name="pre_edit_back">Sunting kembali ke tengah</string>
+  <string name="pre_potential_title">Potensi pemusatan</string>
+  <string name="pre_potential_10">Dalam batas pemusatan PSA 10</string>
+  <string name="pre_potential_borderline">Pemusatan garis batas PSA 10</string>
+  <string name="pre_potential_below">Di luar batas pemusatan PSA 10</string>
+  <string name="pre_potential_incomplete">Lengkapi kedua sisi untuk potensi pemusatan</string>
+  <string name="pre_potential_scope">Hanya terpusat, di seluruh permainan kartu. Menggunakan batas PSA depan 55/45 dan belakang 75/25. Garis batas berarti penyesuaian panduan satu piksel gambar dapat mengubah hasilnya. Sudut, tepian, permukaan dan keaslian dapat mengurangi kualitas akhir.</string>
+  <string name="pre_model_scope">Prediksi nilai keseluruhan tidak divalidasi untuk permainan ini atau pengukuran ini. Potensi pemusatan di atas tetap tersedia setelah kedua sisi diukur.</string>
+  <string name="pre_experimental_model">Perkiraan foto Pokémon eksperimental</string>
+  <string name="pre_quality_blocked">Ambil kembali sisi ini: garis besar atau kualitas fotonya tidak sesuai untuk penilaian keausan.</string>
+  <string name="pre_no_wear_detected">tidak ada keausan yang terdeteksi</string>
+  <string name="pre_assessment_notice">Pemutaran foto, bukan sertifikat penilaian. Goresan permukaan, penyok, garis cetak dan keaslian tidak dinilai. Model Pokémon secara keseluruhan telah dilatih melalui pemindaian sertifikasi dan masih memerlukan validasi pada foto ponsel.</string>
+  <string name="pre_skip_frame">Tidak ada bingkai cetakan yang sebanding</string>
+  <string name="pre_retake_front">Ambil kembali foto depan</string>
+  <string name="pre_retake_back">Ambil kembali foto</string>
+</resources>

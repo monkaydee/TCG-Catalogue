@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Contour de la carte · quatre coins</string>
+  <string name="pre_center_screen">Centrage · huit guides</string>
+  <string name="pre_open_centering">Mesurer les frontières intérieures et extérieures</string>
+  <string name="pre_outline_continue">Confirmer le contour de la carte entière</string>
+  <string name="pre_outline_adjust">Ajustez les quatre coins de la carte</string>
+  <string name="pre_choose_game">Jeu de cartes</string>
+  <string name="pre_center_missing">Placez les guides extérieurs et intérieurs de ce côté pour compléter sa mesure de centrage.</string>
+  <string name="pre_center_ready">Centrage mesuré. Vous pouvez ajuster les huit guides.</string>
+  <string name="pre_edit_front">Modifier le centrage avant</string>
+  <string name="pre_edit_back">Modifier le centrage arrière</string>
+  <string name="pre_potential_title">Potentiel de centrage</string>
+  <string name="pre_potential_10">Dans les limites de centrage PSA 10</string>
+  <string name="pre_potential_borderline">Centrage PSA 10 limite</string>
+  <string name="pre_potential_below">Hors limites de centrage PSA 10</string>
+  <string name="pre_potential_incomplete">Complétez les deux côtés pour un potentiel de centrage</string>
+  <string name="pre_potential_scope">Centrage uniquement, à travers les jeux de cartes. Utilise les limites PSA avant 55/45 et arrière 75/25. Borderline signifie qu’un ajustement du guide d’un pixel d’image pourrait modifier le résultat. Les coins, les bords, la surface et l\'authenticité peuvent réduire la note finale.</string>
+  <string name="pre_model_scope">Une prédiction de note globale n\'est pas validée pour ce jeu ou ces mesures. Le potentiel de centrage ci-dessus reste disponible une fois les deux côtés mesurés.</string>
+  <string name="pre_experimental_model">Estimation photo expérimentale de Pokémon</string>
+  <string name="pre_quality_blocked">Reprenez cette face : son contour ou sa qualité photo ne conviennent pas à une évaluation de l\'usure.</string>
+  <string name="pre_no_wear_detected">aucune usure visible détectée</string>
+  <string name="pre_assessment_notice">Projection photo, pas un certificat de notation. Les rayures de surface, les bosses, les lignes d\'impression et l\'authenticité ne sont pas évaluées. Le modèle Pokémon global a été formé sur des analyses de certification et doit encore être validé sur des photos de téléphone.</string>
+  <string name="pre_skip_frame">Aucun cadre imprimé comparable</string>
+  <string name="pre_retake_front">Reprendre la photo de face</string>
+  <string name="pre_retake_back">Reprendre la photo</string>
+</resources>

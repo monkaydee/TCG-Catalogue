@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.swipe
 import androidx.compose.ui.test.performTouchInput
@@ -157,6 +159,76 @@ class Screenshots {
         rule.onNodeWithText("Use these guides").performScrollTo().performClick()
         assertEquals(savedLeft, requireNotNull(applied).left, 1e-6)
         assertEquals(savedCuts, requireNotNull(applied).cuts)
+    }
+
+    @Test fun fullscreenCenteringShowsBothGuideSelectorsWithoutScrolling() {
+        val bitmap = Bitmap.createBitmap(600, 840, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.BLUE) }
+        val side = com.monkaydee.tcgcatalogue.grade.PreGrader.Side(bitmap, emptyList(), null,
+            com.monkaydee.tcgcatalogue.grade.Wear.Result(emptyMap()), outlineConfirmed = true)
+        var applied: com.monkaydee.tcgcatalogue.grade.Centering.Result? = null
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                androidx.compose.material3.Surface(Modifier.fillMaxSize()) {
+                com.monkaydee.tcgcatalogue.ui.screens.ManualCenteringPanel(side, fullscreen = true, onApply = { applied = it })
+                }
+            }
+        }
+        rule.onNodeWithText("Outer edge").assertIsDisplayed().performClick()
+        rule.onNodeWithContentDescription("+1 image pixel").assertIsDisplayed().performClick()
+        rule.onNodeWithText("Inner frame").assertIsDisplayed().performClick()
+        rule.onNodeWithContentDescription("+1 image pixel").performClick()
+        save("fullscreen_centering_controls")
+        rule.onNodeWithText("Use these guides").assertIsDisplayed().performClick()
+        assertEquals(1.0, requireNotNull(applied).cuts[0], 1e-6)
+        assertEquals(30.0, requireNotNull(applied).left, 1e-6)
+    }
+
+    @Test fun onePieceResultsRecoverMissingFrontAndAllowManualCenteringPotential() {
+        val bitmap = Bitmap.createBitmap(600, 840, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.BLUE) }
+        val wear = com.monkaydee.tcgcatalogue.grade.Wear.Result((com.monkaydee.tcgcatalogue.grade.Wear.EDGES + com.monkaydee.tcgcatalogue.grade.Wear.CORNERS)
+            .associateWith { com.monkaydee.tcgcatalogue.grade.Wear.Zone(0.0, 0.0, 0.0) })
+        var front by mutableStateOf(com.monkaydee.tcgcatalogue.grade.PreGrader.Side(bitmap, emptyList(), null, wear, outlineConfirmed = true))
+        val back = front.copy(centering = com.monkaydee.tcgcatalogue.grade.Centering.Result(50.0, 50.0, 50.0, 50.0))
+        var editing by mutableStateOf(false)
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                androidx.compose.material3.Surface(Modifier.fillMaxSize()) {
+                if (editing) com.monkaydee.tcgcatalogue.ui.screens.ManualCenteringPanel(front, fullscreen = true, onApply = {
+                    front = front.copy(centering = it, manualCentering = true); editing = false
+                }) else com.monkaydee.tcgcatalogue.ui.screens.GradeResult(front, back, Game.ONE_PIECE, {}, {}, {
+                    editing = it == com.monkaydee.tcgcatalogue.ui.screens.Step.FRONT
+                })
+                }
+            }
+        }
+        rule.onNodeWithText("Complete both sides for centering potential").assertIsDisplayed()
+        rule.onNodeWithText("Edit front centering").performScrollTo().performClick()
+        rule.onNodeWithText("Inner frame").assertIsDisplayed()
+        rule.onNodeWithText("Use these guides").performClick()
+        rule.onNodeWithText("Within PSA 10 centering limits").assertIsDisplayed()
+        assertTrue(front.usableForCentering)
+        assertFalse(front.usableForGrade)
+        save("onepiece_centering_potential")
+    }
+
+    @Test fun badQualityCannotShowCleanWearOrCenteringPotentialAndOffersRetake() {
+        val bitmap = Bitmap.createBitmap(600, 840, Bitmap.Config.ARGB_8888)
+        val side = com.monkaydee.tcgcatalogue.grade.PreGrader.Side(bitmap,
+            listOf(com.monkaydee.tcgcatalogue.grade.PhotoCheck.Problem.BLURRY),
+            com.monkaydee.tcgcatalogue.grade.Centering.Result(50.0,50.0,50.0,50.0),
+            com.monkaydee.tcgcatalogue.grade.Wear.Result(emptyMap()), outlineConfirmed = true)
+        var retaken: com.monkaydee.tcgcatalogue.ui.screens.Step? = null
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                androidx.compose.material3.Surface(Modifier.fillMaxSize()) {
+                    com.monkaydee.tcgcatalogue.ui.screens.GradeResult(side, side, Game.ONE_PIECE, {}, {}, {}, { retaken = it })
+                }
+            }
+        }
+        rule.onNodeWithText("Within PSA 10 centering limits").assertDoesNotExist()
+        rule.onNodeWithText("no visible wear detected").assertDoesNotExist()
+        rule.onNodeWithText("Retake front photo").performScrollTo().performClick()
+        assertEquals(com.monkaydee.tcgcatalogue.ui.screens.Step.FRONT, retaken)
     }
 
     @Test fun binderPages() {

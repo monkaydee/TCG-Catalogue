@@ -223,11 +223,11 @@ fun AppNav(repo: CardRepository) {
             composable("card/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->
                 CardScreen(
                     repo, e.arguments!!.getLong("id"), onBack = { nav.popBackStack() }, onReplace = { nav.navigate("search?replace=$it") },
-                    onPreGrade = { name -> nav.navigate("pregrade?title=${android.net.Uri.encode(name)}") },
+                    onPreGrade = { name, game -> nav.navigate("pregrade?title=${android.net.Uri.encode(name)}&game=${game.name}") },
                 )
             }
-            composable("pregrade?title={title}", arguments = listOf(navArgument("title") { type = NavType.StringType; nullable = true; defaultValue = null })) { e ->
-                com.monkaydee.tcgcatalogue.ui.screens.PreGradeScreen(e.arguments?.getString("title"), onBack = { nav.popBackStack() })
+            composable("pregrade?title={title}&game={game}", arguments = listOf(navArgument("title") { type = NavType.StringType; nullable = true; defaultValue = null }, navArgument("game") { type = NavType.StringType; nullable = true; defaultValue = null })) { e ->
+                com.monkaydee.tcgcatalogue.ui.screens.PreGradeScreen(e.arguments?.getString("title"), onBack = { nav.popBackStack() }, initialGame = e.arguments?.getString("game")?.let { runCatching { Game.valueOf(it) }.getOrNull() })
             }
         }
     }

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">कार्ड की रूपरेखा · चार कोने</string>
+  <string name="pre_center_screen">केन्द्रित करना · आठ मार्गदर्शक</string>
+  <string name="pre_open_centering">आंतरिक और बाहरी सीमाओं को मापें</string>
+  <string name="pre_outline_continue">संपूर्ण-कार्ड रूपरेखा की पुष्टि करें</string>
+  <string name="pre_outline_adjust">चार कार्ड कोनों को समायोजित करें</string>
+  <string name="pre_choose_game">ताश का खेल</string>
+  <string name="pre_center_missing">इसके केंद्रीकरण माप को पूरा करने के लिए इस तरफ बाहरी और आंतरिक गाइड रखें।</string>
+  <string name="pre_center_ready">केन्द्रीकरण मापा गया। आप सभी आठ गाइडों को समायोजित कर सकते हैं।</string>
+  <string name="pre_edit_front">फ्रंट सेंटरिंग संपादित करें</string>
+  <string name="pre_edit_back">बैक सेंटरिंग संपादित करें</string>
+  <string name="pre_potential_title">केन्द्रित करने की क्षमता</string>
+  <string name="pre_potential_10">पीएसए 10 केन्द्रीकरण सीमा के भीतर</string>
+  <string name="pre_potential_borderline">बॉर्डरलाइन पीएसए 10 केंद्रित</string>
+  <string name="pre_potential_below">पीएसए 10 केन्द्रीकरण सीमा के बाहर</string>
+  <string name="pre_potential_incomplete">क्षमता को केन्द्रित करने के लिए दोनों पक्षों को पूरा करें</string>
+  <string name="pre_potential_scope">केवल ताश के खेल पर केंद्रित। पीएसए फ्रंट 55/45 और बैक 75/25 सीमाओं का उपयोग करता है। बॉर्डरलाइन का मतलब है कि एक-छवि-पिक्सेल गाइड समायोजन परिणाम बदल सकता है। कोने, किनारे, सतह और प्रामाणिकता अंतिम ग्रेड को कम कर सकते हैं।</string>
+  <string name="pre_model_scope">इस गेम या इन मापों के लिए समग्र ग्रेड पूर्वानुमान मान्य नहीं है। दोनों पक्षों को मापने के बाद ऊपर केंद्रित करने की क्षमता उपलब्ध रहती है।</string>
+  <string name="pre_experimental_model">प्रायोगिक पोकेमॉन फोटो अनुमान</string>
+  <string name="pre_quality_blocked">इस पक्ष को फिर से लें: इसकी रूपरेखा या फोटो गुणवत्ता खराब मूल्यांकन के लिए उपयुक्त नहीं है।</string>
+  <string name="pre_no_wear_detected">कोई दृश्यमान टूट-फूट नहीं पाई गई</string>
+  <string name="pre_assessment_notice">फोटो स्क्रीनिंग, ग्रेडिंग सर्टिफिकेट नहीं। सतह की खरोंचें, डेंट, प्रिंट लाइनें और प्रामाणिकता का मूल्यांकन नहीं किया जाता है। समग्र पोकेमॉन मॉडल को प्रमाणन स्कैन पर प्रशिक्षित किया गया था और अभी भी फ़ोन फ़ोटो पर सत्यापन की आवश्यकता है।</string>
+  <string name="pre_skip_frame">कोई तुलनीय मुद्रित फ्रेम नहीं</string>
+  <string name="pre_retake_front">सामने की फ़ोटो दोबारा लें</string>
+  <string name="pre_retake_back">फ़ोटो पुनः वापस लें</string>
+</resources>

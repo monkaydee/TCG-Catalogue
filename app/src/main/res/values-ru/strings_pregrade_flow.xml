@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Контур карты · четыре угла</string>
+  <string name="pre_center_screen">Центрирование · восемь направляющих</string>
+  <string name="pre_open_centering">Измерьте внутренние и внешние границы</string>
+  <string name="pre_outline_continue">Подтвердить структуру всей карты</string>
+  <string name="pre_outline_adjust">Отрегулируйте четыре угла карты</string>
+  <string name="pre_choose_game">Карточная игра</string>
+  <string name="pre_center_missing">Разместите внешние и внутренние направляющие на этой стороне, чтобы завершить измерение центрирования.</string>
+  <string name="pre_center_ready">Центрирование измерено. Вы можете настроить все восемь направляющих.</string>
+  <string name="pre_edit_front">Изменить центрирование передней части</string>
+  <string name="pre_edit_back">Редактировать обратное центрирование</string>
+  <string name="pre_potential_title">Центрирующий потенциал</string>
+  <string name="pre_potential_10">В пределах центрирования PSA 10</string>
+  <string name="pre_potential_borderline">Пограничное центрирование PSA 10</string>
+  <string name="pre_potential_below">Вне пределов центрирования PSA 10</string>
+  <string name="pre_potential_incomplete">Завершите обе стороны для центрирующего потенциала</string>
+  <string name="pre_potential_scope">Только центрирование в карточных играх. Использует пределы PSA спереди 55/45 и сзади 75/25. Граница означает, что настройка направляющей на один пиксель изображения может изменить результат. Углы, края, поверхность и аутентичность могут снизить итоговую оценку.</string>
+  <string name="pre_model_scope">Прогноз общей оценки не подтверждается для этой игры или этих измерений. Вышеуказанный центрирующий потенциал остается доступным после измерения обеих сторон.</string>
+  <string name="pre_experimental_model">Оценка фотографий экспериментальных покемонов</string>
+  <string name="pre_quality_blocked">Переснимите эту сторону: ее контур или качество фотографии не подходят для оценки износа.</string>
+  <string name="pre_no_wear_detected">видимого износа не обнаружено</string>
+  <string name="pre_assessment_notice">Фотопоказ, а не сертификат об оценке. Царапины на поверхности, вмятины, линии печати и подлинность не оцениваются. Вся модель покемона была обучена с помощью сертификационных сканирований и все еще требует проверки на фотографиях на телефоне.</string>
+  <string name="pre_skip_frame">Нет сопоставимой печатной рамки</string>
+  <string name="pre_retake_front">Сделайте повторное фото спереди</string>
+  <string name="pre_retake_back">Снова сделать фото</string>
+</resources>

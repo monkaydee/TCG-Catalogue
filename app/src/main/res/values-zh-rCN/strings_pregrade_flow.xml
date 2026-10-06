@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">卡片轮廓·四个角</string>
+  <string name="pre_center_screen">定心 · 八个导轨</string>
+  <string name="pre_open_centering">测量内边界和外边界</string>
+  <string name="pre_outline_continue">确认全卡轮廓</string>
+  <string name="pre_outline_adjust">调整卡的四个角</string>
+  <string name="pre_choose_game">卡牌游戏</string>
+  <string name="pre_center_missing">将外部和内部导轨放置在这一侧以完成其对中测量。</string>
+  <string name="pre_center_ready">已测量居中。您可以调整所有八个参考线。</string>
+  <string name="pre_edit_front">编辑前居中</string>
+  <string name="pre_edit_back">编辑后居中</string>
+  <string name="pre_potential_title">集中潜力</string>
+  <string name="pre_potential_10">在 PSA 10 居中限制内</string>
+  <string name="pre_potential_borderline">边缘 PSA 10 居中</string>
+  <string name="pre_potential_below">超出 PSA 10 居中限制</string>
+  <string name="pre_potential_incomplete">完成两侧以集中潜力</string>
+  <string name="pre_potential_scope">仅居中，跨纸牌游戏。使用 PSA 前 55/45 和后 75/25 限制。边界意味着单图像像素引导调整可能会改变结果。角落、边缘、表面和真实性都会降低最终的等级。</string>
+  <string name="pre_model_scope">此游戏或这些测量的总体成绩预测尚未得到验证。一旦两侧都被测量，上方的居中电位仍然可用。</string>
+  <string name="pre_experimental_model">实验性神奇宝贝照片估计</string>
+  <string name="pre_quality_blocked">重新拍摄这一面：其轮廓或照片质量不适合磨损评估。</string>
+  <string name="pre_no_wear_detected">未检测到明显磨损</string>
+  <string name="pre_assessment_notice">照片筛选，而不是分级证书。不评估表面划痕、凹痕、印刷线和真实性。整个神奇宝贝模型是通过认证扫描进行训练的，并且仍然需要对手机照片进行验证。</string>
+  <string name="pre_skip_frame">没有可比的印刷框架</string>
+  <string name="pre_retake_front">重新拍摄正面照片</string>
+  <string name="pre_retake_back">重新拍回照片</string>
+</resources>

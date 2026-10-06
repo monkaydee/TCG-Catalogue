@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">카드 개요 · 네 모서리</string>
+  <string name="pre_center_screen">센터링 · 가이드 8개</string>
+  <string name="pre_open_centering">내부 및 외부 경계 측정</string>
+  <string name="pre_outline_continue">전체 카드 개요 확인</string>
+  <string name="pre_outline_adjust">네 개의 카드 모서리 조정</string>
+  <string name="pre_choose_game">카드게임</string>
+  <string name="pre_center_missing">센터링 측정을 완료하려면 외부 및 내부 가이드를 이 쪽에 배치합니다.</string>
+  <string name="pre_center_ready">센터링이 측정되었습니다. 8개의 가이드를 모두 조정할 수 있습니다.</string>
+  <string name="pre_edit_front">전면 중앙 수정</string>
+  <string name="pre_edit_back">뒤쪽 중앙 정렬 편집</string>
+  <string name="pre_potential_title">센터링 잠재력</string>
+  <string name="pre_potential_10">PSA 10 센터링 한계 이내</string>
+  <string name="pre_potential_borderline">경계선 PSA 10 센터링</string>
+  <string name="pre_potential_below">PSA 10 센터링 한계를 벗어남</string>
+  <string name="pre_potential_incomplete">잠재력을 센터링하기 위해 양면을 완성하십시오.</string>
+  <string name="pre_potential_scope">카드 게임 전반에 걸쳐 센터링만 가능합니다. PSA 전면 55/45 및 후면 75/25 제한을 사용합니다. 경계선은 단일 이미지 픽셀 가이드 조정으로 인해 결과가 변경될 수 있음을 의미합니다. 모서리, 가장자리, 표면 및 진품성은 최종 등급을 낮출 수 있습니다.</string>
+  <string name="pre_model_scope">이 게임이나 이러한 측정에 대해서는 전체 등급 예측이 검증되지 않습니다. 양쪽을 측정한 후에는 위의 센터링 전위를 계속 사용할 수 있습니다.</string>
+  <string name="pre_experimental_model">실험적인 포켓몬 사진 추정</string>
+  <string name="pre_quality_blocked">이 면을 다시 찍습니다. 윤곽이나 사진 품질이 마모 평가에 적합하지 않습니다.</string>
+  <string name="pre_no_wear_detected">눈에 보이는 마모가 감지되지 않음</string>
+  <string name="pre_assessment_notice">성적증명서가 아닌 사진 심사입니다. 표면 긁힘, 찌그러짐, 인쇄 선 및 진위 여부는 평가되지 않습니다. 전체 포켓몬 모델은 인증 스캔을 통해 훈련되었으며 여전히 휴대폰 사진에 대한 검증이 필요합니다.</string>
+  <string name="pre_skip_frame">비교할 만한 인쇄 프레임이 없습니다.</string>
+  <string name="pre_retake_front">정면 사진 다시 찍기</string>
+  <string name="pre_retake_back">다시 사진 찍기</string>
+</resources>
