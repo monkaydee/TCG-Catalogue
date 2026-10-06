@@ -107,7 +107,7 @@ export async function sealedPrice(req: Request, env: Env): Promise<Response> {
   if (!["pokemon","one_piece"].includes(game ?? "") || !["EN","DE","JA"].includes(language ?? "") || !name || name.length > 200 || !productId || !/^-?\d{1,16}$/.test(productId)) return json({error:"invalid_product"},400);
   const aliases = Array.isArray(o.aliases) ? o.aliases.filter((v): v is string => typeof v === "string" && v.length <= 100).slice(0, 12) : [];
   const card = { game, name, language, productId, aliases, market:o.market === "DE" || o.market === "US" ? o.market : undefined } as SealedRequest;
-  const key = `sealed:v3:${game}:${productId}:${language}:${card.market ?? "default"}:${name}`;
+  const key = `sealed:v4:${game}:${productId}:${language}:${card.market ?? "default"}:${name}`;
   const cache = new Cache(env.DB), now = Date.now();
   const entry = (await cache.getMany<SealedPrice | null>([key])).get(key);
   if (entry && entry.expiresAt > now) return json({price:entry.value,reason:entry.value ? null : "not_found"});
