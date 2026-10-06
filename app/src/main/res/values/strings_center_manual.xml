@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="center_adjust">Adjust centering guides</string>
     <string name="center_hint">Each side has two guides: outer card edge and inner printed frame. Drag both to measure their gap. Cyan marks outer guides; green marks inner guides. Yellow is the selected guide. Use the same printed frame on every side.</string>
     <string name="center_left">Left</string>
@@ -11,7 +11,8 @@
     <string name="center_inner">Inner frame</string>
     <string name="center_minus_pixel">−1 image pixel</string>
     <string name="center_plus_pixel">+1 image pixel</string>
-    <string name="center_manual_notice">Manual centering measurement. Guide placement and photo perspective affect the ratio. Experimental estimates also require corner, edge and multi-angle surface review.</string>
+    <!-- Updated safety notice falls back to English until translations are reviewed. -->
+    <string name="center_manual_notice" tools:ignore="MissingTranslation">Manual centering measurement. Guide placement and photo perspective affect the ratio. Experimental estimates also require corner, edge and multi-angle surface review.</string>
     <string name="center_cancel">Cancel</string>
     <string name="center_apply">Use these guides</string>
 </resources>

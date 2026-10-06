@@ -153,7 +153,7 @@ private fun WearCrop(side: PreGrader.Side, name: String, modifier: Modifier, zoo
         }
     }
     val crop by produceState<Bitmap?>(null, bitmap, side.inspectionFile, rect) {
-        value = withContext(Dispatchers.IO) {
+        val decoded = withContext(Dispatchers.IO) {
             val detail = if (zoomable) side.inspectionFile?.let { path -> runCatching {
                 val decoder = BitmapRegionDecoder.newInstance(path, false)
                 try { decoder.decodeRegion(rect, android.graphics.BitmapFactory.Options()) } finally { decoder.recycle() }
@@ -165,6 +165,7 @@ private fun WearCrop(side: PreGrader.Side, name: String, modifier: Modifier, zoo
                 Bitmap.createBitmap(bitmap, x, y, ((rect.width() * sx).toInt()).coerceIn(1, bitmap.width - x), ((rect.height() * sy).toInt()).coerceIn(1, bitmap.height - y))
             }
         }
+        value = decoded
     }
     // Compose may retain a bitmap in a drawing layer after recomposition. Let GC release UI crops.
     Column {
