@@ -39,7 +39,9 @@ object GradeModel {
         return out.toDoubleArray()
     }
 
-    fun estimate(front: PreGrader.Side?, back: PreGrader.Side?): Estimate {
+    /** Retired weights are available only for explicit offline research, never the product UI. */
+    fun estimate(front: PreGrader.Side?, back: PreGrader.Side?, researchOnly: Boolean = false): Estimate {
+        check(researchOnly) { "Scan-trained weights are unvalidated on phone photos; use PreGradeEstimate for the experimental UI" }
         val x = features(front, back)
         // unknown features take the training mean (no information either way)
         for (i in x.indices) {

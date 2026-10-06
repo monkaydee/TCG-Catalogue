@@ -21,6 +21,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -157,10 +159,13 @@ private fun SealedRow(item: SealedItem, s: AppSettings, onClick: () -> Unit) {
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(item.name, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text("${item.game.short} · ${item.groupName}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("${item.game.short} · ${item.language} · ${item.groupName}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (item.priceSource.isNotBlank()) Text(item.priceSource, style = MaterialTheme.typography.labelSmall)
+                item.referencePrice?.let { value -> Text("Aggregate reference: ${Money.format(value, item.referenceCurrency ?: "EUR")} · not language-specific", style = MaterialTheme.typography.labelSmall) }
+                item.priceUpdatedAt?.let { Text("Updated ${java.text.DateFormat.getDateInstance().format(java.util.Date(it))}", style = MaterialTheme.typography.labelSmall) }
                 item.purchasePrice?.let { paid ->
                     val now = item.price ?: return@let
-                    val diff = Money.convert(now - paid, item.priceCurrency, s.currency, s.usdToEur) * item.quantity
+                    val diff = (Money.convert(now, item.priceCurrency, s.currency, s.usdToEur) - Money.convert(paid, item.purchaseCurrency ?: item.priceCurrency, s.currency, s.usdToEur)) * item.quantity
                     Text(
                         stringResource(R.string.sealed_gain, (if (diff >= 0) "+" else "") + Money.format(diff, s.currency)),
                         style = MaterialTheme.typography.labelSmall,
@@ -188,19 +193,26 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
     val scope = rememberCoroutineScope()
     var game by remember { mutableStateOf<Game?>(s.enabledGames.firstOrNull() ?: Game.POKEMON) }
     var query by remember { mutableStateOf("") }
+    var language by remember { mutableStateOf("EN") }
+    var confirmedLanguage by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var quoting by remember { mutableStateOf(false) }
     var results by remember { mutableStateOf<List<SealedProduct>>(emptyList()) }
     var loading by remember { mutableStateOf(false) }
     var picked by remember { mutableStateOf<SealedProduct?>(null) }
     var qty by remember { mutableIntStateOf(1) }
     var paid by remember { mutableStateOf("") }
 
-    LaunchedEffect(game, query) {
+    LaunchedEffect(game, query, language) {
         val g = game ?: return@LaunchedEffect
-        if (query.isBlank()) { results = emptyList(); return@LaunchedEffect }
+        if (query.isBlank()) { results = emptyList(); loading = false; error = null; return@LaunchedEffect }
         kotlinx.coroutines.delay(250)
         loading = true
-        results = repo.searchSealed(g, query)
-        loading = false
+        results = emptyList(); error = null
+        try { results = repo.searchSealed(g, query, language) }
+        catch (cancel: kotlinx.coroutines.CancellationException) { throw cancel }
+        catch (_: Exception) { error = "Catalogue could not be fetched. Check your connection and try again." }
+        finally { loading = false }
     }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
@@ -209,6 +221,13 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
             if (p == null) {
                 Text(stringResource(R.string.sealed_add), style = MaterialTheme.typography.titleLarge)
                 GameChips(selected = game, onSelect = { if (it != null) game = it }, games = Game.entries, nullLabel = null)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf("EN" to "English", "DE" to "Deutsch", "JA" to "日本語").forEach { (code, label) ->
+                        FilterChip(selected = language == code, onClick = { language = code }, label = { Text(label) })
+                    }
+                }
+                Text("Printed product language, not seller location. Regional catalogue entries require availability confirmation. Aggregate reference prices are kept out of your portfolio value.", style = MaterialTheme.typography.bodySmall)
+                error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 OutlinedTextField(
                     query, { query = it },
                     leadingIcon = { Icon(Icons.Default.Search, null) },
@@ -221,14 +240,21 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 }
                 LazyColumn(Modifier.fillMaxWidth().aspectRatio(0.8f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(results, key = { it.productId }) { r ->
-                        Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable { picked = r }.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable {
+                            picked = r; confirmedLanguage = !r.requiresLanguageConfirmation; error = null; quoting = true
+                            scope.launch {
+                                try { val quote = repo.sealedQuote(r); if (picked?.productId == r.productId && picked?.language == r.language) picked = quote }
+                                catch (_: Exception) { error = "Language-specific price unavailable; you can still add the product without a valuation." }
+                                finally { quoting = false }
+                            }
+                        }.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
                             AsyncImage(r.imageUrl, null, Modifier.size(48.dp), contentScale = ContentScale.Fit)
                             Spacer(Modifier.width(10.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(r.name, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                 Text(r.groupName, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
-                            Text(r.price?.let { Money.format(Money.convert(it, "USD", s.currency, s.usdToEur), s.currency) } ?: "–", style = MaterialTheme.typography.labelLarge)
+                            Text(r.price?.let { Money.format(Money.convert(it, r.currency, s.currency, s.usdToEur), s.currency) } ?: "–", style = MaterialTheme.typography.labelLarge)
                         }
                     }
                 }
@@ -240,10 +266,19 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                         Text(p.name, style = MaterialTheme.typography.titleMedium)
                         Text(p.groupName, style = MaterialTheme.typography.bodySmall)
                         Text(
-                            p.price?.let { Money.format(Money.convert(it, "USD", s.currency, s.usdToEur), s.currency) } ?: stringResource(R.string.sealed_no_price),
+                            p.price?.let { Money.format(Money.convert(it, p.currency, s.currency, s.usdToEur), s.currency) } ?: stringResource(R.string.sealed_no_price),
                             style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
                         )
                     }
+                }
+                Text("Printed language: ${p.language}", style = MaterialTheme.typography.labelLarge)
+                if (quoting) { CircularProgressIndicator(Modifier.size(24.dp)); Text("Fetching matching-language listings…", style = MaterialTheme.typography.bodySmall) }
+                if (p.source.isNotBlank()) Text(p.source, style = MaterialTheme.typography.bodySmall)
+                p.referencePrice?.let { Text("Cardmarket aggregate reference: ${Money.format(it, p.referenceCurrency ?: "EUR")} · not a price for ${p.language} specifically", style = MaterialTheme.typography.bodySmall) }
+                error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                if (p.requiresLanguageConfirmation) Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = confirmedLanguage, onCheckedChange = { confirmedLanguage = it })
+                    Text("I verified this exact sealed product exists in ${p.language} and matches my item", style = MaterialTheme.typography.bodySmall)
                 }
                 QuantityStepper(qty, { qty = it })
                 OutlinedTextField(
@@ -253,7 +288,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 )
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = { picked = null }) { Text(stringResource(R.string.ui_cancel)) }
-                    TextButton(onClick = {
+                    TextButton(enabled = confirmedLanguage && !quoting, onClick = {
                         scope.launch {
                             repo.addSealed(p, qty, paid.replace(',', '.').toDoubleOrNull())
                             onDismiss()

@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Deneysel Pokémon fotoğraf tahmini</string>
   <string name="pre_quality_blocked">Bu tarafı tekrar ele alalım: dış hatları veya fotoğraf kalitesi aşınma değerlendirmesi için uygun değil.</string>
   <string name="pre_no_wear_detected">gözle görülür bir aşınma tespit edilmedi</string>
-  <string name="pre_assessment_notice">Fotoğraf gösterimi, derecelendirme sertifikası değil. Yüzey çizikleri, ezikler, baskı çizgileri ve orijinallik değerlendirilmez. Genel Pokémon modeli sertifika taramaları konusunda eğitildi ve hala telefon fotoğraflarında doğrulanması gerekiyor.</string>
   <string name="pre_skip_frame">Karşılaştırılabilir basılı çerçeve yok</string>
   <string name="pre_retake_front">Ön fotoğrafı yeniden çek</string>
   <string name="pre_retake_back">Fotoğrafı yeniden çek</string>

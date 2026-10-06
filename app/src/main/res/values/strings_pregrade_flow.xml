@@ -20,7 +20,7 @@
     <string name="pre_experimental_model">Experimental Pokémon photo estimate</string>
     <string name="pre_quality_blocked">Retake this side: its outline or photo quality is not suitable for a wear assessment.</string>
     <string name="pre_no_wear_detected">no visible wear detected</string>
-    <string name="pre_assessment_notice">Photo screening, not a grading certificate. Surface scratches, dents, print lines and authenticity are not assessed. The overall Pokémon model was trained on certification scans and still needs validation on phone photos.</string>
+    <string name="pre_assessment_notice">Non-professional photo screening. Experimental ranges use your recorded corner, edge and surface observations, not validated grade probabilities. A professional grade may differ. Hidden defects, alteration and authenticity are not excluded.</string>
     <string name="pre_skip_frame">No comparable printed frame</string>
     <string name="pre_retake_front">Retake front photo</string>
     <string name="pre_retake_back">Retake back photo</string>

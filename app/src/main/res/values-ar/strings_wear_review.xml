@@ -28,7 +28,6 @@
   <string name="wear_whitening">تبييض/جرجرة مرئية</string>
   <string name="wear_chip">رقاقة / المسيل للدموع مرئية</string>
   <string name="wear_bend">الانحناء/الانبعاج مرئي</string>
-  <string name="wear_observation_scope">يتم الاحتفاظ بملاحظاتك في جلسة التصوير هذه. إنهم لا يشهدون على الحالة أو يتجاوزون جودة الصورة الرديئة. يمنع الضرر المسجل التقدير الشامل للنموذج.</string>
   <string name="wear_done">تم</string>
   <string name="wear_damage_blocks_grade">تم تسجيل أضرار واضحة. تم حجب تقدير النموذج الإجمالي لأن النتائج اليدوية ليست مدخلات نموذجية معايرة. نتائج التوسيط لا تأخذ في الاعتبار هذا الضرر.</string>
   <string name="wear_incomplete_blocks_grade">الزوايا والحواف تحتاج إلى فحص دقيق. الأدلة المفقودة أو غير الحاسمة تمنع تقدير النموذج الشامل؛ التمركز وحده لا يحدد الدرجة.</string>

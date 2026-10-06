@@ -78,9 +78,15 @@ data class CardCandidate(
 }
 
 /** A sealed product from the daily index, priced in USD (TCGplayer market price). */
-data class SealedProduct(val game: Game, val productId: Long, val name: String, val groupName: String, val price: Double?) {
-    val imageUrl: String get() = "https://tcgplayer-cdn.tcgplayer.com/product/${productId}_in_400x400.jpg"
-}
+data class SealedProduct(
+    val game: Game, val productId: Long, val name: String, val groupName: String, val price: Double?,
+    val language: String = "EN", val currency: String = "USD", val source: String = "TCGplayer market",
+    val priceScope: String = "language-specific", val referencePrice: Double? = null,
+    val referenceCurrency: String? = null, val referenceSource: String? = null,
+    val imageUrl: String? = if (productId > 0) "https://tcgplayer-cdn.tcgplayer.com/product/${productId}_in_400x400.jpg" else null,
+    val aliases: List<String> = emptyList(), val requiresLanguageConfirmation: Boolean = false,
+    val fetchedAt: Long? = null,
+)
 
 /** One card of a set, for the set checklist. [cardId] matches [com.monkaydee.tcgcatalogue.data.db.OwnedCard.cardId]. */
 data class ChecklistEntry(val cardId: String, val number: String, val name: String, val imageUrl: String?)

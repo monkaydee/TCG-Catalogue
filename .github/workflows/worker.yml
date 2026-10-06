@@ -167,3 +167,17 @@ jobs:
           done
           echo "::error::$URL/v1/status did not answer"
           exit 1
+
+      - name: Verify live language-specific price routes
+        if: steps.deploy.outputs.url != ''
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          URL: ${{ steps.deploy.outputs.url }}
+        run: python ../scripts/check_prices.py
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: price-verification
+          path: worker/price-verification.json
+          if-no-files-found: ignore

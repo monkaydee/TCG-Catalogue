@@ -28,7 +28,6 @@
   <string name="wear_whitening">Verbleking / slijtage zichtbaar</string>
   <string name="wear_chip">Chip/scheur zichtbaar</string>
   <string name="wear_bend">Buig/deuk zichtbaar</string>
-  <string name="wear_observation_scope">Voor deze fotosessie worden uw observaties bewaard. Ze certificeren de staat niet en overschrijven de slechte fotokwaliteit niet. Geregistreerde schade verhindert een algemene modelschatting.</string>
   <string name="wear_done">Klaar</string>
   <string name="wear_damage_blocks_grade">Er werd zichtbare schade geregistreerd. De algehele modelschatting wordt achterwege gelaten omdat handmatige bevindingen geen gekalibreerde modelinvoer zijn. Centreerresultaten houden geen rekening met deze schade.</string>
   <string name="wear_incomplete_blocks_grade">Hoeken en randen moeten nader worden geïnspecteerd. Ontbrekend of onduidelijk bewijsmateriaal verhindert een algemene modelschatting; centreren alleen levert geen cijfer op.</string>

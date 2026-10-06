@@ -11,7 +11,6 @@
   <string name="center_inner">भीतरी ढाँचा</string>
   <string name="center_minus_pixel">−1 छवि पिक्सेल</string>
   <string name="center_plus_pixel">+1 छवि पिक्सेल</string>
-  <string name="center_manual_notice">मैनुअल केन्द्रीकरण माप. प्लेसमेंट और फोटो परिप्रेक्ष्य अनुपात को प्रभावित करते हैं। मैनुअल गाइड समग्र ग्रेड अनुमान उत्पन्न नहीं करते हैं।</string>
   <string name="center_cancel">रद्द करें</string>
   <string name="center_apply">इन गाइडों का उपयोग करें</string>
 </resources>

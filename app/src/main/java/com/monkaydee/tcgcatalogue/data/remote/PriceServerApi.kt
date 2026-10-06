@@ -134,6 +134,20 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         }
     }
 
+    data class SealedQuote(val amount: Double, val currency: String, val source: String, val fetchedAt: Long?, val stale: Boolean, val listings: Int?)
+    suspend fun sealed(product: SealedProduct): SealedQuote? {
+        val body = buildJsonObject {
+            put("game", product.game.name); put("productId", product.productId.toString())
+            put("name", product.name); put("language", product.language)
+            putJsonArray("aliases") { product.aliases.forEach { add(it) } }
+        }
+        val result = post("/v1/sealed/price", body.toString().toRequestBody(JSON)) ?: return null
+        val p = result["price"] ?: return null
+        val amount = p["amount"].dbl()?.takeIf { it.isFinite() && it > 0 } ?: return null
+        return SealedQuote(amount, p["currency"].str() ?: return null, p["source"].str().orEmpty(),
+            p["fetchedAt"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }, p["stale"].str() == "true", p["listings"].int())
+    }
+
     /** PSA's record for a cert number, or null when PSA doesn't know it. */
     suspend fun cert(number: String): Cert? {
         val digits = number.filter(Char::isDigit).ifEmpty { return null }

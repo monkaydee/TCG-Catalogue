@@ -78,14 +78,17 @@ NOT_SEALED = re.compile(
 )
 
 
-def sealed_item(p, gid, by_product):
+def sealed_item(p, gid, by_product, sources=None):
     """A sealed product row [productId, name, groupId, market price], or None for accessories."""
     name = p["name"]
     if not SEALED_WORDS.search(name) or NOT_SEALED.search(name):
         return None
     prices = by_product.get(p["productId"], {})
     price = prices.get("Normal") or next(iter(prices.values()), None)
-    return [p["productId"], name, gid, price]
+    language = "JA" if re.search(r"\bjapanese\b|\bjapan\b", name, re.I) else "EN"
+    subtype = "Normal" if prices.get("Normal") else next(iter(prices), "Normal")
+    source = (sources or {}).get(p["productId"], {}).get(subtype, "TCGplayer price")
+    return [p["productId"], name, gid, price, language, source]
 
 
 def build(game, category, cards_too=True):
@@ -96,15 +99,18 @@ def build(game, category, cards_too=True):
         products = get(f"https://tcgcsv.com/tcgplayer/{category}/{gid}/products")
         prices = get(f"https://tcgcsv.com/tcgplayer/{category}/{gid}/prices")
         by_product = {}
+        by_sources = {}
         for p in prices:
             value = p.get("marketPrice") or p.get("midPrice") or p.get("lowPrice")
             if value:
                 by_product.setdefault(p["productId"], {})[p["subTypeName"]] = round(value, 2)
+                kind = "market" if p.get("marketPrice") else "mid (asking)" if p.get("midPrice") else "low (asking)"
+                by_sources.setdefault(p["productId"], {})[p["subTypeName"]] = "TCGplayer " + kind
         numbers = set()
         for p in products:
             number = number_of(p)
             if not number:
-                item = sealed_item(p, gid, by_product)  # sealed product, or an accessory (skipped)
+                item = sealed_item(p, gid, by_product, by_sources)  # sealed product, or an accessory (skipped)
                 if item:
                     sealed.append(item)
                     sealed_groups[str(gid)] = g["name"]
@@ -267,6 +273,16 @@ def main():
     for game, category in SEALED_ONLY.items():
         print(f"{game} sealed (category {category})")
         _, sealed = build(game, category, cards_too=False)
+        if game == "POKEMON":
+            print("POKEMON Japanese sealed (category 85)")
+            _, japanese = build(game, 85, cards_too=False)
+            from build_sealed_index import JP_SETS, key
+            for item in japanese["items"]:
+                item[4] = "JA"
+                item.append([alias for code, names in JP_SETS.items() if key(names[0]) in key(item[1]) for alias in (code, *names)])
+            sealed["groups"].update(japanese["groups"])
+            sealed["items"].extend(japanese["items"])
+            sealed["items"] = list({row[0]: row for row in sealed["items"]}.values())
         write_sealed(out, game, sealed)
     print("POKEMON (new sets and promos)")
     data = build_pokemon_new()

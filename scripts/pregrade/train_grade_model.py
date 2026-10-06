@@ -9,7 +9,9 @@ corner and edge the wear measured by Wear.kt).
 """
 import json, re, sys, os
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from scipy.optimize import minimize
+from scipy.special import expit
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 
 ZONES = ["T", "R", "B", "L", "TL", "TR", "BR", "BL"]
@@ -55,8 +57,24 @@ def rows(res):
 
 
 def fit(Z, Y):
-    return [np.concatenate([m.intercept_, m.coef_[0]]) for m in
-            (LogisticRegression(C=0.5, max_iter=3000).fit(Z, (Y >= k).astype(int)) for k in GRADES)]
+    # Worse centering or stronger wear must never improve grade probability.
+    # Coefficients are constrained non-positive; intercept remains unconstrained.
+    A = np.column_stack([np.ones(len(Z)), Z])
+    weights = []
+    for k in GRADES:
+        y = (Y >= k).astype(float)
+        def objective(w):
+            logits = A @ w
+            loss = np.mean(np.logaddexp(0, logits) - y * logits) + 0.01 * np.sum(w[1:] ** 2)
+            gradient = A.T @ (expit(logits) - y) / len(y)
+            gradient[1:] += 0.02 * w[1:]
+            return loss, gradient
+        result = minimize(objective, np.zeros(A.shape[1]), jac=True, method="L-BFGS-B",
+                          bounds=[(None, None)] + [(None, 0)] * Z.shape[1])
+        if not result.success:
+            raise RuntimeError(result.message)
+        weights.append(result.x)
+    return weights
 
 
 def predict(W, Z):
@@ -79,15 +97,16 @@ def main(paths):
         res.update(json.load(open(p)))
     X, Y, z10, zlow = rows(res)
     X = np.clip(X, CLIP_LOW, CLIP_HIGH)
-    mean = np.nanmean(X, 0)
-    X = np.where(np.isnan(X), mean, X)     # a missing side counts as average (the app does the same)
-    scale = X.std(0) + 1e-9
-    Z = (X - mean) / scale
-
-    # honest evaluation on a held-out quarter, then refit on everything
-    idx = np.random.default_rng(0).permutation(len(Y))
-    cut = int(len(Y) * 0.75)
-    tr, te = idx[:cut], idx[cut:]
+    # res is keyed by physical certificate: both sides stay in one row.
+    # Phone validation must also group repeat captures by physical card/certificate.
+    idx = np.arange(len(Y))
+    tr, te = train_test_split(idx, test_size=.25, random_state=0)
+    # All learned preprocessing is fitted only on training cards.
+    mean = np.nanmean(X[tr], 0)
+    mean = np.nan_to_num(mean)
+    filled = np.where(np.isnan(X), mean, X)
+    scale = filled[tr].std(0) + 1e-9
+    Z = (filled - mean) / scale
     P = predict(fit(Z[tr], Y[tr]), Z[te])
     yt = np.minimum(Y[te], 10)
     pred = np.array([max(p, key=p.get) for p in P])
@@ -98,6 +117,11 @@ def main(paths):
         s = [sum(v for kk, v in p.items() if kk >= k) for p in P]
         print(f"AUC grade>={k}: {roc_auc_score((yt >= k).astype(int), s):.3f}")
 
+    # Refit for export only after the held-out metrics have been reported.
+    mean = np.nan_to_num(np.nanmean(X, 0))
+    filled = np.where(np.isnan(X), mean, X)
+    scale = filled.std(0) + 1e-9
+    Z = (filled - mean) / scale
     W = fit(Z, Y)
     # corner/edge levels: light = above 90 % of PSA 10 zones, visible = above 99 %,
     # heavy = typical worst zone of PSA 6 and lower

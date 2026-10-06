@@ -1,6 +1,11 @@
 package com.monkaydee.tcgcatalogue.grade
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.Paint
+import java.io.File
 import com.monkaydee.tcgcatalogue.scan.Pixels
 import kotlin.math.hypot
 import kotlin.math.max
@@ -31,6 +36,14 @@ object PreGrader {
         val photoWidth: Int = photo?.width ?: 0,
         /** User observations on this rectified image; remeasurement creates a fresh review. */
         val wearFindings: Map<String, Wear.Finding> = emptyMap(),
+        /** Lossless source and inspection files; large images stay off the UI heap. */
+        val sourceFile: String? = null,
+        val inspectionFile: String? = null,
+        val inspectionWidth: Int = card.width,
+        val inspectionHeight: Int = card.height,
+        val surfaceFinding: SurfaceFinding = SurfaceFinding.NOT_REVIEWED,
+        val surfacePhotos: List<String> = emptyList(),
+        val contours: Map<String, ContourCheck.Evidence> = emptyMap(),
     ) {
         /** A grade estimate must not fill missing measurements with training averages. */
         val usableForCentering: Boolean get() = outlineConfirmed && problems.isEmpty() && centering != null
@@ -49,7 +62,7 @@ object PreGrader {
      * Analyses [photo] (upright). [guide] is where the card should be, as fractions of the photo
      * (left, top, right, bottom), e.g. the camera's card guide; null searches the whole photo.
      */
-    fun analyse(photo: Bitmap, guide: FloatArray? = null): Outcome {
+    fun analyse(photo: Bitmap, guide: FloatArray? = null, sourceFile: File? = null): Outcome {
         val scale = minOf(1.0, WORK_SIDE.toDouble() / max(photo.width, photo.height))
         val work = if (scale < 1) Bitmap.createScaledBitmap(photo, (photo.width * scale).roundToInt(), (photo.height * scale).roundToInt(), true) else photo
         val pixels = IntArray(work.width * work.height).also { work.getPixels(it, 0, work.width, 0, 0, work.width, work.height) }
@@ -65,7 +78,7 @@ object PreGrader {
         // With the camera guide, the card is what lies in the box; a gallery photo is searched whole.
         // Without an outline in the box, ask for a retake rather than measure something else.
         val quad = (if (hint != null) CardRectifier.findQuadIn(p, hint) else CardRectifier.findQuad(p)) ?: return Outcome.NoCard
-        return Outcome.Ok(measure(work, p, quad, scale))
+        return Outcome.Ok(measure(work, p, quad, scale, sourceFile = sourceFile))
     }
 
     /**
@@ -77,15 +90,18 @@ object PreGrader {
         require(quad.corners.all { it.x.isFinite() && it.y.isFinite() && it.x >= 0 && it.y >= 0 && it.x < photo.width && it.y < photo.height })
         val p = Pixels(photo.width, photo.height, IntArray(photo.width * photo.height).also { photo.getPixels(it, 0, photo.width, 0, 0, photo.width, photo.height) })
         val scale = side.photo.width.toDouble() / side.photoWidth
-        return measure(photo, p, CardRectifier.snap(p, quad), scale, side.photoWidth)
+        return measure(photo, p, CardRectifier.snap(p, quad), scale, side.photoWidth, side.sourceFile?.let(::File))
     }
 
-    private fun measure(work: Bitmap, p: Pixels, quad: Quad, scale: Double, photoWidth: Int = (work.width / scale).roundToInt()): Side {
+    private fun measure(work: Bitmap, p: Pixels, quad: Quad, scale: Double, photoWidth: Int = (work.width / scale).roundToInt(), sourceFile: File? = null): Side {
         val upright = upright(quad)
-        val flat = trimmed(CardRectifier.warp(p, upright))
+        val raw = CardRectifier.warp(p, upright)
+        val trim = "LRTB".map { Centering.cut(raw, it) }
+        val flat = trimmed(raw)
         val c = upright.corners
         val widthInPhoto = (hypot(c[1].x - c[0].x, c[1].y - c[0].y) + hypot(c[2].x - c[3].x, c[2].y - c[3].y)) / 2 / scale
         val bitmap = Bitmap.createBitmap(flat.argb, flat.width, flat.height, Bitmap.Config.ARGB_8888)
+        val detail = sourceFile?.let { inspection(it, upright, work.width, trim) }
         return Side(
             card = bitmap,
             problems = PhotoCheck.problems(flat, widthInPhoto),
@@ -94,8 +110,40 @@ object PreGrader {
             photo = work,
             quad = quad,
             photoWidth = photoWidth,
+            sourceFile = sourceFile?.absolutePath,
+            inspectionFile = detail?.first,
+            inspectionWidth = detail?.second ?: bitmap.width,
+            inspectionHeight = detail?.third ?: bitmap.height,
+            contours = ContourCheck.measure(flat),
         )
     }
+
+    private fun inspection(source: File, quad: Quad, workWidth: Int, trim: List<Int>): Triple<String, Int, Int>? = runCatching {
+        val original = BitmapFactory.decodeFile(source.absolutePath) ?: return null
+        try {
+            val q = quad.scaled(original.width.toDouble() / workWidth)
+            val nativeWidth = (hypot(q.tr.x - q.tl.x, q.tr.y - q.tl.y) + hypot(q.br.x - q.bl.x, q.br.y - q.bl.y)) / 2
+            // Never upscale: preserve up to 2,200 card pixels across for inspection.
+            val w = nativeWidth.roundToInt().coerceIn(1, 2200)
+            val h = (w * CardRectifier.H.toDouble() / CardRectifier.W).roundToInt().coerceAtLeast(1)
+            val high = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            val matrix = Matrix()
+            val from = q.corners.flatMap { listOf(it.x.toFloat(), it.y.toFloat()) }.toFloatArray()
+            check(matrix.setPolyToPoly(from, 0, floatArrayOf(0f, 0f, w.toFloat(), 0f, w.toFloat(), h.toFloat(), 0f, h.toFloat()), 0, 4))
+            Canvas(high).drawBitmap(original, matrix, Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG))
+            // Match the measurement crop rather than measuring from a different physical outline.
+            val l = (trim[0] * w.toDouble() / CardRectifier.W).roundToInt()
+            val r = (trim[1] * w.toDouble() / CardRectifier.W).roundToInt()
+            val t = (trim[2] * h.toDouble() / CardRectifier.H).roundToInt()
+            val b = (trim[3] * h.toDouble() / CardRectifier.H).roundToInt()
+            val crop = Bitmap.createBitmap(high, l, t, (w - l - r).coerceAtLeast(1), (h - t - b).coerceAtLeast(1))
+            try {
+                val file = File.createTempFile("inspection-", ".png", source.parentFile)
+                file.outputStream().use { check(crop.compress(Bitmap.CompressFormat.PNG, 100, it)) }
+                Triple(file.absolutePath, crop.width, crop.height)
+            } finally { if (crop !== high) crop.recycle(); high.recycle() }
+        } finally { original.recycle() }
+    }.getOrNull()
 
     /** The straightened card with leftover background strips cut off, scaled back to the standard size. */
     private fun trimmed(flat: Pixels): Pixels {

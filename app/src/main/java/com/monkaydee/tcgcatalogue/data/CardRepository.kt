@@ -403,16 +403,16 @@ class CardRepository(
             if (local != null) return if (condition == "NM") local else Pricing.forCondition(local, condition, null, PriceTexts.App)
             return null // An English price is not a valuation of this language.
         }
-        val base = rawPrice(card, variant, s, listing) ?: serverRawPrice(card, variant)
+        val base = rawPrice(card, variant, s, listing) ?: serverRawPrice(card, variant, language)
         if (condition == "NM") return base
-        val table = runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull()
+        val table = if (language == "EN") runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull() else null
         return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }, PriceTexts.App)
     }
 
     /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */
-    private suspend fun serverRawPrice(card: CardCandidate, variant: Variant): Price? {
+    private suspend fun serverRawPrice(card: CardCandidate, variant: Variant, language: String = "EN"): Price? {
         if (!server.isSetUp()) return null
-        val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key) }
+        val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language)) }
             .getOrNull() ?: return null
         val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
         return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = note.ifBlank { null })
@@ -905,7 +905,7 @@ class CardRepository(
         val sold = db.sold().getAll()
         for (x in backup.sold) if (sold.none { it.cardId == x.cardId && it.soldAt == x.soldAt && it.variant == x.variant }) db.sold().insert(x.copy(id = 0))
         for (x in backup.sealed) {
-            val match = db.sealed().find(x.game, x.productId)
+            val match = db.sealed().find(x.game, x.productId, x.language)
             if (match == null) db.sealed().upsert(x.copy(id = 0)) else if (x.quantity > match.quantity) db.sealed().update(match.copy(quantity = x.quantity))
         }
         }
@@ -1076,20 +1076,31 @@ class CardRepository(
 
     fun observeSealed(id: Long) = db.sealed().observe(id)
 
-    suspend fun searchSealed(game: Game, query: String) = runCatching { cardIndex.searchSealed(game, query) }.getOrDefault(emptyList())
+    suspend fun searchSealed(game: Game, query: String, language: String = "EN") = cardIndex.searchSealed(game, query, language)
+
+    suspend fun sealedQuote(product: com.monkaydee.tcgcatalogue.data.remote.SealedProduct): com.monkaydee.tcgcatalogue.data.remote.SealedProduct {
+        if (product.productId > 0 && product.price != null) return product
+        if (!server.isSetUp()) return product
+        val quote = server.sealed(product) ?: return product
+        return product.copy(price = quote.amount, currency = quote.currency,
+            source = quote.source + (quote.listings?.let { " · $it listings" } ?: "") + if (quote.stale) " · stale" else "",
+            priceScope = "language-specific-asking", fetchedAt = quote.fetchedAt)
+    }
 
     suspend fun addSealed(product: com.monkaydee.tcgcatalogue.data.remote.SealedProduct, quantity: Int, purchasePrice: Double?) {
         val s = settings.current()
-        val existing = db.sealed().find(product.game, product.productId)
+        val existing = db.sealed().find(product.game, product.productId, product.language)
         if (existing != null) {
             db.sealed().update(existing.copy(quantity = existing.quantity + quantity))
         } else {
             db.sealed().upsert(
                 SealedItem(
                     game = product.game, productId = product.productId, name = product.name, groupName = product.groupName,
-                    imageUrl = product.imageUrl, quantity = quantity, price = product.price, priceCurrency = "USD",
-                    priceUpdatedAt = System.currentTimeMillis(),
-                    purchasePrice = purchasePrice?.let { Money.convert(it, s.currency, "USD", s.usdToEur) },
+                    imageUrl = product.imageUrl, quantity = quantity, price = product.price, priceCurrency = product.currency, language = product.language,
+                    priceSource = product.source, priceScope = product.priceScope,
+                    referencePrice = product.referencePrice, referenceCurrency = product.referenceCurrency, referenceSource = product.referenceSource,
+                    priceUpdatedAt = if (product.price != null) product.fetchedAt ?: System.currentTimeMillis() else null,
+                    purchasePrice = purchasePrice, purchaseCurrency = s.currency,
                 ),
             )
         }
@@ -1103,8 +1114,12 @@ class CardRepository(
 
     private suspend fun refreshSealed() {
         for (item in db.sealed().getAll()) {
-            val p = runCatching { cardIndex.sealedProduct(item.game, item.productId) }.getOrNull() ?: continue
-            p.price?.let { db.sealed().update(item.copy(price = it, priceCurrency = "USD", priceUpdatedAt = System.currentTimeMillis())) }
+            val catalogue = runCatching { cardIndex.sealedProduct(item.game, item.productId, item.language) }.getOrNull() ?: continue
+            val p = runCatching { sealedQuote(catalogue) }.getOrNull() ?: continue
+            // Preserve the original purchase currency when a quote changes market/currency.
+            p.price?.let { db.sealed().update(item.copy(price = it, priceCurrency = p.currency,
+                purchaseCurrency = item.purchaseCurrency ?: item.priceCurrency,
+                priceSource = p.source, priceScope = p.priceScope, priceUpdatedAt = p.fetchedAt ?: System.currentTimeMillis())) }
         }
     }
 

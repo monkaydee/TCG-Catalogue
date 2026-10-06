@@ -51,6 +51,9 @@ object PhotoCheck {
     fun problems(card: Pixels, cardWidthInPhoto: Double): List<Problem> = buildList {
         if (cardWidthInPhoto < 560) add(Problem.TOO_SMALL)
         if (sharpness(card) < 3.0) add(Problem.BLURRY)
-        if (glare(card) > 0.02) add(Problem.GLARE)
+        // Saturated white pixels alone cannot distinguish printed white ink from glare.
+        // Only reject severe clipping when the image also lacks useful detail; the capture
+        // workflow separately warns about possible reflections and asks for tilted views.
+        if (glare(card) > 0.25 && sharpness(card) < 3.0) add(Problem.GLARE)
     }
 }

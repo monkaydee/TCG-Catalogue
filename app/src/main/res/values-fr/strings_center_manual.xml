@@ -11,7 +11,6 @@
   <string name="center_inner">Cadre intérieur</string>
   <string name="center_minus_pixel">−1 pixel d\'image</string>
   <string name="center_plus_pixel">+1 pixel d\'image</string>
-  <string name="center_manual_notice">Mesure de centrage manuelle. Le placement et la perspective de la photo affectent le rapport. Les guides manuels ne produisent pas d’estimation globale de la note.</string>
   <string name="center_cancel">Annuler</string>
   <string name="center_apply">Utilisez ces guides</string>
 </resources>

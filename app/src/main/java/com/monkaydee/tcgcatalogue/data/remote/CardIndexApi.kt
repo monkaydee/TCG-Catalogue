@@ -115,7 +115,9 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                 val a = row.arr() ?: return@mapNotNull null
                 val id = a.getOrNull(0).str()?.toLongOrNull() ?: return@mapNotNull null
                 val gid = a.getOrNull(2).str().orEmpty()
-                SealedProduct(game, id, a.getOrNull(1).str().orEmpty(), groups[gid].orEmpty(), a.getOrNull(3).dbl())
+                SealedProduct(game, id, a.getOrNull(1).str().orEmpty(), groups[gid].orEmpty(), a.getOrNull(3).dbl(),
+                    language = a.getOrNull(4).str() ?: "EN", source = a.getOrNull(5).str() ?: "TCGplayer price",
+                    aliases = a.getOrNull(6).arr().orEmpty().mapNotNull { it.str() })
             }
         }
         sealedLoaded[game] = list
@@ -126,12 +128,33 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     private val sealedStamp = ConcurrentHashMap<Game, Long>()
 
     /** Sealed products whose name or set contains every word of [query]. */
-    suspend fun searchSealed(game: Game, query: String, limit: Int = 80): List<SealedProduct> {
-        val words = query.lowercase().split(' ').filter { it.isNotBlank() }
-        return sealed(game).filter { p -> words.all { w -> p.name.lowercase().contains(w) || p.groupName.lowercase().contains(w) } }.take(limit)
+    suspend fun regionalSealed(game: Game, language: String): List<SealedProduct> {
+        if (game != Game.POKEMON && game != Game.ONE_PIECE) return emptyList()
+        val file = dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
+        return withContext(Dispatchers.Default) {
+            val root = http.json.parseToJsonElement(file.readText())
+            root["items"].arr().orEmpty().mapNotNull { row ->
+                val id = row["productId"].str()?.toLongOrNull() ?: return@mapNotNull null
+                SealedProduct(game, id, row["name"].str().orEmpty(), row["groupName"].str().orEmpty(), null,
+                    language = language, currency = "EUR", source = "", referencePrice = row["referencePrice"].dbl(),
+                    referenceCurrency = "EUR", referenceSource = "Cardmarket aggregate guide (not language-specific)",
+                    aliases = row["aliases"].arr().orEmpty().mapNotNull { it.str() }, requiresLanguageConfirmation = true)
+            }
+        }
     }
 
-    suspend fun sealedProduct(game: Game, productId: Long): SealedProduct? = sealed(game).firstOrNull { it.productId == productId }
+    suspend fun searchSealed(game: Game, query: String, language: String = "EN", limit: Int = 80): List<SealedProduct> {
+        val words = query.lowercase().split(' ').filter { it.isNotBlank() }
+        val regional = try { regionalSealed(game, language) }
+        catch (cancel: kotlinx.coroutines.CancellationException) { throw cancel }
+        catch (failure: Exception) { if (language == "EN") emptyList() else throw failure }
+        val catalogue = (if (language == "EN" || language == "JA") sealed(game).filter { it.language == language } else emptyList()) + regional
+        return catalogue.filter { p -> words.all { w -> p.name.lowercase().contains(w) || p.groupName.lowercase().contains(w) || p.aliases.any { it.lowercase().contains(w) } } }
+            .distinctBy { it.productId }.take(limit)
+    }
+
+    suspend fun sealedProduct(game: Game, productId: Long, language: String = "EN"): SealedProduct? =
+        (if (productId > 0) sealed(game).filter { it.language == language } else regionalSealed(game, language)).firstOrNull { it.productId == productId }
 
     /** Every card of a set (TCGplayer group), in number order. */
     suspend fun setChecklist(game: Game, groupId: Int): List<ChecklistEntry> {

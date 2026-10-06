@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">실험적인 포켓몬 사진 추정</string>
   <string name="pre_quality_blocked">이 면을 다시 찍습니다. 윤곽이나 사진 품질이 마모 평가에 적합하지 않습니다.</string>
   <string name="pre_no_wear_detected">눈에 보이는 마모가 감지되지 않음</string>
-  <string name="pre_assessment_notice">성적증명서가 아닌 사진 심사입니다. 표면 긁힘, 찌그러짐, 인쇄 선 및 진위 여부는 평가되지 않습니다. 전체 포켓몬 모델은 인증 스캔을 통해 훈련되었으며 여전히 휴대폰 사진에 대한 검증이 필요합니다.</string>
   <string name="pre_skip_frame">비교할 만한 인쇄 프레임이 없습니다.</string>
   <string name="pre_retake_front">정면 사진 다시 찍기</string>
   <string name="pre_retake_back">다시 사진 찍기</string>

@@ -28,7 +28,6 @@
   <string name="wear_whitening">Pemutihan / lecet terlihat</string>
   <string name="wear_chip">Terlihat keripik/sobek</string>
   <string name="wear_bend">Terlihat bengkok/penyok</string>
-  <string name="wear_observation_scope">Pengamatan Anda disimpan untuk sesi foto ini. Mereka tidak menyatakan kondisi atau mengesampingkan kualitas foto yang buruk. Kerusakan yang tercatat menghalangi perkiraan model secara keseluruhan.</string>
   <string name="wear_done">Selesai</string>
   <string name="wear_damage_blocks_grade">Kerusakan yang terlihat dicatat. Estimasi model keseluruhan tidak diberikan karena temuan manual bukanlah masukan model yang dikalibrasi. Hasil pemusatan tidak memperhitungkan kerusakan ini.</string>
   <string name="wear_incomplete_blocks_grade">Sudut dan tepinya perlu diperiksa lebih dekat. Bukti yang hilang atau tidak meyakinkan menghalangi estimasi model secara keseluruhan; pemusatan saja tidak menentukan nilai.</string>

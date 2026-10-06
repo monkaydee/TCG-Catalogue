@@ -11,7 +11,6 @@
   <string name="center_inner">marco interior</string>
   <string name="center_minus_pixel">−1 píxel de imagen</string>
   <string name="center_plus_pixel">+1 píxel de imagen</string>
-  <string name="center_manual_notice">Medición de centrado manual. La ubicación y la perspectiva de la foto afectan la proporción. Las guías manuales no producen una estimación general de las calificaciones.</string>
   <string name="center_cancel">Cancelar</string>
   <string name="center_apply">Utilice estas guías</string>
 </resources>

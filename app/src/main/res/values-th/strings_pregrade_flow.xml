@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">การประมาณภาพโปเกมอนทดลอง</string>
   <string name="pre_quality_blocked">พิจารณาด้านนี้ใหม่: โครงร่างหรือคุณภาพของภาพถ่ายไม่เหมาะสำหรับการประเมินการสึกหรอ</string>
   <string name="pre_no_wear_detected">ไม่พบการสึกหรอที่มองเห็นได้</string>
-  <string name="pre_assessment_notice">การคัดกรองภาพถ่ายไม่ใช่ใบรับรองการให้เกรด ไม่มีการประเมินรอยขีดข่วนบนพื้นผิว รอยบุบ เส้นพิมพ์ และความถูกต้อง โมเดลโปเกมอนโดยรวมได้รับการฝึกฝนเกี่ยวกับการสแกนใบรับรอง และยังต้องมีการตรวจสอบยืนยันภาพถ่ายในโทรศัพท์</string>
   <string name="pre_skip_frame">ไม่มีกรอบพิมพ์เทียบเคียงได้</string>
   <string name="pre_retake_front">ถ่ายรูปด้านหน้าอีกครั้ง</string>
   <string name="pre_retake_back">ถ่ายรูปกลับมาอีกครั้ง</string>

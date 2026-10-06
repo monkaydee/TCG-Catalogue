@@ -28,7 +28,6 @@
   <string name="wear_whitening">Blanqueamiento/raspado visible</string>
   <string name="wear_chip">Astilla/desgarro visible</string>
   <string name="wear_bend">Doblez/abolladura visible</string>
-  <string name="wear_observation_scope">Sus observaciones se guardan para esta sesión de fotos. No certifican el estado ni anulan la mala calidad de las fotografías. Los daños registrados impiden una estimación global del modelo.</string>
   <string name="wear_done">hecho</string>
   <string name="wear_damage_blocks_grade">Se registraron daños visibles. La estimación general del modelo se retiene porque los hallazgos manuales no son entradas calibradas del modelo. Los resultados de centrado no tienen en cuenta este daño.</string>
   <string name="wear_incomplete_blocks_grade">Las esquinas y los bordes necesitan una inspección más cercana. La evidencia faltante o no concluyente impide una estimación general del modelo; centrar por sí solo no establece una calificación.</string>

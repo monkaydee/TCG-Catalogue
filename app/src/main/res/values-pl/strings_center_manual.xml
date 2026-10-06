@@ -11,7 +11,6 @@
   <string name="center_inner">Wewnętrzna rama</string>
   <string name="center_minus_pixel">−1 piksel obrazu</string>
   <string name="center_plus_pixel">+1 piksel obrazu</string>
-  <string name="center_manual_notice">Ręczny pomiar centrowania. Umiejscowienie i perspektywa zdjęcia wpływają na proporcje. Podręczniki ręczne nie pozwalają na oszacowanie ogólnej oceny.</string>
   <string name="center_cancel">Anuluj</string>
   <string name="center_apply">Skorzystaj z tych przewodników</string>
 </resources>

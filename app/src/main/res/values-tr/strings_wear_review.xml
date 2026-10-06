@@ -28,7 +28,6 @@
   <string name="wear_whitening">Görünür beyazlatma/sürünme</string>
   <string name="wear_chip">Talaş/yırtılma görülebilir</string>
   <string name="wear_bend">Bükülme / göçük görünür</string>
-  <string name="wear_observation_scope">Gözlemleriniz bu fotoğraf çekimi için saklanıyor. Durumu onaylamazlar veya düşük fotoğraf kalitesini geçersiz kılmazlar. Kaydedilen hasar genel bir model tahminini engeller.</string>
   <string name="wear_done">Bitti</string>
   <string name="wear_damage_blocks_grade">Görünür hasar kaydedildi. Manuel bulgular kalibre edilmiş model girdileri olmadığı için genel model tahmini saklı tutulmuştur. Merkezleme sonuçları bu hasarı hesaba katmaz.</string>
   <string name="wear_incomplete_blocks_grade">Köşeler ve kenarlar daha yakından incelenmelidir. Eksik veya kesin olmayan kanıtlar genel bir model tahminini engeller; tek başına merkezleme bir not oluşturmaz.</string>

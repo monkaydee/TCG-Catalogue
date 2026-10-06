@@ -28,7 +28,6 @@
   <string name="wear_whitening">Aufhellung/Abrieb sichtbar</string>
   <string name="wear_chip">Chip / Riss sichtbar</string>
   <string name="wear_bend">Biegung/Delle sichtbar</string>
-  <string name="wear_observation_scope">Ihre Beobachtungen werden für diese Fotosession gespeichert. Sie bestätigen nicht den Zustand und ersetzen keine schlechte Fotoqualität. Erfasste Schäden verhindern eine Gesamtmodellschätzung.</string>
   <string name="wear_done">Fertig</string>
   <string name="wear_damage_blocks_grade">Es wurden sichtbare Schäden festgestellt. Die Gesamtmodellschätzung wird zurückgehalten, da manuelle Ergebnisse keine kalibrierten Modelleingaben sind. Zentrierergebnisse berücksichtigen diesen Schaden nicht.</string>
   <string name="wear_incomplete_blocks_grade">Ecken und Kanten bedürfen einer genaueren Betrachtung. Fehlende oder nicht schlüssige Beweise verhindern eine Gesamtmodellschätzung; Die Zentrierung allein ergibt noch keine Note.</string>

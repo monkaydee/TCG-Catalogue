@@ -28,7 +28,7 @@
     <string name="wear_whitening">Whitening / scuffing visible</string>
     <string name="wear_chip">Chip / tear visible</string>
     <string name="wear_bend">Bend / dent visible</string>
-    <string name="wear_observation_scope">Your observations are kept for this photo session. They do not certify condition or override poor photo quality. Recorded damage prevents an overall model estimate.</string>
+    <string name="wear_observation_scope">Your observations are kept for this photo session and used for the experimental range. They do not certify condition or override poor photo quality. Recorded damage broadens or lowers the estimated range.</string>
     <string name="wear_done">Done</string>
     <string name="wear_damage_blocks_grade">Visible damage was recorded. The overall model estimate is withheld because manual findings are not calibrated model inputs. Centering results do not account for this damage.</string>
     <string name="wear_incomplete_blocks_grade">Corners and edges need closer inspection. Missing or inconclusive evidence prevents an overall model estimate; centering alone does not establish a grade.</string>

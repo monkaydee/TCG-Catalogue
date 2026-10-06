@@ -25,6 +25,11 @@ import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.grade.Centering
 import com.monkaydee.tcgcatalogue.grade.CenteringRotation
 import com.monkaydee.tcgcatalogue.grade.PreGrader
+import com.monkaydee.tcgcatalogue.grade.AutoAlignment
+import com.monkaydee.tcgcatalogue.scan.Pixels
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -40,6 +45,9 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
     val image = remember(bitmap) { bitmap.asImageBitmap() }
     var rotation by remember(bitmap, side.centering) { mutableDoubleStateOf(side.centering?.rotationDegrees ?: 0.0) }
     var rotating by remember(bitmap) { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    var aligning by remember(bitmap) { mutableStateOf(false) }
+    var alignmentNote by remember(bitmap) { mutableStateOf<String?>(null) }
     val rotatedBounds = CenteringRotation.bounds(bitmap.width, bitmap.height, rotation)
     val workWidth = rotatedBounds.width; val workHeight = rotatedBounds.height
     val dimensions = listOf(workWidth, workWidth, workHeight, workHeight)
@@ -112,6 +120,24 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
                 }
             }
         if (rotating) {
+            OutlinedButton(onClick = {
+                aligning = true
+                scope.launch {
+                    val correction = withContext(Dispatchers.Default) {
+                        val pixels = IntArray(bitmap.width * bitmap.height)
+                        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+                        AutoAlignment.correction(Pixels(bitmap.width, bitmap.height, pixels))
+                    }
+                    if (correction != null) {
+                        rotateTo(correction)
+                        alignmentNote = "Frame aligned automatically. Check all outer and inner guides before applying."
+                    } else alignmentNote = "No consistent printed frame found. Align manually using the grid."
+                    aligning = false
+                }
+            }, enabled = !aligning, modifier = Modifier.fillMaxWidth().testTag("center_auto_align")) {
+                Text(if (aligning) "Finding printed frame…" else "Auto-align printed frame")
+            }
+            alignmentNote?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 listOf(-1.0, -0.1, 0.0, 0.1, 1.0).forEach { step ->
                     TextButton(onClick = { rotateTo(if (step == 0.0) 0.0 else rotation + step) }, modifier = Modifier.weight(1f)) {

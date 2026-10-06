@@ -28,7 +28,6 @@
   <string name="wear_whitening">Sbiancamento/graffi visibili</string>
   <string name="wear_chip">Scheggiatura/strappo visibile</string>
   <string name="wear_bend">Piega/ammaccatura visibile</string>
-  <string name="wear_observation_scope">Le tue osservazioni vengono conservate per questa sessione fotografica. Non certificano le condizioni né sovrascrivono la scarsa qualità delle foto. I danni registrati impediscono una stima complessiva del modello.</string>
   <string name="wear_done">Fatto</string>
   <string name="wear_damage_blocks_grade">Sono stati registrati danni visibili. La stima complessiva del modello viene trattenuta perché i risultati manuali non sono input del modello calibrati. I risultati della centratura non tengono conto di questo danno.</string>
   <string name="wear_incomplete_blocks_grade">Angoli e bordi necessitano di un\'ispezione più attenta. Prove mancanti o inconcludenti impediscono una stima complessiva del modello; la sola centratura non stabilisce un grado.</string>

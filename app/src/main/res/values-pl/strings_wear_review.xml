@@ -28,7 +28,6 @@
   <string name="wear_whitening">Widoczne wybielenia/przetarcia</string>
   <string name="wear_chip">Widoczne odpryski/rozdarcia</string>
   <string name="wear_bend">Widoczne zagięcie/wgniecenie</string>
-  <string name="wear_observation_scope">Twoje obserwacje zostaną zachowane na potrzeby tej sesji zdjęciowej. Nie poświadczają stanu ani nie zastępują złej jakości zdjęcia. Zarejestrowane uszkodzenia uniemożliwiają ogólną ocenę modelu.</string>
   <string name="wear_done">Gotowe</string>
   <string name="wear_damage_blocks_grade">Stwierdzono widoczne uszkodzenia. Ogólne oszacowanie modelu nie jest uwzględniane, ponieważ ustalenia dokonane ręcznie nie stanowią skalibrowanych danych wejściowych modelu. Wyniki centrowania nie uwzględniają tego uszkodzenia.</string>
   <string name="wear_incomplete_blocks_grade">Narożniki i krawędzie wymagają dokładniejszej kontroli. Brakujące lub niejednoznaczne dowody uniemożliwiają dokonanie ogólnego oszacowania modelu; Samo centrowanie nie ustala stopnia.</string>

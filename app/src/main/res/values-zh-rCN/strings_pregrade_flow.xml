@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">实验性神奇宝贝照片估计</string>
   <string name="pre_quality_blocked">重新拍摄这一面：其轮廓或照片质量不适合磨损评估。</string>
   <string name="pre_no_wear_detected">未检测到明显磨损</string>
-  <string name="pre_assessment_notice">照片筛选，而不是分级证书。不评估表面划痕、凹痕、印刷线和真实性。整个神奇宝贝模型是通过认证扫描进行训练的，并且仍然需要对手机照片进行验证。</string>
   <string name="pre_skip_frame">没有可比的印刷框架</string>
   <string name="pre_retake_front">重新拍摄正面照片</string>
   <string name="pre_retake_back">重新拍回照片</string>

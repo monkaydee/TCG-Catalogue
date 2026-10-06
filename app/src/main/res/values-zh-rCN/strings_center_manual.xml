@@ -11,7 +11,6 @@
   <string name="center_inner">内框</string>
   <string name="center_minus_pixel">−1 图像像素</string>
   <string name="center_plus_pixel">+1 图像像素</string>
-  <string name="center_manual_notice">手动对中测量。位置和照片视角会影响比例。手动指南不会产生总体成绩估计。</string>
   <string name="center_cancel">取消</string>
   <string name="center_apply">使用这些指南</string>
 </resources>

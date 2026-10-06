@@ -11,7 +11,6 @@
   <string name="center_inner">Внутрішня рамка</string>
   <string name="center_minus_pixel">−1 піксель зображення</string>
   <string name="center_plus_pixel">+1 піксель зображення</string>
-  <string name="center_manual_notice">Ручне центрування. Розташування та перспектива фотографії впливають на співвідношення. Ручні посібники не дають загальної оцінки.</string>
   <string name="center_cancel">Скасувати</string>
   <string name="center_apply">Використовуйте ці посібники</string>
 </resources>

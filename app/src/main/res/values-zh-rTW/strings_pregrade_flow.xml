@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">實驗性神奇寶貝照片估計</string>
   <string name="pre_quality_blocked">重新拍攝這一面：其輪廓或照片品質不適合磨損評估。</string>
   <string name="pre_no_wear_detected">未檢測到明顯磨損</string>
-  <string name="pre_assessment_notice">照片篩選，而不是分級證書。不評估表面刮痕、凹痕、印刷線和真實性。整個神奇寶貝模型是透過認證掃描進行訓練的，並且仍然需要對手機照片進行驗證。</string>
   <string name="pre_skip_frame">沒有可比較的印刷框架</string>
   <string name="pre_retake_front">重新拍攝正面照片</string>
   <string name="pre_retake_back">重新拍回照片</string>

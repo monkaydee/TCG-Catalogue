@@ -438,8 +438,11 @@ class Screenshots {
         rule.onNodeWithText("Use these guides").performClick()
         rule.onNodeWithText("Next: back").performScrollTo().performClick()
         rule.onNodeWithText("Show result").performScrollTo().performClick()
-        if (changeInner) rule.onNodeWithText("Experimental Pokémon photo estimate").assertDoesNotExist()
-        else rule.onNodeWithText("Experimental Pokémon photo estimate").performScrollTo().assertIsDisplayed()
+        // The scan-trained estimate is retired even when automatic guides were unchanged.
+        rule.onNodeWithText("Experimental Pokémon photo estimate").assertDoesNotExist()
+        rule.onNodeWithText("More evidence needed").performScrollTo().assertIsDisplayed()
+        rule.onNodeWithText("• Front: review all four corners and four edges").assertIsDisplayed()
+        rule.onNodeWithText("Experimental pre-grade").assertIsDisplayed()
     }
 
     @Test fun unchangedGuideReviewPreservesAutomaticModelInputs() = checkCenteringReviewKeepsCalibrationOnlyWhenUnchanged(false)

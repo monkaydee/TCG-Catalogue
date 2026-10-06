@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Експериментальна оцінка фото Pokémon</string>
   <string name="pre_quality_blocked">Перезробіть цю сторону: її контур або якість фотографії непридатні для оцінки зносу.</string>
   <string name="pre_no_wear_detected">видимого зносу не виявлено</string>
-  <string name="pre_assessment_notice">Перегляд фотографій, а не сертифікат про оцінку. Поверхневі подряпини, вм\'ятини, лінії друку та автентичність не оцінюються. Загальна модель Pokémon була навчена сертифікаційним скануванням і все ще потребує перевірки фотографій телефону.</string>
   <string name="pre_skip_frame">Немає аналогічної друкованої рамки</string>
   <string name="pre_retake_front">Перезробіть переднє фото</string>
   <string name="pre_retake_back">Повторно зробити фото</string>

@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Estimation photo expérimentale de Pokémon</string>
   <string name="pre_quality_blocked">Reprenez cette face : son contour ou sa qualité photo ne conviennent pas à une évaluation de l\'usure.</string>
   <string name="pre_no_wear_detected">aucune usure visible détectée</string>
-  <string name="pre_assessment_notice">Projection photo, pas un certificat de notation. Les rayures de surface, les bosses, les lignes d\'impression et l\'authenticité ne sont pas évaluées. Le modèle Pokémon global a été formé sur des analyses de certification et doit encore être validé sur des photos de téléphone.</string>
   <string name="pre_skip_frame">Aucun cadre imprimé comparable</string>
   <string name="pre_retake_front">Reprendre la photo de face</string>
   <string name="pre_retake_back">Reprendre la photo</string>

@@ -11,7 +11,6 @@
   <string name="center_inner">Moldura interna</string>
   <string name="center_minus_pixel">−1 pixel de imagem</string>
   <string name="center_plus_pixel">+1 pixel de imagem</string>
-  <string name="center_manual_notice">Medição de centralização manual. O posicionamento e a perspectiva da foto afetam a proporção. Os guias manuais não produzem uma estimativa geral da nota.</string>
   <string name="center_cancel">Cancelar</string>
   <string name="center_apply">Use estes guias</string>
 </resources>

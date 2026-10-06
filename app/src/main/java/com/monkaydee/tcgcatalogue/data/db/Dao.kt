@@ -176,8 +176,8 @@ interface SealedDao {
     @Query("SELECT * FROM sealed_items WHERE id = :id")
     fun observe(id: Long): Flow<SealedItem?>
 
-    @Query("SELECT * FROM sealed_items WHERE game = :game AND productId = :productId LIMIT 1")
-    suspend fun find(game: Game, productId: Long): SealedItem?
+    @Query("SELECT * FROM sealed_items WHERE game = :game AND productId = :productId AND language = :language LIMIT 1")
+    suspend fun find(game: Game, productId: Long, language: String = "EN"): SealedItem?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: SealedItem): Long

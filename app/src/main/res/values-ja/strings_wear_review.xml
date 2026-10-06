@@ -28,7 +28,6 @@
   <string name="wear_whitening">白化・擦れが見られる</string>
   <string name="wear_chip">欠け/破れが見える</string>
   <string name="wear_bend">曲がり/凹みが見える</string>
-  <string name="wear_observation_scope">あなたの観察はこのフォトセッションのために保管されます。これらは状態を保証したり、劣悪な写真品質を無効にしたりするものではありません。記録された損傷により、モデル全体の推定ができなくなります。</string>
   <string name="wear_done">完了</string>
   <string name="wear_damage_blocks_grade">目に見える損傷が記録されました。手動による検出結果は調整されたモデル入力ではないため、モデル全体の推定値は差し控えられます。センタリングの結果では、この損傷は考慮されていません。</string>
   <string name="wear_incomplete_blocks_grade">角や端は詳しく検査する必要があります。証拠が欠落している、または決定的ではない場合、モデル全体の推定ができなくなります。センタリングだけではグレードは確立されません。</string>

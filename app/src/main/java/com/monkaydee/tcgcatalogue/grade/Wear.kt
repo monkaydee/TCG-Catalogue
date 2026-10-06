@@ -19,7 +19,8 @@ object Wear {
         val damage get() = this != NOT_REVIEWED && this != NO_VISIBLE_DAMAGE
     }
     data class Zone(val defects: Double, val whitening: Double, val strength: Double,
-        val evidence: Evidence = Evidence.MEASURED)
+        val evidence: Evidence = Evidence.MEASURED,
+        val flaggedPoints: List<Pt> = emptyList())
 
     /** Zones in the order T, R, B, L (edges) and TL, TR, BR, BL (corners). */
     data class Result(val zones: Map<String, Zone>) {
@@ -53,18 +54,20 @@ object Wear {
             val (x0, x1, y0, y1) = area(name, w, h, s)
             val refPx = ArrayList<IntArray>()
             val ringPx = ArrayList<IntArray>()
+            val ringPoints = ArrayList<Pt>()
             for (y in y0 until y1) for (x in x0 until x1) {
                 val d = inside(x, y, w, h, r)
                 if (d < 0) continue
                 val c = card.argb[y * w + x]
                 val rgb = intArrayOf((c shr 16) and 0xFF, (c shr 8) and 0xFF, c and 0xFF)
-                if (d < ring) ringPx += rgb else if (d >= refIn && d < refOut) refPx += rgb
+                if (d < ring) { ringPx += rgb; ringPoints += Pt(x.toDouble(), y.toDouble()) } else if (d >= refIn && d < refOut) refPx += rgb
             }
             if (refPx.size < 20 || ringPx.size < 20) { zones[name] = unknown(); continue }
             val ref = IntArray(3) { ch -> refPx.map { it[ch] }.sorted()[refPx.size / 2] }
             val refL = refPx.map { lum(it) }.sorted()[refPx.size / 2]
             val spread = refPx.map { dist(it, ref) }.sorted()[(refPx.size * 0.8).toInt().coerceAtMost(refPx.size - 1)]
             val thr = max(40.0, 2.5 * spread)
+            val flagged = ArrayList<Pt>()
             var bad = 0
             var whiter = 0
             val ds = DoubleArray(ringPx.size)
@@ -73,6 +76,7 @@ object Wear {
                 ds[i] = d
                 if (d > thr) {
                     bad++
+                    if (flagged.size < 256) flagged += ringPoints[i]
                     if (lum(p) - refL > 30) whiter++
                 }
             }
@@ -85,7 +89,7 @@ object Wear {
                 else -> Evidence.MEASURED
             }
             zones[name] = Zone(bad.toDouble() / ringPx.size, whiter.toDouble() / ringPx.size,
-                ds[(ds.size * 0.95).toInt().coerceAtMost(ds.size - 1)] / thr, evidence)
+                ds[(ds.size * 0.95).toInt().coerceAtMost(ds.size - 1)] / thr, evidence, flagged)
         }
         return Result(zones)
     }

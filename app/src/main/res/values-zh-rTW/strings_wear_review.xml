@@ -28,7 +28,6 @@
   <string name="wear_whitening">可見泛白/磨損</string>
   <string name="wear_chip">可見缺口/撕裂</string>
   <string name="wear_bend">彎曲/凹痕可見</string>
-  <string name="wear_observation_scope">您的觀察結果將在本次拍照過程中保留。他們不證明照片的狀況或忽略較差的照片品質。記錄的損壞妨礙了整體模型估計。</string>
   <string name="wear_done">完成</string>
   <string name="wear_damage_blocks_grade">記錄了可見的損壞。總體模型估計值被保留，因為手動結果不是校準模型輸入。居中結果不考慮這種損壞。</string>
   <string name="wear_incomplete_blocks_grade">角落和邊緣需要仔細檢查。證據缺失或不確定會妨礙整體模型估計；單獨居中並不能建立等級。</string>

@@ -11,7 +11,6 @@
   <string name="center_inner">กรอบด้านใน</string>
   <string name="center_minus_pixel">−1 พิกเซลของภาพ</string>
   <string name="center_plus_pixel">+1 พิกเซลของภาพ</string>
-  <string name="center_manual_notice">การวัดการจัดกึ่งกลางด้วยตนเอง เปอร์สเปคทีฟของตำแหน่งและรูปภาพส่งผลต่ออัตราส่วน คู่มือคู่มือไม่ได้ให้การประมาณเกรดโดยรวม</string>
   <string name="center_cancel">ยกเลิก</string>
   <string name="center_apply">ใช้คำแนะนำเหล่านี้</string>
 </resources>

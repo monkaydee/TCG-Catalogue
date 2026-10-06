@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">प्रायोगिक पोकेमॉन फोटो अनुमान</string>
   <string name="pre_quality_blocked">इस पक्ष को फिर से लें: इसकी रूपरेखा या फोटो गुणवत्ता खराब मूल्यांकन के लिए उपयुक्त नहीं है।</string>
   <string name="pre_no_wear_detected">कोई दृश्यमान टूट-फूट नहीं पाई गई</string>
-  <string name="pre_assessment_notice">फोटो स्क्रीनिंग, ग्रेडिंग सर्टिफिकेट नहीं। सतह की खरोंचें, डेंट, प्रिंट लाइनें और प्रामाणिकता का मूल्यांकन नहीं किया जाता है। समग्र पोकेमॉन मॉडल को प्रमाणन स्कैन पर प्रशिक्षित किया गया था और अभी भी फ़ोन फ़ोटो पर सत्यापन की आवश्यकता है।</string>
   <string name="pre_skip_frame">कोई तुलनीय मुद्रित फ्रेम नहीं</string>
   <string name="pre_retake_front">सामने की फ़ोटो दोबारा लें</string>
   <string name="pre_retake_back">फ़ोटो पुनः वापस लें</string>

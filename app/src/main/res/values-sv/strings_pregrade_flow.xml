@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Experimentell Pokémon-fotouppskattning</string>
   <string name="pre_quality_blocked">Ta om den här sidan: dess kontur eller fotokvalitet är inte lämplig för en slitagebedömning.</string>
   <string name="pre_no_wear_detected">inget synligt slitage upptäckt</string>
-  <string name="pre_assessment_notice">Bildvisning, inte betygsintyg. Ytrepor, bucklor, trycklinjer och äkthet bedöms inte. Den övergripande Pokémon-modellen tränades på certifieringsskanningar och behöver fortfarande valideras på telefonfoton.</string>
   <string name="pre_skip_frame">Ingen jämförbar tryckt ram</string>
   <string name="pre_retake_front">Ta om fotot på framsidan</string>
   <string name="pre_retake_back">Ta tillbaka fotot</string>

@@ -7,13 +7,16 @@ import org.junit.Test
 class GradeModelTest {
     @Test
     fun probabilitiesFormADistribution() {
-        val e = GradeModel.estimate(null, null)
+        val e = GradeModel.estimate(null, null, researchOnly = true)
         assertEquals(1.0, e.probabilities.values.sum(), 1e-9)
         assertTrue(e.probabilities.values.all { it >= 0 })
         assertTrue(e.low <= e.mostLikely && e.mostLikely <= e.high)
         val inRange = e.probabilities.filterKeys { it in e.low..e.high }.values.sum()
         assertTrue(inRange >= 0.75 || (e.low == e.probabilities.keys.min() && e.high == e.probabilities.keys.max()))
     }
+
+    @Test(expected = IllegalStateException::class)
+    fun retiredWeightsCannotBeUsedAsAProductEstimate() { GradeModel.estimate(null, null) }
 
     @Test
     fun weightsMatchFeatures() {

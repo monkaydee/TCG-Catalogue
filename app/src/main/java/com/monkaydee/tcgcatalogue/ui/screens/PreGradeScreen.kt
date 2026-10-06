@@ -9,6 +9,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.Camera
+import androidx.camera.core.FocusMeteringAction
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
+import com.monkaydee.tcgcatalogue.scan.Pixels
+import java.util.concurrent.TimeUnit
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
@@ -92,6 +99,10 @@ import com.monkaydee.tcgcatalogue.grade.GradeModel
 import com.monkaydee.tcgcatalogue.grade.PhotoCheck
 import com.monkaydee.tcgcatalogue.grade.PreGrader
 import com.monkaydee.tcgcatalogue.grade.Wear
+import com.monkaydee.tcgcatalogue.grade.PreGradeEstimate
+import com.monkaydee.tcgcatalogue.grade.SurfaceFinding
+import com.monkaydee.tcgcatalogue.grade.CaptureQuality
+import java.io.File
 import com.monkaydee.tcgcatalogue.scan.PhotoRecognizer
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import kotlinx.coroutines.Dispatchers
@@ -134,6 +145,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
     var front by remember { mutableStateOf(initialFront) }
     var back by remember { mutableStateOf(initialBack) }
     var camera by remember { mutableStateOf(false) }
+    var surfaceTarget by remember { mutableStateOf<Step?>(null) }
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var editingCentering by remember { mutableStateOf<Step?>(null) }
@@ -154,7 +166,21 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
         busy = true
         camera = false
         scope.launch {
-            val outcome = withContext(Dispatchers.Default) { runCatching { PreGrader.analyse(photo, guide) }.getOrDefault(PreGrader.Outcome.NoCard) }
+            val outcome = withContext(Dispatchers.Default) {
+                runCatching {
+                    val dir = File(context.cacheDir, "pregrade").apply { mkdirs() }
+                    dir.listFiles()?.filter { System.currentTimeMillis() - it.lastModified() > 24 * 60 * 60 * 1000L }?.forEach { it.delete() }
+                    val source = File.createTempFile("source-", ".png", dir)
+                    val longest = maxOf(photo.width, photo.height)
+                    val bounded = if (longest > 4000) Bitmap.createScaledBitmap(photo, photo.width * 4000 / longest, photo.height * 4000 / longest, true) else photo
+                    source.outputStream().use { check(bounded.compress(Bitmap.CompressFormat.PNG, 100, it)) }
+                    val result = PreGrader.analyse(bounded, guide, source)
+                    if (result is PreGrader.Outcome.Ok && result.side.photo !== bounded) bounded.recycle()
+                    if (bounded !== photo) photo.recycle()
+                    if (result == PreGrader.Outcome.NoCard) { source.delete(); if (!bounded.isRecycled) bounded.recycle() }
+                    result
+                }.getOrDefault(PreGrader.Outcome.NoCard)
+            }
             accept(outcome)
         }
     }
@@ -163,7 +189,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
         if (uri != null) {
             busy = true
             scope.launch {
-                val photo = withContext(Dispatchers.IO) { runCatching { PhotoRecognizer.loadSmall(context, uri, maxSide = 3000) }.getOrNull() }
+                val photo = withContext(Dispatchers.IO) { runCatching { PhotoRecognizer.loadSmall(context, uri, maxSide = 4000) }.getOrNull() }
                 if (photo == null) { busy = false; error = context.getString(R.string.import_could_not_open_photo) } else analyse(photo, null)
             }
         }
@@ -182,7 +208,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { if (editingCentering != null) editingCentering = null else if (adjusting) adjusting = false else if (camera) camera = false else onBack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) }
+                    IconButton(onClick = { if (editingCentering != null) editingCentering = null else if (adjusting) adjusting = false else if (camera) { camera = false; surfaceTarget = null } else onBack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) }
                 },
             )
         },
@@ -190,9 +216,27 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
         Box(Modifier.padding(padding).fillMaxSize()) {
             when {
                 camera -> GradeCamera(
-                    label = stringResource(if (step == Step.FRONT) R.string.grade_step_front else R.string.grade_step_back),
-                    onPhoto = { photo, guide -> analyse(photo, guide) },
-                    onError = { camera = false; error = context.getString(R.string.grade_camera_failed) },
+                    label = if (surfaceTarget != null) "Surface view: move the light across the card" else stringResource(if (step == Step.FRONT) R.string.grade_step_front else R.string.grade_step_back),
+                    allowAuto = surfaceTarget == null,
+                    onPhoto = { photo, guide ->
+                        val target = surfaceTarget
+                        if (target == null) analyse(photo, guide) else {
+                            camera = false; busy = true
+                            scope.launch {
+                                val path = withContext(Dispatchers.IO) { runCatching {
+                                    val dir = File(context.cacheDir, "pregrade").apply { mkdirs() }
+                                    val file = File.createTempFile("surface-", ".png", dir)
+                                    try { file.outputStream().use { check(photo.compress(Bitmap.CompressFormat.PNG, 100, it)) }; file.absolutePath } finally { photo.recycle() }
+                                }.getOrNull() }
+                                if (path != null) {
+                                    fun update(side: PreGrader.Side?) = side?.copy(surfacePhotos = (side.surfacePhotos + path).takeLast(4), surfaceFinding = SurfaceFinding.NOT_REVIEWED)
+                                    if (target == Step.FRONT) front = update(front) else back = update(back)
+                                } else error = "Surface capture failed. Please retake."
+                                surfaceTarget = null; busy = false
+                            }
+                        }
+                    },
+                    onError = { camera = false; surfaceTarget = null; error = context.getString(R.string.grade_camera_failed) },
                 )
                 editingCentering != null -> {
                     val target = editingCentering!!
@@ -245,6 +289,8 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                         if (target == Step.FRONT) front = front?.let { it.copy(wearFindings = it.wearFindings + (name to finding)) }
                         else back = back?.let { it.copy(wearFindings = it.wearFindings + (name to finding)) }
                     },
+                    onSurface = { target, side -> if (target == Step.FRONT) front = side else back = side },
+                    onSurfaceCamera = { target -> surfaceTarget = target; if (granted) camera = true else permission.launch(Manifest.permission.CAMERA) },
                     onRedo = { front = null; back = null; step = Step.FRONT })
                 else -> {
                     val side = if (step == Step.FRONT) front else back
@@ -260,7 +306,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                         side = side,
                         busy = busy,
                         error = error,
-                        onCamera = { if (granted) camera = true else permission.launch(Manifest.permission.CAMERA) },
+                        onCamera = { surfaceTarget = null; if (granted) camera = true else permission.launch(Manifest.permission.CAMERA) },
                         onGallery = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                         onRetake = { if (step == Step.FRONT) front = null else back = null },
                         onNext = {
@@ -413,11 +459,12 @@ private fun FlatCard(side: PreGrader.Side, modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, onGame: (Game) -> Unit, onRedo: () -> Unit, onEdit: (Step) -> Unit, onRetake: (Step) -> Unit = {}, onFinding: (Step, String, Wear.Finding) -> Unit = { _, _, _ -> }) {
-    val usable = front?.usableForGrade == true && back?.usableForGrade == true
+internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, onGame: (Game) -> Unit, onRedo: () -> Unit, onEdit: (Step) -> Unit, onRetake: (Step) -> Unit = {}, onFinding: (Step, String, Wear.Finding) -> Unit = { _, _, _ -> }, onSurface: (Step, PreGrader.Side) -> Unit = { _, _ -> }, onSurfaceCamera: (Step) -> Unit = {}) {
     val centerUsable = front?.usableForCentering == true && back?.usableForCentering == true
     val potential = CenteringPotential.assess(front?.centering, back?.centering, centerUsable)
-    val estimate = remember(front, back, game) { if (usable && game == Game.POKEMON) GradeModel.estimate(front, back) else null }
+    val estimate = remember(front, back) { PreGradeEstimate.assess(front, back) }
+    val missing = remember(front, back) { PreGradeEstimate.missing(front, back) }
+    val context = LocalContext.current
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -445,27 +492,33 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
                 }
             }
         }
-        if (estimate == null) {
-            Text(stringResource(when {
-                front?.reportedWear == true || back?.reportedWear == true -> R.string.wear_damage_blocks_grade
-                front != null && back != null && (!front.wear.complete || !back.wear.complete) -> R.string.wear_incomplete_blocks_grade
-                else -> R.string.pre_model_scope
-            }),
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        // Do not substitute training averages for missing/unusable photos or unsupported games.
-        if (estimate != null) {
-        Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(stringResource(R.string.pre_experimental_model), style = MaterialTheme.typography.labelLarge)
-                Text(
-                    if (estimate.low == estimate.high) "PSA ${estimate.low}" else "PSA ${estimate.low} – ${estimate.high}",
-                    style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold,
-                )
-                Text(stringResource(R.string.grade_limiting, stringResource(estimate.limiting)), style = MaterialTheme.typography.bodySmall)
+        Card(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Experimental pre-grade", style = MaterialTheme.typography.titleMedium)
+                if (estimate == null) {
+                    Text("More evidence needed", style = MaterialTheme.typography.headlineSmall)
+                    missing.forEach { Text("• $it", style = MaterialTheme.typography.bodySmall) }
+                } else {
+                    Text("Estimated range: ${estimate.low}–${estimate.high} / 10", style = MaterialTheme.typography.headlineSmall)
+                    estimate.reasons.forEach { Text("• $it", style = MaterialTheme.typography.bodySmall) }
+                }
+                Text("Non-professional pre-grade estimate based on the supplied photos and your observations. This is not a grading certificate. A professional grader may assign a different grade; hidden defects, alteration and authenticity are not excluded. This broad heuristic range is not a validated PSA prediction.", style = MaterialTheme.typography.bodySmall)
             }
         }
-        }
+        OutlinedButton(onClick = {
+            val report = buildString {
+                appendLine("CardNavo non-professional pre-grade")
+                appendLine(estimate?.let { "Experimental range: ${it.low}–${it.high}/10" } ?: "Estimate withheld: ${missing.joinToString("; ")}")
+                for ((label, side) in listOf("Front" to front, "Back" to back)) {
+                    appendLine(label)
+                    side?.centering?.let { appendLine("Centering: %.1f/%.1f horizontal; %.1f/%.1f vertical".format(it.leftRight, 100-it.leftRight, it.topBottom, 100-it.topBottom)) }
+                    side?.wearFindings?.forEach { (region, finding) -> appendLine("$region: $finding") }
+                    appendLine("Surface: ${side?.surfaceFinding}; ${side?.surfacePhotos?.size ?: 0} additional views")
+                }
+                appendLine("Not a grading certificate. Professional grades may differ. Hidden damage and authenticity are not assessed. Range is an unvalidated heuristic.")
+            }
+            context.startActivity(android.content.Intent.createChooser(android.content.Intent(android.content.Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(android.content.Intent.EXTRA_TEXT, report) }, "Share inspection report"))
+        }, modifier = Modifier.fillMaxWidth()) { Text("Share inspection report") }
         // Centering
         Section(stringResource(R.string.grade_centering)) {
             CenteringLine(stringResource(R.string.grade_front), front?.centering, limit = 55.0)
@@ -476,6 +529,14 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
             Text(stringResource(R.string.grade_centering_explain), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
 
+        }
+        Section("Surface · multiple lighting angles") {
+            listOf(Step.FRONT to front, Step.BACK to back).forEach { (target, side) ->
+                if (side != null) {
+                    SurfaceInspectionPanel(side, if (target == Step.FRONT) "Front" else "Back", { onSurfaceCamera(target) }, { onSurface(target, it) })
+                    HorizontalDivider()
+                }
+            }
         }
         // Corners and edges
         Section(stringResource(R.string.grade_corners_edges)) {
@@ -536,20 +597,36 @@ private fun CenteringLine(label: String, c: Centering.Result?, limit: Double) {
 
 
 /** Camera with a card guide; takes a full-resolution photo of what the preview shows. */
+@androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
 @Composable
-private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, onError: () -> Unit) {
+private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitmap, FloatArray) -> Unit, onError: () -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val executor = remember { Executors.newSingleThreadExecutor() }
     val previewRef = remember { arrayOfNulls<PreviewView>(1) }
     val captureRef = remember { arrayOfNulls<ImageCapture>(1) }
+    val providerRef = remember { arrayOfNulls<ProcessCameraProvider>(1) }
+    val useCasesRef = remember { mutableListOf<androidx.camera.core.UseCase>() }
+    val cameraRef = remember { arrayOfNulls<Camera>(1) }
+    val checker = remember { CaptureQuality() }
+    var quality by remember { mutableStateOf<CaptureQuality.Result?>(null) }
+    var cardInGuide by remember { mutableStateOf(false) }
+    var burst by remember { mutableStateOf(true) }
+    var timer by remember { mutableStateOf(false) }
+    var exposureLocked by remember { mutableStateOf(false) }
     var viewSize by remember { mutableStateOf(0f to 0f) }
     var taking by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    DisposableEffect(Unit) { onDispose { executor.shutdown() } }
+    DisposableEffect(Unit) { onDispose { providerRef[0]?.unbind(*useCasesRef.toTypedArray()); executor.shutdown() } }
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().pointerInput(Unit) {
+                detectTapGestures { point ->
+                    val view = previewRef[0] ?: return@detectTapGestures
+                    val action = FocusMeteringAction.Builder(view.meteringPointFactory.createPoint(point.x, point.y)).setAutoCancelDuration(5, TimeUnit.SECONDS).build()
+                    cameraRef[0]?.cameraControl?.startFocusAndMetering(action)
+                }
+            },
             factory = { ctx ->
                 // TextureView preview; grading photos come from the full-resolution ImageCapture use case.
                 val view = PreviewView(ctx).apply {
@@ -561,7 +638,9 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
                 view.post {
                     viewSize = view.width.toFloat() to view.height.toFloat()
                     future.addListener({
+                        if (executor.isShutdown) return@addListener
                         val provider = future.get()
+                        providerRef[0] = provider
                         // Capture a sensor-resolution still; the screen preview loses corner detail.
                         val selector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
                             .setResolutionStrategy(
@@ -571,13 +650,42 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
                                 ),
                             ).build()
                         val preview = Preview.Builder().setResolutionSelector(selector).build().also { it.setSurfaceProvider(view.surfaceProvider) }
-                        val capture = ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build()
+                        val stillResolution = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
+                            .setResolutionStrategy(androidx.camera.core.resolutionselector.ResolutionStrategy(android.util.Size(4000, 3000), androidx.camera.core.resolutionselector.ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER)).build()
+                        val capture = ImageCapture.Builder().setResolutionSelector(stillResolution).setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build()
                         captureRef[0] = capture
+                        val analysis = ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .setTargetResolution(android.util.Size(640, 480)).build()
+                        var lastCheck = 0L
+                        analysis.setAnalyzer(executor) { image ->
+                            try {
+                                val now = android.os.SystemClock.elapsedRealtime()
+                                if (now - lastCheck >= 350 && !taking) {
+                                    lastCheck = now
+                                    val raw = image.toBitmap()
+                                    val rect = android.graphics.Rect(image.cropRect).apply { intersect(0, 0, raw.width, raw.height) }
+                                    val frame = Bitmap.createBitmap(raw, rect.left, rect.top, rect.width(), rect.height(), Matrix().apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }, true)
+                                    val g = guideFractions(frame.width.toFloat(), frame.height.toFloat())
+                                    val x = (g[0] * frame.width).toInt(); val y = (g[1] * frame.height).toInt()
+                                    val w = ((g[2] - g[0]) * frame.width).toInt().coerceAtLeast(1)
+                                    val h = ((g[3] - g[1]) * frame.height).toInt().coerceAtLeast(1)
+                                    val px = IntArray(w * h); frame.getPixels(px, 0, w, x, y, w, h)
+                                    val result = checker.check(Pixels(w, h, px))
+                                    val all = IntArray(frame.width * frame.height); frame.getPixels(all, 0, frame.width, 0, 0, frame.width, frame.height)
+                                    val found = com.monkaydee.tcgcatalogue.grade.CardRectifier.findQuadIn(Pixels(frame.width, frame.height, all),
+                                        com.monkaydee.tcgcatalogue.grade.Quad(com.monkaydee.tcgcatalogue.grade.Pt(x.toDouble(), y.toDouble()), com.monkaydee.tcgcatalogue.grade.Pt((x+w).toDouble(), y.toDouble()), com.monkaydee.tcgcatalogue.grade.Pt((x+w).toDouble(), (y+h).toDouble()), com.monkaydee.tcgcatalogue.grade.Pt(x.toDouble(), (y+h).toDouble())))
+                                    ContextCompat.getMainExecutor(context).execute { quality = result; cardInGuide = found != null }
+                                    if (frame !== raw) frame.recycle(); raw.recycle()
+                                }
+                            } catch (_: Exception) { ContextCompat.getMainExecutor(context).execute { quality = null; cardInGuide = false } }
+                            finally { image.close() }
+                        }
+                        useCasesRef.clear(); useCasesRef.addAll(listOf(preview, capture, analysis))
                         runCatching {
                             provider.unbindAll()
-                            val group = UseCaseGroup.Builder().addUseCase(preview).addUseCase(capture)
+                            val group = UseCaseGroup.Builder().addUseCase(preview).addUseCase(capture).addUseCase(analysis)
                             view.viewPort?.let { group.setViewPort(it) }
-                            provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, group.build())
+                            cameraRef[0] = provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, group.build())
                         }.onFailure { onError() }
                     }, ContextCompat.getMainExecutor(context))
                 }
@@ -586,6 +694,8 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
         )
         val tilt = rememberTilt()
         val level = tilt.degrees < LEVEL_DEGREES
+        val ready = level && quality?.ready == true && cardInGuide
+        val status = if (allowAuto && !level) "Level the phone over the card" else if (allowAuto && !cardInGuide) "Place the entire card inside the guide" else quality?.message ?: "Checking focus and motion…"
         val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
         LaunchedEffect(level) { if (level) haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove) }
         Canvas(Modifier.fillMaxSize()) {
@@ -615,37 +725,61 @@ private fun GradeCamera(label: String, onPhoto: (Bitmap, FloatArray) -> Unit, on
             if (view.width == 0 || view.height == 0) return
             val guide = guideFractions(view.width.toFloat(), view.height.toFloat())
             taking = true
-            capture.takePicture(executor, object : ImageCapture.OnImageCapturedCallback() {
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    val result = runCatching {
-                        val full = image.toBitmap()
-                        val crop = image.cropRect
-                        val rect = if (full.width == crop.width() && full.height == crop.height()) {
-                            Rect(0, 0, full.width, full.height)
-                        } else {
-                            Rect(crop).apply { if (!intersect(0, 0, full.width, full.height)) set(0, 0, full.width, full.height) }
+            scope.launch {
+                if (timer) kotlinx.coroutines.delay(2000)
+                val point = view.meteringPointFactory.createPoint(view.width / 2f, view.height / 2f)
+                cameraRef[0]?.cameraControl?.startFocusAndMetering(FocusMeteringAction.Builder(point).setAutoCancelDuration(5, TimeUnit.SECONDS).build())
+                kotlinx.coroutines.delay(500)
+                suspend fun take(): Result<Bitmap> = suspendCoroutine { continuation ->
+                    capture.takePicture(executor, object : ImageCapture.OnImageCapturedCallback() {
+                        override fun onCaptureSuccess(image: ImageProxy) {
+                            val result = runCatching {
+                                val full = image.toBitmap()
+                                val crop = Rect(image.cropRect).apply { if (!intersect(0, 0, full.width, full.height)) set(0, 0, full.width, full.height) }
+                                val frame = Bitmap.createBitmap(full, crop.left, crop.top, crop.width(), crop.height(), Matrix().apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }, true)
+                                if (frame !== full) full.recycle()
+                                frame
+                            }
+                            image.close(); continuation.resume(result)
                         }
-                        val frame = Bitmap.createBitmap(full, rect.left, rect.top, rect.width(), rect.height(),
-                            Matrix().apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }, true)
-                        if (frame !== full) full.recycle()
-                        frame
-                    }
-                    image.close()
-                    scope.launch {
-                        taking = false
-                        result.fold(onSuccess = { onPhoto(it, guide) }, onFailure = { onError() })
+                        override fun onError(exception: ImageCaptureException) { continuation.resume(Result.failure(exception)) }
+                    })
+                }
+                var best: Bitmap? = null; var bestScore = Double.NEGATIVE_INFINITY
+                repeat(if (burst) 3 else 1) {
+                    val photo = take().getOrNull()
+                    if (photo != null) {
+                        val score = withContext(Dispatchers.Default) {
+                            val small = Bitmap.createScaledBitmap(photo, 320, (320L * photo.height / photo.width).toInt().coerceAtLeast(3), true)
+                            val pixels = IntArray(small.width * small.height).also { small.getPixels(it, 0, small.width, 0, 0, small.width, small.height) }
+                            val value = PhotoCheck.sharpness(Pixels(small.width, small.height, pixels))
+                            if (small !== photo) small.recycle()
+                            value
+                        }
+                        if (score > bestScore) { best?.recycle(); best = photo; bestScore = score } else photo.recycle()
                     }
                 }
-                override fun onError(exception: ImageCaptureException) {
-                    scope.launch { taking = false; onError() }
-                }
-            })
+                taking = false
+                best?.let { onPhoto(it, guide) } ?: onError()
+            }
         }
-        // Takes the photo by itself once the phone has stayed flat for a moment (steady hands, no tap shake).
-        LaunchedEffect(level) {
-            if (level) {
-                kotlinx.coroutines.delay(AUTO_SHOT_MS)
-                shoot()
+        // Focus, motion, exposure, whole-card detection and tilt must stay acceptable.
+        LaunchedEffect(ready, allowAuto, taking) {
+            if (allowAuto && ready && !taking) { kotlinx.coroutines.delay(AUTO_SHOT_MS); shoot() }
+        }
+        Column(Modifier.align(Alignment.BottomCenter).padding(bottom = 106.dp).background(Color.Black.copy(alpha = .7f)).padding(8.dp)) {
+            Text(status, color = if (ready) Color.Green else Color.White, style = MaterialTheme.typography.bodySmall)
+            Text("Tap card to focus · use diffuse light, no direct flash", color = Color.White, style = MaterialTheme.typography.bodySmall)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(selected = burst, onClick = { burst = !burst }, label = { Text("Best of 3") })
+                FilterChip(selected = timer, onClick = { timer = !timer }, label = { Text("2s timer") })
+                FilterChip(selected = exposureLocked, onClick = {
+                    exposureLocked = !exposureLocked
+                    cameraRef[0]?.let { camera ->
+                        androidx.camera.camera2.interop.Camera2CameraControl.from(camera.cameraControl).setCaptureRequestOptions(
+                            androidx.camera.camera2.interop.CaptureRequestOptions.Builder().setCaptureRequestOption(android.hardware.camera2.CaptureRequest.CONTROL_AE_LOCK, exposureLocked).build())
+                    }
+                }, label = { Text("Lock exposure") })
             }
         }
         FilledIconButton(

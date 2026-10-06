@@ -11,6 +11,7 @@ on:
     paths:
       - scripts/build_card_index.py
       - scripts/build_name_index.py
+      - scripts/build_sealed_index.py
       - .github/workflows/card-index.yml
 
 permissions:
@@ -36,6 +37,9 @@ jobs:
 
       - name: Build Pokémon name index (all languages)
         run: python scripts/build_name_index.py out
+
+      - name: Build regional sealed catalogue (German and Japanese search)
+        run: python scripts/build_sealed_index.py out
 
       # A single orphan commit, replaced every day, so the branch never grows.
       - name: Publish to the data branch

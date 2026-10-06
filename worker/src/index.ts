@@ -2,6 +2,7 @@
 // shares results between all users through a D1 cache, and keeps every provider within its
 // free-tier limits. See docs/CLOUDFLARE.md for setup and the API contract.
 
+import { sealedPrice } from "./sealed";
 import { feedback, moderate, expireFeedback } from "./feedback";
 import { Budgets } from "./budget";
 import { Cache } from "./cache";
@@ -262,6 +263,7 @@ export default {
 
       if (path === "/v1/feedback/moderate") return await moderate(req, env);
       if (path === "/v1/feedback" || path === "/v1/feedback/rules") return await feedback(req, env, path);
+      if (path === "/v1/sealed/price" && req.method === "POST") return await sealedPrice(req, env);
       if (path === "/v1/prices" && req.method === "POST") return await prices(req, env, s);
       if (path === "/v1/identify" && req.method === "POST") return await identify(req, env);
       if (path === "/v1/status" && req.method === "GET") return await status(env);

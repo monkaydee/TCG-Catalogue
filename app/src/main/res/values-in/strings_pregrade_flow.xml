@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Perkiraan foto Pokémon eksperimental</string>
   <string name="pre_quality_blocked">Ambil kembali sisi ini: garis besar atau kualitas fotonya tidak sesuai untuk penilaian keausan.</string>
   <string name="pre_no_wear_detected">tidak ada keausan yang terdeteksi</string>
-  <string name="pre_assessment_notice">Pemutaran foto, bukan sertifikat penilaian. Goresan permukaan, penyok, garis cetak dan keaslian tidak dinilai. Model Pokémon secara keseluruhan telah dilatih melalui pemindaian sertifikasi dan masih memerlukan validasi pada foto ponsel.</string>
   <string name="pre_skip_frame">Tidak ada bingkai cetakan yang sebanding</string>
   <string name="pre_retake_front">Ambil kembali foto depan</string>
   <string name="pre_retake_back">Ambil kembali foto</string>

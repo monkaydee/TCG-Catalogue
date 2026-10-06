@@ -28,7 +28,6 @@
   <string name="wear_whitening">미백/스커링이 눈에 띕니다</string>
   <string name="wear_chip">칩 / 찢어짐 표시</string>
   <string name="wear_bend">굽힘/움푹 들어간 곳이 보입니다.</string>
-  <string name="wear_observation_scope">이 사진 촬영을 위해 귀하의 관찰 내용이 보관됩니다. 상태를 인증하거나 사진 품질이 좋지 않은 경우 이를 무시하지 않습니다. 기록된 손상으로 인해 전체 모델 추정이 불가능해졌습니다.</string>
   <string name="wear_done">완료</string>
   <string name="wear_damage_blocks_grade">눈에 보이는 손상이 기록되었습니다. 수동 결과는 보정된 모델 입력이 아니기 때문에 전체 모델 추정치는 보류됩니다. 센터링 결과는 이러한 손상을 설명하지 않습니다.</string>
   <string name="wear_incomplete_blocks_grade">모서리와 가장자리는 면밀한 검사가 필요합니다. 누락되거나 결정적이지 않은 증거로 인해 전체 모델 추정이 불가능해집니다. 센터링만으로는 등급이 설정되지 않습니다.</string>

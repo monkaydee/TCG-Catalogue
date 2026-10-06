@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">تقدير صور البوكيمون التجريبي</string>
   <string name="pre_quality_blocked">أعد التقاط هذا الجانب: الخطوط العريضة أو جودة الصورة ليست مناسبة لتقييم التآكل.</string>
   <string name="pre_no_wear_detected">لم يتم اكتشاف أي تآكل مرئي</string>
-  <string name="pre_assessment_notice">فحص الصور، وليس شهادة التقدير. لا يتم تقييم الخدوش السطحية والخدوش وخطوط الطباعة والأصالة. تم تدريب نموذج Pokémon الشامل على عمليات فحص الشهادات ولا يزال بحاجة إلى التحقق من صحة صور الهاتف.</string>
   <string name="pre_skip_frame">لا يوجد إطار مطبوع قابل للمقارنة</string>
   <string name="pre_retake_front">إعادة التقاط الصورة الأمامية</string>
   <string name="pre_retake_back">إعادة التقاط الصورة مرة أخرى</string>

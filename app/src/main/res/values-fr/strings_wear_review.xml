@@ -28,7 +28,6 @@
   <string name="wear_whitening">Blanchiment / éraflures visibles</string>
   <string name="wear_chip">Éclat/déchirure visible</string>
   <string name="wear_bend">Courbure/bosse visible</string>
-  <string name="wear_observation_scope">Vos observations sont conservées pour cette séance photo. Ils ne certifient pas l’état et ne remplacent pas la mauvaise qualité des photos. Les dommages enregistrés empêchent une estimation globale du modèle.</string>
   <string name="wear_done">Terminé</string>
   <string name="wear_damage_blocks_grade">Des dégâts visibles ont été enregistrés. L\'estimation globale du modèle est retenue car les résultats manuels ne sont pas des entrées de modèle calibrées. Les résultats de centrage ne tiennent pas compte de ces dommages.</string>
   <string name="wear_incomplete_blocks_grade">Les coins et les bords doivent être inspectés de plus près. Des preuves manquantes ou non concluantes empêchent une estimation globale du modèle ; le centrage à lui seul n’établit pas de note.</string>

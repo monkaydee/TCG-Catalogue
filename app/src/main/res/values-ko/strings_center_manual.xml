@@ -11,7 +11,6 @@
   <string name="center_inner">내부 프레임</string>
   <string name="center_minus_pixel">-1 이미지 픽셀</string>
   <string name="center_plus_pixel">+1 이미지 픽셀</string>
-  <string name="center_manual_notice">수동 센터링 측정. 배치 및 사진 원근감이 비율에 영향을 미칩니다. 수동 가이드는 전체 성적 추정치를 산출하지 않습니다.</string>
   <string name="center_cancel">취소</string>
   <string name="center_apply">이 가이드를 사용하세요</string>
 </resources>

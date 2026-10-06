@@ -11,7 +11,6 @@
   <string name="center_inner">Khung bên trong</string>
   <string name="center_minus_pixel">−1 pixel hình ảnh</string>
   <string name="center_plus_pixel">+1 pixel hình ảnh</string>
-  <string name="center_manual_notice">Đo định tâm bằng tay. Vị trí và phối cảnh ảnh ảnh hưởng đến tỷ lệ. Hướng dẫn thủ công không tạo ra ước tính điểm tổng thể.</string>
   <string name="center_cancel">Hủy bỏ</string>
   <string name="center_apply">Sử dụng những hướng dẫn này</string>
 </resources>

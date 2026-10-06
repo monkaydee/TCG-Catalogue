@@ -11,7 +11,6 @@
   <string name="center_inner">الإطار الداخلي</string>
   <string name="center_minus_pixel">-1 بكسل للصورة</string>
   <string name="center_plus_pixel">+1 بكسل الصورة</string>
-  <string name="center_manual_notice">قياس توسيط يدوي. يؤثر الموضع ومنظور الصورة على النسبة. لا تنتج الأدلة اليدوية تقديرًا عامًا للدرجة.</string>
   <string name="center_cancel">إلغاء</string>
   <string name="center_apply">استخدم هذه الأدلة</string>
 </resources>

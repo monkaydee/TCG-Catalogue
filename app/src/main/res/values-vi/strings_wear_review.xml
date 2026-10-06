@@ -28,7 +28,6 @@
   <string name="wear_whitening">Có thể nhìn thấy vết trắng/trầy xước</string>
   <string name="wear_chip">Có thể nhìn thấy chip / vết rách</string>
   <string name="wear_bend">Có thể nhìn thấy uốn cong / vết lõm</string>
-  <string name="wear_observation_scope">Những quan sát của bạn được lưu giữ cho buổi chụp ảnh này. Họ không chứng nhận tình trạng hoặc ghi đè chất lượng ảnh kém. Thiệt hại được ghi lại ngăn cản ước tính mô hình tổng thể.</string>
   <string name="wear_done">Xong</string>
   <string name="wear_damage_blocks_grade">Thiệt hại có thể nhìn thấy đã được ghi lại. Ước tính mô hình tổng thể bị giữ lại vì các phát hiện thủ công không phải là đầu vào mô hình được hiệu chỉnh. Kết quả định tâm không tính đến hư hỏng này.</string>
   <string name="wear_incomplete_blocks_grade">Các góc và cạnh cần được kiểm tra kỹ hơn. Bằng chứng thiếu hoặc không thuyết phục sẽ cản trở ước tính mô hình tổng thể; tập trung một mình không thiết lập một lớp.</string>

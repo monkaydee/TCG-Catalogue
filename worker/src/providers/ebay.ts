@@ -23,7 +23,7 @@ const NOT_A_SINGLE = /\b(lot|bundle|proxy|custom|reprint|orica|fan ?art|digital|
 
 let token: { value: string; expires: number } | null = null;
 
-async function accessToken(key: string): Promise<string> {
+export async function accessToken(key: string): Promise<string> {
   if (token && token.expires > Date.now() + 60_000) return token.value;
   const res = await fetch(`${API}/identity/v1/oauth2/token`, {
     method: "POST",
@@ -66,14 +66,14 @@ const SHADOWLESS = /\bshadowless\b/i;
 /** Words sellers use for a card's language (English and the local eBay site's language). */
 const LANGUAGE_WORDS: Record<string, RegExp> = {
   EN: /\b(english|englisch|anglais|inglese|ingl[eé]s|eng)\b/i,
-  DE: /\b(german|deutsch|deutsche|ger)\b/i,
+  DE: /\b(german|deutsch(?:e[nmrs]?)?|ger)\b/i,
   FR: /\b(french|fran[cç]ais|fran[cç]aise|franz[oö]sisch|fr)\b/i,
   IT: /\b(italian|italiano|italiana|italienisch|ita)\b/i,
   ES: /\b(spanish|espa[nñ]ol|espa[nñ]ola|spanisch|esp)\b/i,
   PT: /\b(portuguese|portugu[eê]s|portugiesisch)\b/i,
   NL: /\b(dutch|nederlands|niederl[aä]ndisch)\b/i,
   PL: /\b(polish|polski|polnisch)\b/i,
-  JA: /\b(japanese|japan|jpn|jp|japanisch|japonais)\b/i,
+  JA: /\b(japanese|japan|jpn|jp|japanisch|japonais)\b|日本語|日本版/i,
   KO: /\b(korean|kor|koreanisch)\b/i,
   ZH: /\b(chinese|chn|s-chinese|t-chinese|chinesisch)\b/i,
 };

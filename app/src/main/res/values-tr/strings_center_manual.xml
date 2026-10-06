@@ -11,7 +11,6 @@
   <string name="center_inner">İç çerçeve</string>
   <string name="center_minus_pixel">−1 resim pikseli</string>
   <string name="center_plus_pixel">+1 resim pikseli</string>
-  <string name="center_manual_notice">Manuel merkezleme ölçümü. Yerleştirme ve fotoğraf perspektifi oranı etkiler. Manuel kılavuzlar genel bir not tahmini üretmez.</string>
   <string name="center_cancel">İptal</string>
   <string name="center_apply">Bu kılavuzları kullanın</string>
 </resources>

@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Estimación de fotografías experimentales de Pokémon</string>
   <string name="pre_quality_blocked">Vuelva a tomar este lado: su contorno o la calidad de la fotografía no son adecuados para una evaluación de desgaste.</string>
   <string name="pre_no_wear_detected">no se detecta desgaste visible</string>
-  <string name="pre_assessment_notice">Proyección de fotografías, no un certificado de calificación. No se evalúan rayones superficiales, abolladuras, líneas de impresión ni autenticidad. El modelo general de Pokémon fue entrenado en escaneos de certificación y aún necesita validación en fotografías de teléfonos.</string>
   <string name="pre_skip_frame">Ningún marco impreso comparable</string>
   <string name="pre_retake_front">Vuelva a tomar la foto frontal</string>
   <string name="pre_retake_back">Volver a tomar la foto</string>

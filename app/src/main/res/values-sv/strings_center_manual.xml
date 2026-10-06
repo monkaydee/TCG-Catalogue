@@ -11,7 +11,6 @@
   <string name="center_inner">Inre ram</string>
   <string name="center_minus_pixel">−1 bildpixel</string>
   <string name="center_plus_pixel">+1 bildpixel</string>
-  <string name="center_manual_notice">Manuell centreringsmätning. Placering och fotoperspektiv påverkar förhållandet. Manuella guider ger ingen övergripande betygsuppskattning.</string>
   <string name="center_cancel">Avbryt</string>
   <string name="center_apply">Använd dessa guider</string>
 </resources>

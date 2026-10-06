@@ -155,7 +155,7 @@ data class SoldCard(
 
 /** Sealed products (booster boxes, ETBs, decks …) priced from TCGplayer via the daily index. */
 @Serializable
-@Entity(tableName = "sealed_items", indices = [Index(value = ["game", "productId"], unique = true)])
+@Entity(tableName = "sealed_items", indices = [Index(value = ["game", "productId", "language"], unique = true)])
 data class SealedItem(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val game: Game,
@@ -173,6 +173,15 @@ data class SealedItem(
     /** Paid per item, in [priceCurrency]. */
     val purchasePrice: Double? = null,
     val addedAt: Long = System.currentTimeMillis(),
+    @androidx.room.ColumnInfo(defaultValue = "'EN'") val language: String = "EN",
+    @androidx.room.ColumnInfo(defaultValue = "''") val priceSource: String = "",
+    @androidx.room.ColumnInfo(defaultValue = "''") val priceScope: String = "",
+    val referencePrice: Double? = null,
+    val referenceCurrency: String? = null,
+    val referenceSource: String? = null,
+
+    val purchaseCurrency: String? = null,
+
 )
 
 /** Cached set metadata, used for completion percentages and logos. */

@@ -1,107 +1,81 @@
-# Pre-grading reliability and commercial readiness
+# Pre-grading evidence and validation
 
-The outline editor sets four physical card corners. The separate centering editor sets eight
-outer/inner guide positions on a corrected photo. Missing automatic centering opens that editor;
-results also provide direct front/back edit actions. A truly borderless design can explicitly
-skip centering; it must not be assigned an invented measurement or grade.
+## Current user workflow
 
-Centering potential applies to One Piece and other card games as a geometry assessment.
-It tests only PSA's published Gem Mint 10 criterion: about 55/45 front and 75/25 reverse.
-Source: https://www.psacard.com/gradingstandards (checked 2026-10-06).
-The app distinguishes within limits, borderline, outside limits, and incomplete/poor quality.
-A one-image-pixel border-width sensitivity interval exposes boundary placements. This is not
-an empirical confidence interval, and the criterion cannot establish a final grade.
-Other grade thresholds and companies are not inferred from an unverified approximate table.
+1. Capture/import front and back; confirm the detected physical outline. Detection uses a reduced
+   image, while a lossless source copy is retained in the private session cache (up to 4,000 pixels
+   on the longest side for bounded memory). Camera still resolution targets 4,000 × 3,000.
+2. Perspective correction precedes centering. Printed-frame auto-alignment fits independent border
+   lines and abstains if they disagree. This is a suggested rotation, not guaranteed perfect
+   geometry: verify the cut and all eight inner/outer guides, especially on skewed printed frames.
+3. Inspect four corners and four edges on each side. Detail comes from a separate rectification
+   with up to 2,200 source pixels across the card, never AI upscaling. Edge inspection offers the
+   entire edge and four segments with surrounding context. Magenta flags mark colour differences,
+   not confirmed defects. Zoom adds no source detail.
+4. Corner contour comparison checks silhouette asymmetry only when borders/background support it.
+   Artwork, foil, low contrast, normal cutting variation and the rectification can confound it.
+5. Add at least two low-angle lighting photos for each side and record surface observations.
+   Opposite raking-light directions may reveal dents, scratches, creases and print lines. This
+   workflow is manual surface evidence, not automatic depth recovery or authentication.
+6. The experimental estimate requires clear confirmed photos, completed region observations,
+   centering or an explicit borderless skip, and multi-angle surface observations. It shows a
+   broad heuristic range with a non-professional disclaimer. Recorded damage lowers/broadens the
+   range. Missing evidence is listed explicitly. Manual centering does not by itself block this
+   separate estimate. Sharing exports the observed measurements/findings and disclaimer as text.
 
-Overall grade probabilities previously displayed confidence percentages without phone-photo
-validation. Those percentages are removed. The existing Pokémon scan model is labelled
-experimental; it is not extended to One Piece by bypassing its domain guard. Manual borders
-can support centering potential without becoming uncalibrated inputs to that model.
-Bad-quality or unconfirmed photos do not produce a "clean" wear assessment.
+All session photos and observations stay on the device. Cache cleanup removes old session files;
+there is no automatic photo upload or verified-grade learning claim.
 
-## Before selling an overall grade prediction
+## Capture quality
 
-This requirement remains open; passing unit tests does not establish grading accuracy.
+CameraX uses preview/image analysis and quality-mode still capture. The guide uses phone tilt,
+image-to-image motion, sharpness, exposure and whole-card detection before automatic capture.
+Tap-to-focus, optional exposure lock, a two-second timer and best-of-three still selection are
+available. Surface lighting views use manual capture because raking angles intentionally depart
+from the level-phone geometry. Burst selection uses a sharpness heuristic; real-device validation
+is still required. A stable level reading alone no longer triggers capture.
 
-- Collect rights-cleared front/back phone photos paired with verified certificate grades,
-  across each supported game, foil/full-art designs, languages, devices and lighting.
-- Split by physical card/certificate, not individual photo; keep a blind test set separate
-  from training and threshold tuning. Certification scans alone do not test the capture domain.
-- Benchmark border placement error, whole-card outline failures, photo-quality rejection,
-  per-grade confusion, exact/within-one-grade accuracy, grade error and PSA-10 false positives.
-  Include fully borderless cards, glare, white artwork, sleeves, scratches and dents.
-- Determine and meet product acceptance thresholds before enabling paid overall predictions.
-  Keep abstentions and missing surface evidence visible rather than filling training means.
-- Validate real CameraX capture and imported photos on supported Android devices, including
-  low-memory phones and accessibility font sizes. JVM rendering tests are not device validation.
-- Surface, alteration and authenticity need additional inspection evidence; two static
-  photos cannot guarantee these properties. A future surface workflow needs multiple angles.
+White pixel share alone cannot distinguish printed white from reflections. The photo rejection
+rule now combines severe clipping with lack of sharp detail; live capture warns about possible
+clipping. This avoids treating ordinary white printed areas as definite glare, but cannot guarantee
+that all reflections are detected. Users must still inspect lighting and retake obscured areas.
 
-Current shared recognition feedback is not a verified-grade training pipeline. The user's
-ungraded One Piece photos test measurement/capture behavior, not final-grade accuracy.
+## Centering standards
 
-## Corner and edge evidence
+The only official criterion used in centering potential is PSA Gem Mint 10: approximately 55/45
+front and 75/25 reverse. Source: https://www.psacard.com/gradingstandards, checked 2026-10-06.
+A one-image-pixel guide sensitivity interval exposes borderline placements. This is not a
+statistical confidence interval. Centering alone never establishes a whole-card grade.
 
-Each rectified side has eight independent regions: four corners and four edges. The existing
-colour-deviation/whitening features remain unchanged so the trained weights are not silently
-applied to a different feature definition. The app now records measurement validity separately:
-insufficient ring/reference samples, near-white reference colours (limited whitening contrast),
-and variable printed texture. These conservative heuristics are not confidence estimates.
-Incomplete evidence prevents the overall model estimate rather than becoming a clean assessment.
+## Retired scan model and training corrections
 
-Region inspection shows enlarged crops, automatic anomaly evidence and separate user observations.
-Whitening, chips/tears and bends/dents can be recorded. User observations belong to the current
-rectified photo session and are reset on a new capture/rectification. Reported damage blocks the
-uncalibrated overall model rather than being assigned an invented numeric deduction. A user's
-"no visible damage" observation cannot override failed photo quality or missing evidence.
-Magnification adds no source detail; the whole-card photo still limits detection of tiny defects.
-Bends/dents recorded by users are not claimed as automatically detected physical damage.
+The old certification-scan weights are retired from the user-facing result. They can only be
+called with an explicit research flag. In the old weights, worse front centering could increase
+PSA-10 probability. Those numbers are not silently relabelled as phone-photo confidence.
 
-The validation dataset must include individually annotated corner/edge defects and clean regions,
-including small isolated white flecks, dark chips on white borders, rounded cuts, printed white
-artwork, foil, background leakage and compression. Benchmark region-level precision/recall and
-abstention separately from centering and overall grade accuracy. No paid-accuracy claim is made.
+`train_grade_model.py` now constrains all defect/centering feature coefficients non-positive and
+fits imputation/scaling using training cards only for held-out evaluation. Export refits only
+following that evaluation. Existing weights have not been regenerated without the source data.
+Install `scripts/pregrade/requirements.txt` to reproduce the research pipeline.
 
-The region-view inspection flag uses a small anomaly share (0.2% colour deviation or 0.1%
-brighter anomalies) independently of the trained model severity buckets. This conservative
-review trigger is not calibrated defect severity and needs the region-level benchmark above.
+The displayed heuristic ranges are not trained or statistically calibrated PSA predictions.
+There is no claim of exact grade accuracy, calibrated probability, automated physical damage
+recognition, or professional validation. Neither good unit tests nor a disclaimer establish that.
 
-## Outline handoff regression
+## Before claiming validated grading accuracy
 
-The user's next screenshot exposed a missed production transition: PreGrader.adjust creates a
-fresh unconfirmed side, and applying the four-corner outline previously returned to capture
-without opening centering. Both applying that correction and confirming the detected outline
-now explicitly confirm the side and open its eight-guide editor. The outline footer is fitted
-inside the viewport. Full PreGradeFlow UI tests exercise front correction/application and back
-confirmation through inner/outer edits and continuation, rather than only mounting the guide
-widget behind a test callback. Unchanged automatic placement retains its model-input status;
-actual manual changes stay outside the calibrated model.
+Collect rights-cleared phone photos paired with verified certificate grades, including every
+supported game/language, foil/full-art and white borders, multiple devices and lighting. Annotate
+corner/edge defects separately and include multi-angle surface captures. Group train/test splits
+by physical card/certificate; repeat captures must not inflate the independent test population.
 
-## Fine rotation before centering
+`validate_phone_dataset.py` evaluates a JSONL manifest of held-out predictions, checks certificate
+split leakage, weights repeated captures per card, and reports coverage, exact/within-one grade
+accuracy, mean absolute error, false tens, range coverage and confusion. It never auto-declares
+commercial acceptance. Benchmark outline/border-placement errors, corner/edge precision/recall,
+photo-quality rejections and abstentions as well, with acceptance thresholds chosen before testing.
 
-The centering editor offers ±0.1°/±1° steps, reset, a continuous ±15° slider and
-one-finger rotation about the viewport centre or a two-finger twist. Rotation renders
-from the original rectified bitmap on an expanded canvas rather than allocating or
-repeatedly resampling bitmaps. Guides remain axis-aligned. Their positions shift by
-half the change in canvas dimensions so padding alone cannot change border widths or
-ratios. Users must then align the guides to the straightened cut and printed frame.
-
-The saved centering result includes clockwise rotation and canvas-space cuts/widths.
-Reopening reconstructs the same canvas; the results overlay inverse-maps its frame
-corners to the original photo. Wear inspection continues using that original photo.
-Nonzero rotation explicitly excludes the result from calibrated overall model inputs,
-even if a caller misses the manual-input flag. A centering potential remains a geometric
-ceiling, not a professional whole-card grade.
-
-Regression coverage uses a synthetic -2° printed frame corrected by +2°. Native UI
-tests exercise step buttons, continuous slider, reset, free dragging, saved/reopened
-rotation and independent inner-frame pixel adjustment. Geometry tests check all source
-corners remain visible at positive/negative limits, inverse mapping, gesture angle wrap,
-asymmetric border preservation and reset. These tests establish editor behaviour; they
-do not validate photo-based grading accuracy on customer cards.
-
-Rotation mode also displays a screen-space horizontal/vertical grid with constant
-32dp spacing and stronger centre references. It renders after the photo transform,
-so image rotation and changing canvas padding cannot rotate or move these reference
-lines. White strokes with dark outlines remain visible against light/dark artwork.
-It hides on leaving rotation mode and never participates in centering calculations.
+Unit and rendered UI tests verify geometry, evidence gating, image lifetime and result flow.
+Device tests must still assess autofocus/exposure behaviour, motion/glare thresholds, capture
+mapping, memory limits and accessibility sizing. A labelled phone-photo dataset is not in this
+repository, so trained defect detection and professional prediction validation remain open.

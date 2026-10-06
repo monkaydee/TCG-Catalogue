@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Stima delle foto dei Pokémon sperimentali</string>
   <string name="pre_quality_blocked">Riprendi questo lato: il suo contorno o la qualità della foto non sono adatti per una valutazione dell\'usura.</string>
   <string name="pre_no_wear_detected">nessuna usura visibile rilevata</string>
-  <string name="pre_assessment_notice">Proiezione fotografica, non certificato di valutazione. Graffi superficiali, ammaccature, linee di stampa e autenticità non vengono valutati. Il modello Pokémon complessivo è stato addestrato sulle scansioni di certificazione e necessita ancora di convalida sulle foto del telefono.</string>
   <string name="pre_skip_frame">Nessuna cornice stampata paragonabile</string>
   <string name="pre_retake_front">Riprendi la foto frontale</string>
   <string name="pre_retake_back">Riprendi la foto</string>

@@ -11,7 +11,6 @@
   <string name="center_inner">Внутренняя рамка</string>
   <string name="center_minus_pixel">−1 пиксель изображения</string>
   <string name="center_plus_pixel">+1 пиксель изображения</string>
-  <string name="center_manual_notice">Ручное измерение центрирования. Размещение и перспектива фотографии влияют на соотношение. Ручные руководства не дают общей оценки.</string>
   <string name="center_cancel">Отмена</string>
   <string name="center_apply">Используйте эти руководства</string>
 </resources>

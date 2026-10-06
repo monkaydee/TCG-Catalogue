@@ -11,7 +11,6 @@
   <string name="center_inner">Telaio interno</string>
   <string name="center_minus_pixel">−1 pixel dell\'immagine</string>
   <string name="center_plus_pixel">+1 pixel dell\'immagine</string>
-  <string name="center_manual_notice">Misurazione centratura manuale. Il posizionamento e la prospettiva della foto influiscono sul rapporto. Le guide manuali non producono una stima del voto complessivo.</string>
   <string name="center_cancel">Annulla</string>
   <string name="center_apply">Usa queste guide</string>
 </resources>

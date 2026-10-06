@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">実験用ポケモン写真の推定値</string>
   <string name="pre_quality_blocked">この面を撮り直します。輪郭や写真の品質が摩耗評価には適していません。</string>
   <string name="pre_no_wear_detected">目に見える磨耗は検出されませんでした</string>
-  <string name="pre_assessment_notice">採点証明書ではなく写真審査。表面の傷、凹み、プリントの線、真贋などは鑑定対象外となります。全体的なポケモンのモデルは認証スキャンでトレーニングされていますが、携帯電話の写真での検証がまだ必要です。</string>
   <string name="pre_skip_frame">同等のプリントフレームはありません</string>
   <string name="pre_retake_front">正面写真を撮り直す</string>
   <string name="pre_retake_back">撮り直し写真</string>

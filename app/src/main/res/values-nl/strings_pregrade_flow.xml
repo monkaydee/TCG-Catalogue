@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Experimentele Pokémon-fotoschatting</string>
   <string name="pre_quality_blocked">Neem deze kant opnieuw: de omtrek- of fotokwaliteit is niet geschikt voor een slijtagebeoordeling.</string>
   <string name="pre_no_wear_detected">geen zichtbare slijtage gedetecteerd</string>
-  <string name="pre_assessment_notice">Fotoscreening, geen beoordelingscertificaat. Oppervlaktekrassen, deuken, printlijnen en authenticiteit worden niet beoordeeld. Het algehele Pokémon-model is getraind op certificeringsscans en moet nog steeds worden gevalideerd op telefoonfoto\'s.</string>
   <string name="pre_skip_frame">Geen vergelijkbaar bedrukt frame</string>
   <string name="pre_retake_front">Maak opnieuw een foto van de voorkant</string>
   <string name="pre_retake_back">Foto opnieuw maken</string>

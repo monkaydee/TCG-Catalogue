@@ -11,7 +11,6 @@
   <string name="center_inner">インナーフレーム</string>
   <string name="center_minus_pixel">−1画像ピクセル</string>
   <string name="center_plus_pixel">+1 画像ピクセル</string>
-  <string name="center_manual_notice">手動センタリング測定。配置と写真の遠近感は比率に影響します。手動ガイドでは全体的なグレードの推定値は生成されません。</string>
   <string name="center_cancel">キャンセル</string>
   <string name="center_apply">これらのガイドを使用してください</string>
 </resources>

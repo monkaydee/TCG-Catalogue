@@ -28,7 +28,6 @@
   <string name="wear_whitening">Blekning / skavning synlig</string>
   <string name="wear_chip">Spån/reva synlig</string>
   <string name="wear_bend">Böjning/buckla synlig</string>
-  <string name="wear_observation_scope">Dina observationer sparas för denna fotosession. De certifierar inte skick eller åsidosätter dålig fotokvalitet. Registrerade skador förhindrar en övergripande modelluppskattning.</string>
   <string name="wear_done">Klart</string>
   <string name="wear_damage_blocks_grade">Synliga skador registrerades. Den övergripande modelluppskattningen undanhålls eftersom manuella fynd inte är kalibrerade modellindata. Centreringsresultat tar inte hänsyn till denna skada.</string>
   <string name="wear_incomplete_blocks_grade">Hörn och kanter behöver ses närmare. Saknade eller ofullständiga bevis förhindrar en övergripande modelluppskattning; Enbart centrering sätter inte ett betyg.</string>

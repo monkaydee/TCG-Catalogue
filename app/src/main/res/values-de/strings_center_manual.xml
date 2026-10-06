@@ -11,7 +11,6 @@
   <string name="center_inner">Innenrahmen</string>
   <string name="center_minus_pixel">−1 Bildpixel</string>
   <string name="center_plus_pixel">+1 Bildpixel</string>
-  <string name="center_manual_notice">Manuelle Zentriermessung. Platzierung und Fotoperspektive beeinflussen das Verhältnis. Manuelle Leitfäden liefern keine Gesamtbewertung der Note.</string>
   <string name="center_cancel">Abbrechen</string>
   <string name="center_apply">Nutzen Sie diese Anleitungen</string>
 </resources>

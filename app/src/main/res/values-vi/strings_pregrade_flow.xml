@@ -20,7 +20,6 @@
   <string name="pre_experimental_model">Ước tính ảnh Pokémon thử nghiệm</string>
   <string name="pre_quality_blocked">Chụp lại mặt này: đường viền hoặc chất lượng ảnh của nó không phù hợp để đánh giá độ hao mòn.</string>
   <string name="pre_no_wear_detected">không phát hiện thấy sự hao mòn</string>
-  <string name="pre_assessment_notice">Kiểm tra ảnh chứ không phải cấp giấy chứng nhận chấm điểm. Các vết xước bề mặt, vết lõm, đường in và độ xác thực không được đánh giá. Mô hình Pokémon tổng thể đã được đào tạo về quét chứng chỉ và vẫn cần xác thực trên ảnh điện thoại.</string>
   <string name="pre_skip_frame">Không có khung in nào có thể so sánh được</string>
   <string name="pre_retake_front">Chụp lại ảnh mặt trước</string>
   <string name="pre_retake_back">Chụp lại ảnh</string>

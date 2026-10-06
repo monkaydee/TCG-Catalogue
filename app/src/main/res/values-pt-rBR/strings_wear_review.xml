@@ -28,7 +28,6 @@
   <string name="wear_whitening">Branqueamento / desgaste visível</string>
   <string name="wear_chip">Lascas/rasgos visíveis</string>
   <string name="wear_bend">Dobra/amassado visível</string>
-  <string name="wear_observation_scope">Suas observações são mantidas para esta sessão de fotos. Eles não certificam a condição nem substituem a baixa qualidade da foto. Os danos registrados impedem uma estimativa geral do modelo.</string>
   <string name="wear_done">Concluído</string>
   <string name="wear_damage_blocks_grade">Danos visíveis foram registrados. A estimativa geral do modelo é retida porque as descobertas manuais não são entradas calibradas do modelo. Os resultados de centralização não levam em conta esse dano.</string>
   <string name="wear_incomplete_blocks_grade">Cantos e bordas precisam de uma inspeção mais detalhada. Evidências ausentes ou inconclusivas impedem uma estimativa global do modelo; a centralização por si só não estabelece uma nota.</string>
