@@ -117,7 +117,8 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                 val gid = a.getOrNull(2).str().orEmpty()
                 SealedProduct(game, id, a.getOrNull(1).str().orEmpty(), groups[gid].orEmpty(), a.getOrNull(3).dbl(),
                     language = a.getOrNull(4).str() ?: "EN", source = a.getOrNull(5).str() ?: "TCGplayer price",
-                    aliases = a.getOrNull(6).arr().orEmpty().mapNotNull { it.str() })
+                    aliases = a.getOrNull(6).arr().orEmpty().mapNotNull { it.str() },
+                    fetchedAt = root["updated"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() })
             }
         }
         sealedLoaded[game] = list
@@ -128,17 +129,28 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     private val sealedStamp = ConcurrentHashMap<Game, Long>()
 
     /** Sealed products whose name or set contains every word of [query]. */
+    suspend fun japaneseAliases(setId: String, number: String): Pair<List<String>, String?> {
+        val file = dailyFile("JAPANESE_NAME_ALIASES.json") ?: return emptyList<String>() to null
+        val root = http.json.parseToJsonElement(file.readText())
+        val set = root["sets"]?.get(setId.substringAfter(':').uppercase())
+        val names = set?.get("cards")?.get(number.substringBefore('/').trimStart('0').ifEmpty { "0" }).arr().orEmpty().mapNotNull { it.str() }
+        return set?.get("setAliases").arr().orEmpty().mapNotNull { it.str() } to names.singleOrNull()
+    }
+
     suspend fun regionalSealed(game: Game, language: String): List<SealedProduct> {
         if (game != Game.POKEMON && game != Game.ONE_PIECE) return emptyList()
         val file = dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
         return withContext(Dispatchers.Default) {
             val root = http.json.parseToJsonElement(file.readText())
             root["items"].arr().orEmpty().mapNotNull { row ->
+                val declared = row["languages"].arr().orEmpty().mapNotNull { it.str() }
+                if (declared.isNotEmpty() && language !in declared) return@mapNotNull null
                 val id = row["productId"].str()?.toLongOrNull() ?: return@mapNotNull null
                 SealedProduct(game, id, row["name"].str().orEmpty(), row["groupName"].str().orEmpty(), null,
                     language = language, currency = "EUR", source = "", referencePrice = row["referencePrice"].dbl(),
                     referenceCurrency = "EUR", referenceSource = "Cardmarket aggregate guide (not language-specific)",
-                    aliases = row["aliases"].arr().orEmpty().mapNotNull { it.str() }, requiresLanguageConfirmation = true)
+                    aliases = row["aliases"].arr().orEmpty().mapNotNull { it.str() }, requiresLanguageConfirmation = true,
+                    availabilityEvidence = if (declared.isNotEmpty()) "Catalogue explicitly names $language" else "Language variant not verified")
             }
         }
     }

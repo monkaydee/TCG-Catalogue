@@ -11,8 +11,7 @@
     <string name="center_inner">Inner frame</string>
     <string name="center_minus_pixel">−1 image pixel</string>
     <string name="center_plus_pixel">+1 image pixel</string>
-    <!-- Updated safety notice falls back to English until translations are reviewed. -->
-    <string name="center_manual_notice" tools:ignore="MissingTranslation">Manual centering measurement. Guide placement and photo perspective affect the ratio. Experimental estimates also require corner, edge and multi-angle surface review.</string>
+    <string name="center_manual_notice">Manual centering measurement. Guide placement and photo perspective affect the ratio. Experimental estimates also require corner, edge and multi-angle surface review.</string>
     <string name="center_cancel">Cancel</string>
     <string name="center_apply">Use these guides</string>
 </resources>

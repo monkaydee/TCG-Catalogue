@@ -18,7 +18,7 @@ export function cacheKey(c: Omit<CardRequest, "key">): string {
   const printing = c.printing ? `:${c.printing.toLowerCase().replace(/[^a-z0-9]/g, "")}` : "";
   const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
   // Version the cache after fixing language, printing and qualified-grade matching.
-  return `v3:${c.game}:${id}${printing}${language}`;
+  return `v4:${c.game}:${id}${printing}${language}:${c.market ?? "default"}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -37,10 +37,13 @@ export function parseCard(v: unknown): CardRequest | null {
     name: text(o.name),
     set: text(o.set),
     number: text(o.number, 40),
+    setAliases: Array.isArray(o.setAliases) ? o.setAliases.filter((a): a is string => typeof a === "string" && a.length <= 100).slice(0,8) : [],
+    ...( /^\d{4}$/.test(text(o.releaseYear)) ? {releaseYear:text(o.releaseYear)} : {}),
     ...(/^\d+$/.test(tcg) ? { tcgplayerId: tcg } : {}),
     ...(text(o.printing, 60) ? { printing: text(o.printing, 60) } : {}),
     ...(text(o.localName, 120) ? { localName: text(o.localName, 120) } : {}),
     ...(language ? { language } : {}),
+    ...(o.market === "US" || o.market === "DE" ? {market:o.market} : {}),
     ...(o.graded === true ? { graded: true } : {}),
   };
   if (!card.id && !card.tcgplayerId) return null;
@@ -160,6 +163,8 @@ export interface CardPrice {
   market: number | null;
   currency: string;
   graded: GradedPrice[];
+  gradedFetchedAt?: string | null;
+  gradedStale?: boolean;
   gradedReason: "not_found" | "unsupported" | "unavailable" | null;
   source: string | null;
   fetchedAt: string | null;
@@ -225,7 +230,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
   for (const c of gradedMiss) {
     const g = graded.found.get(c.key);
     if (g || graded.notFound.has(c.key))
-      writes.push({ key: gradedKey(c), value: g ?? [], source: g?.[0]?.source ?? null, fetchedAt: d.now, ttlMs: d.gradedTtlMs });
+      writes.push({ key: gradedKey(c), value: g ?? [], source: g?.[0]?.source ?? null, fetchedAt: d.now, ttlMs: g ? d.gradedTtlMs : d.notFoundTtlMs });
   }
   await d.cache.putMany(writes);
 
@@ -242,14 +247,16 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
 
     let gradedList: GradedPrice[] = [];
     let gradedStale = false;
+    let gradedFetchedAt: string | null = null;
     if (c.graded) {
       const g = graded.found.get(c.key);
-      if (g) gradedList = g;
+      if (g) { gradedList = g; gradedFetchedAt = new Date(d.now).toISOString(); }
       else if (!graded.notFound.has(c.key)) {
         const e = cached.get(gradedKey(c)) as CacheEntry<GradedPrice[]> | undefined;
         if (e) {
           gradedList = Array.isArray(e.value) ? e.value : [];
           gradedStale = e.expiresAt <= d.now;
+          gradedFetchedAt = new Date(e.fetchedAt).toISOString();
         }
       }
     }
@@ -265,9 +272,11 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
       key: c.key,
       conditions: p ? p.conditions : null,
       market: p ? p.market : null,
+      ...(p?.conditionEvidence ? {conditionEvidence:p.conditionEvidence} : {}),
       currency: p?.currency ?? "USD",
       ...(p?.listings ? { listings: p.listings, low: p.low, high: p.high } : {}),
-      graded: gradedList,
+      graded: gradedList.map(g=>({...g,stale:gradedStale,fetchedAt:gradedFetchedAt ?? undefined})),
+      gradedFetchedAt, gradedStale,
       gradedReason: !c.graded || gradedList.length ? null
         : graded.notFound.has(c.key) || fresh(gradedKey(c)) ? "not_found"
         : graded.unsupported.has(c.key) ? "unsupported" : "unavailable",

@@ -260,6 +260,35 @@ def build_pokemon_new():
     return {"game": "POKEMON", "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "groups": out_groups, "cards": cards}
 
 
+def japanese_name_aliases(data):
+    """Use native set codes as identity; only unambiguous collector names are exported."""
+    from build_sealed_index import JP_SETS, key
+    sets = {code.upper(): list(names) for code, names in JP_SETS.items()}
+    group_codes = {}
+    for gid, group in data["groups"].items():
+        prefix = group[0].split(":", 1)[0].strip().upper()
+        abbreviation = group[1].strip().upper()
+        code = next((c for c in (prefix, abbreviation) if re.fullmatch(r"(?:SV|SM|S|M|XY|BW)\d+[A-Z]*", c)), None)
+        if code is None:
+            code = next((c.upper() for c, names in JP_SETS.items() if key(names[0]) in key(group[0])), None)
+        if code:
+            group_codes[str(gid)] = code
+            aliases = sets.setdefault(code, [])
+            name = group[0].split(":", 1)[-1].strip()
+            if name not in aliases:
+                aliases.append(name)
+    numbered = {}
+    for row in data["cards"]:
+        code = group_codes.get(str(row[2]))
+        if not code:
+            continue
+        number = row[0].split("/")[0].lstrip("0") or "0"
+        name = re.sub(r"\s+-\s+[A-Z]*\d+(?:/\d+)?.*$", "", row[1]).strip()
+        numbered.setdefault(code, {}).setdefault(number, set()).add(name)
+    return {code: {"setAliases": names, "cards": {n: sorted(v) for n, v in numbered.get(code, {}).items() if len(v) == 1}}
+            for code, names in sets.items()}
+
+
 def main():
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "index")
     out.mkdir(parents=True, exist_ok=True)
@@ -275,8 +304,10 @@ def main():
         _, sealed = build(game, category, cards_too=False)
         if game == "POKEMON":
             print("POKEMON Japanese sealed (category 85)")
-            _, japanese = build(game, 85, cards_too=False)
+            japanese_cards, japanese = build(game, 85, cards_too=True)
             from build_sealed_index import JP_SETS, key
+            aliases = japanese_name_aliases(japanese_cards)
+            (out / "JAPANESE_NAME_ALIASES.json").write_text(json.dumps({"updated":japanese_cards["updated"],"sets":aliases},ensure_ascii=False,separators=(",",":")))
             for item in japanese["items"]:
                 item[4] = "JA"
                 item.append([alias for code, names in JP_SETS.items() if key(names[0]) in key(item[1]) for alias in (code, *names)])

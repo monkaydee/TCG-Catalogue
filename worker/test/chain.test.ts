@@ -281,7 +281,7 @@ describe("getPrices", () => {
     };
     const cache = memoryCache();
     const [r] = await getPrices([c], deps(cache, [jt], fakeGate({ justtcg: 5, ppt: 5 }), [gradedProvider]));
-    expect(r.graded).toEqual([{ grader: "PSA", grade: "10", price: 99, currency: "USD", source: "pokemonpricetracker" }]);
+    expect(r.graded).toEqual([{ grader: "PSA", grade: "10", price: 99, currency: "USD", source: "pokemonpricetracker", stale:false, fetchedAt:new Date(NOW).toISOString() }]);
     expect(r.conditions?.NM).toBe(1);
     expect(cache.store.get(`graded|${c.key}`)?.expiresAt).toBe(NOW + 72 * H);
 

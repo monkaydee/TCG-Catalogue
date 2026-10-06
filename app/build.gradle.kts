@@ -72,6 +72,7 @@ ksp {
 
 dependencies {
     androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
@@ -112,6 +113,7 @@ dependencies {
     implementation(libs.glance.material3)
 
     testImplementation(libs.junit)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     // Screenshot tests: screens rendered on the JVM (Robolectric native graphics), saved as PNGs.
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)

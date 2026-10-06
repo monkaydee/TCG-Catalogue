@@ -45,6 +45,7 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
     val image = remember(bitmap) { bitmap.asImageBitmap() }
     var rotation by remember(bitmap, side.centering) { mutableDoubleStateOf(side.centering?.rotationDegrees ?: 0.0) }
     var rotating by remember(bitmap) { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
     val scope = rememberCoroutineScope()
     var aligning by remember(bitmap) { mutableStateOf(false) }
     var alignmentNote by remember(bitmap) { mutableStateOf<String?>(null) }
@@ -122,7 +123,7 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
         if (rotating) {
             OutlinedButton(onClick = {
                 aligning = true
-                scope.launch {
+                scope.launch(Dispatchers.Main.immediate) {
                     val correction = withContext(Dispatchers.Default) {
                         val pixels = IntArray(bitmap.width * bitmap.height)
                         bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
@@ -130,12 +131,12 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
                     }
                     if (correction != null) {
                         rotateTo(correction)
-                        alignmentNote = "Frame aligned automatically. Check all outer and inner guides before applying."
-                    } else alignmentNote = "No consistent printed frame found. Align manually using the grid."
+                        alignmentNote = context.getString(R.string.pre_align_done)
+                    } else alignmentNote = context.getString(R.string.pre_align_missing)
                     aligning = false
                 }
             }, enabled = !aligning, modifier = Modifier.fillMaxWidth().testTag("center_auto_align")) {
-                Text(if (aligning) "Finding printed frame…" else "Auto-align printed frame")
+                Text(stringResource(if (aligning) R.string.pre_align_busy else R.string.pre_auto_align))
             }
             alignmentNote?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {

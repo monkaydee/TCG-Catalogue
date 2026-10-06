@@ -54,6 +54,14 @@ class TcgApp : Application() {
         com.monkaydee.tcgcatalogue.data.SharedLearning.initialize(this, repository)
         appScope.launch { repository.initializeLedger() }
         PriceRefreshWorker.scheduleDaily(this)
+        appScope.launch {
+            val revisions = getSharedPreferences("price-matching", MODE_PRIVATE)
+            if (revisions.getInt("revision", 0) < 4) {
+                repository.invalidateLegacyComparables()
+                PriceRefreshWorker.runNow(this@TcgApp)
+                revisions.edit().putInt("revision", 4).apply()
+            }
+        }
 
         CloudBackup.init(this, repository)
         ProcessLifecycleOwner.get().lifecycle.addObserver(LifecycleEventObserver { _, event ->

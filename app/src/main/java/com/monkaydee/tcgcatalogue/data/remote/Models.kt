@@ -19,7 +19,7 @@ enum class PriceSource(val label: String, val currency: String) {
     GRADED_EUR("Graded market", "EUR"),
 }
 
-data class Price(val amount: Double, val source: PriceSource, val note: String? = null) {
+data class Price(val amount: Double, val source: PriceSource, val note: String? = null, val fetchedAt: Long? = null, val stale: Boolean = false) {
     val currency: String get() = source.currency
 }
 
@@ -85,7 +85,7 @@ data class SealedProduct(
     val referenceCurrency: String? = null, val referenceSource: String? = null,
     val imageUrl: String? = if (productId > 0) "https://tcgplayer-cdn.tcgplayer.com/product/${productId}_in_400x400.jpg" else null,
     val aliases: List<String> = emptyList(), val requiresLanguageConfirmation: Boolean = false,
-    val fetchedAt: Long? = null,
+    val fetchedAt: Long? = null, val market: String? = null, val availabilityEvidence: String? = null,
 )
 
 /** One card of a set, for the set checklist. [cardId] matches [com.monkaydee.tcgcatalogue.data.db.OwnedCard.cardId]. */

@@ -30,7 +30,9 @@ export function parsePpt(json: unknown): GradedPrice[] {
     const s = obj(v);
     const p = price(obj(s.smartMarketPrice).price) ?? price(s.medianPrice) ?? price(s.averagePrice);
     if (!g || p === null) continue;
+    if (["BGS","CGC"].includes(g.grader) && g.grade === "10") continue; // Aggregated tier cannot distinguish premium labels.
     const sales = typeof s.count === "number" ? s.count : undefined;
+    if (sales !== undefined && sales < 3) continue;
     out.push({ ...g, price: p, currency: "USD", source: "pokemonpricetracker", ...(date ? { date } : {}), ...(sales !== undefined ? { sales } : {}) });
   }
   return out;

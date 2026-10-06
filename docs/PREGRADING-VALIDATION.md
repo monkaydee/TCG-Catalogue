@@ -71,7 +71,8 @@ by physical card/certificate; repeat captures must not inflate the independent t
 
 `validate_phone_dataset.py` evaluates a JSONL manifest of held-out predictions, checks certificate
 split leakage, weights repeated captures per card, and reports coverage, exact/within-one grade
-accuracy, mean absolute error, false tens, range coverage and confusion. It never auto-declares
+accuracy, mean absolute error, false tens, range-only coverage/width and confusion, stratified by game,
+language and device. Conflicting professional labels and incomplete range endpoints are rejected. It never auto-declares
 commercial acceptance. Benchmark outline/border-placement errors, corner/edge precision/recall,
 photo-quality rejections and abstentions as well, with acceptance thresholds chosen before testing.
 
@@ -79,3 +80,7 @@ Unit and rendered UI tests verify geometry, evidence gating, image lifetime and 
 Device tests must still assess autofocus/exposure behaviour, motion/glare thresholds, capture
 mapping, memory limits and accessibility sizing. A labelled phone-photo dataset is not in this
 repository, so trained defect detection and professional prediction validation remain open.
+
+See [DEVICE-VALIDATION.md](DEVICE-VALIDATION.md) for the private manifest and physical-device
+matrix. Camera motion/blur gates have synthetic regressions; Android 8/14 emulator smoke checks
+verify binding, analysis, still capture and reopening without claiming optical validation.

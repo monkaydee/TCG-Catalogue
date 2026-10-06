@@ -166,7 +166,7 @@ private fun WearCrop(side: PreGrader.Side, name: String, modifier: Modifier, zoo
                 Bitmap.createBitmap(bitmap, x, y, ((rect.width() * sx).toInt()).coerceIn(1, bitmap.width - x), ((rect.height() * sy).toInt()).coerceIn(1, bitmap.height - y))
             }
         }
-        crop = decoded
+        withContext(Dispatchers.Main.immediate) { crop = decoded }
     }
     // Compose may retain a bitmap in a drawing layer after recomposition. Let GC release UI crops.
     Column {
@@ -197,8 +197,8 @@ private fun WearCrop(side: PreGrader.Side, name: String, modifier: Modifier, zoo
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 listOf(1, 4, 8).forEach { z -> TextButton(onClick = { scale = z.toFloat(); pan = Offset.Zero }) { Text("${z}×") } }
             }
-            FilterChip(selected = flags, onClick = { flags = !flags }, label = { Text("Show colour flags") })
-            Text("Original-photo detail · flags mark colour differences, not confirmed damage", style = MaterialTheme.typography.bodySmall)
+            FilterChip(selected = flags, onClick = { flags = !flags }, label = { Text(stringResource(R.string.pre_color_flags)) })
+            Text(stringResource(R.string.pre_color_scope), style = MaterialTheme.typography.bodySmall)
         }
     }
 }

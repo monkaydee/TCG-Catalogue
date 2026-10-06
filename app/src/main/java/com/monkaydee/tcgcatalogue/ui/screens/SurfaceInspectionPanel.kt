@@ -20,6 +20,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.monkaydee.tcgcatalogue.R
 import androidx.compose.ui.window.Dialog
 import com.monkaydee.tcgcatalogue.grade.PreGrader
 import com.monkaydee.tcgcatalogue.grade.SurfaceFinding
@@ -37,7 +39,7 @@ internal fun SurfaceInspectionPanel(side: PreGrader.Side, label: String, onCamer
     var error by remember { mutableStateOf<String?>(null) }
     var viewing by remember { mutableStateOf<String?>(null) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) scope.launch {
+        if (uri != null) scope.launch(Dispatchers.Main.immediate) {
             busy = true
             val path = withContext(Dispatchers.IO) { runCatching {
                 val photo = PhotoRecognizer.loadSmall(context, uri, 4000)
@@ -50,33 +52,33 @@ internal fun SurfaceInspectionPanel(side: PreGrader.Side, label: String, onCamer
             }.getOrNull() }
             busy = false
             if (path != null) { onChange(side.copy(surfacePhotos = (side.surfacePhotos + path).takeLast(4), surfaceFinding = SurfaceFinding.NOT_REVIEWED)); error = null }
-            else error = "Could not open this photo. Please try again."
+            else error = context.getString(R.string.pre_surface_error)
         }
     }
-    Text("$label surface", style = MaterialTheme.typography.titleMedium)
-    Text("Use diffuse light for the main photo. Add at least two close-up views with a light shining across the surface from opposite directions. Slowly tilt the card to reveal scratches, dents, creases and print lines. Keep the entire card visible; avoid direct flash and sleeves.", style = MaterialTheme.typography.bodySmall)
-    Text("${side.surfacePhotos.size}/2 lighting views added · tap a view to inspect", style = MaterialTheme.typography.labelLarge)
+    Text(stringResource(R.string.pre_surface_label, label), style = MaterialTheme.typography.titleMedium)
+    Text(stringResource(R.string.pre_surface_help), style = MaterialTheme.typography.bodySmall)
+    Text(stringResource(R.string.pre_surface_count, side.surfacePhotos.size), style = MaterialTheme.typography.labelLarge)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedButton(onClick = onCamera, enabled = !busy) { Text("Take lighting view") }
-        OutlinedButton(onClick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }, enabled = !busy) { Text("Upload view") }
+        OutlinedButton(onClick = onCamera, enabled = !busy) { Text(stringResource(R.string.pre_surface_capture)) }
+        OutlinedButton(onClick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }, enabled = !busy) { Text(stringResource(R.string.pre_surface_upload)) }
     }
     if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
     error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         side.surfacePhotos.forEachIndexed { index, path ->
-            OutlinedButton(onClick = { viewing = path }, modifier = Modifier.weight(1f)) { Text("View ${index + 1}") }
+            OutlinedButton(onClick = { viewing = path }, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.pre_surface_view, index + 1)) }
         }
     }
     for ((finding, text) in listOf(
-        SurfaceFinding.NOT_REVIEWED to "Not reviewed",
-        SurfaceFinding.CLEAR_IN_PHOTOS to "No damage visible in these views",
-        SurfaceFinding.SCRATCHES to "Scratches / scuffs / print lines visible",
-        SurfaceFinding.DENT_OR_CREASE to "Dent / crease / bend visible",
+        SurfaceFinding.NOT_REVIEWED to stringResource(R.string.wear_not_reviewed),
+        SurfaceFinding.CLEAR_IN_PHOTOS to stringResource(R.string.pre_surface_clear),
+        SurfaceFinding.SCRATCHES to stringResource(R.string.pre_surface_scratches),
+        SurfaceFinding.DENT_OR_CREASE to stringResource(R.string.pre_surface_dent),
     )) {
         FilterChip(selected = side.surfaceFinding == finding, enabled = finding == SurfaceFinding.NOT_REVIEWED || side.surfacePhotos.size >= 2,
             onClick = { onChange(side.copy(surfaceFinding = finding)) }, label = { Text(text) })
     }
-    Text("Surface findings are your observations. These photos cannot certify authenticity or exclude hidden defects.", style = MaterialTheme.typography.bodySmall)
+    Text(stringResource(R.string.pre_surface_scope), style = MaterialTheme.typography.bodySmall)
     viewing?.let { path ->
         Dialog(onDismissRequest = { viewing = null }) {
             Surface {
@@ -90,8 +92,8 @@ internal fun SurfaceInspectionPanel(side: PreGrader.Side, label: String, onCamer
                             detectTransformGestures { _, movement, scale, _ -> zoom = (zoom * scale).coerceIn(1f, 8f); pan = if (zoom == 1f) Offset.Zero else pan + movement }
                         }) { Image(bitmap.asImageBitmap(), "Surface lighting view", Modifier.fillMaxSize().graphicsLayer(scaleX = zoom, scaleY = zoom, translationX = pan.x, translationY = pan.y), contentScale = ContentScale.Fit) }
                     }
-                    TextButton(onClick = { viewing = null }) { Text("Done") }
-                    TextButton(onClick = { onChange(side.copy(surfacePhotos = side.surfacePhotos - path, surfaceFinding = SurfaceFinding.NOT_REVIEWED)); viewing = null }) { Text("Remove view") }
+                    TextButton(onClick = { viewing = null }) { Text(stringResource(R.string.wear_done)) }
+                    TextButton(onClick = { onChange(side.copy(surfacePhotos = side.surfacePhotos - path, surfaceFinding = SurfaceFinding.NOT_REVIEWED)); viewing = null }) { Text(stringResource(R.string.pre_surface_remove)) }
                 }
             }
         }

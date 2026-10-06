@@ -73,6 +73,8 @@ class CardmarketApi(private val files: CardIndexApi, private val http: Http) {
     }
 
     companion object {
+        fun automaticListing(listings: List<Listing>): Listing? = listings.filter { !it.nonEnglish && it.price != null }.singleOrNull()
+
         const val FILE = "CARDMARKET_ONE_PIECE.json"
     }
 }

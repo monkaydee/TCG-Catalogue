@@ -20,14 +20,15 @@ German-language One Piece product.
 Cardmarket guide prices are shown as **aggregate references**, in EUR, excluded from portfolio
 valuation. They are never relabelled as German/Japanese market prices. Exact-language pricing uses
 `POST /v1/sealed/price` on the existing Cloudflare Worker, with eBay credentials held server-side.
-The route shares the existing authentication, IP limit, provider budget and D1 cache.
+Explicit catalogue languages narrow templates; unknown variants are labelled unverified. The route shares the existing authentication, IP limit, provider budget and D1 cache.
 
 Matching requires explicit language, game, identifiable set/name, unit type, unopened/sealed
 wording and matching named quantity. Opened, empty, resealed, breaks, proxies, wrong-language
 products, mismatched box/pack/case units and duplicate listing ids are excluded. A quote requires
 at least three matching listings. The result is the median **asking price**, shipping excluded;
-it is not a completed-sale price. German quotes are EUR from EBAY_DE; Japanese imports are USD
-from EBAY_US, not domestic Japanese JPY sales. Prices expose listing count, source and date.
+it is not a completed-sale price. The selected display currency chooses the import marketplace independently of printed language:
+EUR uses EBAY_DE, USD uses EBAY_US. Japanese quotes are import asking prices, not domestic
+Japanese JPY sales. Prices expose listing count, source and date.
 
 Positive quotes cache for 24 hours; misses for one hour. Transient failures/budget exhaustion may
 return explicitly stale cached prices. Unconfigured providers or insufficient matches leave the

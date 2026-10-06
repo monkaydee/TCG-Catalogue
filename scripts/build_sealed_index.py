@@ -82,7 +82,7 @@ def build(game, products, guides, localized=None):
         if not isinstance(reference, (int, float)) or reference <= 0:
             reference = None
         rows.append({"productId": -p["idProduct"], "cardmarketId": p["idProduct"], "name": name,
-                     "groupName": category, "aliases": sorted(set(aliases)), "referencePrice": reference})
+                     "groupName": category, "languages": ["JA"] if re.search(r"\bJapanese\b|\bJapan\b", name, re.I) else ["DE"] if re.search(r"\bGerman\b|\bDeutsch\b", name, re.I) else [], "aliases": sorted(set(aliases)), "referencePrice": reference})
     return {"schemaVersion": 2, "game": game, "updated": datetime.now(timezone.utc).isoformat(),
             "priceScope": "aggregate-reference-not-language-specific", "items": rows}
 

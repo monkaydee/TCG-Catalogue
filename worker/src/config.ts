@@ -41,7 +41,7 @@ export function settings(env: Env) {
   return {
     rawTtlHours: num(env, "RAW_TTL_HOURS", 24),
     gradedTtlHours: num(env, "GRADED_TTL_HOURS", 72),
-    notFoundTtlHours: num(env, "NOT_FOUND_TTL_HOURS", 72),
+    notFoundTtlHours: num(env, "NOT_FOUND_TTL_HOURS", 6),
     certTtlDays: num(env, "CERT_TTL_DAYS", 30),
     popTtlDays: num(env, "POP_TTL_DAYS", 7),
     ipDailyLimit: num(env, "IP_DAILY_LIMIT", 500),

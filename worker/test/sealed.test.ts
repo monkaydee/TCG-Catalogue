@@ -31,4 +31,23 @@ describe("exact-language sealed prices", () => {
     expect(sealedTitleMatches("One Piece OP-01 Japanese Booster Box sealed",op)).toBe(true);
     expect(sealedTitleMatches("One Piece OP-02 Japanese Booster Box sealed",op)).toBe(false);
   });
+  it("keeps Battle boxes, bundles, editions and pack contents apart", () => {
+    const p:SealedRequest={game:"pokemon",productId:"-1",name:"Surging Sparks Booster Box",language:"DE",aliases:["Stürmische Funken"]};
+    for (const title of ["Pokemon Stürmische Funken Build & Battle Box Deutsch OVP", "Pokemon Stürmische Funken Booster Bundle Deutsch OVP", "Pokemon Stürmische Funken Booster Box Deutsch OVP 18 Boosters"])
+      expect(sealedTitleMatches(title,p)).toBe(false);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken Booster Box Deutsch OVP 36 Boosters",p)).toBe(true);
+    const jp151:SealedRequest={...product,name:"Pokemon Card 151 Booster Box",aliases:["SV2a"]};
+    expect(sealedTitleMatches("Pokemon Card 151 Japanese Booster Box sealed 20 Packs",jp151)).toBe(true);
+    expect(sealedTitleMatches("Pokemon Card 151 Japanese Booster Box sealed 10 Packs",jp151)).toBe(false);
+    expect(sealedTitleMatches("Pokemon Terastal Festival ex Japanese Booster Box シュリンクなし",product)).toBe(false);
+  });
+
+  it("can price Japanese imports in the German market without changing printed language",()=>{
+    const title="Pokemon Terastal Festival ex Japanese Booster Box sealed";
+    const p={...product,market:"DE" as const};
+    const q=parseSealedListings({itemSummaries:[listing(title,"90","EUR","1"),listing(title,"100","EUR","2"),listing(title,"110","EUR","3")]},p)!;
+    expect(q.currency).toBe("EUR");expect(q.amount).toBe(100);
+    expect(parseSealedListings({itemSummaries:[listing(title,"90","USD","1"),listing(title,"100","USD","2"),listing(title,"110","USD","3")]},p)).toBeNull();
+  });
+
 });

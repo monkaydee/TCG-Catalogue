@@ -33,10 +33,11 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         /** Asking prices: how many listings, and their lowest and highest price. */
         val listings: Int? = null, val low: Double? = null, val high: Double? = null,
         val qualifier: String? = null,
+        val fetchedAt: Long? = null, val stale: Boolean = false, val evidence: String? = null,
     )
 
     /** A raw price from the server: amount, where from, currency, and for asking prices the listings behind it. */
-    data class Raw(val amount: Double, val source: String, val currency: String, val listings: Int?, val low: Double?, val high: Double?)
+    data class Raw(val amount: Double, val source: String, val currency: String, val listings: Int?, val low: Double?, val high: Double?, val fetchedAt: Long? = null, val stale: Boolean = false)
 
     /** A card PSA graded: what the label says, and how many copies PSA graded the same or higher. */
     data class Cert(
@@ -68,7 +69,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     suspend fun reachable(): Boolean = runCatching { get("/v1/status") != null }.getOrDefault(false)
 
     /** The price server's raw (ungraded) price of a printing: NM or a blended market price, in USD, and its source. */
-    suspend fun raw(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String?, language: String = "EN", localName: String? = null): Raw? {
+    suspend fun raw(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String?, language: String = "EN", localName: String? = null, condition: String = "NM", setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null): Raw? {
         val body = buildJsonObject {
             put("schemaVersion", 2)
             putJsonArray("cards") {
@@ -78,6 +79,9 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         put("id", cardId)
                         put("name", name)
                         put("set", setName)
+                        market?.let { put("market", it) }
+                        putJsonArray("setAliases") { setAliases.forEach { add(it) } }
+                        releaseYear?.let { put("releaseYear", it) }
                         put("number", number)
                         tcgplayerId?.let { put("tcgplayerId", it) }
                         printing?.let { put("printing", it) }
@@ -89,13 +93,14 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         }
         val result = post("/v1/prices", body.toString().toRequestBody(JSON))?.get("results").arr()?.firstOrNull() ?: return null
         if (result["reason"].str() == "unavailable") throw IOException("Price providers unavailable")
-        val amount = (result["conditions"]?.let { it as? kotlinx.serialization.json.JsonObject }?.get("NM").dbl() ?: result["market"].dbl())
+        val amount = (result["conditions"]?.let { it as? kotlinx.serialization.json.JsonObject }?.get(condition).dbl())
             ?.takeIf { it > 0 } ?: return null
-        return Raw(amount, result["source"].str().orEmpty(), result["currency"].str() ?: "USD", result["listings"].int(), result["low"].dbl(), result["high"].dbl())
+        val evidence = result["conditionEvidence"]?.let { it as? kotlinx.serialization.json.JsonObject }?.get(condition)
+        return Raw(amount, result["source"].str().orEmpty(), result["currency"].str() ?: "USD", evidence?.get("listings").int() ?: result["listings"].int(), evidence?.get("low").dbl() ?: result["low"].dbl(), evidence?.get("high").dbl() ?: result["high"].dbl(), timestamp(result["fetchedAt"].str()), result["stale"].str() == "true")
     }
 
     /** Graded prices of a card (TCGplayer product [tcgplayerId]), or an empty list when there are none. */
-    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null, language: String = "EN", localName: String? = null): List<Graded> {
+    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null, language: String = "EN", localName: String? = null, setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null): List<Graded> {
         val body = buildJsonObject {
             put("schemaVersion", 2)
             putJsonArray("cards") {
@@ -105,6 +110,9 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         put("id", cardId)
                         put("name", name)
                         put("set", setName)
+                        market?.let { put("market", it) }
+                        putJsonArray("setAliases") { setAliases.forEach { add(it) } }
+                        releaseYear?.let { put("releaseYear", it) }
                         put("number", number)
                         tcgplayerId?.let { put("tcgplayerId", it) }
                         printing?.let { put("printing", it) }
@@ -130,6 +138,9 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                 low = g["low"].dbl(),
                 high = g["high"].dbl(),
                 qualifier = g["qualifier"].str(),
+                fetchedAt = timestamp(g["fetchedAt"].str() ?: result["gradedFetchedAt"].str()),
+                stale = g["stale"].str() == "true" || result["gradedStale"].str() == "true",
+                evidence = g["evidence"].str(),
             )
         }
     }
@@ -139,6 +150,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         val body = buildJsonObject {
             put("game", product.game.name); put("productId", product.productId.toString())
             put("name", product.name); put("language", product.language)
+            product.market?.let { put("market", it) }
             putJsonArray("aliases") { product.aliases.forEach { add(it) } }
         }
         val result = post("/v1/sealed/price", body.toString().toRequestBody(JSON)) ?: return null
@@ -197,6 +209,8 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
             }
         }
     }
+
+    private fun timestamp(value: String?): Long? = value?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }
 
     private companion object {
         val JSON = "application/json".toMediaType()

@@ -165,7 +165,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
     fun analyse(photo: Bitmap, guide: FloatArray?) {
         busy = true
         camera = false
-        scope.launch {
+        scope.launch(Dispatchers.Main.immediate) {
             val outcome = withContext(Dispatchers.Default) {
                 runCatching {
                     val dir = File(context.cacheDir, "pregrade").apply { mkdirs() }
@@ -188,7 +188,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             busy = true
-            scope.launch {
+            scope.launch(Dispatchers.Main.immediate) {
                 val photo = withContext(Dispatchers.IO) { runCatching { PhotoRecognizer.loadSmall(context, uri, maxSide = 4000) }.getOrNull() }
                 if (photo == null) { busy = false; error = context.getString(R.string.import_could_not_open_photo) } else analyse(photo, null)
             }
@@ -222,7 +222,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                         val target = surfaceTarget
                         if (target == null) analyse(photo, guide) else {
                             camera = false; busy = true
-                            scope.launch {
+                            scope.launch(Dispatchers.Main.immediate) {
                                 val path = withContext(Dispatchers.IO) { runCatching {
                                     val dir = File(context.cacheDir, "pregrade").apply { mkdirs() }
                                     val file = File.createTempFile("surface-", ".png", dir)
@@ -269,7 +269,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                                 val target = step
                                 adjusting = false
                                 busy = true
-                                scope.launch {
+                                scope.launch(Dispatchers.Main.immediate) {
                                     val fixed = withContext(Dispatchers.Default) { runCatching { PreGrader.adjust(side, quad) }.getOrNull() }
                                     busy = false
                                     if (fixed != null) {
@@ -496,13 +496,13 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("Experimental pre-grade", style = MaterialTheme.typography.titleMedium)
                 if (estimate == null) {
-                    Text("More evidence needed", style = MaterialTheme.typography.headlineSmall)
-                    missing.forEach { Text("• $it", style = MaterialTheme.typography.bodySmall) }
+                    Text(stringResource(R.string.pre_more_evidence), style = MaterialTheme.typography.headlineSmall)
+                    missing.forEach { Text("• ${preGradeMessage(it)}", style = MaterialTheme.typography.bodySmall) }
                 } else {
-                    Text("Estimated range: ${estimate.low}–${estimate.high} / 10", style = MaterialTheme.typography.headlineSmall)
-                    estimate.reasons.forEach { Text("• $it", style = MaterialTheme.typography.bodySmall) }
+                    Text(stringResource(R.string.pre_range, estimate.low, estimate.high), style = MaterialTheme.typography.headlineSmall)
+                    estimate.reasons.forEach { Text("• ${preGradeMessage(it)}", style = MaterialTheme.typography.bodySmall) }
                 }
-                Text("Non-professional pre-grade estimate based on the supplied photos and your observations. This is not a grading certificate. A professional grader may assign a different grade; hidden defects, alteration and authenticity are not excluded. This broad heuristic range is not a validated PSA prediction.", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.pre_range_disclaimer), style = MaterialTheme.typography.bodySmall)
             }
         }
         OutlinedButton(onClick = {
@@ -598,6 +598,7 @@ private fun CenteringLine(label: String, c: Centering.Result?, limit: Double) {
 
 /** Camera with a card guide; takes a full-resolution photo of what the preview shows. */
 @androidx.annotation.OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitmap, FloatArray) -> Unit, onError: () -> Unit) {
     val context = LocalContext.current
@@ -614,6 +615,7 @@ private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitm
     var burst by remember { mutableStateOf(true) }
     var timer by remember { mutableStateOf(false) }
     var exposureLocked by remember { mutableStateOf(false) }
+    var exposureSupported by remember { mutableStateOf(false) }
     var viewSize by remember { mutableStateOf(0f to 0f) }
     var taking by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -686,6 +688,8 @@ private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitm
                             val group = UseCaseGroup.Builder().addUseCase(preview).addUseCase(capture).addUseCase(analysis)
                             view.viewPort?.let { group.setViewPort(it) }
                             cameraRef[0] = provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, group.build())
+                            exposureSupported = runCatching { androidx.camera.camera2.interop.Camera2CameraInfo.from(cameraRef[0]!!.cameraInfo)
+                                .getCameraCharacteristic(android.hardware.camera2.CameraCharacteristics.CONTROL_AE_LOCK_AVAILABLE) == true }.getOrDefault(false)
                         }.onFailure { onError() }
                     }, ContextCompat.getMainExecutor(context))
                 }
@@ -695,7 +699,7 @@ private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitm
         val tilt = rememberTilt()
         val level = tilt.degrees < LEVEL_DEGREES
         val ready = level && quality?.ready == true && cardInGuide
-        val status = if (allowAuto && !level) "Level the phone over the card" else if (allowAuto && !cardInGuide) "Place the entire card inside the guide" else quality?.message ?: "Checking focus and motion…"
+        val status = if (allowAuto && !level) stringResource(R.string.pre_camera_level) else if (allowAuto && !cardInGuide) stringResource(R.string.pre_camera_card) else preGradeMessage(quality?.message ?: "Checking focus and motion…")
         val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
         LaunchedEffect(level) { if (level) haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove) }
         Canvas(Modifier.fillMaxSize()) {
@@ -725,7 +729,7 @@ private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitm
             if (view.width == 0 || view.height == 0) return
             val guide = guideFractions(view.width.toFloat(), view.height.toFloat())
             taking = true
-            scope.launch {
+            scope.launch(Dispatchers.Main.immediate) {
                 if (timer) kotlinx.coroutines.delay(2000)
                 val point = view.meteringPointFactory.createPoint(view.width / 2f, view.height / 2f)
                 cameraRef[0]?.cameraControl?.startFocusAndMetering(FocusMeteringAction.Builder(point).setAutoCancelDuration(5, TimeUnit.SECONDS).build())
@@ -769,17 +773,18 @@ private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitm
         }
         Column(Modifier.align(Alignment.BottomCenter).padding(bottom = 106.dp).background(Color.Black.copy(alpha = .7f)).padding(8.dp)) {
             Text(status, color = if (ready) Color.Green else Color.White, style = MaterialTheme.typography.bodySmall)
-            Text("Tap card to focus · use diffuse light, no direct flash", color = Color.White, style = MaterialTheme.typography.bodySmall)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChip(selected = burst, onClick = { burst = !burst }, label = { Text("Best of 3") })
-                FilterChip(selected = timer, onClick = { timer = !timer }, label = { Text("2s timer") })
-                FilterChip(selected = exposureLocked, onClick = {
+            Text(stringResource(R.string.pre_camera_help), color = Color.White, style = MaterialTheme.typography.bodySmall)
+            androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(selected = burst, onClick = { burst = !burst }, label = { Text(stringResource(R.string.pre_best_three)) })
+                FilterChip(selected = timer, onClick = { timer = !timer }, label = { Text(stringResource(R.string.pre_timer)) })
+                FilterChip(selected = exposureLocked, enabled = exposureSupported && !taking, onClick = {
                     exposureLocked = !exposureLocked
                     cameraRef[0]?.let { camera ->
-                        androidx.camera.camera2.interop.Camera2CameraControl.from(camera.cameraControl).setCaptureRequestOptions(
+                        val request = androidx.camera.camera2.interop.Camera2CameraControl.from(camera.cameraControl).setCaptureRequestOptions(
                             androidx.camera.camera2.interop.CaptureRequestOptions.Builder().setCaptureRequestOption(android.hardware.camera2.CaptureRequest.CONTROL_AE_LOCK, exposureLocked).build())
+                        request.addListener({ if (runCatching { request.get() }.isFailure) exposureLocked = false }, ContextCompat.getMainExecutor(context))
                     }
-                }, label = { Text("Lock exposure") })
+                }, label = { Text(stringResource(R.string.pre_exposure_lock)) })
             }
         }
         FilledIconButton(
@@ -822,4 +827,42 @@ private fun rememberTilt(): Tilt {
         onDispose { sm.unregisterListener(listener) }
     }
     return tilt
+}
+
+@Composable
+private fun preGradeMessage(message: String): String {
+    val side = when { message.startsWith("Front") -> stringResource(R.string.grade_front); message.startsWith("Back") -> stringResource(R.string.grade_back); else -> null }
+    if (side != null) {
+        val key = when (message.removePrefix("Front").removePrefix("Back").trim().removePrefix(":").trim()) {
+            "photo missing" -> R.string.pre_missing_photo
+            "outline needs confirmation" -> R.string.pre_missing_outline
+            "photo needs a retake" -> R.string.pre_missing_retake
+            "centering incomplete" -> R.string.pre_missing_center
+            "review all four corners and four edges" -> R.string.pre_missing_wear
+            "add two lighting angles and review the surface" -> R.string.pre_missing_surface
+            else -> null
+        }
+        if (key != null) return stringResource(key, side)
+    }
+    val key = when (message) {
+        "Centering exceeds the published PSA 10 allowance" -> R.string.pre_reason_center
+        "Centering is borderline; guide placement matters" -> R.string.pre_reason_borderline
+        "Comparable printed frame unavailable; centering is unassessed" -> R.string.pre_reason_frame
+        "Visible whitening/scuffing or surface scratches" -> R.string.pre_reason_scuff
+        "Structural damage recorded; severity cannot be measured from these photos" -> R.string.pre_reason_structural
+        "Some automatic colour checks are inconclusive; estimate uses your observations" -> R.string.pre_reason_inconclusive
+        "Automatic anomalies remain despite clear manual observations" -> R.string.pre_reason_flags
+        "Corner contour asymmetry needs closer inspection" -> R.string.pre_reason_contour
+        "No damage recorded in the supplied views; unseen defects remain possible" -> R.string.pre_reason_clear
+        "Level the phone over the card" -> R.string.pre_camera_level
+        "Place the entire card inside the guide" -> R.string.pre_camera_card
+        "Checking focus and motion…" -> R.string.pre_camera_check
+        "Add diffuse light" -> R.string.pre_camera_light
+        "Possible glare: change lighting or angle" -> R.string.pre_camera_glare
+        "Focus on the card; move slightly farther away" -> R.string.pre_camera_focus
+        "Hold still" -> R.string.pre_camera_still
+        "Sharp and steady" -> R.string.pre_camera_ready
+        else -> null
+    }
+    return key?.let { stringResource(it) } ?: message
 }

@@ -274,6 +274,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 Text("Printed language: ${p.language}", style = MaterialTheme.typography.labelLarge)
                 if (quoting) { CircularProgressIndicator(Modifier.size(24.dp)); Text("Fetching matching-language listings…", style = MaterialTheme.typography.bodySmall) }
                 if (p.source.isNotBlank()) Text(p.source, style = MaterialTheme.typography.bodySmall)
+                p.availabilityEvidence?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
                 p.referencePrice?.let { Text("Cardmarket aggregate reference: ${Money.format(it, p.referenceCurrency ?: "EUR")} · not a price for ${p.language} specifically", style = MaterialTheme.typography.bodySmall) }
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 if (p.requiresLanguageConfirmation) Row(verticalAlignment = Alignment.CenterVertically) {

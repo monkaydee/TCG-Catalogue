@@ -39,11 +39,14 @@ export interface CardRequest {
   id: string;
   name: string;
   set: string;
+  setAliases?: string[];
+  releaseYear?: string;
   number: string;
   tcgplayerId?: string;
   printing?: string;
   /** Card language ("EN", "DE", "JA" …); prices for other languages than English come from eBay only. */
   language?: string;
+  market?: "US" | "DE";
   /** The card's name in [language] (e.g. "Flamara" for Flareon in German), when known. */
   localName?: string;
   graded?: boolean;
@@ -63,6 +66,7 @@ export interface Conditions {
 /** A raw price result from one provider. */
 export interface RawPrice {
   conditions: Conditions;
+  conditionEvidence?: Partial<Record<keyof Conditions,{listings:number;low:number;high:number;evidence:string;excluded:number}>>;
   /**
    * TCGplayer "market price" when a source only gives one blended number and not a price per
    * condition (TCG API free tier, RapidAPI). It is kept apart so it is never mistaken for NM.
@@ -88,6 +92,10 @@ export interface GradedPrice {
   date?: string; // ISO date of the price, when known
   sales?: number; // number of sales the price is based on, when known
   listings?: number; // number of current listings an asking price is based on
+  evidence?: string;
+  excluded?: number;
+  fetchedAt?: string;
+  stale?: boolean;
   low?: number; // lowest and highest of those prices
   high?: number;
 }

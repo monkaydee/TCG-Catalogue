@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="pre_estimate_title" tools:ignore="MissingTranslation">Experimental condition estimate</string>
+    <string name="pre_more_evidence" tools:ignore="MissingTranslation">More evidence needed</string>
+    <string name="pre_range" tools:ignore="MissingTranslation">Estimated range: %1$d–%2$d / 10</string>
+    <string name="pre_range_disclaimer" tools:ignore="MissingTranslation">Non-professional pre-grade estimate based on the supplied photos and your observations. This is not a grading certificate. A professional grader may assign a different grade; hidden defects, alteration and authenticity are not excluded. This broad heuristic range is not a validated PSA prediction.</string>
+    <string name="pre_surface_label" tools:ignore="MissingTranslation">%1$s surface</string>
+    <string name="pre_surface_help" tools:ignore="MissingTranslation">Use diffuse light for the main photo. Add at least two close-up views with a light shining across the surface from opposite directions. Slowly tilt the card to reveal scratches, dents, creases and print lines. Keep the entire card visible; avoid direct flash and sleeves.</string>
+    <string name="pre_surface_count" tools:ignore="MissingTranslation">%1$d lighting views added (minimum 2) · tap to inspect</string>
+    <string name="pre_surface_capture" tools:ignore="MissingTranslation">Take lighting view</string>
+    <string name="pre_surface_upload" tools:ignore="MissingTranslation">Upload view</string>
+    <string name="pre_surface_view" tools:ignore="MissingTranslation">View %1$d</string>
+    <string name="pre_surface_clear" tools:ignore="MissingTranslation">No damage visible in these views</string>
+    <string name="pre_surface_scratches" tools:ignore="MissingTranslation">Scratches / scuffs / print lines visible</string>
+    <string name="pre_surface_dent" tools:ignore="MissingTranslation">Dent / crease / bend visible</string>
+    <string name="pre_surface_scope" tools:ignore="MissingTranslation">Surface findings are your observations. These photos cannot certify authenticity or exclude hidden defects.</string>
+    <string name="pre_surface_remove" tools:ignore="MissingTranslation">Remove view</string>
+    <string name="pre_surface_error" tools:ignore="MissingTranslation">Could not open this photo. Please try again.</string>
+    <string name="pre_color_flags" tools:ignore="MissingTranslation">Show colour flags</string>
+    <string name="pre_color_scope" tools:ignore="MissingTranslation">Original-photo detail · flags mark colour differences, not confirmed damage</string>
+    <string name="pre_auto_align" tools:ignore="MissingTranslation">Auto-align printed frame</string>
+    <string name="pre_align_busy" tools:ignore="MissingTranslation">Finding printed frame…</string>
+    <string name="pre_align_done" tools:ignore="MissingTranslation">Frame aligned automatically. Check all outer and inner guides before applying.</string>
+    <string name="pre_align_missing" tools:ignore="MissingTranslation">No consistent printed frame found. Align manually using the grid.</string>
+    <string name="pre_camera_help" tools:ignore="MissingTranslation">Tap card to focus · use diffuse light, no direct flash</string>
+    <string name="pre_best_three" tools:ignore="MissingTranslation">Best of 3</string>
+    <string name="pre_timer" tools:ignore="MissingTranslation">2s timer</string>
+    <string name="pre_exposure_lock" tools:ignore="MissingTranslation">Lock exposure</string>
+    <string name="quote_stale" tools:ignore="MissingTranslation">Stale cached quote</string>
+    <string name="quote_refresh_failed" tools:ignore="MissingTranslation">Latest refresh unavailable; previous quote retained</string>
+    <string name="quote_catalogue_stale" tools:ignore="MissingTranslation">Stale catalogue quote</string>
+    <string name="quote_evidence" tools:ignore="MissingTranslation">Comparable evidence: %1$s</string>
+    <string name="pre_missing_photo" tools:ignore="MissingTranslation">%1$s photo missing</string>
+    <string name="pre_missing_outline" tools:ignore="MissingTranslation">%1$s outline needs confirmation</string>
+    <string name="pre_missing_retake" tools:ignore="MissingTranslation">%1$s photo needs a retake</string>
+    <string name="pre_missing_center" tools:ignore="MissingTranslation">%1$s centering incomplete</string>
+    <string name="pre_missing_wear" tools:ignore="MissingTranslation">%1$s: review all four corners and four edges</string>
+    <string name="pre_missing_surface" tools:ignore="MissingTranslation">%1$s: add two lighting angles and review the surface</string>
+    <string name="pre_reason_center" tools:ignore="MissingTranslation">Centering exceeds the published PSA 10 allowance</string>
+    <string name="pre_reason_borderline" tools:ignore="MissingTranslation">Centering is borderline; guide placement matters</string>
+    <string name="pre_reason_frame" tools:ignore="MissingTranslation">Comparable printed frame unavailable; centering is unassessed</string>
+    <string name="pre_reason_scuff" tools:ignore="MissingTranslation">Visible whitening/scuffing or surface scratches</string>
+    <string name="pre_reason_structural" tools:ignore="MissingTranslation">Structural damage recorded; severity cannot be measured from these photos</string>
+    <string name="pre_reason_inconclusive" tools:ignore="MissingTranslation">Some automatic colour checks are inconclusive; estimate uses your observations</string>
+    <string name="pre_reason_flags" tools:ignore="MissingTranslation">Automatic anomalies remain despite clear manual observations</string>
+    <string name="pre_reason_contour" tools:ignore="MissingTranslation">Corner contour asymmetry needs closer inspection</string>
+    <string name="pre_reason_clear" tools:ignore="MissingTranslation">No damage recorded in the supplied views; unseen defects remain possible</string>
+    <string name="pre_camera_level" tools:ignore="MissingTranslation">Level the phone over the card</string>
+    <string name="pre_camera_card" tools:ignore="MissingTranslation">Place the entire card inside the guide</string>
+    <string name="pre_camera_check" tools:ignore="MissingTranslation">Checking focus and motion…</string>
+    <string name="pre_camera_light" tools:ignore="MissingTranslation">Add diffuse light</string>
+    <string name="pre_camera_glare" tools:ignore="MissingTranslation">Possible glare: change lighting or angle</string>
+    <string name="pre_camera_focus" tools:ignore="MissingTranslation">Focus on the card; move slightly farther away</string>
+    <string name="pre_camera_still" tools:ignore="MissingTranslation">Hold still</string>
+    <string name="pre_camera_ready" tools:ignore="MissingTranslation">Sharp and steady</string>
+</resources>

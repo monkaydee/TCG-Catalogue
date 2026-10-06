@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Profesyonel olmayan fotoğraf incelemesi. Deneysel aralıklar doğrulanmış not olasılıklarına değil, köşe, kenar ve yüzey gözlemlerinize dayanır. Profesyonel not farklı olabilir. Gizli kusurlar, değişiklikler ve özgünlük sorunları dışlanamaz.</string>
+    <string name="center_manual_notice">Elle merkezleme ölçümü. Kılavuz konumu ve perspektif oranı etkiler. Deneysel tahminler köşe, kenar ve yüzeyin farklı ışık açılarında incelenmesini de gerektirir.</string>
+    <string name="wear_observation_scope">Gözlemleriniz bu fotoğraf oturumunda tutulur ve deneysel aralıkta kullanılır. Durumu belgelemez veya kötü fotoğrafları telafi etmez. Kaydedilen hasar aralığı genişletir veya düşürür.</string>
+</resources>

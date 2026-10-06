@@ -45,8 +45,8 @@ describe("helpers", () => {
 
 describe("request parsing and cache keys", () => {
   it("prefers the TCGplayer id in the key and includes the printing", () => {
-    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v3:pokemon:tcg42382:reverseholofoil");
-    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v3:magic:idabc");
+    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v4:pokemon:tcg42382:reverseholofoil:default");
+    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v4:magic:idabc:default");
   });
   it("accepts the app's enum names in any case and rejects unknown games", () => {
     expect(parseCard({ game: "ONE_PIECE", id: "OP01-024" })?.game).toBe("one_piece");
@@ -220,4 +220,16 @@ describe("printing availability", () => {
       expect(parseTcgApi(tcgapi, card({ printing }))).toBeNull();
     }
   });
+});
+
+
+describe("market is independent of language",()=>{
+ it("keeps Japanese EUR imports apart from USD imports",()=>{
+   const eur=parseCard({game:"POKEMON",id:"ja:SV2a-025",language:"JA",market:"DE"})!;
+   const usd=parseCard({game:"POKEMON",id:"ja:SV2a-025",language:"JA",market:"US"})!;
+   expect(eur.key).not.toBe(usd.key);
+ });
+ it("does not merge undifferentiated premium sold-price tiers",()=>{
+   expect(parsePpt({data:{ebay:{salesByGrade:{bgs10:{count:20,medianPrice:500},cgc10:{count:20,medianPrice:100}}}}})).toEqual([]);
+ });
 });

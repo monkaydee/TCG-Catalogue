@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">전문가가 아닌 사진 예비 검사입니다. 실험적 범위는 검증된 등급 확률이 아니라 모서리, 가장자리 및 표면에 대한 사용자의 관찰에 기반합니다. 전문가의 등급은 다를 수 있습니다. 숨겨진 결함, 변형 및 진품 여부 문제를 배제할 수 없습니다.</string>
+    <string name="center_manual_notice">수동 센터링 측정입니다. 가이드 위치와 사진 원근이 비율에 영향을 줍니다. 실험적 추정에는 모서리, 가장자리 및 여러 조명 각도에서의 표면 검토도 필요합니다.</string>
+    <string name="wear_observation_scope">관찰 결과는 이 촬영 세션에 저장되어 실험적 범위에 사용됩니다. 상태를 인증하거나 저품질 사진을 보완하지 않습니다. 기록된 손상은 추정 범위를 넓히거나 낮춥니다.</string>
+</resources>
