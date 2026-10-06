@@ -268,13 +268,13 @@ private fun CardDetail(
             Text(listOfNotNull(c.game.label, c.rarity, c.variantLabel).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
             c.marketLabel?.let { Text(stringResource(R.string.card_cardmarket_label, it), style = MaterialTheme.typography.bodySmall) }
             Text(
-                Money.format(Money.value(c, s.currency, s.usdToEur), s.currency),
+                Money.unitOrNull(c, s.currency, s.usdToEur)?.let { Money.valueText(c, s.currency, s.usdToEur) } ?: stringResource(R.string.card_no_market_price),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
             )
-            if (c.price != null) {
-                val unit = Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)
+            if (c.price != null && c.price.isFinite() && c.price > 0) {
+                val unit = Money.unitText(c, s.currency, s.usdToEur)
                 val original = Money.format(c.price, c.priceCurrency)
                 Text(
                     c.priceSource?.let { stringResource(R.string.card_unit_price_on_source, unit, original, it) }

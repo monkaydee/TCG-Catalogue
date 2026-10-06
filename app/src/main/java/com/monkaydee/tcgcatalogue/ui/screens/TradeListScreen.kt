@@ -96,7 +96,9 @@ fun TradeListScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (Long)
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
-                ListSummaryCard(stringResource(R.string.trade_total), Money.format(cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency)) {
+                ListSummaryCard(stringResource(R.string.trade_total), Money.coverage(cards, s.currency, s.usdToEur).text(s.currency)) {
+                    val coverage = Money.coverage(cards, s.currency, s.usdToEur)
+                    if (coverage.missingCopies > 0) Text(stringResource(R.string.price_coverage_missing, coverage.missingCopies), style = MaterialTheme.typography.bodySmall)
                     val copies = cards.sumOf { it.quantity }
                     Text(pluralStringResource(R.plurals.home_cards, copies, copies), style = MaterialTheme.typography.bodySmall)
                     FilledTonalButton(onClick = { shareTradeList(context, cards, s) }, modifier = Modifier.padding(top = 8.dp)) {
@@ -135,9 +137,9 @@ private fun TradeRow(c: OwnedCard, s: AppSettings, onClick: () -> Unit, onRemove
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text(Money.format(Money.value(c, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(Money.valueText(c, s.currency, s.usdToEur), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 if (c.quantity > 1) {
-                    Text("${c.quantity} × ${Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)}", style = MaterialTheme.typography.labelSmall)
+                    Text("${c.quantity} × ${Money.unitText(c, s.currency, s.usdToEur)}", style = MaterialTheme.typography.labelSmall)
                 }
             }
             IconButton(onClick = onRemove) {
@@ -153,7 +155,7 @@ private fun tradeListText(cards: List<OwnedCard>, s: AppSettings): String = buil
     appendLine(AppStrings.context().resources.getQuantityString(R.plurals.trade_share_heading, copies, copies))
     appendLine()
     cards.forEach { c ->
-        val value = Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)
+        val value = Money.unitText(c, s.currency, s.usdToEur)
         appendLine(
             AppStrings.get(
                 R.string.trade_share_line,
@@ -165,7 +167,9 @@ private fun tradeListText(cards: List<OwnedCard>, s: AppSettings): String = buil
         )
     }
     appendLine()
-    appendLine(AppStrings.get(R.string.trade_share_total, Money.format(cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency)))
+    appendLine(AppStrings.get(R.string.trade_share_total, Money.coverage(cards, s.currency, s.usdToEur).text(s.currency)))
+    val coverage = Money.coverage(cards, s.currency, s.usdToEur)
+    if (coverage.missingCopies > 0) appendLine(AppStrings.get(R.string.price_coverage_missing, coverage.missingCopies))
     append(AppStrings.get(R.string.trade_share_footer, AppStrings.get(R.string.app_name)))
 }
 

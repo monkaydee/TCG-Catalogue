@@ -481,7 +481,8 @@ class Screenshots {
             }
         }
         for (s in listOf(Triple("PSA", "10", null), Triple("BGS", "9.5", null), Triple("BGS", "10", null),
-            Triple("BGS", "10", "Black Label"), Triple("CGC", "10", null), Triple("CGC", "10", "Pristine"), Triple("SGC", "10", null))) {
+            Triple("BGS", "10", "Black Label"), Triple("CGC", "10", null), Triple("CGC", "10", "Pristine"), Triple("CGC", "9", null), Triple("SGC", "10", null), Triple("TAG", "10", null),
+            Triple("ACE", "9", null), Triple("AOG", "9.5", null), Triple("GSG", "8.5", null), Triple("PI", "9", null), Triple("Other", "8", null))) {
             rule.runOnUiThread { spec = s }
             save("slab_${s.first}_${s.second}_${s.third ?: "standard"}")
         }

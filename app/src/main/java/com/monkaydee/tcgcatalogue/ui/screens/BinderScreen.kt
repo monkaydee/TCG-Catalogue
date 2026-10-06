@@ -86,7 +86,7 @@ import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.ui.components.PageTurner
 import com.monkaydee.tcgcatalogue.ui.components.rememberPageTurnState
-import com.monkaydee.tcgcatalogue.ui.components.slabStyle
+import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -209,7 +209,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
             val shownPage = pages[turner.page.coerceIn(pages.indices)]
             val footer = listOfNotNull(
                 shownPage.title?.takeIf { it.isNotBlank() },
-                Money.format(shownPage.cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency),
+                Money.coverage(shownPage.cards, s.currency, s.usdToEur).text(s.currency),
             ).joinToString(" · ")
             SideEffect { shareInfo = PageShareInfo(footer) }
             Box(
@@ -241,9 +241,11 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                 }, enabled = page > 0) { Icon(Icons.Default.ChevronLeft, stringResource(R.string.binder_previous)) }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        stringResource(R.string.binder_page, page + 1, pages.size, Money.format(pages[page].cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency)),
+                        stringResource(R.string.binder_page, page + 1, pages.size, Money.coverage(pages[page].cards, s.currency, s.usdToEur).text(s.currency)),
                         style = MaterialTheme.typography.labelLarge,
                     )
+                    val coverage = Money.coverage(pages[page].cards, s.currency, s.usdToEur)
+                    if (coverage.missingCopies > 0) Text(stringResource(R.string.price_coverage_missing, coverage.missingCopies), style = MaterialTheme.typography.labelSmall)
                     if (pages.size > 2) {
                         Slider(
                             value = page.toFloat(),
@@ -342,30 +344,10 @@ private fun Pocket(card: OwnedCard?, width: Dp, grid: Int, s: AppSettings, onOpe
             .then(if (card != null) Modifier.clickable { onOpen(card) } else Modifier),
     ) {
         if (card == null) return@Box
-        CardImage(card.imageUrl, Modifier.fillMaxSize().padding(if (grid == 9) 1.dp else 2.dp), thumb = grid > 3)
-        // The sleeve's shine.
-        Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(Color.White.copy(alpha = 0.10f), Color.Transparent, Color.White.copy(alpha = 0.05f)))))
+        CardOrSlab(card, Modifier.fillMaxSize().padding(if (grid == 9) 1.dp else 2.dp), thumb = grid > 3)
+        // The sleeve's shine stays subtle so the card and label remain readable.
+        Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(Color.White.copy(alpha = 0.04f), Color.Transparent, Color.White.copy(alpha = 0.025f)))))
         val fs = (width.value * 0.12f).coerceIn(6f, 12f).sp
-        if (card.graded) {
-            val style = slabStyle(card.grader, card.grade, card.gradeQualifier)
-            Box(
-                Modifier
-                    .align(Alignment.TopCenter)
-                    .fillMaxWidth()
-                    .background(style.label)
-                    .padding(vertical = if (grid == 9) 1.dp else 2.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                if (grid < 9) {
-                    Text(
-                        listOfNotNull(card.grader?.takeUnless { it == "Other" }, card.grade).joinToString(" "),
-                        color = style.text,
-                        style = TextStyle(fontSize = fs, fontWeight = FontWeight.Black, lineHeight = fs),
-                        maxLines = 1,
-                    )
-                }
-            }
-        }
         if (card.quantity > 1 && grid == 6) {
             Text(
                 "×${card.quantity}",
@@ -376,7 +358,7 @@ private fun Pocket(card: OwnedCard?, width: Dp, grid: Int, s: AppSettings, onOpe
         }
         if (grid == 3) {
             Text(
-                (if (card.quantity > 1) "×${card.quantity} · " else "") + Money.format(Money.unit(card, s.currency, s.usdToEur), s.currency),
+                (if (card.quantity > 1) "×${card.quantity} · " else "") + Money.unitText(card, s.currency, s.usdToEur),
                 color = Color.White,
                 style = TextStyle(fontSize = fs, fontWeight = FontWeight.Bold, lineHeight = fs),
                 maxLines = 1,

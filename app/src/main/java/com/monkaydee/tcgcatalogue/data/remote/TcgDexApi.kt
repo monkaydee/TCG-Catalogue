@@ -129,6 +129,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
             imageUrl = c["image"].str()?.let { "$it/high.webp" } ?: pokemonTcgImage(id, large = true),
             variants = variants,
             cardmarketId = pricing["cardmarket"]["idProduct"].str()?.toLongOrNull(),
+            printingUnique = listOf("normal", "holo", "reverse", "firstEdition", "wPromo").count { flags[it].bool() } == 1,
             attacks = c["attacks"].arr().orEmpty().mapNotNull { it["name"].str() },
         )
     }

@@ -90,8 +90,8 @@ class PortfolioWidget : GlanceAppWidget() {
         }
         WidgetModel(
             title = AppStrings.get(R.string.widget_title),
-            value = Money.format(data.value, data.currency),
-            change = change ?: AppStrings.get(R.string.widget_no_history),
+            value = if (data.hasKnownValue) Money.format(data.value, data.currency) else "—",
+            change = if (data.missingCopies > 0) AppStrings.get(R.string.price_coverage_missing, data.missingCopies) else change ?: AppStrings.get(R.string.widget_no_history),
             up = (data.change ?: 0.0) >= 0,
             cards = AppStrings.get(R.string.widget_cards, data.cardCount),
             updated = AppStrings.get(R.string.widget_updated, stamp(context, data.updatedAt)),

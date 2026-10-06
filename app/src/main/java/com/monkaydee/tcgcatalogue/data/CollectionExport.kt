@@ -59,7 +59,7 @@ object CollectionExport {
                     val total = if (entries.sumOf { it.quantity } == card.quantity && basis.all { it != null }) basis.filterNotNull().sum() else null
                     val lines = listOf("${card.name} · ×${card.quantity}", "${card.setName} · ${card.number} · ${card.language} · ${card.variantLabel}", listOfNotNull(card.condition, card.certNumber).joinToString(" · "),
                         "${context.getString(R.string.tools_costs)}: ${total?.let { Money.format(it, settings.currency) } ?: unknown}",
-                        "${card.priceSource.orEmpty()} · ${if (card.manualPrice != null || card.price != null) Money.format(Money.unit(card, settings.currency, settings.usdToEur), settings.currency) else unknown} · ${card.priceUpdatedAt?.let { DateFormat.getDateInstance().format(Date(it)) }.orEmpty()}")
+                        "${card.priceSource.orEmpty()} · ${Money.unitOrNull(card, settings.currency, settings.usdToEur)?.let { Money.format(it, settings.currency) } ?: unknown} · ${card.priceUpdatedAt?.let { DateFormat.getDateInstance().format(Date(it)) }.orEmpty()}")
                     lines.forEach { canvas.drawText(it.take(80), 110f, y, paint); y += 15f }
                     y += 22f
                 }

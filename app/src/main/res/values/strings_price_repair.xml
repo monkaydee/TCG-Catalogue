@@ -1,0 +1,4 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="price_coverage_missing" tools:ignore="MissingTranslation">Known prices only · %1$d copies awaiting prices</string>
+    <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">The saved printing is unavailable in the current catalogue; previous quote retained</string>
+</resources>

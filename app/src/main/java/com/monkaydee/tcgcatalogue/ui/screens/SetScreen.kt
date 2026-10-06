@@ -88,10 +88,12 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
             item {
                 Column {
                     Text(
-                        Money.format(cards.sumOf { Money.value(it, s.currency, s.usdToEur) }, s.currency),
+                        Money.coverage(cards, s.currency, s.usdToEur).text(s.currency),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                     )
+                    val coverage = Money.coverage(cards, s.currency, s.usdToEur)
+                    if (coverage.missingCopies > 0) Text(stringResource(R.string.price_coverage_missing, coverage.missingCopies), style = MaterialTheme.typography.bodySmall)
                     val total = set?.total ?: 0
                     val copies = cards.sumOf { it.quantity }
                     Text(
@@ -132,9 +134,9 @@ fun OwnedCardRow(c: OwnedCard, s: AppSettings, onClick: () -> Unit) {
                 c.rarity?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text(Money.format(Money.value(c, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(Money.valueText(c, s.currency, s.usdToEur), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text(
-                    if (c.price == null) stringResource(R.string.set_no_price) else "${c.quantity} × ${Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency)}",
+                    if (c.price == null) stringResource(R.string.set_no_price) else "${c.quantity} × ${Money.unitText(c, s.currency, s.usdToEur)}",
                     style = MaterialTheme.typography.labelSmall,
                 )
             }

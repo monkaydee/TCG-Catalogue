@@ -108,9 +108,11 @@ fun SealedScreen(repo: CardRepository, onBack: () -> Unit) {
                     Column(Modifier.padding(20.dp)) {
                         Text(stringResource(R.string.sealed_value), style = MaterialTheme.typography.labelLarge)
                         Text(
-                            Money.format(items.sumOf { Money.sealedValue(it, s.currency, s.usdToEur) }, s.currency),
+                            Money.coverage(emptyList(), s.currency, s.usdToEur, items).text(s.currency),
                             style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold,
                         )
+                        val coverage = Money.coverage(emptyList(), s.currency, s.usdToEur, items)
+                        if (coverage.missingCopies > 0) Text(stringResource(R.string.price_coverage_missing, coverage.missingCopies), style = MaterialTheme.typography.bodySmall)
                         Text(pluralStringResource(R.plurals.sealed_count, items.sumOf { it.quantity }, items.sumOf { it.quantity }), style = MaterialTheme.typography.bodySmall)
                     }
                 }

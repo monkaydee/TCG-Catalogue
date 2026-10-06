@@ -1,0 +1,4 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="price_coverage_missing" tools:ignore="MissingTranslation">Nur bekannte Preise · Für %1$d Exemplare fehlt ein Preis</string>
+    <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">Die gespeicherte Variante fehlt im aktuellen Katalog; der vorherige Preis bleibt erhalten</string>
+</resources>

@@ -1,15 +1,10 @@
-Correct price matching before assigning valuations; preserve freshness and expand language-market coverage.
+Repair unavailable valuations and add shared grading-company slab designs.
 
-- Require set/release, collector number, explicit language and supported printing evidence for eBay card comparables. Reject original/reprint collisions and PSA-qualified/altered slabs from ordinary-grade quotes.
-- Keep premium tens separate; require five graded asking comparables, remove extreme asks and disclose limited evidence. Keep optional licensed sold-data sources distinct from asking prices.
-- Price raw cards by explicit condition, with three comparables per condition; unknown/mixed-condition listings cannot become Near Mint or a basis for condition discounts.
-- Separate booster boxes, Build & Battle boxes, bundles, cases and named pack contents. Reject ambiguous sealed product formats and edition mismatches.
-- Remove non-English automatic Cardmarket fallback and selecting exact printings solely by price similarity.
-- Preserve original quote dates, separate graded/raw cache freshness and show stale/failed-refresh warnings. Queue a one-time refresh of affected old automatic quotes while preserving manual values and purchase costs.
-- Add eBay Germany EUR searches for Japanese imports and eBay US USD searches independently of printed language. Add source-backed Japanese set/name aliases and explicit catalogue-language evidence; unverified templates stay labelled.
-- Expand live pricing checks to graded and raw Pokémon/One Piece across languages and sealed EUR/USD paths. Add regression tests for the corrected mismatches.
-- Translate revised pre-grade notices across app locales and add German/Japanese text for new inspection controls, surface review, camera hints and estimate explanations.
-- Guard exposure locking by device support, wrap camera controls on narrow screens, test motion/blur gating and add Android 8/14 emulator camera lifecycle/capture smoke checks.
-- Evaluate range-only blind phone predictions without invented midpoint grades; report width/coverage and game/language/device strata while rejecting label conflicts and train/test leakage.
+- Show unavailable card quotes as an em dash or “no market price” instead of €0.00. Binder, card details, collection summaries, trades, exports and widgets distinguish missing prices from real values; partial totals disclose missing copies.
+- Preserve previous valid quotes when a refresh finds no exact match or the saved printing is unavailable. Add a warning and queue a one-time repair refresh without clearing saved quotes or manual values.
+- Continue raw-price provider searches after a blended market reference so condition-specific quotes can be found. Correct native catalogue language selection and use localized set names in German searches.
+- Allow missing “Holo” wording only when catalogue metadata confirms a unique printing, while retaining language, set, collector number, edition and premium-grade matching checks. Invalidate affected server caches.
+- Replace flat binder grade strips with shared clear-case slab layouts across binder, card detail, collection and trade views. Add company-specific PSA, BGS, CGC, SGC, TAG, ACE, AOG, GSG and PI label treatments, readable company/grade type and genuine certificate numbers when supplied.
+- Add regression coverage for missing prices, partial valuations and quote restoration/retention, plus screenshots for each slab treatment.
 
-CardNavo name, signing and 0.1.<build-number> release convention are preserved. Asking prices exclude shipping and are not completed sales. Missing exact matches remain unavailable. Import quotes are not domestic Japanese JPY sold prices. Professionally labelled phone photos and physical-device testing are still required before claiming validated grading accuracy.
+CardNavo name, signing and the 0.1.<build-number> release convention are preserved. Slabs are app illustrations, not certification or authentication. Exact grade/language quotes can still be unavailable; asking quotes exclude shipping and are not completed sales.

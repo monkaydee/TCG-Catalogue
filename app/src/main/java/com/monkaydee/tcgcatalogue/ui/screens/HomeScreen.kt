@@ -97,7 +97,7 @@ data class SetSummaryUi(
     val owned: Int,
     val total: Int,
     val copies: Int,
-    val value: Double,
+    val value: Double?,
     val lastAdded: Long,
 )
 
@@ -122,7 +122,7 @@ class HomeViewModel(repo: CardRepository) : ViewModel() {
                 owned = rows.map { it.cardId }.distinct().size,
                 total = meta?.total ?: 0,
                 copies = rows.sumOf { it.quantity },
-                value = rows.sumOf { Money.value(it, s.currency, s.usdToEur) },
+                value = Money.coverage(rows, s.currency, s.usdToEur).amount,
                 lastAdded = rows.maxOf { it.addedAt },
             )
         }
@@ -196,8 +196,7 @@ fun HomeScreen(
         }
         val cards = state.cards.filter { gameFilter == null || it.game == gameFilter }
         // Sealed products count towards the whole portfolio (not towards a single game's value).
-        val total = cards.sumOf { Money.value(it, s.currency, s.usdToEur) } +
-            if (gameFilter == null) sealedItems.sumOf { Money.sealedValue(it, s.currency, s.usdToEur) } else 0.0
+        val coverage = Money.coverage(cards, s.currency, s.usdToEur, if (gameFilter == null) sealedItems else emptyList())
         val sets = state.sets.filter { gameFilter == null || it.game == gameFilter }.let { list ->
             when (sort) {
                 SetSort.VALUE -> list.sortedByDescending { it.value }
@@ -241,8 +240,9 @@ fun HomeScreen(
                             if (gameFilter == null) stringResource(R.string.home_portfolio_value) else stringResource(R.string.home_game_value, gameFilter!!.label),
                             style = MaterialTheme.typography.labelLarge,
                         )
-                        Text(Money.format(total, s.currency), style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
-                        if (gameFilter == null && history.size >= 2) {
+                        Text(coverage.text(s.currency), style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
+                        if (coverage.missingCopies > 0) Text(stringResource(R.string.price_coverage_missing, coverage.missingCopies), style = MaterialTheme.typography.bodySmall)
+                        if (gameFilter == null && coverage.missingCopies == 0 && history.size >= 2) {
                             val change = history.last() - history.first()
                             val pct = if (history.first() > 0) change / history.first() * 100 else 0.0
                             Text(
@@ -294,7 +294,7 @@ fun HomeScreen(
                             Column(Modifier.width(96.dp).clickable { CardBrowse.open(byValue.map { it.id }, c.id, onOpenCard) }) {
                                 CardOrSlab(c, thumb = true)
                                 Text(c.name, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Text(Money.format(Money.unit(c, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.labelSmall)
+                                Text(Money.unitText(c, s.currency, s.usdToEur), style = MaterialTheme.typography.labelSmall)
                             }
                         }
                     }
@@ -336,7 +336,7 @@ private fun SetRow(set: SetSummaryUi, currency: String, onClick: () -> Unit) {
             }
             Spacer(Modifier.width(12.dp))
             Column(horizontalAlignment = Alignment.End) {
-                Text(Money.format(set.value, currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(set.value?.let { Money.format(it, currency) } ?: "—", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text(pluralStringResource(R.plurals.home_copies, set.copies, set.copies), style = MaterialTheme.typography.labelSmall)
             }
         }

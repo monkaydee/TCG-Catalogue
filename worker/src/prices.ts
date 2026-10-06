@@ -3,7 +3,7 @@
 import type { CacheEntry } from "./cache";
 import type { CardRequest, Conditions, Game, GradedPrice, ProviderName, RawPrice } from "./types";
 import { QuotaError } from "./types";
-import { chunk } from "./util";
+import { chunk, hasAnyCondition } from "./util";
 
 export const GAMES: Game[] = ["pokemon", "one_piece", "magic", "dragon_ball_fw", "dragon_ball_super", "union_arena", "weiss_schwarz", "naruto"];
 export const MAX_CARDS = 50;
@@ -18,7 +18,7 @@ export function cacheKey(c: Omit<CardRequest, "key">): string {
   const printing = c.printing ? `:${c.printing.toLowerCase().replace(/[^a-z0-9]/g, "")}` : "";
   const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
   // Version the cache after fixing language, printing and qualified-grade matching.
-  return `v4:${c.game}:${id}${printing}${language}:${c.market ?? "default"}`;
+  return `v5:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -40,6 +40,7 @@ export function parseCard(v: unknown): CardRequest | null {
     setAliases: Array.isArray(o.setAliases) ? o.setAliases.filter((a): a is string => typeof a === "string" && a.length <= 100).slice(0,8) : [],
     ...( /^\d{4}$/.test(text(o.releaseYear)) ? {releaseYear:text(o.releaseYear)} : {}),
     ...(/^\d+$/.test(tcg) ? { tcgplayerId: tcg } : {}),
+    ...(o.printingUnique === true ? {printingUnique:true} : {}),
     ...(text(o.printing, 60) ? { printing: text(o.printing, 60) } : {}),
     ...(text(o.localName, 120) ? { localName: text(o.localName, 120) } : {}),
     ...(language ? { language } : {}),
@@ -92,12 +93,13 @@ export async function runChain<T>(
   calls: { left: number },
   wait: (ms: number) => Promise<unknown> = sleep,
   merge?: (previous: T | undefined, next: T) => T,
+  continueWhen?: (value: T) => boolean,
 ): Promise<ChainOutcome<T>> {
   const found = new Map<string, T>();
   const unchecked = new Set<string>(); // a provider that supports the card could not ask about it
 
   for (const { provider, key } of providers) {
-    const pending = cards.filter((c) => (merge || !found.has(c.key)) && provider.supports(c));
+    const pending = cards.filter((c) => (merge || !found.has(c.key) || continueWhen?.(found.get(c.key)!)) && provider.supports(c));
     if (pending.length === 0) continue;
     const batches = chunk(pending, provider.batchSize);
     const cost = provider.callsPerBatch ?? 1;
@@ -217,7 +219,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
   const gradedMiss = unique.filter((c) => c.graded && !fresh(gradedKey(c)));
   const graded = await runChain(gradedMiss, d.graded, d.gate, calls, d.wait, mergeGraded);
   const rawMiss = unique.filter((c) => !fresh(rawKey(c)));
-  const raw = await runChain(rawMiss, d.raw, d.gate, calls, d.wait);
+  const raw = await runChain(rawMiss, d.raw, d.gate, calls, d.wait, undefined, p => !hasAnyCondition(p.conditions));
 
   // Store what we learned.
   const writes: Parameters<CacheLike["putMany"]>[0] = [];

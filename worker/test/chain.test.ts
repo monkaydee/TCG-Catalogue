@@ -292,6 +292,14 @@ describe("getPrices", () => {
     expect(r2.conditions?.NM).toBe(1);
   });
 
+  it("continues past market-only references to real condition prices", async()=>{
+    const [c]=cards(1);
+    const reference:ChainProvider<RawPrice>={name:"tcgapi",batchSize:1,supports:()=>true,
+      async fetch(){return new Map([[c.key,{conditions:emptyConditions(),market:999,source:"tcgapi"}]]);}};
+    const condition=fakeProvider("poketrace",1,()=>true);
+    const [r]=await getPrices([c],deps(memoryCache(),[reference,condition],fakeGate({tcgapi:2,poketrace:2})));
+    expect(r.source).toBe("poketrace");expect(r.conditions?.NM).toBe(1);expect(r.market).toBeNull();
+  });
   it("keeps cached graded freshness independent from raw freshness", async () => {
     const [c] = cards(1, { graded: true });
     const grade: GradedPrice = {grader:"PSA",grade:"9",price:80,currency:"USD",source:"test"};

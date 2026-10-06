@@ -72,6 +72,8 @@ data class CardCandidate(
     val printingCheck: Boolean = false,
     /** The language the scan was read in ("EN", "DE", "JA" …), when it could be told. */
     val language: String? = null,
+    /** The catalogue explicitly reports just one physical printing for this collector number. */
+    val printingUnique: Boolean = false,
 ) {
     /** The printing to preselect: the recognised one, otherwise the first. */
     val defaultVariant: Variant get() = variants.firstOrNull { it.key == preferredVariant } ?: variants.first()

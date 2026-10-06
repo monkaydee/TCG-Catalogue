@@ -144,7 +144,7 @@ export function titleMatches(title: string, card: CardRequest): boolean {
   const reverse = /\breverse\b|umgekehrtes holo/i.test(title);
   const holo = /\bholo(?:foil)?\b|\bfoil\b|holographic/i.test(title);
   if (/^(normal|nonholo|nonfoil)$/i.test(card.printing ?? "") && holo) return false;
-  if (/^(holo|holofoil|foil)$/i.test(card.printing ?? "") && !holo) return false;
+  if (/^(holo|holofoil|foil)$/i.test(card.printing ?? "") && (!holo && !card.printingUnique || /non[- ]?(?:holo|foil)/i.test(title))) return false;
   if (/alt|parallel|manga|special art|full art/i.test(card.printing ?? "") && !phraseIn(title,card.printing!)) return false;
   if (/\bmanga\b|\balt(?:ernate)? art\b|\bparallel\b/i.test(title) && !/manga|alt|parallel/i.test(card.printing ?? "")) return false;
   if (/reverse/i.test(card.printing ?? "") !== reverse) return false;
@@ -225,7 +225,8 @@ async function search(card: CardRequest, key: string, extra: string): Promise<un
   const first = /first|1st/i.test(card.printing ?? "") ? "1st edition" : "";
   const { site } = marketplace(card.language,card.market);
   const languageWord = { EN: "English", DE: "Deutsch", FR: "French", IT: "Italian", ES: "Spanish", NL: "Dutch", PT: "portuguese", PL: "polish", JA: "japanese", KO: "korean", ZH: "chinese" }[card.language ?? ""] ?? "";
-  const q = [card.localName ?? card.name, card.number || "", card.language === "JA" ? card.setAliases?.find(a=>/^[\x00-\x7F]+$/.test(a)) ?? card.set : card.set, first, SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
+  const localizedSet = card.language === "JA" ? card.setAliases?.find(a=>/^[\x00-\x7F]+$/.test(a)) : card.language && card.language !== "EN" ? card.setAliases?.find(a=>normalize(a)!==normalize(card.set) && !/^(?:SV|SWSH|SM|XY)\d/i.test(a)) : undefined;
+  const q = [card.localName ?? card.name, card.number || "", localizedSet ?? card.set, first, SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
   const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
   return fetchJson("ebay", `${API}/buy/browse/v1/item_summary/search?${params}`, {
     headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": site },

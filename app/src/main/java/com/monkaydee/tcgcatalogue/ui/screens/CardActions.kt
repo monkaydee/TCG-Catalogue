@@ -176,7 +176,7 @@ fun ActiveAlerts(card: OwnedCard, s: AppSettings, onClick: () -> Unit) {
 @Composable
 fun SellDialog(card: OwnedCard, s: AppSettings, onDismiss: () -> Unit, onConfirm: (quantity: Int, pricePerCopy: Double, fees: Double) -> Unit) {
     var quantity by remember(card.id) { mutableIntStateOf(1) }
-    var price by remember(card.id) { mutableStateOf(amountInput(Money.unit(card, s.currency, s.usdToEur))) }
+    var price by remember(card.id) { mutableStateOf(Money.unitOrNull(card, s.currency, s.usdToEur)?.let { amountInput(it) } ?: "") }
     var fees by remember(card.id) { mutableStateOf("0") }
     val fee = parseAmount(fees)
     val each = parseAmount(price)
@@ -233,7 +233,7 @@ fun PriceAlertDialog(card: OwnedCard, s: AppSettings, onDismiss: () -> Unit, onS
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    stringResource(R.string.alert_ui_text, Money.format(Money.unit(card, s.currency, s.usdToEur), s.currency)),
+                    stringResource(R.string.alert_ui_text, Money.unitText(card, s.currency, s.usdToEur)),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 AmountField(

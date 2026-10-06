@@ -61,6 +61,10 @@ class TcgApp : Application() {
                 PriceRefreshWorker.runNow(this@TcgApp)
                 revisions.edit().putInt("revision", 4).apply()
             }
+            if (!revisions.getBoolean("missing-price-repair", false)) {
+                PriceRefreshWorker.runNow(this@TcgApp)
+                revisions.edit().putBoolean("missing-price-repair", true).apply()
+            }
         }
 
         CloudBackup.init(this, repository)

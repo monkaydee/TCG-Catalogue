@@ -1,5 +1,16 @@
 package com.monkaydee.tcgcatalogue.ui.components
 
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -33,22 +44,24 @@ data class SlabStyle(val label: Brush, val text: Color, val accent: Color, val l
 private fun solid(c: Color) = Brush.verticalGradient(listOf(c, c))
 
 /** Company label palettes. CGC uses the current black/silver label, gold for Pristine. */
-fun slabStyle(grader: String?, grade: String?, qualifier: String?): SlabStyle = when (grader) {
+fun slabStyle(grader: String?, grade: String?, qualifier: String?): SlabStyle = when (grader?.trim()?.uppercase()) {
     "PSA" -> SlabStyle(solid(Color(0xFFF7F7F2)), Color(0xFF1A1A1A), Color(0xFFD6262E), "PSA")
     "BGS" -> when {
-        qualifier == "Black Label" -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFF2A2A2A), Color(0xFF050505))), Color(0xFFE8C766), Color(0xFFD4AF37), "BECKETT")
+        qualifier == "Black Label" -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFF2A2A2A), Color(0xFF050505))), Color(0xFFF5F5F5), Color(0xFFE2C46F), "BECKETT")
         grade == "10" || grade == "9.5" ->
             SlabStyle(Brush.verticalGradient(listOf(Color(0xFFF3DC8A), Color(0xFFC9A23A))), Color(0xFF2B2108), Color(0xFF7A5C12), "BECKETT")
         else -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFFE9ECEF), Color(0xFFAEB4BA))), Color(0xFF1C1F22), Color(0xFF4A5056), "BECKETT")
     }
-    "CGC" -> if (qualifier == "Pristine")
+    "CGC" -> if (qualifier == "Perfect")
+        SlabStyle(Brush.verticalGradient(listOf(Color(0xFFD9EAF8), Color(0xFF9FBEDA))), Color(0xFF142231), Color(0xFF152E4E), "CGC")
+    else if (qualifier == "Pristine")
         SlabStyle(Brush.verticalGradient(listOf(Color(0xFFF4DEA0), Color(0xFFCFAE60))), Color(0xFF171717), Color.Black, "CGC")
-    else SlabStyle(Brush.verticalGradient(listOf(Color(0xFFF1F2F2), Color(0xFFCBCCCE))), Color(0xFF171717), Color.Black, "CGC")
-    "SGC" -> SlabStyle(solid(Color(0xFF111111)), Color.White, Color(0xFF3FB34F), "SGC")
-    "TAG" -> SlabStyle(solid(Color(0xFF0D0D0D)), Color.White, Color(0xFFBDBDBD), "TAG")
-    "ACE" -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFF1B2A4A), Color(0xFF0E1830))), Color(0xFFF2D27A), Color(0xFFF2D27A), "ACE")
-    "AOG" -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFF4A148C), Color(0xFF2A0B52))), Color.White, Color(0xFFCE93D8), "AOG")
-    "GSG" -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFFFFE082), Color(0xFFC79A2B))), Color(0xFF2B2108), Color(0xFF6D4C00), "GSG")
+    else SlabStyle(Brush.verticalGradient(listOf(Color(0xFFF5F5F3), Color(0xFFE1E3E4))), Color(0xFF171717), Color.Black, "CGC")
+    "SGC" -> SlabStyle(solid(Color(0xFFF8F8F5)), Color(0xFF171717), Color(0xFF24683A), "SGC")
+    "TAG" -> SlabStyle(Brush.linearGradient(listOf(Color(0xCCCFDBE2), Color(0x99E7EDF1))), Color(0xFF2F3C43), Color(0xFF526976), "TAG")
+    "ACE" -> SlabStyle(solid(Color(0xFFF9F9F8)), Color(0xFF171717), Color(0xFFDD2839), "ACE")
+    "AOG" -> SlabStyle(solid(Color(0xFFF1F2F3)), Color(0xFF1B2025), Color(0xFF292E35), "AOG")
+    "GSG" -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFFF2DFA7), Color(0xFFD0B66D))), Color(0xFF2B2108), Color(0xFF6D4C00), "GSG")
     "PI" -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFF00695C), Color(0xFF003D33))), Color.White, Color(0xFF80CBC4), "PI")
     else -> SlabStyle(Brush.verticalGradient(listOf(Color(0xFF616161), Color(0xFF353535))), Color.White, Color(0xFFBDBDBD), grader?.takeUnless { it == "Other" } ?: "GRADED")
 }
@@ -113,118 +126,117 @@ fun CardOrSlab(card: OwnedCard, modifier: Modifier = Modifier, thumb: Boolean = 
     }
 }
 
-/**
- * A virtual slab: clear plastic case with the grading company's label on top. Small sizes show
- * only the company and grade; larger ones also the card, grade words and cert number.
- */
+/** Shared case proportions for binder pockets, thumbnails, card pages and add/import previews. */
+const val SLAB_ASPECT_RATIO = 0.64f
+
+/** A display of the user's recorded grade. No certificate, security mark or subgrade is invented. */
 @Composable
 fun GradedSlab(
-    imageUrl: String?,
-    grader: String?,
-    grade: String?,
-    qualifier: String?,
-    title: String,
-    subtitle: String,
-    cert: String?,
-    modifier: Modifier = Modifier,
-    thumb: Boolean = false,
+    imageUrl: String?, grader: String?, grade: String?, qualifier: String?, title: String,
+    subtitle: String, cert: String?, modifier: Modifier = Modifier, thumb: Boolean = false,
 ) {
-    val style = slabStyle(grader, grade, qualifier)
-    BoxWithConstraints(modifier) {
-        val w = maxWidth
-        val compact = w < 140.dp
-        val corner = w * 0.06f
-        val plastic = Brush.linearGradient(listOf(Color(0x33FFFFFF), Color(0x14B0BEC5), Color(0x33FFFFFF)))
+    val company = canonicalGrader(grader)
+    val style = slabStyle(company, grade, qualifier)
+    BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
+        val w = if (maxHeight.value.isFinite()) minOf(maxWidth, maxHeight * SLAB_ASPECT_RATIO) else maxWidth
+        val radius = w * 0.075f
+        val caseShape = RoundedCornerShape(radius)
         Column(
-            Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(corner))
-                .background(Color(0xFFDDE3E8))
-                .background(plastic)
-                .border(width = (w * 0.018f).coerceAtLeast(1.dp), color = Color(0xFFB8C2CA), shape = RoundedCornerShape(corner))
-                .padding(w * 0.045f),
-            verticalArrangement = Arrangement.spacedBy(w * 0.04f),
+            Modifier.width(w).aspectRatio(SLAB_ASPECT_RATIO)
+                .semantics { contentDescription = listOfNotNull(title, company, grade, qualifier).joinToString(" · ") }
+                .clip(caseShape)
+                .background(Brush.linearGradient(listOf(Color(0x997C919E), Color(0x66EAF6FC), Color(0x55828E97), Color(0x88D7E4ED))))
+                .border((w * 0.018f).coerceAtLeast(0.7.dp), Color(0x99DEEAF0), caseShape)
+                .drawWithCache {
+                    val seam = size.width * 0.031f
+                    onDrawWithContent {
+                        drawContent()
+                        drawRoundRect(Color(0x99FFFFFF), topLeft = Offset(seam, seam),
+                            size = Size(size.width - seam * 2, size.height - seam * 2),
+                            cornerRadius = CornerRadius(size.width * 0.045f), style = Stroke(size.width * 0.005f))
+                        drawLine(Color(0x66FFFFFF), Offset(size.width * 0.10f, size.height * 0.988f),
+                            Offset(size.width * 0.90f, size.height * 0.988f), size.width * 0.005f)
+                    }
+                }
+                .padding(horizontal = w * 0.047f, vertical = w * 0.049f),
+            verticalArrangement = Arrangement.spacedBy(w * 0.034f),
         ) {
-            SlabLabel(style, grader, grade, qualifier, title, subtitle, cert, w, compact)
-            // The card sits in its own well inside the case.
+            SlabLabel(style, company, grade, qualifier, title, subtitle, cert, w)
             Box(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(corner * 0.6f))
-                    .background(if (grader == "SGC") Color(0xFF101010) else Color(0x22000000))
-                    .padding(w * 0.03f),
+                Modifier.weight(1f).fillMaxWidth()
+                    .clip(RoundedCornerShape(w * 0.033f))
+                    .background(if (company == "SGC") Color(0xFF08090A) else Color(0x332A3740))
+                    .border((w * 0.009f).coerceAtLeast(0.4.dp), Color(0x668A9CA9), RoundedCornerShape(w * 0.033f))
+                    .padding(w * if (company == "SGC") 0.045f else 0.022f),
+                contentAlignment = Alignment.Center,
             ) {
-                CardImage(imageUrl, Modifier.fillMaxWidth(), thumb = thumb)
+                CardImage(imageUrl, Modifier.fillMaxSize(), thumb = thumb)
             }
         }
     }
 }
 
+private fun canonicalGrader(grader: String?): String = when (val code = grader?.trim()?.uppercase()) {
+    "BECKETT" -> "BGS"
+    null, "", "OTHER" -> "GRADED"
+    else -> code
+}
+
 @Composable
-private fun SlabLabel(
-    style: SlabStyle,
-    grader: String?,
-    grade: String?,
-    qualifier: String?,
-    title: String,
-    subtitle: String,
-    cert: String?,
-    w: Dp,
-    compact: Boolean,
-) {
+private fun LabelText(value: String, color: Color, size: androidx.compose.ui.unit.TextUnit,
+                      modifier: Modifier = Modifier, weight: FontWeight = FontWeight.Medium,
+                      family: FontFamily = FontFamily.SansSerif) {
+    Text(value, modifier, color = color,
+        style = TextStyle(fontFamily = family, fontSize = size, fontWeight = weight, lineHeight = size * 1.1f),
+        maxLines = 1, overflow = TextOverflow.Ellipsis)
+}
+
+@Composable
+private fun SlabLabel(style: SlabStyle, grader: String, grade: String?, qualifier: String?,
+                      title: String, subtitle: String, cert: String?, w: Dp) {
+    val small = w < 90.dp
     val fs = { fraction: Float -> (w.value * fraction).sp }
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(w * 0.012f))
-            .background(style.label)
-            .border((w * if (grader == "PSA") 0.022f else 0.008f).coerceAtLeast(1.dp), style.accent, RoundedCornerShape(w * 0.012f))
-            .padding(horizontal = w * 0.04f, vertical = w * 0.025f),
+    val labelShape = RoundedCornerShape(w * 0.007f)
+    Column(
+        Modifier.fillMaxWidth().height(w * 0.26f).clip(labelShape).background(style.label)
+            .border((w * if (grader == "PSA") 0.014f else 0.004f).coerceAtLeast(0.3.dp), style.accent, labelShape),
     ) {
-        if (compact) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                // Small slabs: the company code ("BGS", not "BECKETT") so the grade always fits.
-                val code = grader?.takeUnless { it == "Other" } ?: "GRD"
-                Text(code, color = style.accent, style = TextStyle(fontSize = fs(0.14f), fontWeight = FontWeight.Black), maxLines = 1)
-                Text(
-                    grade.orEmpty(),
-                    color = style.text,
-                    style = TextStyle(fontSize = fs(if ((grade?.length ?: 0) > 2) 0.16f else 0.2f), fontWeight = FontWeight.Black),
-                    maxLines = 1,
-                )
+        if (grader in setOf("CGC", "ACE", "AOG")) {
+            Row(Modifier.fillMaxWidth().height(w * 0.055f)
+                .background(if (grader == "CGC") Color.Black else style.accent)
+                .padding(horizontal = w * 0.018f),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                LabelText(grader, Color.White, fs(0.036f), weight = FontWeight.Black)
+                if (!small) LabelText(when (grader) {"CGC" -> "TRADING CARDS"; "AOG" -> "ABSOLUTE OBJECTIVE"; else -> "GRADING"},
+                    Color.White, fs(0.023f), weight = FontWeight.Bold)
             }
-        } else {
-            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(w * 0.016f)) {
-            if (grader == "CGC") {
-                Row(Modifier.fillMaxWidth().background(Color.Black).padding(horizontal = w * 0.015f, vertical = w * 0.008f),
-                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("CGC", color = Color.White, fontSize = fs(0.065f), fontWeight = FontWeight.Bold)
-                    Text("CERTIFIED GUARANTY COMPANY", color = Color.White, fontSize = fs(0.025f), maxLines = 1)
+        }
+        Row(Modifier.weight(1f).fillMaxWidth().padding(horizontal = w * 0.022f, vertical = w * 0.012f),
+            verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
+                if (grader !in setOf("CGC", "ACE", "AOG")) {
+                    LabelText(if (small && grader == "BGS") "BGS" else style.logo, if (grader == "PSA") Color(0xFF184A80) else style.accent,
+                        fs(if (small) 0.095f else 0.064f), weight = FontWeight.Black,
+                        family = if (grader == "BGS") FontFamily.Serif else FontFamily.SansSerif)
                 }
-            } else if (grader == "BGS") {
-                Text("BECKETT", Modifier.align(Alignment.CenterHorizontally), color = style.text,
-                    style = TextStyle(fontSize = fs(0.063f), fontWeight = FontWeight.Black))
-            }
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(title, color = style.text, style = TextStyle(fontSize = fs(0.052f), fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(subtitle, color = style.text.copy(alpha = 0.8f), style = TextStyle(fontSize = fs(0.04f)), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    if (grader != "CGC" && grader != "BGS") {
-                        Text(style.logo, color = style.accent, style = TextStyle(fontSize = fs(0.065f), fontWeight = FontWeight.Black), maxLines = 1)
+                if (!small) {
+                    LabelText(title.uppercase(), style.text, fs(0.040f), weight = FontWeight.Bold)
+                    LabelText(subtitle.uppercase(), style.text.copy(alpha = 0.85f), fs(0.033f))
+                    cert?.takeIf { it.isNotBlank() }?.let {
+                        LabelText(it, style.text.copy(alpha = 0.75f), fs(0.029f), family = FontFamily.Monospace)
                     }
-                    cert?.let { Text(it, color = style.text.copy(alpha = 0.75f), style = TextStyle(fontSize = fs(0.038f)), maxLines = 1) }
-                }
-                Spacer(Modifier.width(w * 0.02f))
-                Column(Modifier.width(w * 0.25f), horizontalAlignment = Alignment.End) {
-                    Text(
-                        gradeWords(grader, grade, qualifier),
-                        color = style.text,
-                        style = TextStyle(fontSize = fs(0.034f), fontWeight = FontWeight.Bold),
-                        maxLines = 1,
-                    )
-                    Text(grade.orEmpty(), color = style.text, style = TextStyle(fontSize = fs(0.16f), fontWeight = FontWeight.Black, lineHeight = fs(0.17f)))
+                } else if (grader in setOf("CGC", "ACE", "AOG")) {
+                    LabelText(qualifier ?: gradeWords(grader, grade, qualifier), style.text, fs(0.041f), weight = FontWeight.Bold)
                 }
             }
+            Spacer(Modifier.width(w * 0.012f))
+            Column(Modifier.width(w * 0.24f)
+                .then(if (grader in setOf("CGC", "ACE")) Modifier.background(if (grader == "CGC") Color.Black else style.accent, RoundedCornerShape(w * 0.009f)) else Modifier)
+                .padding(vertical = w * 0.005f), horizontalAlignment = Alignment.CenterHorizontally) {
+                val ink = if (grader in setOf("CGC", "ACE")) Color.White else style.text
+                if (!small) LabelText(gradeWords(grader, grade, qualifier), ink, fs(0.025f), weight = FontWeight.Bold)
+                LabelText(grade?.takeIf { it.isNotBlank() } ?: "—", ink,
+                    fs(if ((grade?.length ?: 0) > 4) 0.065f else if ((grade?.length ?: 0) > 2) 0.115f else 0.15f), weight = FontWeight.Black)
             }
         }
     }

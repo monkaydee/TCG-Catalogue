@@ -1,0 +1,4 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="price_coverage_missing" tools:ignore="MissingTranslation">確認できた価格のみ · %1$d 枚の価格は未取得</string>
+    <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">保存された印刷バリエーションが現在のカタログにありません。以前の価格を保持します</string>
+</resources>

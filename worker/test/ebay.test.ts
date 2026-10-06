@@ -35,6 +35,13 @@ describe("exact comparable eBay prices",()=>{
   expect(titleMatches("Flareon 3/64 Jungle English Holo",{...flareon,printing:"Normal"})).toBe(false);
   expect(titleMatches("Flareon 3/64 Jungle English 2021 PSA 9",{...flareon,releaseYear:"1999"})).toBe(false);
  });
+ it("uses explicit catalogue uniqueness without accepting wrong printings or languages",()=>{
+  const card={...flareon,printing:"Holofoil",printingUnique:true};
+  expect(titleMatches("Flareon 3/64 Jungle English PSA 9",card)).toBe(true);
+  expect(titleMatches("Flareon 3/64 Jungle English PSA 9",{...card,printingUnique:false})).toBe(false);
+  for (const title of ["Flareon 3/64 Jungle English Non-holo PSA 9","Flareon 3/64 Jungle English Reverse Holo PSA 9","Flareon 3/64 Jungle Japanese PSA 9","Flareon 3/64 Fossil English PSA 9"])
+    expect(titleMatches(title,card),title).toBe(false);
+ });
  it("requires five distinct graded comparables, removes extreme asks and reports spread",()=>{
   const title="Flareon 3/64 Jungle English PSA 9";
   expect(parseEbay({itemSummaries:copies(title,[100,120])},flareon)).toEqual([]);

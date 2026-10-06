@@ -44,6 +44,7 @@ export interface CardRequest {
   number: string;
   tcgplayerId?: string;
   printing?: string;
+  printingUnique?: boolean;
   /** Card language ("EN", "DE", "JA" …); prices for other languages than English come from eBay only. */
   language?: string;
   market?: "US" | "DE";

@@ -59,3 +59,11 @@ Deployment smoke checks use native Japanese identities and cover Pokémon/One Pi
 graded EN/DE/JA paths, EUR/USD sealed markets, source/count/range constraints and freshness.
 The artifact reports available and unavailable quotes separately. Fixtures and smoke samples
 cannot guarantee all providers, grades or products have market coverage.
+
+## Missing-price repair and matching revision 5
+
+Unavailable automatic quotes (including legacy automatic zero values) are unknown, not zero-valued cards. Manual zero remains valid. Partial totals show known amounts and missing-copy counts; incomplete valuations do not produce portfolio-loss snapshots. Failed or empty refreshes preserve existing quotes with a warning. This repair queues a refresh without clearing saved values.
+
+A raw provider returning only an aggregate market reference no longer prevents later condition-price providers from being queried. Native card IDs establish which catalogue language a quote belongs to; an English image is not evidence of an English physical card. Localized set aliases improve German search terms.
+
+Holo wording may be absent from a comparable only when the catalogue explicitly reports a single supported printing. Multiple or unknown printings still require positive title evidence. Explicit non-holo, reverse, edition and conflicting-language exclusions remain in force. Revision 5 separates these searches from earlier server caches.

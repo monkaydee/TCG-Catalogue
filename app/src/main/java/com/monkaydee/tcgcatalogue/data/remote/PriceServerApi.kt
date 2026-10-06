@@ -69,7 +69,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     suspend fun reachable(): Boolean = runCatching { get("/v1/status") != null }.getOrDefault(false)
 
     /** The price server's raw (ungraded) price of a printing: NM or a blended market price, in USD, and its source. */
-    suspend fun raw(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String?, language: String = "EN", localName: String? = null, condition: String = "NM", setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null): Raw? {
+    suspend fun raw(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String?, language: String = "EN", localName: String? = null, condition: String = "NM", setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null, printingUnique: Boolean = false): Raw? {
         val body = buildJsonObject {
             put("schemaVersion", 2)
             putJsonArray("cards") {
@@ -79,6 +79,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         put("id", cardId)
                         put("name", name)
                         put("set", setName)
+                        if (printingUnique) put("printingUnique", true)
                         market?.let { put("market", it) }
                         putJsonArray("setAliases") { setAliases.forEach { add(it) } }
                         releaseYear?.let { put("releaseYear", it) }
@@ -100,7 +101,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     }
 
     /** Graded prices of a card (TCGplayer product [tcgplayerId]), or an empty list when there are none. */
-    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null, language: String = "EN", localName: String? = null, setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null): List<Graded> {
+    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null, language: String = "EN", localName: String? = null, setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null, printingUnique: Boolean = false): List<Graded> {
         val body = buildJsonObject {
             put("schemaVersion", 2)
             putJsonArray("cards") {
@@ -110,6 +111,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         put("id", cardId)
                         put("name", name)
                         put("set", setName)
+                        if (printingUnique) put("printingUnique", true)
                         market?.let { put("market", it) }
                         putJsonArray("setAliases") { setAliases.forEach { add(it) } }
                         releaseYear?.let { put("releaseYear", it) }

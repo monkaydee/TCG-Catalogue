@@ -311,7 +311,7 @@ class CardRepository(
 
     /** All graded prices the price server has for a printing (every company and grade). */
     suspend fun gradedPrices(card: CardCandidate, variant: Variant, language: String = "EN"): List<PriceServerApi.Graded> =
-        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US")
+        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique)
 
     /** The card's name in [language] for searching listings ("Flamara"), Pokémon only. */
     private suspend fun localName(card: CardCandidate, language: String): String? =
@@ -335,13 +335,13 @@ class CardRepository(
     private suspend fun releaseYear(card: CardCandidate) = metadata(card, card.language ?: if (card.cardId.startsWith("ja:")) "JA" else "EN").second
 
     /** True when the card's own price sources already describe [language] (English cards; Japanese cards from the Japanese database). */
-    private fun ownLanguage(card: CardCandidate, language: String) = language == "EN" || card.cardId.startsWith("${language.lowercase()}:")
+    private fun ownLanguage(card: CardCandidate, language: String) = language == if (card.cardId.contains(':')) card.cardId.substringBefore(':').uppercase() else "EN"
 
     /** The price of a copy in [language] from listings in that language, if the server has one. */
     private suspend fun languagePrice(card: CardCandidate, variant: Variant, language: String, condition: String): Price? {
         if (!server.isSetUp()) return null
         val r = attempt {
-            server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), condition = condition, setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US")
+            server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), condition = condition, setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique)
         }.getOrThrow() ?: return null
         val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
         return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = (note + if (r.stale) " · " + AppStrings.get(R.string.quote_stale) else "").ifBlank { null }, fetchedAt = r.fetchedAt, stale = r.stale)
@@ -428,7 +428,7 @@ class CardRepository(
     /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */
     private suspend fun serverRawPrice(card: CardCandidate, variant: Variant, language: String = "EN", condition: String = "NM"): Price? {
         if (!server.isSetUp()) return null
-        val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), condition = condition, setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US") }
+        val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), condition = condition, setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique) }
             .getOrNull() ?: return null
         val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
         return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = (note + if (r.stale) " · " + AppStrings.get(R.string.quote_stale) else "").ifBlank { null }, fetchedAt = r.fetchedAt, stale = r.stale)
@@ -798,10 +798,14 @@ class CardRepository(
                     if (fresh != null) {
                         runCatching { ensureSet(fresh) }
                         for (row in rows) {
-                            val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: continue
+                            val variant = fresh.variants.firstOrNull { it.key == row.variant }
+                            if (variant == null) {
+                                db.cards().update(row.copy(priceNote = AppStrings.get(R.string.quote_printing_unavailable)))
+                                continue
+                            }
                             val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
                             val lookup = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row), row.language) }
-                            if (lookup.isFailure) {
+                            if (lookup.isFailure || lookup.getOrNull()?.amount?.let { it.isFinite() && it > 0 } != true) {
                                 db.cards().update(row.copy(priceNote = listOfNotNull(row.priceNote?.split(" · ")?.filterNot { it == AppStrings.get(R.string.quote_refresh_failed) || it.contains("Latest refresh unavailable") }?.joinToString(" · "), AppStrings.get(R.string.quote_refresh_failed)).joinToString(" · ")))
                                 continue
                             }
@@ -840,6 +844,8 @@ class CardRepository(
         val rate = settings.current().usdToEur
         val owned = db.cards().getAll()
         val sealed = db.sealed().getAll()
+        // An incomplete valuation is not evidence of a portfolio loss.
+        if (Money.coverage(owned, "EUR", rate, sealed).missingCopies > 0) return
         db.snapshots().upsert(
             PortfolioSnapshot(
                 day = LocalDate.now().toEpochDay(),

@@ -21,7 +21,7 @@ def main():
     # workers.dev edges can briefly serve the previous version after deployment.
     for attempt in range(9):
         status = call("/v1/status")
-        if status.get("priceMatchingRevision") == 4:
+        if status.get("priceMatchingRevision") == 5:
             break
         if attempt == 8:
             raise AssertionError("Updated price service did not propagate")
@@ -31,6 +31,7 @@ def main():
         {"game":"POKEMON","id":"base1-4","name":"Charizard","set":"Base Set","number":"4/102","tcgplayerId":"42382","printing":"Holofoil","language":"EN","market":"US","graded":True},
         {"game":"POKEMON","id":"base1-4","name":"Charizard","localName":"Glurak","set":"Base Set","setAliases":["Basis","Grundset"],"number":"4/102","printing":"Holofoil","language":"DE","market":"DE","graded":True},
         {"game":"POKEMON","id":"ja:SV2a-025","name":"ピカチュウ","localName":"Pikachu","set":"Pokemon Card 151","setAliases":["ポケモンカード151","SV2a"],"number":"25/165","language":"JA","market":"DE","graded":True},
+        {"game":"POKEMON","id":"sv10-193","name":"Misty's Psyduck","set":"Destined Rivals","number":"193/182","tcgplayerId":"632993","printing":"Holofoil","printingUnique":True,"language":"EN","market":"US","graded":True},
         {"game":"ONE_PIECE","id":"OP01-001","name":"Roronoa Zoro","set":"Romance Dawn","number":"OP01-001","language":"EN","market":"US","graded":True},
         {"game":"ONE_PIECE","id":"OP01-001","name":"Roronoa Zoro","set":"Romance Dawn","number":"OP01-001","language":"JA","market":"DE","graded":True},
     ]

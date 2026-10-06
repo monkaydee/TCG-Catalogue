@@ -45,8 +45,8 @@ describe("helpers", () => {
 
 describe("request parsing and cache keys", () => {
   it("prefers the TCGplayer id in the key and includes the printing", () => {
-    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v4:pokemon:tcg42382:reverseholofoil:default");
-    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v4:magic:idabc:default");
+    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v5:pokemon:tcg42382:reverseholofoil:default");
+    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v5:magic:idabc:default");
   });
   it("accepts the app's enum names in any case and rejects unknown games", () => {
     expect(parseCard({ game: "ONE_PIECE", id: "OP01-024" })?.game).toBe("one_piece");
