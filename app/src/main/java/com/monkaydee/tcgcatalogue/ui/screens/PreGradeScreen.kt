@@ -226,6 +226,10 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit, initialGame: Game? = null
                 step == Step.RESULT -> GradeResult(front, back, game, onGame = { game = it },
                     onEdit = { target -> editingCentering = target },
                     onRetake = { target -> if (target == Step.FRONT) front = null else back = null; step = target },
+                    onFinding = { target, name, finding ->
+                        if (target == Step.FRONT) front = front?.let { it.copy(wearFindings = it.wearFindings + (name to finding)) }
+                        else back = back?.let { it.copy(wearFindings = it.wearFindings + (name to finding)) }
+                    },
                     onRedo = { front = null; back = null; step = Step.FRONT })
                 else -> {
                     val side = if (step == Step.FRONT) front else back
@@ -377,7 +381,7 @@ private fun FlatCard(side: PreGrader.Side, modifier: Modifier = Modifier) {
                 drawRect(Color(0xFF00E676), Offset(l, t), Size(r - l, b - t), style = Stroke(2.dp.toPx()))
             }
             for (name in Wear.EDGES + Wear.CORNERS) {
-                val z = side.wear.zones.getValue(name)
+                val z = side.wear.zones[name] ?: continue
                 if (GradeModel.zoneLevel(z) < 2) continue
                 val (x0, x1, y0, y1) = Wear.area(name, side.card.width, side.card.height)
                 drawRect(Color(0xCCFF1744), Offset(x0 * sx, y0 * sy), Size((x1 - x0) * sx, (y1 - y0) * sy), style = Stroke(2.dp.toPx()))
@@ -388,7 +392,7 @@ private fun FlatCard(side: PreGrader.Side, modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, onGame: (Game) -> Unit, onRedo: () -> Unit, onEdit: (Step) -> Unit, onRetake: (Step) -> Unit = {}) {
+internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, onGame: (Game) -> Unit, onRedo: () -> Unit, onEdit: (Step) -> Unit, onRetake: (Step) -> Unit = {}, onFinding: (Step, String, Wear.Finding) -> Unit = { _, _, _ -> }) {
     val usable = front?.usableForGrade == true && back?.usableForGrade == true
     val centerUsable = front?.usableForCentering == true && back?.usableForCentering == true
     val potential = CenteringPotential.assess(front?.centering, back?.centering, centerUsable)
@@ -421,7 +425,11 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
             }
         }
         if (estimate == null) {
-            Text(stringResource(R.string.pre_model_scope),
+            Text(stringResource(when {
+                front?.reportedWear == true || back?.reportedWear == true -> R.string.wear_damage_blocks_grade
+                front != null && back != null && (!front.wear.complete || !back.wear.complete) -> R.string.wear_incomplete_blocks_grade
+                else -> R.string.pre_model_scope
+            }),
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         // Do not substitute training averages for missing/unusable photos or unsupported games.
@@ -450,16 +458,14 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
         }
         // Corners and edges
         Section(stringResource(R.string.grade_corners_edges)) {
-            listOfNotNull(front?.let { stringResource(R.string.grade_front) to it }, back?.let { stringResource(R.string.grade_back) to it }).forEach { (label, side) ->
-                Text(label, style = MaterialTheme.typography.labelLarge)
-                if (!side.outlineConfirmed || side.problems.isNotEmpty()) {
-                    Text(stringResource(R.string.pre_quality_blocked), color = MaterialTheme.colorScheme.error)
-                } else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
-                    FlatCard(side, Modifier.width(110.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        ZoneLine(stringResource(R.string.grade_corners), side.wear.corners)
-                        ZoneLine(stringResource(R.string.grade_edges), side.wear.edges)
-                    }
+            listOf(Step.FRONT to front, Step.BACK to back).forEach { (target, side) ->
+                val label = stringResource(if (target == Step.FRONT) R.string.grade_front else R.string.grade_back)
+                if (side != null) {
+                    WearInspectionPanel(side, label) { name, finding -> onFinding(target, name, finding) }
+                    HorizontalDivider()
+                } else {
+                    Text(label, style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.wear_not_assessed), color = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -505,23 +511,7 @@ private fun CenteringLine(label: String, c: Centering.Result?, limit: Double) {
     }
 }
 
-@Composable
-private fun ZoneLine(label: String, zones: List<Wear.Zone>) {
-    val levels = zones.map { GradeModel.zoneLevel(it) }
-    val worst = levels.maxOrNull() ?: 0
-    Text(
-        "$label: " + stringResource(
-            when (worst) {
-                0 -> R.string.pre_no_wear_detected
-                1 -> R.string.grade_zone_light
-                2 -> R.string.grade_zone_visible
-                else -> R.string.grade_zone_heavy
-            },
-        ),
-        style = MaterialTheme.typography.bodyMedium,
-        color = if (worst >= 2) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
-    )
-}
+
 
 /** Camera with a card guide; takes a full-resolution photo of what the preview shows. */
 @Composable

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Lewy górny róg</string>
+  <string name="wear_top_right">Prawy górny róg</string>
+  <string name="wear_bottom_right">Prawy dolny róg</string>
+  <string name="wear_bottom_left">Lewy dolny róg</string>
+  <string name="wear_top">Górna krawędź</string>
+  <string name="wear_right">Prawa krawędź</string>
+  <string name="wear_bottom">Dolna krawędź</string>
+  <string name="wear_left">Lewa krawędź</string>
+  <string name="wear_evidence_count">Automatyczne sprawdzenie: %1$d z 8 regionów ma użyteczne dowody kolorów</string>
+  <string name="wear_review_count">Ręczna weryfikacja: %1$d z 8 regionów</string>
+  <string name="wear_inspect_regions">Sprawdź wszystkie cztery rogi i cztery krawędzie</string>
+  <string name="wear_hide_regions">Ukryj szczegóły regionu</string>
+  <string name="wear_screening_scope">Każdy region jest sprawdzany osobno pod kątem anomalii kolorystycznych i wybielenia. Wyrównanie druku, foliowania i cięcia może przypominać uszkodzenie. Otwórz region, aby sprawdzić zdjęcie i zapisać to, co widzisz.</string>
+  <string name="wear_not_assessed">Nie ocenione — niewystarczające i możliwe do wykorzystania dowody</string>
+  <string name="wear_inconclusive">Automatyczne sprawdzenie nie jest jednoznaczne</string>
+  <string name="wear_possible_damage">Kontrola automatyczna: możliwe zużycie — sprawdź ten obszar</string>
+  <string name="wear_auto_none">Kontrola automatyczna: nie oznaczono żadnych anomalii kolorystycznych</string>
+  <string name="wear_your_observation">Twoja obserwacja: %1$s</string>
+  <string name="wear_white_border">Białe obramowania mogą ukryć wybielanie; kontrola koloru nie może potwierdzić ich stanu.</string>
+  <string name="wear_textured_border">Zmienna grafika lub folia ogranicza porównanie kolorów.</string>
+  <string name="wear_flagged_pixels">Oznaczone piksele regionu: %1$.1f%% · jaśniejsze anomalie: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Ściśnij, aby powiększyć i przeciągnij, aby sprawdzić. Powiększenie nie dodaje żadnych szczegółów zdjęcia; zrób ponownie niewyraźne zdjęcia.</string>
+  <string name="wear_record_observation">Twoje obserwacje dotyczące tego regionu</string>
+  <string name="wear_not_reviewed">Nierecenzowane</string>
+  <string name="wear_observed_clear">Na tym zdjęciu nie widać żadnych uszkodzeń</string>
+  <string name="wear_whitening">Widoczne wybielenia/przetarcia</string>
+  <string name="wear_chip">Widoczne odpryski/rozdarcia</string>
+  <string name="wear_bend">Widoczne zagięcie/wgniecenie</string>
+  <string name="wear_observation_scope">Twoje obserwacje zostaną zachowane na potrzeby tej sesji zdjęciowej. Nie poświadczają stanu ani nie zastępują złej jakości zdjęcia. Zarejestrowane uszkodzenia uniemożliwiają ogólną ocenę modelu.</string>
+  <string name="wear_done">Gotowe</string>
+  <string name="wear_damage_blocks_grade">Stwierdzono widoczne uszkodzenia. Ogólne oszacowanie modelu nie jest uwzględniane, ponieważ ustalenia dokonane ręcznie nie stanowią skalibrowanych danych wejściowych modelu. Wyniki centrowania nie uwzględniają tego uszkodzenia.</string>
+  <string name="wear_incomplete_blocks_grade">Narożniki i krawędzie wymagają dokładniejszej kontroli. Brakujące lub niejednoznaczne dowody uniemożliwiają dokonanie ogólnego oszacowania modelu; Samo centrowanie nie ustala stopnia.</string>
+</resources>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Coin supérieur gauche</string>
+  <string name="wear_top_right">Coin supérieur droit</string>
+  <string name="wear_bottom_right">Coin inférieur droit</string>
+  <string name="wear_bottom_left">Coin inférieur gauche</string>
+  <string name="wear_top">Bord supérieur</string>
+  <string name="wear_right">Bord droit</string>
+  <string name="wear_bottom">Bord inférieur</string>
+  <string name="wear_left">Bord gauche</string>
+  <string name="wear_evidence_count">Vérification automatique : %1$d sur 8 régions disposent de preuves de couleur utilisables</string>
+  <string name="wear_review_count">Révision manuelle : %1$d sur 8 régions</string>
+  <string name="wear_inspect_regions">Inspectez les quatre coins et les quatre bords</string>
+  <string name="wear_hide_regions">Masquer les détails de la région</string>
+  <string name="wear_screening_scope">Chaque région est vérifiée séparément pour les anomalies de couleur et le blanchiment. L’alignement de l’impression, du film et de la découpe peut ressembler à un dommage. Ouvrez une région pour inspecter la photo et enregistrer ce que vous voyez.</string>
+  <string name="wear_not_assessed">Non évalué — preuves exploitables insuffisantes</string>
+  <string name="wear_inconclusive">La vérification automatique n\'est pas concluante</string>
+  <string name="wear_possible_damage">Vérification automatique : usure possible — inspectez cette région</string>
+  <string name="wear_auto_none">Vérification automatique : aucune anomalie de couleur signalée</string>
+  <string name="wear_your_observation">Votre observation : %1$s</string>
+  <string name="wear_white_border">Les bordures blanches peuvent masquer le blanchiment ; les contrôles de couleur ne peuvent pas confirmer leur état.</string>
+  <string name="wear_textured_border">Les illustrations ou films variables limitent la comparaison des couleurs.</string>
+  <string name="wear_flagged_pixels">Pixels de la région marquée : %1$.1f%% · anomalies plus lumineuses : %2$.1f%%</string>
+  <string name="wear_zoom_hint">Pincez pour zoomer et faites glisser pour inspecter. Le grossissement n\'ajoute aucun détail à la photo ; reprendre des photos floues.</string>
+  <string name="wear_record_observation">Votre observation pour cette région</string>
+  <string name="wear_not_reviewed">Non révisé</string>
+  <string name="wear_observed_clear">Aucun dommage visible sur cette photo</string>
+  <string name="wear_whitening">Blanchiment / éraflures visibles</string>
+  <string name="wear_chip">Éclat/déchirure visible</string>
+  <string name="wear_bend">Courbure/bosse visible</string>
+  <string name="wear_observation_scope">Vos observations sont conservées pour cette séance photo. Ils ne certifient pas l’état et ne remplacent pas la mauvaise qualité des photos. Les dommages enregistrés empêchent une estimation globale du modèle.</string>
+  <string name="wear_done">Terminé</string>
+  <string name="wear_damage_blocks_grade">Des dégâts visibles ont été enregistrés. L\'estimation globale du modèle est retenue car les résultats manuels ne sont pas des entrées de modèle calibrées. Les résultats de centrage ne tiennent pas compte de ces dommages.</string>
+  <string name="wear_incomplete_blocks_grade">Les coins et les bords doivent être inspectés de plus près. Des preuves manquantes ou non concluantes empêchent une estimation globale du modèle ; le centrage à lui seul n’établit pas de note.</string>
+</resources>

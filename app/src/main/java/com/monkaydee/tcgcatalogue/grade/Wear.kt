@@ -14,13 +14,25 @@ import kotlin.math.sqrt
  */
 object Wear {
     /** One corner or edge: share of defect pixels, share of whitened pixels, and how strongly they stand out (1 = threshold). */
-    data class Zone(val defects: Double, val whitening: Double, val strength: Double)
+    enum class Evidence { MEASURED, LOW_CONTRAST, TEXTURED, INSUFFICIENT }
+    enum class Finding { NOT_REVIEWED, NO_VISIBLE_DAMAGE, WHITENING, CHIP_OR_TEAR, BEND_OR_DENT;
+        val damage get() = this != NOT_REVIEWED && this != NO_VISIBLE_DAMAGE
+    }
+    data class Zone(val defects: Double, val whitening: Double, val strength: Double,
+        val evidence: Evidence = Evidence.MEASURED)
 
     /** Zones in the order T, R, B, L (edges) and TL, TR, BR, BL (corners). */
     data class Result(val zones: Map<String, Zone>) {
-        val corners get() = listOf("TL", "TR", "BR", "BL").map { zones.getValue(it) }
-        val edges get() = listOf("T", "R", "B", "L").map { zones.getValue(it) }
+        val corners get() = CORNERS.map { zones[it] ?: unknown() }
+        val edges get() = EDGES.map { zones[it] ?: unknown() }
+        val complete get() = (EDGES + CORNERS).all { zones[it]?.evidence == Evidence.MEASURED }
     }
+
+    private fun unknown() = Zone(0.0, 0.0, 0.0, Evidence.INSUFFICIENT)
+
+    /** Conservative review flag, not the trained severity buckets or a condition grade. */
+    fun possibleDamage(zone: Zone): Boolean = zone.evidence != Evidence.INSUFFICIENT &&
+        (zone.defects >= 0.002 || zone.whitening >= 0.001)
 
     val EDGES = listOf("T", "R", "B", "L")
     val CORNERS = listOf("TL", "TR", "BR", "BL")
@@ -48,7 +60,7 @@ object Wear {
                 val rgb = intArrayOf((c shr 16) and 0xFF, (c shr 8) and 0xFF, c and 0xFF)
                 if (d < ring) ringPx += rgb else if (d >= refIn && d < refOut) refPx += rgb
             }
-            if (refPx.size < 20 || ringPx.isEmpty()) { zones[name] = Zone(0.0, 0.0, 0.0); continue }
+            if (refPx.size < 20 || ringPx.size < 20) { zones[name] = unknown(); continue }
             val ref = IntArray(3) { ch -> refPx.map { it[ch] }.sorted()[refPx.size / 2] }
             val refL = refPx.map { lum(it) }.sorted()[refPx.size / 2]
             val spread = refPx.map { dist(it, ref) }.sorted()[(refPx.size * 0.8).toInt().coerceAtMost(refPx.size - 1)]
@@ -65,7 +77,15 @@ object Wear {
                 }
             }
             ds.sort()
-            zones[name] = Zone(bad.toDouble() / ringPx.size, whiter.toDouble() / ringPx.size, ds[(ds.size * 0.95).toInt().coerceAtMost(ds.size - 1)] / thr)
+            // A white border cannot reveal white-on-white wear. Highly variable print/foil makes
+            // this colour-comparison heuristic inconclusive, rather than proof of clean condition.
+            val evidence = when {
+                spread > 65.0 -> Evidence.TEXTURED
+                refL > 220.0 -> Evidence.LOW_CONTRAST
+                else -> Evidence.MEASURED
+            }
+            zones[name] = Zone(bad.toDouble() / ringPx.size, whiter.toDouble() / ringPx.size,
+                ds[(ds.size * 0.95).toInt().coerceAtMost(ds.size - 1)] / thr, evidence)
         }
         return Result(zones)
     }

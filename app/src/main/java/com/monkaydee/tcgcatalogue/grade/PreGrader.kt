@@ -29,10 +29,14 @@ object PreGrader {
         val manualCentering: Boolean = false,
         val centeringSkipped: Boolean = false,
         val photoWidth: Int = photo?.width ?: 0,
+        /** User observations on this rectified image; remeasurement creates a fresh review. */
+        val wearFindings: Map<String, Wear.Finding> = emptyMap(),
     ) {
         /** A grade estimate must not fill missing measurements with training averages. */
         val usableForCentering: Boolean get() = outlineConfirmed && problems.isEmpty() && centering != null
-        val usableForGrade: Boolean get() = usableForCentering && !manualCentering
+        val usableForWear: Boolean get() = outlineConfirmed && problems.isEmpty()
+        val reportedWear: Boolean get() = wearFindings.values.any { it.damage }
+        val usableForGrade: Boolean get() = usableForCentering && !manualCentering && wear.complete && !reportedWear
     }
 
     sealed interface Outcome {

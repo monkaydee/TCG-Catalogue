@@ -30,7 +30,7 @@ object GradeModel {
             val c = side?.centering
             out += c?.worst ?: Double.NaN
             for (name in Wear.EDGES + Wear.CORNERS) {
-                val z = side?.wear?.zones?.get(name)
+                val z = side?.wear?.zones?.get(name)?.takeIf { it.evidence == Wear.Evidence.MEASURED }
                 out += z?.let { ln(it.defects + GradeWeights.LOG_EPS) } ?: Double.NaN
                 out += z?.let { ln(it.whitening + GradeWeights.LOG_EPS) } ?: Double.NaN
                 out += z?.strength ?: Double.NaN
@@ -95,6 +95,7 @@ object GradeModel {
 
     /** 0 = clean, 1 = light, 2 = visible, 3 = heavy wear of one corner or edge. */
     fun zoneLevel(z: Wear.Zone): Int = when {
+        z.evidence == Wear.Evidence.INSUFFICIENT -> -1
         z.defects < GradeWeights.ZONE_LEVELS[0] -> 0
         z.defects < GradeWeights.ZONE_LEVELS[1] -> 1
         z.defects < GradeWeights.ZONE_LEVELS[2] -> 2

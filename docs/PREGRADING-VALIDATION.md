@@ -39,3 +39,29 @@ This requirement remains open; passing unit tests does not establish grading acc
 
 Current shared recognition feedback is not a verified-grade training pipeline. The user's
 ungraded One Piece photos test measurement/capture behavior, not final-grade accuracy.
+
+## Corner and edge evidence
+
+Each rectified side has eight independent regions: four corners and four edges. The existing
+colour-deviation/whitening features remain unchanged so the trained weights are not silently
+applied to a different feature definition. The app now records measurement validity separately:
+insufficient ring/reference samples, near-white reference colours (limited whitening contrast),
+and variable printed texture. These conservative heuristics are not confidence estimates.
+Incomplete evidence prevents the overall model estimate rather than becoming a clean assessment.
+
+Region inspection shows enlarged crops, automatic anomaly evidence and separate user observations.
+Whitening, chips/tears and bends/dents can be recorded. User observations belong to the current
+rectified photo session and are reset on a new capture/rectification. Reported damage blocks the
+uncalibrated overall model rather than being assigned an invented numeric deduction. A user's
+"no visible damage" observation cannot override failed photo quality or missing evidence.
+Magnification adds no source detail; the whole-card photo still limits detection of tiny defects.
+Bends/dents recorded by users are not claimed as automatically detected physical damage.
+
+The validation dataset must include individually annotated corner/edge defects and clean regions,
+including small isolated white flecks, dark chips on white borders, rounded cuts, printed white
+artwork, foil, background leakage and compression. Benchmark region-level precision/recall and
+abstention separately from centering and overall grade accuracy. No paid-accuracy claim is made.
+
+The region-view inspection flag uses a small anomaly share (0.2% colour deviation or 0.1%
+brighter anomalies) independently of the trained model severity buckets. This conservative
+review trigger is not calibrated defect severity and needs the region-level benchmark above.

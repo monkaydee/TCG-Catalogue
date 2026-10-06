@@ -27,8 +27,8 @@ The cost-currency repair preserves the current database design. A proper per-cop
 ## Validation and limits
 
 - Worker: **69 regression tests pass**, with TypeScript type checking. Coverage includes pricing normalization, matching, graded coverage, cache keys, quota behavior and legacy-client compatibility.
-- Android: **122 unit tests pass with the external fixtures enabled**. The initial fixes passed `testDebugUnitTest assembleRelease lintRelease`; the expanded release has passed the final unit/migration suite and is built/published by GitHub Actions. Regression tests cover slab parsing, language ambiguity, Unicode names, image quality and rendering. Slab screenshots are generated under `app/build/screenshots/`.
-- Release lint completed with **zero errors and 269 warnings** (mostly typography and dependency/version notices). Context-retention warnings were checked: the scanner/import constructors are passed application contexts, and AppStrings stores an application context. The remaining warnings are recorded in `app/build/reports/lint-results-release.html`; they have not been broadly suppressed or cleaned up.
+- Android: **127 unit tests pass with the external fixtures enabled**. The initial fixes passed `testDebugUnitTest assembleRelease lintRelease`; the expanded release has passed the final unit/migration suite and is built/published by GitHub Actions. Regression tests cover slab parsing, language ambiguity, Unicode names, image quality and rendering. Slab screenshots are generated under `app/build/screenshots/`.
+- Release lint completed with **zero errors and 275 warnings** (mostly typography and dependency/version notices). Context-retention warnings were checked: the scanner/import constructors are passed application contexts, and AppStrings stores an application context. The remaining warnings are recorded in `app/build/reports/lint-results-release.html`; they have not been broadly suppressed or cleaned up.
 - External photo fixtures: set `PREGRADING_FIXTURE_DIR` for `PreGradeReferenceTest`. Private Drive images remain outside Git; tests skip these inputs when the fixture directory is absent. Results are written under `app/build/pregrade-reference-results/`.
 - Drive experiment: full ST30-001 front and red leader back produce complete outlines; the corner closeup is rejected in one rotation but can still yield a false internal outline in the EXIF-correct orientation. It has no usable centering and cannot produce a grade estimate. Both full sides still have **no automatic centering result**. Detection success is not evidence that wear estimates or grades are correct.
 - Online experiment: official Pokémon front/back images are too low resolution for physical grading and correctly trigger the size check. An official One Piece front exercises outline detection but printed white art triggers the current glare heuristic. A front/back pair image also reveals a false enclosing outline; absent centering blocks a grade, but the detector still needs a multi-card/artwork rejection stage. Publisher artwork has no known physical defects or grade and cannot validate accuracy.
@@ -77,3 +77,9 @@ tool instead of the buried centering panel. The follow-up uses a dedicated edito
 selectors visible and provides result-level recovery. A manual One Piece centering result now
 supports the published PSA 10 centering criterion without enabling an unvalidated overall model.
 Commercial overall pre-grading readiness remains open (docs/PREGRADING-VALIDATION.md).
+
+Corner/edge follow-up: the old two aggregate labels concealed individual regions, and missing
+samples were represented as zero defects. Individual photo-region inspection and separate
+user observations now expose all eight checks per side. Measurement validity prevents unknown,
+white-on-white or highly textured evidence from supporting a model estimate; recorded manual
+damage also blocks it. Automated colour anomalies remain screening signals, not verified grades.

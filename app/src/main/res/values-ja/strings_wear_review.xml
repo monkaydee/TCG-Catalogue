@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">左上隅</string>
+  <string name="wear_top_right">右上隅</string>
+  <string name="wear_bottom_right">右下隅</string>
+  <string name="wear_bottom_left">左下隅</string>
+  <string name="wear_top">上端</string>
+  <string name="wear_right">右端</string>
+  <string name="wear_bottom">下端</string>
+  <string name="wear_left">左端</string>
+  <string name="wear_evidence_count">自動チェック: 8 領域のうち %1$d に使用可能なカラー エビデンスがあります</string>
+  <string name="wear_review_count">手動レビュー: %1$d / 8 リージョン</string>
+  <string name="wear_inspect_regions">四隅と四隅をすべて検査します</string>
+  <string name="wear_hide_regions">地域の詳細を非表示にする</string>
+  <string name="wear_screening_scope">各領域の色の異常と白化が個別にチェックされます。プリント、フォイル、カットの位置合わせが損傷している可能性があります。領域を開いて写真を検査し、表示された内容を記録します。</string>
+  <string name="wear_not_assessed">評価されていない - 使用可能な証拠が不十分</string>
+  <string name="wear_inconclusive">自動チェックでは決定的ではありません</string>
+  <string name="wear_possible_damage">自動チェック: 磨耗の可能性 - この領域を検査します</string>
+  <string name="wear_auto_none">自動チェック: 色異常のフラグはありません</string>
+  <string name="wear_your_observation">あなたの所見: %1$s</string>
+  <string name="wear_white_border">白い境界線は白さを隠すことができます。カラーチェックでは状態の確認は出来ません。</string>
+  <string name="wear_textured_border">さまざまなアートワークや箔があると、色の比較が制限されます。</string>
+  <string name="wear_flagged_pixels">フラグが設定された領域のピクセル: %1$.1f%% · 明るい異常: %2$.1f%%</string>
+  <string name="wear_zoom_hint">ピンチしてズームし、ドラッグして検査します。拡大しても写真の詳細は追加されません。ぼやけた写真を撮り直す。</string>
+  <string name="wear_record_observation">この地域に関するあなたの見解</string>
+  <string name="wear_not_reviewed">未レビュー</string>
+  <string name="wear_observed_clear">この写真では目立ったダメージはありません</string>
+  <string name="wear_whitening">白化・擦れが見られる</string>
+  <string name="wear_chip">欠け/破れが見える</string>
+  <string name="wear_bend">曲がり/凹みが見える</string>
+  <string name="wear_observation_scope">あなたの観察はこのフォトセッションのために保管されます。これらは状態を保証したり、劣悪な写真品質を無効にしたりするものではありません。記録された損傷により、モデル全体の推定ができなくなります。</string>
+  <string name="wear_done">完了</string>
+  <string name="wear_damage_blocks_grade">目に見える損傷が記録されました。手動による検出結果は調整されたモデル入力ではないため、モデル全体の推定値は差し控えられます。センタリングの結果では、この損傷は考慮されていません。</string>
+  <string name="wear_incomplete_blocks_grade">角や端は詳しく検査する必要があります。証拠が欠落している、または決定的ではない場合、モデル全体の推定ができなくなります。センタリングだけではグレードは確立されません。</string>
+</resources>

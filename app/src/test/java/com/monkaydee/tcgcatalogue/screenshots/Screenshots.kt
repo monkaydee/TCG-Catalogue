@@ -231,6 +231,42 @@ class Screenshots {
         assertEquals(com.monkaydee.tcgcatalogue.ui.screens.Step.FRONT, retaken)
     }
 
+    @Test fun individualWearInspectionRecordsDamageAndBlocksOverallGrade() {
+        val bitmap = Bitmap.createBitmap(945, 1320, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.BLUE) }
+        val zones = (com.monkaydee.tcgcatalogue.grade.Wear.EDGES + com.monkaydee.tcgcatalogue.grade.Wear.CORNERS)
+            .associateWith { com.monkaydee.tcgcatalogue.grade.Wear.Zone(0.0, 0.0, 0.0) }
+        var side by mutableStateOf(com.monkaydee.tcgcatalogue.grade.PreGrader.Side(bitmap, emptyList(),
+            com.monkaydee.tcgcatalogue.grade.Centering.Result(50.0, 50.0, 50.0, 50.0),
+            com.monkaydee.tcgcatalogue.grade.Wear.Result(zones), outlineConfirmed = true))
+        assertTrue(side.usableForGrade)
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                androidx.compose.material3.Surface(Modifier.fillMaxSize()) {
+                    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp)) {
+                        com.monkaydee.tcgcatalogue.ui.screens.WearInspectionPanel(side, "Front") { name, finding ->
+                            side = side.copy(wearFindings = side.wearFindings + (name to finding))
+                        }
+                    }
+                }
+            }
+        }
+        rule.onNodeWithText("Inspect all four corners and four edges").performClick()
+        rule.onNodeWithText("Top-left corner").performScrollTo().performClick()
+        rule.onNodeWithText("Whitening / scuffing visible").performScrollTo().performClick()
+        assertEquals(com.monkaydee.tcgcatalogue.grade.Wear.Finding.WHITENING, side.wearFindings["TL"])
+        assertTrue(side.reportedWear)
+        assertFalse(side.usableForGrade)
+        rule.onNodeWithText("Done").performScrollTo().performClick()
+        rule.onNodeWithText("Top edge").performScrollTo().performClick()
+        rule.onNodeWithText("Chip / tear visible").performScrollTo().performClick()
+        assertEquals(com.monkaydee.tcgcatalogue.grade.Wear.Finding.CHIP_OR_TEAR, side.wearFindings["T"])
+        rule.onNodeWithText("Done").performScrollTo().performClick()
+        save("wear_region_review")
+        // Replacing or rectifying a photo must not reuse observations from the previous image.
+        assertTrue(side.copy(wearFindings = emptyMap()).usableForGrade)
+        assertFalse(side.copy(problems = listOf(com.monkaydee.tcgcatalogue.grade.PhotoCheck.Problem.BLURRY)).usableForWear)
+    }
+
     @Test fun binderPages() {
         var grid by mutableStateOf(3)
         rule.setContent {

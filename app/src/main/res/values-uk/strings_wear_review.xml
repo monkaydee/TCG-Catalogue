@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Верхній лівий кут</string>
+  <string name="wear_top_right">Верхній правий кут</string>
+  <string name="wear_bottom_right">Правий нижній кут</string>
+  <string name="wear_bottom_left">Нижній лівий кут</string>
+  <string name="wear_top">Верхній край</string>
+  <string name="wear_right">Правий край</string>
+  <string name="wear_bottom">Нижній край</string>
+  <string name="wear_left">Лівий край</string>
+  <string name="wear_evidence_count">Автоматична перевірка: %1$d з 8 регіонів мають придатні кольорові докази</string>
+  <string name="wear_review_count">Перегляд вручну: %1$d із 8 регіонів</string>
+  <string name="wear_inspect_regions">Огляньте всі чотири кути і чотири краї</string>
+  <string name="wear_hide_regions">Приховати деталі регіону</string>
+  <string name="wear_screening_scope">Кожна область окремо перевіряється на аномалії кольору та відбілювання. Друк, фольга та вирівнювання вирізу можуть нагадувати пошкодження. Відкрийте область, щоб перевірити фотографію та записати те, що ви бачите.</string>
+  <string name="wear_not_assessed">Не оцінено — недостатньо придатних доказів</string>
+  <string name="wear_inconclusive">Автоматична перевірка безрезультатна</string>
+  <string name="wear_possible_damage">Автоматична перевірка: можливий знос — огляньте цю область</string>
+  <string name="wear_auto_none">Автоматична перевірка: аномалія кольору не позначена</string>
+  <string name="wear_your_observation">Ваше спостереження: %1$s</string>
+  <string name="wear_white_border">Білі рамки можуть приховати побіління; кольорові перевірки не можуть підтвердити їх стан.</string>
+  <string name="wear_textured_border">Змінний малюнок або фольга обмежують порівняння кольорів.</string>
+  <string name="wear_flagged_pixels">Позначені пікселі області: %1$.1f%% · яскравіші аномалії: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Зведіть пальці, щоб збільшити, і перетягніть, щоб перевірити. Збільшення не додає деталей фотографії; повторна зйомка розмитих фотографій.</string>
+  <string name="wear_record_observation">Ваші спостереження щодо цього регіону</string>
+  <string name="wear_not_reviewed">Не переглянуто</string>
+  <string name="wear_observed_clear">На фото немає видимих пошкоджень</string>
+  <string name="wear_whitening">Видно відбілювання/потертості</string>
+  <string name="wear_chip">Видно скол/розрив</string>
+  <string name="wear_bend">Видно вигин/вм\'ятина</string>
+  <string name="wear_observation_scope">Ваші спостереження зберігаються для цієї фотосесії. Вони не підтверджують стан і не перекривають погану якість фотографій. Зареєстровані збитки перешкоджають загальній оцінці моделі.</string>
+  <string name="wear_done">Готово</string>
+  <string name="wear_damage_blocks_grade">Зафіксовано видимі пошкодження. Загальна оцінка моделі не надається, оскільки дані, отримані вручну, не є відкаліброваними вхідними даними моделі. Результати центрування не враховують це пошкодження.</string>
+  <string name="wear_incomplete_blocks_grade">Кути і краї потребують більш ретельного огляду. Відсутні або непереконливі докази перешкоджають загальній оцінці моделі; лише центрування не встановлює оцінку.</string>
+</resources>

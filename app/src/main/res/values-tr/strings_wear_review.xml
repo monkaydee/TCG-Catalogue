@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Sol üst köşe</string>
+  <string name="wear_top_right">Sağ üst köşe</string>
+  <string name="wear_bottom_right">Sağ alt köşe</string>
+  <string name="wear_bottom_left">Sol alt köşe</string>
+  <string name="wear_top">Üst kenar</string>
+  <string name="wear_right">Sağ kenar</string>
+  <string name="wear_bottom">Alt kenar</string>
+  <string name="wear_left">Sol kenar</string>
+  <string name="wear_evidence_count">Otomatik kontrol: 8 bölgeden %1$d tanesinde kullanılabilir renk kanıtı var</string>
+  <string name="wear_review_count">Manuel inceleme: 8 bölgeden %1$d tanesi</string>
+  <string name="wear_inspect_regions">Dört köşenin ve dört kenarın tamamını inceleyin</string>
+  <string name="wear_hide_regions">Bölge ayrıntılarını gizle</string>
+  <string name="wear_screening_scope">Her bölge renk anomalileri ve beyazlama açısından ayrı ayrı kontrol edilir. Baskı, folyo ve kesim hizalaması hasara benzeyebilir. Fotoğrafı incelemek ve gördüklerinizi kaydetmek için bir bölge açın.</string>
+  <string name="wear_not_assessed">Değerlendirilmedi - kullanılabilir kanıt yetersiz</string>
+  <string name="wear_inconclusive">Otomatik kontrol sonuçsuz</string>
+  <string name="wear_possible_damage">Otomatik kontrol: olası aşınma — bu bölgeyi inceleyin</string>
+  <string name="wear_auto_none">Otomatik kontrol: renk anormalliği işaretlenmedi</string>
+  <string name="wear_your_observation">Gözleminiz: %1$s</string>
+  <string name="wear_white_border">Beyaz kenarlar beyazlamayı gizleyebilir; renk kontrolleri durumlarını doğrulayamaz.</string>
+  <string name="wear_textured_border">Değişken sanat eseri veya folyo, renk karşılaştırmasını sınırlar.</string>
+  <string name="wear_flagged_pixels">İşaretli bölge pikselleri: %1$.1f%% · daha parlak anormallikler: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Yakınlaştırmak için sıkıştırın ve incelemek için sürükleyin. Büyütme, fotoğrafa hiçbir ayrıntı eklemez; Bulanık fotoğrafları yeniden çekin.</string>
+  <string name="wear_record_observation">Bu bölgeye ilişkin gözleminiz</string>
+  <string name="wear_not_reviewed">İncelenmedi</string>
+  <string name="wear_observed_clear">Bu fotoğrafta görünür bir hasar yok</string>
+  <string name="wear_whitening">Görünür beyazlatma/sürünme</string>
+  <string name="wear_chip">Talaş/yırtılma görülebilir</string>
+  <string name="wear_bend">Bükülme / göçük görünür</string>
+  <string name="wear_observation_scope">Gözlemleriniz bu fotoğraf çekimi için saklanıyor. Durumu onaylamazlar veya düşük fotoğraf kalitesini geçersiz kılmazlar. Kaydedilen hasar genel bir model tahminini engeller.</string>
+  <string name="wear_done">Bitti</string>
+  <string name="wear_damage_blocks_grade">Görünür hasar kaydedildi. Manuel bulgular kalibre edilmiş model girdileri olmadığı için genel model tahmini saklı tutulmuştur. Merkezleme sonuçları bu hasarı hesaba katmaz.</string>
+  <string name="wear_incomplete_blocks_grade">Köşeler ve kenarlar daha yakından incelenmelidir. Eksik veya kesin olmayan kanıtlar genel bir model tahminini engeller; tek başına merkezleme bir not oluşturmaz.</string>
+</resources>

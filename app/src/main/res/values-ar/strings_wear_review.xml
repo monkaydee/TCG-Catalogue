@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">الزاوية العلوية اليسرى</string>
+  <string name="wear_top_right">الزاوية اليمنى العليا</string>
+  <string name="wear_bottom_right">الزاوية اليمنى السفلى</string>
+  <string name="wear_bottom_left">الزاوية السفلية اليسرى</string>
+  <string name="wear_top">الحافة العلوية</string>
+  <string name="wear_right">الحافة اليمنى</string>
+  <string name="wear_bottom">الحافة السفلية</string>
+  <string name="wear_left">الحافة اليسرى</string>
+  <string name="wear_evidence_count">الفحص التلقائي: %1$d من 8 مناطق بها دليل ألوان قابل للاستخدام</string>
+  <string name="wear_review_count">المراجعة اليدوية: %1$d من 8 مناطق</string>
+  <string name="wear_inspect_regions">افحص جميع الزوايا الأربع والحواف الأربعة</string>
+  <string name="wear_hide_regions">إخفاء تفاصيل المنطقة</string>
+  <string name="wear_screening_scope">يتم فحص كل منطقة على حدة بحثًا عن شذوذات اللون والتبييض. يمكن أن تشبه محاذاة الطباعة والرقائق والقطع التلف. افتح منطقة لفحص الصورة وتسجيل ما تراه.</string>
+  <string name="wear_not_assessed">لم يتم تقييمها - أدلة غير كافية قابلة للاستخدام</string>
+  <string name="wear_inconclusive">الفحص التلقائي غير حاسم</string>
+  <string name="wear_possible_damage">الفحص التلقائي: احتمال التآكل — افحص هذه المنطقة</string>
+  <string name="wear_auto_none">الفحص التلقائي: لم يتم وضع علامة على أي شذوذ في اللون</string>
+  <string name="wear_your_observation">ملاحظتك: %1$s</string>
+  <string name="wear_white_border">الحدود البيضاء يمكن أن تخفي البياض. لا يمكن لفحوصات الألوان تأكيد حالتها.</string>
+  <string name="wear_textured_border">العمل الفني المتغير أو الرقائق المعدنية يحد من مقارنة الألوان.</string>
+  <string name="wear_flagged_pixels">وحدات بكسل المنطقة التي تم وضع علامة عليها: %1$.1f%% · الحالات الشاذة الأكثر سطوعًا: %2$.1f%%</string>
+  <string name="wear_zoom_hint">قرصة للتكبير والسحب للفحص. لا يضيف التكبير أي تفاصيل للصورة؛ استعادة الصور الباهتة.</string>
+  <string name="wear_record_observation">ملاحظتك لهذه المنطقة</string>
+  <string name="wear_not_reviewed">لم يتم مراجعتها</string>
+  <string name="wear_observed_clear">لا يوجد ضرر واضح في هذه الصورة</string>
+  <string name="wear_whitening">تبييض/جرجرة مرئية</string>
+  <string name="wear_chip">رقاقة / المسيل للدموع مرئية</string>
+  <string name="wear_bend">الانحناء/الانبعاج مرئي</string>
+  <string name="wear_observation_scope">يتم الاحتفاظ بملاحظاتك في جلسة التصوير هذه. إنهم لا يشهدون على الحالة أو يتجاوزون جودة الصورة الرديئة. يمنع الضرر المسجل التقدير الشامل للنموذج.</string>
+  <string name="wear_done">تم</string>
+  <string name="wear_damage_blocks_grade">تم تسجيل أضرار واضحة. تم حجب تقدير النموذج الإجمالي لأن النتائج اليدوية ليست مدخلات نموذجية معايرة. نتائج التوسيط لا تأخذ في الاعتبار هذا الضرر.</string>
+  <string name="wear_incomplete_blocks_grade">الزوايا والحواف تحتاج إلى فحص دقيق. الأدلة المفقودة أو غير الحاسمة تمنع تقدير النموذج الشامل؛ التمركز وحده لا يحدد الدرجة.</string>
+</resources>

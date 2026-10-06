@@ -254,3 +254,10 @@ editing, missing-front recovery, game context and a quality-gated PSA 10 centeri
 for all TCGs. Removed unsupported overall-model confidence claims. **P0 still open:** verified-grade
 phone-photo calibration and device validation before selling overall predictions, particularly
 One Piece; acceptance plan in docs/PREGRADING-VALIDATION.md.
+
+### Corner and edge inspection follow-up
+
+- Implemented individual front/back corner and edge region views, magnified review and session-level user findings.
+- Missing, white-on-white and textured evidence is labelled inconclusive; poor photo quality cannot be overridden by review.
+- Recorded damage and incomplete corner/edge evidence block unsupported overall estimates.
+- Still open: independently annotated physical defects, phone-device tests and region-level detection accuracy acceptance criteria before selling a dependable overall grader.
