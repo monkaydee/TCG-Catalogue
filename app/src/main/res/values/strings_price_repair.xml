@@ -9,4 +9,7 @@
     <string name="graded_providers_unavailable" tools:ignore="MissingTranslation">The price server answered, but graded-price providers are temporarily unavailable or at their request limit.</string>
     <string name="quote_lookup_missing" tools:ignore="MissingTranslation">Latest lookup returned no matching quote; no saved price to retain</string>
     <string name="quote_lookup_failed" tools:ignore="MissingTranslation">Latest price lookup failed; no saved price to retain</string>
+    <string name="quote_cardmarket_aggregate" tools:ignore="MissingTranslation">Cardmarket product-wide reference; this guide does not isolate language or condition</string>
+    <string name="quote_native_cardmarket_reference" tools:ignore="MissingTranslation">%1$s catalogue confirms this Cardmarket product</string>
+    <string name="quote_english_tcgplayer_reference" tools:ignore="MissingTranslation">English raw-card reference; not a quote for the saved card language</string>
 </resources>

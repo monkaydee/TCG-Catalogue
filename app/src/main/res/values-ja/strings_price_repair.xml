@@ -9,4 +9,7 @@
     <string name="graded_providers_unavailable" tools:ignore="MissingTranslation">価格サーバーは応答しましたが、鑑定済み価格の提供元が一時的に利用できないか、リクエスト上限に達しています。</string>
     <string name="quote_lookup_missing" tools:ignore="MissingTranslation">一致する価格が見つかりませんでした。保持できる保存価格はありません</string>
     <string name="quote_lookup_failed" tools:ignore="MissingTranslation">価格の取得に失敗しました。保持できる保存価格はありません</string>
+    <string name="quote_cardmarket_aggregate" tools:ignore="MissingTranslation">Cardmarketの商品全体の参考価格です。このガイドは言語や状態別の価格ではありません</string>
+    <string name="quote_native_cardmarket_reference" tools:ignore="MissingTranslation">%1$s のカタログでこのCardmarket商品が確認されています</string>
+    <string name="quote_english_tcgplayer_reference" tools:ignore="MissingTranslation">英語の未鑑定カードの参考価格です。保存したカードの言語の価格ではありません</string>
 </resources>

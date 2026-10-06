@@ -271,7 +271,8 @@ class CardRepository(
      */
     fun rawPrice(card: CardCandidate, variant: Variant, s: AppSettings, listing: CardmarketApi.Listing? = null): Price? {
         if (s.pokemonSource == PriceSource.CARDMARKET) listing?.takeUnless { it.nonEnglish }?.price?.let { return Price(it, PriceSource.CARDMARKET, "Cardmarket aggregate reference; condition/language are not verified") }
-        return Pricing.pick(variant, card.rarity, Pricing.sourceFor(card.game, s.pokemonSource), s.usdToEur, PriceTexts.App)
+        val quote = Pricing.pick(variant, card.rarity, Pricing.sourceFor(card.game, s.pokemonSource), s.usdToEur, PriceTexts.App)
+        return quote?.let { if (it.source == PriceSource.CARDMARKET) it.copy(note = listOfNotNull(it.note, AppStrings.get(R.string.quote_cardmarket_aggregate)).distinct().joinToString(" · ")) else it }
     }
 
     /** Cardmarket's listings (every print) of a One Piece card, empty for other games. */
@@ -415,15 +416,29 @@ class CardRepository(
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
     suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings, listing: CardmarketApi.Listing? = null, language: String = "EN"): Price? {
         if (!ownLanguage(card, language)) {
-            val local = languagePrice(card, variant, language, condition)
-            if (local != null) return local
-            return null // An English price is not a valuation of this language.
+            val reference = if (condition == "NM") nativeCardmarketReference(card, variant, language) else null
+            if (s.pokemonSource == PriceSource.CARDMARKET && reference != null) return reference
+            val local = attempt { languagePrice(card, variant, language, condition) }
+            local.getOrNull()?.let { return it }
+            if (reference != null) return reference
+            return local.getOrThrow() // No English TCGplayer substitution for this language.
         }
         val base = rawPrice(card, variant, s, listing)?.takeIf { it.amount.isFinite() && it.amount > 0 }
         if (condition == "NM" && base != null) return base
         val table = if (language == "EN") runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull() else null
         return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }, PriceTexts.App)
             ?: serverRawPrice(card, variant, language, condition)
+    }
+
+    /** Native catalogue confirms the same product; the public guide remains a blended reference. */
+    private suspend fun nativeCardmarketReference(card: CardCandidate, variant: Variant, language: String): Price? {
+        if (card.game != Game.POKEMON || language == "EN" || language == "JA" && !card.cardId.startsWith("ja:")) return null
+        val native = attempt { tcgdex.forLanguage(language.lowercase()).card(card.cardId.substringAfter(':')) }.getOrNull() ?: return null
+        if (native.setId.substringAfter(':') != card.setId.substringAfter(':') || native.number != card.number ||
+            native.cardmarketId == null || native.cardmarketId != card.cardmarketId) return null
+        val localVariant = native.variants.firstOrNull { it.key == variant.key } ?: return null
+        val amount = localVariant.prices[PriceSource.CARDMARKET]?.takeIf { it.isFinite() && it > 0 } ?: return null
+        return Price(amount, PriceSource.CARDMARKET, AppStrings.get(R.string.quote_native_cardmarket_reference, language) + " · " + AppStrings.get(R.string.quote_cardmarket_aggregate))
     }
 
     /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */
@@ -712,15 +727,16 @@ class CardRepository(
         groups += PriceGroup(
             "Cardmarket" + (l?.let { " · ${it.label}" } ?: ""),
             cmLines,
-            if (cmLines.isEmpty()) AppStrings.get(R.string.data_overview_no_cardmarket) else null,
+            if (cmLines.isEmpty()) AppStrings.get(R.string.data_overview_no_cardmarket) else AppStrings.get(R.string.quote_cardmarket_aggregate),
         )
         val tcg = variant.details.filter { it.source == PriceSource.TCGPLAYER }
-        groups += PriceGroup("TCGplayer", tcg, if (tcg.isEmpty()) AppStrings.get(R.string.data_overview_no_tcgplayer) else null)
+        val englishReference = card.language != "EN"
+        groups += PriceGroup("TCGplayer", tcg, if (tcg.isEmpty()) AppStrings.get(R.string.data_overview_no_tcgplayer) else if (englishReference) AppStrings.get(R.string.quote_english_tcgplayer_reference) else null)
         val byCondition = conditions.await()
         groups += PriceGroup(
             AppStrings.get(R.string.data_overview_by_condition),
             TcgPlayerApi.CONDITION_NAMES.mapNotNull { (code, name) -> byCondition?.get(name)?.let { PricePoint(PriceSource.TCGPLAYER, code, it) } },
-            if (byCondition.isNullOrEmpty()) AppStrings.get(R.string.data_overview_no_condition_sales) else null,
+            if (byCondition.isNullOrEmpty()) AppStrings.get(R.string.data_overview_no_condition_sales) else if (englishReference) AppStrings.get(R.string.quote_english_tcgplayer_reference) else null,
         )
         groups
     }

@@ -9,4 +9,7 @@
     <string name="graded_providers_unavailable" tools:ignore="MissingTranslation">Der Preisserver hat geantwortet, aber die Anbieter für Grading-Preise sind vorübergehend nicht verfügbar oder haben ihr Anfragelimit erreicht.</string>
     <string name="quote_lookup_missing" tools:ignore="MissingTranslation">Die letzte Suche ergab keinen passenden Preis; kein gespeicherter Preis vorhanden</string>
     <string name="quote_lookup_failed" tools:ignore="MissingTranslation">Die letzte Preisabfrage ist fehlgeschlagen; kein gespeicherter Preis vorhanden</string>
+    <string name="quote_cardmarket_aggregate" tools:ignore="MissingTranslation">Produktweite Cardmarket-Referenz; Sprache und Zustand werden im Preisführer nicht getrennt</string>
+    <string name="quote_native_cardmarket_reference" tools:ignore="MissingTranslation">Der %1$s-Katalog bestätigt dieses Cardmarket-Produkt</string>
+    <string name="quote_english_tcgplayer_reference" tools:ignore="MissingTranslation">Referenz für englische Karten ohne Grading; kein Preis für die gespeicherte Kartensprache</string>
 </resources>

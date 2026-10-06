@@ -61,9 +61,9 @@ class TcgApp : Application() {
                 PriceRefreshWorker.runNow(this@TcgApp)
                 revisions.edit().putInt("revision", 4).apply()
             }
-            if (!revisions.getBoolean("condition-price-repair", false)) {
+            if (!revisions.getBoolean("native-cardmarket-reference-repair", false)) {
                 PriceRefreshWorker.runNow(this@TcgApp)
-                revisions.edit().putBoolean("condition-price-repair", true).apply()
+                revisions.edit().putBoolean("native-cardmarket-reference-repair", true).apply()
             }
         }
 

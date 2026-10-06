@@ -401,7 +401,7 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                     TextButton(onClick = {
                         loading = true
                         scope.launch {
-                            runCatching { repo.refreshPrice(c.id) }
+                            if (!c.graded) runCatching { repo.refreshPrice(c.id) }
                             groups = repo.priceOverview(c)
                             loading = false
                         }

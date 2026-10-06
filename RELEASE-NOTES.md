@@ -1,10 +1,9 @@
-Restore raw quotes from condition data and clarify slab-price availability.
+Restore verified Cardmarket references for ungraded Pokémon cards.
 
-- Recover saved raw valuations from TCGplayer condition sales when a catalogue has a product ID but no aggregate market price. Missing intermediate condition buckets no longer hide an available quote for the requested condition.
-- Refresh missing raw valuations when their card page opens, and update the saved valuation when “All prices” is refreshed. Queue an upgrade refresh while retaining previous quotes, manual values and purchase costs.
-- Show an automatically loaded, clearly labelled ungraded market reference on slab pages. It uses the saved language and printing and is kept separate from graded valuations, binder values and portfolio totals.
-- Say when this specific grade has no quote. Distinguish an upstream graded-price provider outage or request limit from an unreachable server.
-- Remove misleading “previous quote retained” notices when no previous quote exists.
-- Add regression checks for condition-only prices, Zekrom raw-price recovery, GSG 8.5 reference separation, language isolation and provider-status handling.
+- Accept a Cardmarket guide reference for a non-English NM Pokémon card only after its native-language catalogue confirms the same set, collector number, printing and Cardmarket product. This fixes cards such as Mega Gengar ex MEP 073 being blank despite a verified German catalogue reference.
+- Label Cardmarket values as product-wide guide references: they do not isolate language or condition. English TCGplayer references shown in comparison tables are labelled when the saved card is another language.
+- Keep rejecting missing native catalogue records, different products, different printings and unsupported conditions. Never substitute an English TCGplayer quote as a German/Japanese valuation or a raw reference as a graded valuation.
+- Queue a repair refresh, preserving manual values and purchase costs. Keep raw comparison refreshes independent of graded-provider outages.
+- Add regressions for English/German MEP 073 without TCGplayer data and for mismatched products, printings, missing catalogue records and unsupported-language/condition cases.
 
-CardNavo name, signing and the 0.1.<build-number> release convention are preserved. An ungraded reference is not a slab valuation. Exact grader/grade/language quotes may remain unavailable without sufficient matching market evidence.
+CardNavo name, signing and the 0.1.<build-number> release convention are preserved. Exact language- and condition-specific quotes and graded quotes still require matching market evidence. Cardmarket guide values are market references rather than guaranteed sale proceeds.

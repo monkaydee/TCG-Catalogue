@@ -19,6 +19,45 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(application=Application::class, sdk=[34])
 class PriceRefreshRegressionTest {
+    @Test fun megaGengarPromoUsesVerifiedNativeCardmarketReferenceWithoutTcgplayer() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        AppStrings.init(context)
+        var nativeProduct = 891721
+        var nativeVariant = "holo"
+        var nativeAvailable = true
+        val client = OkHttpClient.Builder().addInterceptor { chain ->
+            val request = chain.request()
+            val native = request.url.encodedPath.contains("/de/")
+            val available = request.url.encodedPath.endsWith("/cards/mep-073") && (!native || nativeAvailable)
+            val body = if (available) """{"id":"mep-073","name":"Mega Gengar ex","localId":"073","set":{"id":"mep","name":"MEP Black Star Promos","cardCount":{"official":0}},"variants":{"${if (native) nativeVariant else "holo"}":true},"pricing":{"cardmarket":{"idProduct":${if (native) nativeProduct else 891721},"trend":3.06,"avg":4.33},"tcgplayer":null}}""" else ""
+            Response.Builder().request(request).protocol(Protocol.HTTP_1_1).code(if (available) 200 else 404).message("fixture").body(body.toResponseBody()).build()
+        }.build()
+        val http = Http(client); val tcgdex = TcgDexApi(http)
+        val index = CardIndexApi(http, java.io.File(context.cacheDir,"native-cm-reference-index"))
+        val db = Room.inMemoryDatabaseBuilder(context,AppDatabase::class.java).allowMainThreadQueries().build()
+        try {
+            val settings = SettingsStore(context)
+            val repo = CardRepository(db,tcgdex,OnePieceApi(http),ScryfallApi(http),index,TcgPlayerApi(http),CardmarketApi(index,http),CardmarketPokemon(index,http,tcgdex),FxApi(http),settings)
+            val raw = OwnedCard(game=Game.POKEMON,cardId="mep-073",variant="holo",variantLabel="Holo",name="Mega Gengar ex",number="073",setId="mep",setName="MEP Black Star Promos",language="EN",condition="NM",price=null,purchasePrice=0.0,priceCurrency="EUR")
+            val enId = db.cards().insert(raw)
+            val deId = db.cards().insert(raw.copy(language="DE"))
+            assertTrue(repo.refreshPrice(enId)); assertTrue(repo.refreshPrice(deId))
+            val german = db.cards().get(deId)!!
+            assertEquals(3.06,german.price!!,0.001); assertEquals("EUR",german.priceCurrency)
+            assertTrue(german.priceNote!!.contains("DE catalogue")); assertTrue(german.priceNote!!.contains("does not isolate language or condition"))
+            assertEquals(0.0,german.purchasePrice!!,0.0)
+            val card = repo.candidateFor(raw)!!; val variant = card.variants.single()
+            assertNull(repo.conditionPrice(card,variant,"LP",settings.current(),language="DE"))
+            nativeProduct = 1
+            assertNull(repo.conditionPrice(card,variant,"NM",settings.current(),language="DE"))
+            nativeProduct = 891721; nativeVariant = "reverse"
+            assertNull(repo.conditionPrice(card,variant,"NM",settings.current(),language="DE"))
+            nativeVariant = "holo"; nativeAvailable = false
+            assertNull(repo.conditionPrice(card,variant,"NM",settings.current(),language="DE"))
+            assertNull(repo.conditionPrice(card,variant,"NM",settings.current(),language="JA"))
+        } finally { db.close() }
+    }
+
     @Test fun conditionOnlyPricesRestoreRawRowsAndRemainReferencesForSlabs() = runBlocking {
         val context = ApplicationProvider.getApplicationContext<Context>()
         AppStrings.init(context)

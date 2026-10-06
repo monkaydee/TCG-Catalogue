@@ -39,7 +39,7 @@ availability evidence without certifying a user's physical product. Catalogue co
 establish that every template is published in every language.
 
 One Piece Cardmarket choices are automatic only when exactly one priced English listing exists.
-Non-English fallback and choosing a printing/TCGplayer product by closest price are removed.
+Unverified non-English fallback and choosing a printing/TCGplayer product by closest price are removed.
 Cardmarket public guides still represent aggregate references where exact-language/condition
 transactions are not provided; the source note discloses that limitation.
 
@@ -73,3 +73,9 @@ Holo wording may be absent from a comparable only when the catalogue explicitly 
 Raw saved valuations query TCGplayer condition buckets even when the catalogue has no aggregate market price. An explicit requested-condition bucket can be used without intermediate buckets or a market reference; it is not synthesized from a different condition. Matching remains restricted to the saved language and printing. Missing raw rows refresh on opening their card page, and refreshing the comparison tables also refreshes the saved valuation.
 
 A slab page automatically loads an ungraded market reference, independently of the exact graded quote. The reference is labelled and excluded from the slab's stored value, binder totals and portfolio totals. A response saying graded providers are unavailable is distinct from a network failure: the server answered but upstream data could not be obtained. A missing quote never claims to retain a price that was not saved.
+
+## Verified native Cardmarket guide references
+
+The public Cardmarket guide is a product-wide aggregate, not an English-only transaction feed. For a non-English NM Pokémon row, a native TCGdex catalogue record may establish that the same set, collector number, variant and Cardmarket product have a positive guide value. The app can then save this as a clearly labelled Cardmarket reference. This is not a claim of a language- or condition-specific quote. English TCGplayer data remain excluded from non-English saved valuations.
+
+A missing native record, differing product ID, differing printing, or requested played condition prevents this fallback. English collector identities are never translated into Japanese release identities. Native references do not replace exact graded prices. Repair refreshes preserve manual values, quantities and cost information.
