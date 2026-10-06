@@ -282,7 +282,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
         : graded.unsupported.has(c.key) ? "unsupported" : "unavailable",
       source: p ? p.source : null,
       fetchedAt: rawEntry ? new Date(rawEntry.fetchedAt).toISOString() : null,
-      stale: (rawEntry?.stale ?? false) || gradedStale,
+      stale: rawEntry?.stale ?? false,
       reason,
     };
   });

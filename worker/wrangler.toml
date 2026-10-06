@@ -22,7 +22,7 @@ database_id = "REPLACE_WITH_D1_DATABASE_ID"
 # How long results are reused before asking a provider again.
 RAW_TTL_HOURS = "24"
 GRADED_TTL_HOURS = "72"
-NOT_FOUND_TTL_HOURS = "72"
+NOT_FOUND_TTL_HOURS = "6"
 CERT_TTL_DAYS = "30"
 POP_TTL_DAYS = "7"
 

@@ -4,6 +4,7 @@ import json
 import math
 import os
 import subprocess
+import time
 from pathlib import Path
 
 def main():
@@ -17,7 +18,14 @@ def main():
         if data is not None:
             args += ["-H", "Content-Type: application/json", "--data-raw", json.dumps(data)]
         return json.loads(subprocess.check_output(args, input=config.encode()))
-    status = call("/v1/status")
+    # workers.dev edges can briefly serve the previous version after deployment.
+    for attempt in range(9):
+        status = call("/v1/status")
+        if status.get("priceMatchingRevision") == 4:
+            break
+        if attempt == 8:
+            raise AssertionError("Updated price service did not propagate")
+        time.sleep(5)
     # Use native Japanese release identities; translating an English collector number is invalid.
     fixtures = [
         {"game":"POKEMON","id":"base1-4","name":"Charizard","set":"Base Set","number":"4/102","tcgplayerId":"42382","printing":"Holofoil","language":"EN","market":"US","graded":True},
@@ -40,7 +48,7 @@ def main():
         for grade in row.get("graded",[]):
             assert grade["price"]>0 and math.isfinite(grade["price"])
             assert grade["currency"] in ["USD","EUR"] and grade.get("source")
-            assert grade.get("fetchedAt") and isinstance(grade.get("stale"),bool)
+            assert grade.get("fetchedAt") and isinstance(grade.get("stale"),bool), "Missing graded freshness: " + json.dumps(row)
             if "eBay" in grade["source"]:
                 assert grade.get("listings",0)>=5 and grade["low"]<=grade["price"]<=grade["high"]
         if "eBay" in (row.get("source") or ""):

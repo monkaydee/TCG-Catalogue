@@ -292,6 +292,21 @@ describe("getPrices", () => {
     expect(r2.conditions?.NM).toBe(1);
   });
 
+  it("keeps cached graded freshness independent from raw freshness", async () => {
+    const [c] = cards(1, { graded: true });
+    const grade: GradedPrice = {grader:"PSA",grade:"9",price:80,currency:"USD",source:"test"};
+    const cache=memoryCache({
+      [`raw|${c.key}`]: {value:{price:raw("test",5)},source:"test",fetchedAt:NOW-H,expiresAt:NOW+H},
+      [`graded|${c.key}`]: {value:[grade],source:"test",fetchedAt:NOW-80*H,expiresAt:NOW-H},
+    });
+    const provider:ChainProvider<GradedPrice[]>={name:"ppt",batchSize:1,supports:()=>true,async fetch(){return new Map();}};
+    const [r]=await getPrices([c],deps(cache,[],fakeGate({ppt:0}),[provider]));
+    expect(r.stale).toBe(false);
+    expect(r.gradedStale).toBe(true);
+    expect(r.gradedFetchedAt).toBe(new Date(NOW-80*H).toISOString());
+    expect(r.graded[0]).toMatchObject({stale:true,fetchedAt:r.gradedFetchedAt});
+  });
+
   it("looks up a card listed twice only once", async () => {
     const [c] = cards(1);
     const jt = fakeProvider("justtcg", 20, () => true);
