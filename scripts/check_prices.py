@@ -3,17 +3,20 @@
 import json
 import math
 import os
-import urllib.request
+import subprocess
 from pathlib import Path
 
 def main():
     url = os.environ["URL"].rstrip("/")
     key = os.environ["APP_KEY"]
     def call(path, data=None):
-        request = urllib.request.Request(url + path, data=json.dumps(data).encode() if data is not None else None,
-            headers={"X-App-Key": key, "Content-Type": "application/json"})
-        with urllib.request.urlopen(request, timeout=90) as r:
-            return json.load(r)
+        # Match the deployment's curl health check; Cloudflare rejects urllib's default agent.
+        # Keep authentication out of process arguments and error output.
+        config = 'header = ' + json.dumps('X-App-Key: ' + key) + '\n'
+        args = ["curl", "--fail", "--silent", "--show-error", "--max-time", "90", "--config", "-", url + path]
+        if data is not None:
+            args += ["-H", "Content-Type: application/json", "--data-raw", json.dumps(data)]
+        return json.loads(subprocess.check_output(args, input=config.encode()))
     status = call("/v1/status")
     # Non-English card must get its own key and may abstain, never inherit the English result.
     cards = [{"game":"POKEMON","id":"base1-58","name":"Pikachu","set":"Base Set","number":"58/102","language":lang} for lang in ["EN","DE","JA"]]
