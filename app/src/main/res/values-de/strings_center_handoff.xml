@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Weiter zur Zentrierung</string>
+  <string name="center_confirm_next">Bestätigen Sie den Umriss und messen Sie die Zentrierung</string>
+  <string name="center_step_two">Schritt 2: äußere und innere Führungen</string>
+</resources>

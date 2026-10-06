@@ -31,6 +31,10 @@ object Centering {
         val topBottom: Double get() = 100 * top / (top + bottom)
         /** The worse axis as the bigger side's share: 58 for 58/42. */
         val worst: Double get() = maxOf(leftRight, 100 - leftRight, topBottom, 100 - topBottom)
+        /** Reviewing unchanged automatic guides does not turn them into uncalibrated inputs. */
+        fun samePlacement(other: Result): Boolean =
+            listOf(left, right, top, bottom).zip(listOf(other.left, other.right, other.top, other.bottom)).all { (a, b) -> abs(a - b) < 1e-6 } &&
+                cuts.size == other.cuts.size && cuts.zip(other.cuts).all { (a, b) -> abs(a - b) < 1e-6 }
     }
 
     /** Inward fractions from the flattened image; each width is inner minus outer. */

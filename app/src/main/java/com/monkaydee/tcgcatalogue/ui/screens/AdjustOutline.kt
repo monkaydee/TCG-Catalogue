@@ -43,23 +43,25 @@ import com.monkaydee.tcgcatalogue.grade.Quad
  * helps to place a corner exactly.
  */
 @Composable
-fun AdjustOutline(photo: Bitmap, start: Quad, onCancel: () -> Unit, onApply: (Quad) -> Unit) {
+fun AdjustOutline(photo: Bitmap, start: Quad, onCancel: () -> Unit, fullscreen: Boolean = false, applyLabel: String? = null, onApply: (Quad) -> Unit) {
     var corners by remember(start) { mutableStateOf(start.corners) }
     var dragging by remember { mutableIntStateOf(-1) }
     val accent = MaterialTheme.colorScheme.primary
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.then(if (fullscreen) Modifier.fillMaxSize() else Modifier), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(stringResource(R.string.grade_adjust_hint), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-        BoxWithConstraints(Modifier.fillMaxWidth().aspectRatio(photo.width.toFloat() / photo.height)) {
-            val k = constraints.maxWidth.toFloat() / photo.width // photo pixels -> screen pixels
+        BoxWithConstraints(Modifier.fillMaxWidth().then(if (fullscreen) Modifier.weight(1f) else Modifier.aspectRatio(photo.width.toFloat() / photo.height))) {
+            val k = minOf(constraints.maxWidth.toFloat() / photo.width, constraints.maxHeight.toFloat() / photo.height).coerceAtLeast(0.001f)
+            val ox = (constraints.maxWidth - photo.width * k) / 2
+            val oy = (constraints.maxHeight - photo.height * k) / 2
             val grab = with(LocalDensity.current) { 40.dp.toPx() }
             val image = remember(photo) { photo.asImageBitmap() }
-            Image(image, null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+            Image(image, null, Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
             Canvas(
-                Modifier.fillMaxSize().pointerInput(k) {
+                Modifier.fillMaxSize().pointerInput(k, ox, oy) {
                     detectDragGestures(
                         onDragStart = { at ->
-                            val near = corners.withIndex().minByOrNull { (_, c) -> (Offset(c.x.toFloat() * k, c.y.toFloat() * k) - at).getDistance() }
-                            dragging = near?.takeIf { (_, c) -> (Offset(c.x.toFloat() * k, c.y.toFloat() * k) - at).getDistance() < grab }?.index ?: -1
+                            val near = corners.withIndex().minByOrNull { (_, c) -> (Offset(ox + c.x.toFloat() * k, oy + c.y.toFloat() * k) - at).getDistance() }
+                            dragging = near?.takeIf { (_, c) -> (Offset(ox + c.x.toFloat() * k, oy + c.y.toFloat() * k) - at).getDistance() < grab }?.index ?: -1
                         },
                         onDragEnd = { dragging = -1 },
                         onDragCancel = { dragging = -1 },
@@ -75,7 +77,7 @@ fun AdjustOutline(photo: Bitmap, start: Quad, onCancel: () -> Unit, onApply: (Qu
                     }
                 },
             ) {
-                val pts = corners.map { Offset(it.x.toFloat() * k, it.y.toFloat() * k) }
+                val pts = corners.map { Offset(ox + it.x.toFloat() * k, oy + it.y.toFloat() * k) }
                 val path = Path().apply { moveTo(pts[0].x, pts[0].y); pts.drop(1).forEach { lineTo(it.x, it.y) }; close() }
                 drawPath(path, accent, style = Stroke(width = 2.dp.toPx()))
                 pts.forEachIndexed { i, p ->
@@ -109,7 +111,7 @@ fun AdjustOutline(photo: Bitmap, start: Quad, onCancel: () -> Unit, onApply: (Qu
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp, androidx.compose.ui.Alignment.CenterHorizontally)) {
             OutlinedButton(onClick = onCancel) { Text(stringResource(android.R.string.cancel)) }
-            Button(onClick = { onApply(Quad(corners[0], corners[1], corners[2], corners[3])) }) { Text(stringResource(R.string.grade_adjust_apply)) }
+            Button(onClick = { onApply(Quad(corners[0], corners[1], corners[2], corners[3])) }, modifier = Modifier.weight(1f)) { Text(applyLabel ?: stringResource(R.string.grade_adjust_apply)) }
         }
     }
 }

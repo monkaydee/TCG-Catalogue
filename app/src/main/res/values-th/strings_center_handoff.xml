@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">ดำเนินการต่อเพื่อเป็นศูนย์กลาง</string>
+  <string name="center_confirm_next">ยืนยันโครงร่างและวัดการจัดกึ่งกลาง</string>
+  <string name="center_step_two">ขั้นตอนที่ 2: คำแนะนำด้านนอกและด้านใน</string>
+</resources>

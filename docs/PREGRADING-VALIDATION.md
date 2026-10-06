@@ -65,3 +65,14 @@ abstention separately from centering and overall grade accuracy. No paid-accurac
 The region-view inspection flag uses a small anomaly share (0.2% colour deviation or 0.1%
 brighter anomalies) independently of the trained model severity buckets. This conservative
 review trigger is not calibrated defect severity and needs the region-level benchmark above.
+
+## Outline handoff regression
+
+The user's next screenshot exposed a missed production transition: PreGrader.adjust creates a
+fresh unconfirmed side, and applying the four-corner outline previously returned to capture
+without opening centering. Both applying that correction and confirming the detected outline
+now explicitly confirm the side and open its eight-guide editor. The outline footer is fitted
+inside the viewport. Full PreGradeFlow UI tests exercise front correction/application and back
+confirmation through inner/outer edits and continuation, rather than only mounting the guide
+widget behind a test callback. Unchanged automatic placement retains its model-input status;
+actual manual changes stay outside the calibrated model.

@@ -267,6 +267,91 @@ class Screenshots {
         assertFalse(side.copy(problems = listOf(com.monkaydee.tcgcatalogue.grade.PhotoCheck.Problem.BLURRY)).usableForWear)
     }
 
+    private fun handoffSide(): com.monkaydee.tcgcatalogue.grade.PreGrader.Side {
+        val bitmap = Bitmap.createBitmap(600, 840, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.BLUE) }
+        return com.monkaydee.tcgcatalogue.grade.PreGrader.Side(bitmap, emptyList(), null,
+            com.monkaydee.tcgcatalogue.grade.Wear.Result(emptyMap()), photo = bitmap,
+            quad = com.monkaydee.tcgcatalogue.grade.Quad(
+                com.monkaydee.tcgcatalogue.grade.Pt(1.0, 1.0), com.monkaydee.tcgcatalogue.grade.Pt(598.0, 1.0),
+                com.monkaydee.tcgcatalogue.grade.Pt(598.0, 838.0), com.monkaydee.tcgcatalogue.grade.Pt(1.0, 838.0)))
+    }
+
+    @Test fun correctedFrontOutlineOpensInnerOuterEditorDirectly() {
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                com.monkaydee.tcgcatalogue.ui.screens.PreGradeFlow(null, {}, Game.ONE_PIECE, initialFront = handoffSide())
+            }
+        }
+        rule.onNodeWithText("Adjust the four card corners").assertIsDisplayed().performClick()
+        rule.onNodeWithText("Card outline · four corners").assertIsDisplayed()
+        rule.onNodeWithText("Continue to centering").assertIsDisplayed().performClick()
+        rule.waitUntil(15000) { rule.onAllNodes(androidx.compose.ui.test.hasText("Inner frame")).fetchSemanticsNodes().isNotEmpty() }
+        rule.onNodeWithText("Centering · eight guides").assertIsDisplayed()
+        rule.onNodeWithText("Outer edge").assertIsDisplayed().performClick()
+        rule.onNodeWithContentDescription("+1 image pixel").performClick()
+        rule.onNodeWithText("Inner frame").assertIsDisplayed().performClick()
+        rule.onNodeWithContentDescription("+1 image pixel").performClick()
+        rule.onNodeWithText("1× ▾").performClick()
+        rule.onNodeWithText("5×").performClick()
+        rule.onNodeWithText("Inner frame").assertIsDisplayed()
+        rule.onNodeWithTag("center_detail_canvas").performTouchInput {
+            val scale = minOf(width / 189f, height / 264f)
+            val offset = (width - 189 * scale) / 2
+            val inner = offset + 48.25f * scale
+            swipe(Offset(inner, height / 2f), Offset(inner + 8 * scale, height / 2f), 300)
+        }
+        rule.onNodeWithText("↔ 53.9/46.1 · ↕ 50.0/50.0").assertIsDisplayed()
+        save("outline_to_inner_outer_centering")
+        rule.onNodeWithText("Use these guides").assertIsDisplayed().performClick()
+        rule.onNodeWithText("Next: back").performScrollTo().performClick()
+        rule.onNodeWithText("Confirm outline and measure centering").assertDoesNotExist()
+    }
+
+    @Test fun confirmingBackOutlineOpensInnerOuterEditorDirectly() {
+        val side = handoffSide()
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                com.monkaydee.tcgcatalogue.ui.screens.PreGradeFlow(null, {}, Game.ONE_PIECE,
+                    initialFront = side.copy(outlineConfirmed = true), initialBack = side,
+                    initialStep = com.monkaydee.tcgcatalogue.ui.screens.Step.BACK)
+            }
+        }
+        rule.onNodeWithText("Confirm outline and measure centering").assertIsDisplayed().performClick()
+        rule.onNodeWithText("Centering · eight guides").assertIsDisplayed()
+        rule.onNodeWithText("Outer edge").assertIsDisplayed().performClick()
+        rule.onNodeWithContentDescription("+1 image pixel").performClick()
+        rule.onNodeWithText("Inner frame").assertIsDisplayed().performClick()
+        rule.onNodeWithContentDescription("+1 image pixel").performClick()
+        rule.onNodeWithText("Use these guides").assertIsDisplayed().performClick()
+        rule.onNodeWithText("Show result").performScrollTo().performClick()
+        rule.onNodeWithText("Edit back centering").performScrollTo().assertIsDisplayed()
+    }
+
+    private fun checkCenteringReviewKeepsCalibrationOnlyWhenUnchanged(changeInner: Boolean) {
+        val source = handoffSide()
+        val zones = (com.monkaydee.tcgcatalogue.grade.Wear.EDGES + com.monkaydee.tcgcatalogue.grade.Wear.CORNERS)
+            .associateWith { com.monkaydee.tcgcatalogue.grade.Wear.Zone(0.0, 0.0, 0.0) }
+        val side = source.copy(centering = com.monkaydee.tcgcatalogue.grade.Centering.Result(30.0, 30.0, 42.0, 42.0),
+            wear = com.monkaydee.tcgcatalogue.grade.Wear.Result(zones))
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                com.monkaydee.tcgcatalogue.ui.screens.PreGradeFlow(null, {}, Game.POKEMON,
+                    initialFront = side, initialBack = side.copy(outlineConfirmed = true))
+            }
+        }
+        rule.onNodeWithText("Confirm outline and measure centering").performClick()
+        rule.onNodeWithText("Inner frame").assertIsDisplayed()
+        if (changeInner) rule.onNodeWithContentDescription("+1 image pixel").performClick()
+        rule.onNodeWithText("Use these guides").performClick()
+        rule.onNodeWithText("Next: back").performScrollTo().performClick()
+        rule.onNodeWithText("Show result").performScrollTo().performClick()
+        if (changeInner) rule.onNodeWithText("Experimental Pokémon photo estimate").assertDoesNotExist()
+        else rule.onNodeWithText("Experimental Pokémon photo estimate").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test fun unchangedGuideReviewPreservesAutomaticModelInputs() = checkCenteringReviewKeepsCalibrationOnlyWhenUnchanged(false)
+    @Test fun movedInnerGuideRemainsOutsideCalibratedModelInputs() = checkCenteringReviewKeepsCalibrationOnlyWhenUnchanged(true)
+
     @Test fun binderPages() {
         var grid by mutableStateOf(3)
         rule.setContent {

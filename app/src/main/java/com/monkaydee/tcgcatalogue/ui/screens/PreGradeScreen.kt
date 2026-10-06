@@ -119,12 +119,19 @@ internal enum class Step { FRONT, BACK, RESULT }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreGradeScreen(title: String?, onBack: () -> Unit, initialGame: Game? = null) {
+    PreGradeFlow(title, onBack, initialGame)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game? = null,
+    initialFront: PreGrader.Side? = null, initialBack: PreGrader.Side? = null, initialStep: Step = Step.FRONT) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var step by remember { mutableStateOf(Step.FRONT) }
+    var step by remember { mutableStateOf(initialStep) }
     var game by remember { mutableStateOf<Game?>(initialGame) }
-    var front by remember { mutableStateOf<PreGrader.Side?>(null) }
-    var back by remember { mutableStateOf<PreGrader.Side?>(null) }
+    var front by remember { mutableStateOf(initialFront) }
+    var back by remember { mutableStateOf(initialBack) }
     var camera by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -191,12 +198,14 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit, initialGame: Game? = null
                     val side = (if (target == Step.FRONT) front else back)!!
                     Column(Modifier.fillMaxSize().padding(12.dp)) {
                         Text(stringResource(if (target == Step.FRONT) R.string.grade_front else R.string.grade_back), style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.center_step_two), style = MaterialTheme.typography.bodySmall)
                         ManualCenteringPanel(side, fullscreen = true, onCancel = { editingCentering = null }, onSkip = {
                             val fixed = side.copy(centering = null, manualCentering = false, centeringSkipped = true)
                             if (target == Step.FRONT) front = fixed else back = fixed
                             editingCentering = null
                         }, onApply = { c ->
-                            val fixed = side.copy(centering = c, manualCentering = true, centeringSkipped = false)
+                            val unchanged = side.centering?.samePlacement(c) == true
+                            val fixed = side.copy(centering = c, manualCentering = side.manualCentering || !unchanged, centeringSkipped = false)
                             if (target == Step.FRONT) front = fixed else back = fixed
                             editingCentering = null
                         })
@@ -204,19 +213,24 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit, initialGame: Game? = null
                 }
                 adjusting && (if (step == Step.FRONT) front else back)?.let { it.photo != null && it.quad != null } == true -> {
                     val side = (if (step == Step.FRONT) front else back)!!
-                    Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
+                    Box(Modifier.fillMaxSize().padding(16.dp)) {
                         AdjustOutline(
                             photo = side.photo!!,
                             start = side.quad!!,
+                            fullscreen = true,
+                            applyLabel = stringResource(R.string.center_outline_next),
                             onCancel = { adjusting = false },
                             onApply = { quad ->
+                                val target = step
                                 adjusting = false
                                 busy = true
                                 scope.launch {
                                     val fixed = withContext(Dispatchers.Default) { runCatching { PreGrader.adjust(side, quad) }.getOrNull() }
                                     busy = false
                                     if (fixed != null) {
-                                        if (step == Step.FRONT) front = fixed else back = fixed
+                                        val confirmed = fixed.copy(outlineConfirmed = true)
+                                        if (target == Step.FRONT) front = confirmed else back = confirmed
+                                        editingCentering = target
                                     } else error = context.getString(R.string.grade_no_card)
                                 }
                             },
@@ -237,7 +251,10 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit, initialGame: Game? = null
                         onAdjust = { adjusting = true },
                         game = game, onGame = { game = it },
                         onEditCentering = { editingCentering = step },
-                        onConfirm = { if (step == Step.FRONT) front = front?.copy(outlineConfirmed = true) else back = back?.copy(outlineConfirmed = true) },
+                        onConfirm = {
+                            if (step == Step.FRONT) front = front?.copy(outlineConfirmed = true) else back = back?.copy(outlineConfirmed = true)
+                            editingCentering = step
+                        },
                         step = step,
                         side = side,
                         busy = busy,
@@ -295,7 +312,7 @@ private fun CaptureStep(
                     Button(onClick = onEditCentering, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_open_centering)) }
                     Text(stringResource(if (side.centering == null) R.string.pre_center_missing else R.string.pre_center_ready))
                 } else {
-                    Button(onClick = onConfirm, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_outline_continue)) }
+                    Button(onClick = onConfirm, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.center_confirm_next)) }
                     if (side.photo != null) OutlinedButton(onClick = onAdjust, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_outline_adjust)) }
                 }
                 side.photo?.let { original ->

@@ -261,3 +261,9 @@ One Piece; acceptance plan in docs/PREGRADING-VALIDATION.md.
 - Missing, white-on-white and textured evidence is labelled inconclusive; poor photo quality cannot be overridden by review.
 - Recorded damage and incomplete corner/edge evidence block unsupported overall estimates.
 - Still open: independently annotated physical defects, phone-device tests and region-level detection accuracy acceptance criteria before selling a dependable overall grader.
+
+### Outline-to-centering handoff regression
+
+- Fixed outline application and confirmation to open the eight-guide editor directly on either side.
+- Fitted the outline photo and action into the viewport and added full production-flow UI regressions.
+- Actual manual changes remain uncalibrated; reviewing unchanged automatic guides does not disable them.

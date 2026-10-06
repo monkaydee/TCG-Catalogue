@@ -1,11 +1,10 @@
-Individual corner and edge inspection for pre-grading.
+Fix the outline-to-centering handoff.
 
-- Shows all four corners and four edges separately on each captured side, with enlarged photo crops, pinch/pan and zoom buttons.
-- Each region reports its automatic colour/whitening check and a separate user observation. Users can record whitening, chips/tears and bends/dents for a region.
-- Insufficient samples are unknown, not zero wear. White borders and highly textured artwork are marked inconclusive where colour comparison cannot establish condition.
-- Missing/inconclusive regions and recorded damage prevent an unsupported overall model estimate. Poor-quality photos remain blocked even when manually reviewed.
-- Keeps independent inner/outer centering guides. PSA 10 centering potential remains explicitly separate from overall condition.
+- Applying a corrected four-corner outline now confirms it and opens the eight-guide centering editor immediately.
+- Confirming the detected outline also opens centering immediately, on either side of the card.
+- The outline action is labelled "Continue to centering" and stays visible beside Cancel. The photo fits the available screen without pushing the action below it.
+- Inner frame and outer edge remain independently adjustable; live ratios, dragging, zoom and pixel adjustments are retained. Compact controls give the photo more room; the zoom menu keeps 1×, 2×, 5×, 10× and 20×.
+- Reviewing unchanged automatic guides preserves their calibrated-input status. Actually moved manual guides remain separate from the overall grading model.
+- Previous corner/edge inspection and photo-quality safeguards remain included.
 
-Validation: Android unit, reference-photo and UI regression checks, release lint and signed GitHub APK build. Regression fixtures cover whitening in each of eight regions, dark chips, white/printed borders and missing evidence.
-
-These are photo-screening checks, not validated professional condition grades. Surface/authenticity and complete One Piece grade prediction remain unvalidated; see docs/PREGRADING-VALIDATION.md.
+Validation includes full front/back pre-grading UI workflows through outline confirmation/application, inner/outer editing, saving and continuing to the next photo/results. Full professional grading accuracy remains unvalidated.

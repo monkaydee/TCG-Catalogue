@@ -64,7 +64,7 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
         result?.let {
             Text("↔ %.1f/%.1f · ↕ %.1f/%.1f".format(it.leftRight, 100 - it.leftRight, it.topBottom, 100 - it.topBottom),
                 style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            if (!fullscreen) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 listOf(it.left, it.right, it.top, it.bottom).forEachIndexed { i, gap ->
                     Column { Text(stringResource(names[i]), color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.labelSmall)
                         Text("%.1f px".format(gap), color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.labelSmall) }
@@ -77,15 +77,21 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
                         FilterChip(selected = selected / 2 == i, onClick = { selected = i * 2 + selected % 2 }, label = { Text(stringResource(label), color = MaterialTheme.colorScheme.onSurface) })
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(R.string.center_outer, R.string.center_inner).forEachIndexed { i, label ->
-                        FilterChip(selected = selected % 2 == i, onClick = { selected = selected / 2 * 2 + i }, label = { Text(stringResource(label), color = MaterialTheme.colorScheme.onSurface) })
+                        FilterChip(selected = selected % 2 == i, onClick = { selected = selected / 2 * 2 + i }, modifier = Modifier.weight(1f), label = { Text(stringResource(label), color = MaterialTheme.colorScheme.onSurface) })
+                    }
+                    Box {
+                        var zoomMenu by remember { mutableStateOf(false) }
+                        OutlinedButton(onClick = { zoomMenu = true }) { Text("${zoom}× ▾") }
+                        DropdownMenu(expanded = zoomMenu, onDismissRequest = { zoomMenu = false }) {
+                            listOf(1, 2, 5, 10, 20).forEach { z ->
+                                DropdownMenuItem(text = { Text("${z}×") }, onClick = { zoom = z; zoomMenu = false })
+                            }
+                        }
                     }
                 }
             }
-        if (fullscreen) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            listOf(1, 2, 5, 10, 20).forEach { z -> FilterChip(selected = zoom == z, onClick = { zoom = z }, label = { Text("${z}×", color = MaterialTheme.colorScheme.onSurface) }) }
-        }
         // Main view and magnified detail both allow dragging; the detail focuses on the chosen line.
         for (detail in if (fullscreen) listOf(zoom > 1) else listOf(false, true)) {
             if (detail && !fullscreen) {
