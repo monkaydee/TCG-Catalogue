@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">Redefinir</string>
+  <string name="center_rotation_hint">Alinhamento fino ±15°. Arraste ou gire a imagem livremente ou use o controle deslizante. Os guias permanecem fixos.</string>
+  <string name="center_rotation_done">Terminado de girar</string>
+  <string name="center_rotation_saved">Rotação de alinhamento: %1$.2f°</string>
+</resources>

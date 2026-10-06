@@ -36,7 +36,7 @@ object PreGrader {
         val usableForCentering: Boolean get() = outlineConfirmed && problems.isEmpty() && centering != null
         val usableForWear: Boolean get() = outlineConfirmed && problems.isEmpty()
         val reportedWear: Boolean get() = wearFindings.values.any { it.damage }
-        val usableForGrade: Boolean get() = usableForCentering && !manualCentering && wear.complete && !reportedWear
+        val usableForGrade: Boolean get() = usableForCentering && !manualCentering && centering?.rotationDegrees == 0.0 && wear.complete && !reportedWear
     }
 
     sealed interface Outcome {

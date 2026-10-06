@@ -25,6 +25,8 @@ object Centering {
         val bottom: Double,
         /** Where the card's cut was found, in pixels from each side (for drawing the borders). */
         val cuts: List<Double> = listOf(0.0, 0.0, 0.0, 0.0),
+        /** Clockwise alignment in an expanded image canvas; widths/cuts use that canvas. */
+        val rotationDegrees: Double = 0.0,
     ) {
         /** Left share in % (50 = perfect). */
         val leftRight: Double get() = 100 * left / (left + right)
@@ -33,6 +35,7 @@ object Centering {
         val worst: Double get() = maxOf(leftRight, 100 - leftRight, topBottom, 100 - topBottom)
         /** Reviewing unchanged automatic guides does not turn them into uncalibrated inputs. */
         fun samePlacement(other: Result): Boolean =
+            abs(rotationDegrees - other.rotationDegrees) < 1e-6 &&
             listOf(left, right, top, bottom).zip(listOf(other.left, other.right, other.top, other.bottom)).all { (a, b) -> abs(a - b) < 1e-6 } &&
                 cuts.size == other.cuts.size && cuts.zip(other.cuts).all { (a, b) -> abs(a - b) < 1e-6 }
     }

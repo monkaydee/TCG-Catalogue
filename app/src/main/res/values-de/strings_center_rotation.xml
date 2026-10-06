@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">Zurücksetzen</string>
+  <string name="center_rotation_hint">Feinausrichtung ±15°. Ziehen oder drehen Sie das Bild frei oder verwenden Sie den Schieberegler. Die Führungen bleiben fixiert.</string>
+  <string name="center_rotation_done">Fertig gedreht</string>
+  <string name="center_rotation_saved">Ausrichtungsdrehung: %1$.2f°</string>
+</resources>

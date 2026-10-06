@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">Đặt lại</string>
+  <string name="center_rotation_hint">Căn chỉnh tốt ±15°. Kéo hoặc xoay hình ảnh một cách tự do hoặc sử dụng thanh trượt. Hướng dẫn vẫn cố định.</string>
+  <string name="center_rotation_done">Xoay xong</string>
+  <string name="center_rotation_saved">Xoay căn chỉnh: %1$.2f°</string>
+</resources>

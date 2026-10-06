@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">रीसेट करें</string>
+  <string name="center_rotation_hint">ठीक संरेखण ±15°। छवि को स्वतंत्र रूप से खींचें या मोड़ें, या स्लाइडर का उपयोग करें। मार्गदर्शक स्थिर रहते हैं.</string>
+  <string name="center_rotation_done">घूमना पूरा हो गया</string>
+  <string name="center_rotation_saved">संरेखण रोटेशन: %1$.2f°</string>
+</resources>

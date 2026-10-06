@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">Ripristina</string>
+  <string name="center_rotation_hint">Allineamento preciso ±15°. Trascina o ruota liberamente l\'immagine oppure utilizza il cursore. Le guide restano fisse.</string>
+  <string name="center_rotation_done">Rotazione terminata</string>
+  <string name="center_rotation_saved">Rotazione dell\'allineamento: %1$.2f°</string>
+</resources>

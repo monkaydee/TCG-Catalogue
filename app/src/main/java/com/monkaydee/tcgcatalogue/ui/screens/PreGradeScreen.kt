@@ -87,6 +87,7 @@ import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.grade.CenteringPotential
 import com.monkaydee.tcgcatalogue.grade.Centering
+import com.monkaydee.tcgcatalogue.grade.CenteringRotation
 import com.monkaydee.tcgcatalogue.grade.GradeModel
 import com.monkaydee.tcgcatalogue.grade.PhotoCheck
 import com.monkaydee.tcgcatalogue.grade.PreGrader
@@ -391,11 +392,14 @@ private fun FlatCard(side: PreGrader.Side, modifier: Modifier = Modifier) {
             val sx = size.width / side.card.width
             val sy = size.height / side.card.height
             side.centering?.let { c ->
-                val l = (c.cuts[0] + c.left).toFloat() * sx
-                val r = size.width - (c.cuts[1] + c.right).toFloat() * sx
-                val t = (c.cuts[2] + c.top).toFloat() * sy
-                val b = size.height - (c.cuts[3] + c.bottom).toFloat() * sy
-                drawRect(Color(0xFF00E676), Offset(l, t), Size(r - l, b - t), style = Stroke(2.dp.toPx()))
+                val bounds = CenteringRotation.bounds(side.card.width, side.card.height, c.rotationDegrees)
+                val l = c.cuts[0] + c.left; val r = bounds.width - c.cuts[1] - c.right
+                val t = c.cuts[2] + c.top; val b = bounds.height - c.cuts[3] - c.bottom
+                val points = listOf(l to t, r to t, r to b, l to b).map { (x, y) ->
+                    val p = CenteringRotation.sourcePoint(x, y, side.card.width, side.card.height, c.rotationDegrees)
+                    Offset(p.x.toFloat() * sx, p.y.toFloat() * sy)
+                }
+                points.indices.forEach { i -> drawLine(Color(0xFF00E676), points[i], points[(i + 1) % 4], 2.dp.toPx()) }
             }
             for (name in Wear.EDGES + Wear.CORNERS) {
                 val z = side.wear.zones[name] ?: continue
@@ -516,6 +520,7 @@ private fun CenteringLine(label: String, c: Centering.Result?, limit: Double) {
             )
         }
         val good = c != null && c.worst <= limit
+        if (c != null && c.rotationDegrees != 0.0) Text(stringResource(R.string.center_rotation_saved, c.rotationDegrees), style = MaterialTheme.typography.bodySmall)
         Text(
             when {
                 c == null -> stringResource(R.string.pre_center_missing)

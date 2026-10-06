@@ -17,6 +17,7 @@ See [the audit and feature proposals](docs/RECOGNITION-PRICING-AUDIT.md) for evi
 - Merge graded-provider coverage instead of stopping after the first company has a result; count both eBay searches against the budget.
 - Apply the printed-name check to camera scans, preserve language and grade through photo fallback, require consecutive camera matches and review slabs before bulk/automatic add.
 - Capture full-resolution pre-grading photos. Reject photo-boundary edges and implausible shapes; withhold estimates for unresolved partial/artwork outlines, guard tiny-image checks, and use PSA's current 55/45 front centering threshold for 10. Do not show the Pokémon model's estimates for other games or incomplete/unusable measurements.
+- Fine centering alignment: rotate the card within ±15° using presets, slider or free gestures before placing independent inner/outer guides. Save the angle and guide positions; keep manually rotated measurements outside the experimental overall-grade model. Device/photo validation remains required.
 - Use current company label styles for PSA, BGS, CGC and SGC; add screenshot coverage. Historical label versions and remaining companies require references.
 
 ### P1 — validation and data coverage

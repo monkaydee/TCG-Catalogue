@@ -1,10 +1,10 @@
-Fix the outline-to-centering handoff.
+Straighten the card before aligning the centering guides.
 
-- Applying a corrected four-corner outline now confirms it and opens the eight-guide centering editor immediately.
-- Confirming the detected outline also opens centering immediately, on either side of the card.
-- The outline action is labelled "Continue to centering" and stays visible beside Cancel. The photo fits the available screen without pushing the action below it.
-- Inner frame and outer edge remain independently adjustable; live ratios, dragging, zoom and pixel adjustments are retained. Compact controls give the photo more room; the zoom menu keeps 1×, 2×, 5×, 10× and 20×.
-- Reviewing unchanged automatic guides preserves their calibrated-input status. Actually moved manual guides remain separate from the overall grading model.
-- Previous corner/edge inspection and photo-quality safeguards remain included.
+- Tap the angle beside the live ratios to open rotation controls: ±0.1° and ±1° buttons, Reset and a continuous slider.
+- Drag around the image centre or twist with two fingers for free fine alignment within ±15°.
+- The original image rotates on an expanded canvas, keeping its corners visible. Inner and outer guides stay horizontal/vertical and retain their border distances while padding changes.
+- Choose Done rotating to return to guide dragging, zoom and pixel adjustments. Saving and reopening preserves the angle and all eight guide positions.
+- Results show the saved alignment angle and map the printed-frame overlay back to the original photo. Manual rotated measurements remain separate from the experimental overall grading model.
+- Includes the previous outline-to-centering handoff, front/back centering, corner/edge inspection and photo-quality safeguards.
 
-Validation includes full front/back pre-grading UI workflows through outline confirmation/application, inner/outer editing, saving and continuing to the next photo/results. Full professional grading accuracy remains unvalidated.
+Validation covers rotation geometry, guide preservation, continuous dragging, presets, slider, resetting, saving/reopening and subsequent independent inner-guide editing. Full professional grading accuracy remains unvalidated.

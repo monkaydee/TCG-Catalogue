@@ -103,6 +103,99 @@ class Screenshots {
         )
     }
 
+    private fun rotationFixture(): com.monkaydee.tcgcatalogue.grade.PreGrader.Side {
+        val bitmap = Bitmap.createBitmap(600, 840, Bitmap.Config.ARGB_8888)
+        android.graphics.Canvas(bitmap).apply {
+            drawColor(android.graphics.Color.DKGRAY)
+            rotate(-2f, 300f, 420f)
+            drawRect(15f, 15f, 585f, 825f, android.graphics.Paint().apply { color = android.graphics.Color.WHITE })
+            drawRect(35f, 35f, 565f, 805f, android.graphics.Paint().apply { color = android.graphics.Color.BLUE })
+        }
+        return com.monkaydee.tcgcatalogue.grade.PreGrader.Side(bitmap, emptyList(),
+            com.monkaydee.tcgcatalogue.grade.Centering.Result(20.0, 20.0, 20.0, 20.0, List(4) { 15.0 }),
+            com.monkaydee.tcgcatalogue.grade.Wear.Result(
+                (com.monkaydee.tcgcatalogue.grade.Wear.EDGES + com.monkaydee.tcgcatalogue.grade.Wear.CORNERS)
+                    .associateWith { com.monkaydee.tcgcatalogue.grade.Wear.Zone(0.0, 0.0, 0.0) }), outlineConfirmed = true)
+    }
+
+    @Test fun rotationPresetsSliderAndReopeningPreserveMeasurements() {
+        var side by mutableStateOf(rotationFixture())
+        assertTrue(side.usableForGrade)
+        var editing by mutableStateOf(true)
+        var saved: com.monkaydee.tcgcatalogue.grade.Centering.Result? = null
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                androidx.compose.material3.Surface(Modifier.fillMaxSize()) {
+                    if (editing) com.monkaydee.tcgcatalogue.ui.screens.ManualCenteringPanel(side, fullscreen = true) {
+                        saved = it
+                        side = side.copy(centering = it, manualCentering = true)
+                        editing = false
+                    } else Button(onClick = { editing = true }) { Text("Reopen guides") }
+                }
+            }
+        }
+        rule.onNodeWithTag("center_rotation_toggle").performClick()
+        rule.onNodeWithTag("center_rotation_slider").performSemanticsAction(SemanticsActions.SetProgress) { it(1.25f) }
+        rule.onNodeWithText("1.25° ▾").assertIsDisplayed()
+        rule.onNodeWithText("Reset").performClick()
+        repeat(2) { rule.onNodeWithText("+1.0°").performClick() }
+        rule.onNodeWithText("-0.1°").performClick()
+        rule.onNodeWithText("+0.1°").performClick()
+        rule.onNodeWithText("2.00° ▾").assertIsDisplayed()
+        save("centering_rotation_controls")
+        rule.onNodeWithText("Done rotating").performClick()
+        save("centering_rotated_guides")
+        rule.onNodeWithText("Use these guides").performClick()
+        assertEquals(2.0, requireNotNull(saved).rotationDegrees, 1e-8)
+        assertEquals(20.0, requireNotNull(saved).left, 1e-8)
+        assertEquals(20.0, requireNotNull(saved).right, 1e-8)
+        assertFalse(side.copy(manualCentering = false).usableForGrade)
+        rule.onNodeWithText("Reopen guides").performClick()
+        rule.onNodeWithText("2.00° ▾").assertIsDisplayed()
+        rule.onNodeWithText("Inner frame").performClick()
+        rule.onNodeWithContentDescription("+1 image pixel").performClick()
+        rule.onNodeWithText("Use these guides").performClick()
+        assertEquals(2.0, requireNotNull(saved).rotationDegrees, 1e-8)
+        assertEquals(21.0, requireNotNull(saved).left, 1e-8)
+        assertEquals(20.0, requireNotNull(saved).right, 1e-8)
+    }
+
+    @Test fun freeRotationAccumulatesEveryDragEvent() {
+        var saved: com.monkaydee.tcgcatalogue.grade.Centering.Result? = null
+        val side = rotationFixture()
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                androidx.compose.material3.Surface(Modifier.fillMaxSize()) {
+                    com.monkaydee.tcgcatalogue.ui.screens.ManualCenteringPanel(side, fullscreen = true) { saved = it }
+                }
+            }
+        }
+        rule.onNodeWithTag("center_rotation_toggle").performClick()
+        rule.onNodeWithTag("center_main_canvas").performTouchInput {
+            val radius = minOf(width, height) * 0.35f
+            val radians = Math.toRadians(3.0)
+            swipe(center + Offset(radius, 0f), center + Offset(
+                (radius * kotlin.math.cos(radians)).toFloat(), (radius * kotlin.math.sin(radians)).toFloat()), 600)
+        }
+        rule.onNodeWithText("3.00° ▾").assertIsDisplayed()
+        rule.onNodeWithTag("center_main_canvas").performTouchInput {
+            val radius = minOf(width, height) * 0.25f
+            val radians = Math.toRadians(1.0)
+            val next = Offset((radius * kotlin.math.cos(radians)).toFloat(), (radius * kotlin.math.sin(radians)).toFloat())
+            down(0, center + Offset(radius, 0f))
+            down(1, center - Offset(radius, 0f))
+            moveTo(0, center + next)
+            moveTo(1, center - next)
+            up(0)
+            up(1)
+        }
+        rule.onNodeWithText("4.00° ▾").assertIsDisplayed()
+        rule.onNodeWithText("Done rotating").performClick()
+        rule.onNodeWithText("Use these guides").performClick()
+        assertEquals(4.0, requireNotNull(saved).rotationDegrees, 1e-4)
+        assertEquals(20.0, requireNotNull(saved).left, 1e-8)
+    }
+
     @Test fun manualCenteringGuidesApplyWithoutCreatingAnOverallGrade() {
         val bitmap = Bitmap.createBitmap(600, 840, Bitmap.Config.ARGB_8888)
         android.graphics.Canvas(bitmap).apply {

@@ -76,3 +76,26 @@ inside the viewport. Full PreGradeFlow UI tests exercise front correction/applic
 confirmation through inner/outer edits and continuation, rather than only mounting the guide
 widget behind a test callback. Unchanged automatic placement retains its model-input status;
 actual manual changes stay outside the calibrated model.
+
+## Fine rotation before centering
+
+The centering editor offers ±0.1°/±1° steps, reset, a continuous ±15° slider and
+one-finger rotation about the viewport centre or a two-finger twist. Rotation renders
+from the original rectified bitmap on an expanded canvas rather than allocating or
+repeatedly resampling bitmaps. Guides remain axis-aligned. Their positions shift by
+half the change in canvas dimensions so padding alone cannot change border widths or
+ratios. Users must then align the guides to the straightened cut and printed frame.
+
+The saved centering result includes clockwise rotation and canvas-space cuts/widths.
+Reopening reconstructs the same canvas; the results overlay inverse-maps its frame
+corners to the original photo. Wear inspection continues using that original photo.
+Nonzero rotation explicitly excludes the result from calibrated overall model inputs,
+even if a caller misses the manual-input flag. A centering potential remains a geometric
+ceiling, not a professional whole-card grade.
+
+Regression coverage uses a synthetic -2° printed frame corrected by +2°. Native UI
+tests exercise step buttons, continuous slider, reset, free dragging, saved/reopened
+rotation and independent inner-frame pixel adjustment. Geometry tests check all source
+corners remain visible at positive/negative limits, inverse mapping, gesture angle wrap,
+asymmetric border preservation and reset. These tests establish editor behaviour; they
+do not validate photo-based grading accuracy on customer cards.
