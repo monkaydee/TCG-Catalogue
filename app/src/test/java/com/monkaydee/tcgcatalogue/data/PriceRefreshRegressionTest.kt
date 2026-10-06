@@ -19,6 +19,39 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(application=Application::class, sdk=[34])
 class PriceRefreshRegressionTest {
+    @Test fun conditionOnlyPricesRestoreRawRowsAndRemainReferencesForSlabs() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        AppStrings.init(context)
+        val client = OkHttpClient.Builder().addInterceptor { chain ->
+            val request = chain.request()
+            val body = when {
+                request.url.encodedPath.endsWith("/cards/bw11-115") -> """{"id":"bw11-115","name":"Zekrom","localId":"115","set":{"id":"bw11","name":"Legendary Treasures","cardCount":{"official":113}},"variants":{"normal":true},"pricing":{"tcgplayer":{"holofoil":{"productId":90739}}}}"""
+                request.url.encodedPath.contains("/price/history/90739/detailed") -> """{"result":[{"language":"English","variant":"Holofoil","condition":"Near Mint","buckets":[{"marketPrice":402.38}]},{"language":"English","variant":"Holofoil","condition":"Lightly Played","buckets":[{"marketPrice":264.57}]}]}"""
+                else -> null
+            }
+            Response.Builder().request(request).protocol(Protocol.HTTP_1_1).code(if (body != null) 200 else 404).message("fixture").body((body ?: "").toResponseBody()).build()
+        }.build()
+        val http = Http(client); val tcgdex = TcgDexApi(http)
+        val index = CardIndexApi(http, java.io.File(context.cacheDir,"condition-only-index"))
+        val db = Room.inMemoryDatabaseBuilder(context,AppDatabase::class.java).allowMainThreadQueries().build()
+        try {
+            val settings = SettingsStore(context)
+            val repo = CardRepository(db,tcgdex,OnePieceApi(http),ScryfallApi(http),index,TcgPlayerApi(http),CardmarketApi(index,http),CardmarketPokemon(index,http,tcgdex),FxApi(http),settings)
+            val raw = OwnedCard(game=Game.POKEMON,cardId="bw11-115",variant="normal",variantLabel="Normal",name="Zekrom",number="115/113",setId="bw11",setName="Legendary Treasures",language="EN",condition="LP",price=null,purchasePrice=12.0,priceCurrency="EUR")
+            val rawId = db.cards().insert(raw)
+            assertTrue(repo.refreshPrice(rawId))
+            assertEquals(264.57,db.cards().get(rawId)!!.price!!,0.001)
+            assertEquals("USD",db.cards().get(rawId)!!.priceCurrency)
+            val slabId = db.cards().insert(raw.copy(grader="GSG",grade="8.5",copyKey="gsg-8.5",condition="NM"))
+            val slab = db.cards().get(slabId)!!
+            assertEquals(402.38,repo.rawReferenceFor(slab)!!.amount,0.001)
+            assertFalse(repo.refreshPrice(slabId))
+            assertNull(db.cards().get(slabId)!!.price)
+            assertFalse(db.cards().get(slabId)!!.priceNote!!.contains("retained",ignoreCase=true))
+            assertNull(repo.rawReferenceFor(slab.copy(language="DE")))
+        } finally { db.close() }
+    }
+
     @Test fun nativeHoloPriceReachesSavedCardAndMissingQuotesNeverEraseIt() = runBlocking {
         val context=ApplicationProvider.getApplicationContext<Context>()
         AppStrings.init(context)

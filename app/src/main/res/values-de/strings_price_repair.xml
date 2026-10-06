@@ -1,4 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="price_coverage_missing" tools:ignore="MissingTranslation">Nur bekannte Preise · Für %1$d Exemplare fehlt ein Preis</string>
     <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">Die gespeicherte Variante fehlt im aktuellen Katalog; der vorherige Preis bleibt erhalten</string>
+    <string name="card_no_graded_price" tools:ignore="MissingTranslation">Kein Preis für diesen Grad verfügbar</string>
+    <string name="card_raw_reference" tools:ignore="MissingTranslation">Marktreferenz ohne Grading</string>
+    <string name="card_raw_reference_hint" tools:ignore="MissingTranslation">Nur Referenz ohne Grading — keine Bewertung für %1$s; nicht in Slab-Summen enthalten.</string>
+    <string name="card_raw_reference_failed" tools:ignore="MissingTranslation">Die Referenz konnte nicht geladen werden. Bitte aktualisieren.</string>
+    <string name="card_raw_reference_missing" tools:ignore="MissingTranslation">Keine passende Referenz für diese Sprache und Druckvariante verfügbar.</string>
+    <string name="graded_providers_unavailable" tools:ignore="MissingTranslation">Der Preisserver hat geantwortet, aber die Anbieter für Grading-Preise sind vorübergehend nicht verfügbar oder haben ihr Anfragelimit erreicht.</string>
+    <string name="quote_lookup_missing" tools:ignore="MissingTranslation">Die letzte Suche ergab keinen passenden Preis; kein gespeicherter Preis vorhanden</string>
+    <string name="quote_lookup_failed" tools:ignore="MissingTranslation">Die letzte Preisabfrage ist fehlgeschlagen; kein gespeicherter Preis vorhanden</string>
 </resources>

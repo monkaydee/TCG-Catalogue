@@ -67,3 +67,9 @@ Unavailable automatic quotes (including legacy automatic zero values) are unknow
 A raw provider returning only an aggregate market reference no longer prevents later condition-price providers from being queried. Native card IDs establish which catalogue language a quote belongs to; an English image is not evidence of an English physical card. Localized set aliases improve German search terms.
 
 Holo wording may be absent from a comparable only when the catalogue explicitly reports a single supported printing. Multiple or unknown printings still require positive title evidence. Explicit non-holo, reverse, edition and conflicting-language exclusions remain in force. Revision 5 separates these searches from earlier server caches.
+
+## Raw references and condition-only recovery
+
+Raw saved valuations query TCGplayer condition buckets even when the catalogue has no aggregate market price. An explicit requested-condition bucket can be used without intermediate buckets or a market reference; it is not synthesized from a different condition. Matching remains restricted to the saved language and printing. Missing raw rows refresh on opening their card page, and refreshing the comparison tables also refreshes the saved valuation.
+
+A slab page automatically loads an ungraded market reference, independently of the exact graded quote. The reference is labelled and excluded from the slab's stored value, binder totals and portfolio totals. A response saying graded providers are unavailable is distinct from a network failure: the server answered but upstream data could not be obtained. A missing quote never claims to retain a price that was not saved.

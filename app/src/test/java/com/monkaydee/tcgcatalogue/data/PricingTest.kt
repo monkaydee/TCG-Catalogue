@@ -44,6 +44,13 @@ class PricingTest {
 class ConditionPricingTest {
     private val zekrom = mapOf("Near Mint" to 402.38, "Lightly Played" to 264.57, "Moderately Played" to 158.8, "Heavily Played" to 89.7, "Damaged" to 73.56)
 
+    @Test fun conditionSalesWorkWithoutAnAggregateMarketPrice() {
+        assertEquals(402.38, Pricing.forCondition(null, "NM", zekrom)!!.amount, 0.001)
+        // An absent LP bucket cannot suppress the real MP price.
+        assertEquals(158.8, Pricing.forCondition(null, "MP", zekrom - "Lightly Played")!!.amount, 0.001)
+        assertNull(Pricing.forCondition(null, "LP", zekrom - "Lightly Played"))
+    }
+
     @Test fun nearMintIsTheMarketPrice() {
         val base = com.monkaydee.tcgcatalogue.data.remote.Price(411.19, PriceSource.TCGPLAYER)
         assertEquals(base, Pricing.forCondition(base, "NM", zekrom))

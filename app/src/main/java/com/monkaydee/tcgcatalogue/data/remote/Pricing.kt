@@ -86,6 +86,7 @@ object Pricing {
      * put an LP above NM or an HP above MP).
      */
     fun forCondition(base: Price?, condition: String, byCondition: Map<String, Double>?, texts: PriceTexts = PriceTexts.English): Price? {
+        if (base == null) return single(null, condition, byCondition, texts)
         if (condition == "NM") return base
         var cap = base?.amount ?: byCondition?.get("Near Mint")
         var better = "NM"

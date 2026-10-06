@@ -1,4 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="price_coverage_missing" tools:ignore="MissingTranslation">確認できた価格のみ · %1$d 枚の価格は未取得</string>
     <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">保存された印刷バリエーションが現在のカタログにありません。以前の価格を保持します</string>
+    <string name="card_no_graded_price" tools:ignore="MissingTranslation">このグレードの価格はありません</string>
+    <string name="card_raw_reference" tools:ignore="MissingTranslation">未鑑定カードの市場参考価格</string>
+    <string name="card_raw_reference_hint" tools:ignore="MissingTranslation">未鑑定の参考価格です。%1$s の評価額ではなく、スラブの合計額には含まれません。</string>
+    <string name="card_raw_reference_failed" tools:ignore="MissingTranslation">参考価格を読み込めませんでした。再読み込みしてください。</string>
+    <string name="card_raw_reference_missing" tools:ignore="MissingTranslation">この言語と印刷仕様に一致する未鑑定の参考価格はありません。</string>
+    <string name="graded_providers_unavailable" tools:ignore="MissingTranslation">価格サーバーは応答しましたが、鑑定済み価格の提供元が一時的に利用できないか、リクエスト上限に達しています。</string>
+    <string name="quote_lookup_missing" tools:ignore="MissingTranslation">一致する価格が見つかりませんでした。保持できる保存価格はありません</string>
+    <string name="quote_lookup_failed" tools:ignore="MissingTranslation">価格の取得に失敗しました。保持できる保存価格はありません</string>
 </resources>

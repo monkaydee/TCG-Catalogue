@@ -27,6 +27,9 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     private val client = OkHttpClient.Builder().connectTimeout(15, TimeUnit.SECONDS).readTimeout(40, TimeUnit.SECONDS).build()
     private val http = Http(client)
 
+    /** The server answered, but configured upstream providers could not supply data. */
+    class ProvidersUnavailableException : IOException("Price providers unavailable")
+
     /** One graded price: "PSA" "10" 412.00 USD from JustTCG. */
     data class Graded(
         val grader: String, val grade: String, val price: Double, val currency: String, val source: String, val date: String?, val sales: Int?,
@@ -93,7 +96,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
             }
         }
         val result = post("/v1/prices", body.toString().toRequestBody(JSON))?.get("results").arr()?.firstOrNull() ?: return null
-        if (result["reason"].str() == "unavailable") throw IOException("Price providers unavailable")
+        if (result["reason"].str() == "unavailable") throw ProvidersUnavailableException()
         val amount = (result["conditions"]?.let { it as? kotlinx.serialization.json.JsonObject }?.get(condition).dbl())
             ?.takeIf { it > 0 } ?: return null
         val evidence = result["conditionEvidence"]?.let { it as? kotlinx.serialization.json.JsonObject }?.get(condition)
@@ -126,7 +129,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
             }
         }
         val result = post("/v1/prices", body.toString().toRequestBody(JSON))?.get("results").arr()?.firstOrNull() ?: return emptyList()
-        if (result["gradedReason"].str() == "unavailable") throw IOException("Graded price providers unavailable")
+        if (result["gradedReason"].str() == "unavailable") throw ProvidersUnavailableException()
         return result["graded"].arr().orEmpty().mapNotNull { g ->
             Graded(
                 grader = g["grader"].str() ?: return@mapNotNull null,

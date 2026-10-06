@@ -1,4 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="price_coverage_missing" tools:ignore="MissingTranslation">Known prices only · %1$d copies awaiting prices</string>
     <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">The saved printing is unavailable in the current catalogue; previous quote retained</string>
+    <string name="card_no_graded_price" tools:ignore="MissingTranslation">No price for this grade available</string>
+    <string name="card_raw_reference" tools:ignore="MissingTranslation">Ungraded market reference</string>
+    <string name="card_raw_reference_hint" tools:ignore="MissingTranslation">Raw reference only — not a %1$s valuation; excluded from slab totals.</string>
+    <string name="card_raw_reference_failed" tools:ignore="MissingTranslation">The raw reference could not be loaded. Try refreshing.</string>
+    <string name="card_raw_reference_missing" tools:ignore="MissingTranslation">No matching raw reference available for this language and printing.</string>
+    <string name="graded_providers_unavailable" tools:ignore="MissingTranslation">The price server answered, but graded-price providers are temporarily unavailable or at their request limit.</string>
+    <string name="quote_lookup_missing" tools:ignore="MissingTranslation">Latest lookup returned no matching quote; no saved price to retain</string>
+    <string name="quote_lookup_failed" tools:ignore="MissingTranslation">Latest price lookup failed; no saved price to retain</string>
 </resources>

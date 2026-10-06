@@ -302,7 +302,7 @@ class CardRepository(
         val grader = grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
         val value = grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
         if (!server.isSetUp()) return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
-        val prices = attempt { gradedPrices(card, variant, language) }.getOrElse { return GradedResult(null, AppStrings.get(R.string.data_graded_server_error), unavailable = true) }
+        val prices = attempt { gradedPrices(card, variant, language) }.getOrElse { e -> return GradedResult(null, AppStrings.get(if (e is PriceServerApi.ProvidersUnavailableException) R.string.graded_providers_unavailable else R.string.data_graded_server_error), unavailable = true) }
         val match = prices.firstOrNull { it.grader.equals(grader, ignoreCase = true) && sameGrade(it.grade, value) && it.qualifier == grade.qualifier && it.currency in setOf("USD", "EUR") }
             ?: return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
         val source = if (match.currency == "EUR") PriceSource.GRADED_EUR else PriceSource.GRADED
@@ -419,10 +419,11 @@ class CardRepository(
             if (local != null) return local
             return null // An English price is not a valuation of this language.
         }
-        val base = rawPrice(card, variant, s, listing) ?: return serverRawPrice(card, variant, language, condition)
-        if (condition == "NM") return base
+        val base = rawPrice(card, variant, s, listing)?.takeIf { it.amount.isFinite() && it.amount > 0 }
+        if (condition == "NM" && base != null) return base
         val table = if (language == "EN") runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull() else null
         return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }, PriceTexts.App)
+            ?: serverRawPrice(card, variant, language, condition)
     }
 
     /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */
@@ -448,7 +449,7 @@ class CardRepository(
 
     }
 
-    /** Graded price if available, otherwise the price for the [condition]. */
+    /** Exact graded valuation for slabs; condition-based valuation for ungraded cards. */
     private suspend fun priceFor(
         card: CardCandidate,
         variant: Variant,
@@ -724,6 +725,45 @@ class CardRepository(
         groups
     }
 
+    /** Refresh this saved valuation independently of opening the comparison tables. */
+    suspend fun refreshPrice(rowId: Long): Boolean {
+        val row = db.cards().get(rowId) ?: return false
+        val fresh = fetch(row.game, row.cardId) ?: return false
+        val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: return false
+        val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
+        val s = settings.current()
+        val lookup = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row), row.language) }
+        val quote = lookup.getOrNull()?.takeIf { it.amount.isFinite() && it.amount > 0 }
+        return db.withTransaction {
+            val current = db.cards().get(rowId) ?: return@withTransaction false
+            // A lookup cannot overwrite an edit to the card's identity or grading.
+            if (current.cardId != row.cardId || current.variant != row.variant || current.language != row.language ||
+                current.condition != row.condition || current.graded != row.graded || current.grader != row.grader ||
+                current.grade != row.grade || current.gradeQualifier != row.gradeQualifier || current.marketProductId != row.marketProductId) return@withTransaction false
+            db.cards().update(if (quote == null) current.copy(priceNote = lookupNotice(current, lookup.isFailure)) else current.copy(
+                price = quote.amount, priceCurrency = quote.currency, priceSource = quote.source.label,
+                priceUpdatedAt = quote.fetchedAt ?: System.currentTimeMillis(), priceNote = quote.note,
+                purchasePrice = current.purchasePrice?.let { Money.convert(it, current.priceCurrency, quote.currency, s.usdToEur) },
+            ))
+            quote != null
+        }
+    }
+
+    private fun lookupNotice(row: OwnedCard, failed: Boolean): String {
+        val notice = AppStrings.get(if (row.price?.let { it.isFinite() && it > 0 } == true) R.string.quote_refresh_failed
+            else if (failed) R.string.quote_lookup_failed else R.string.quote_lookup_missing)
+        val outdated = listOf(R.string.quote_refresh_failed, R.string.quote_lookup_failed, R.string.quote_lookup_missing).map { AppStrings.get(it) }
+        val notes = row.priceNote?.split(" · ")?.filterNot { it in outdated || it.contains("Latest refresh unavailable") || it == "Quote needs refresh after matching correction" }.orEmpty()
+        return (notes + notice).distinct().joinToString(" · ")
+    }
+
+    /** Raw reference for a slab: never saved as its graded valuation. */
+    suspend fun rawReferenceFor(row: OwnedCard): Price? {
+        val fresh = fetch(row.game, row.cardId) ?: return null
+        val variant = fresh.variants.firstOrNull { it.key == row.variant } ?: return null
+        return conditionPrice(fresh, variant, "NM", settings.current(), listingOf(row), row.language)
+    }
+
     /** Cardmarket listings for a card in the collection (One Piece only). */
     suspend fun cardmarketListings(card: OwnedCard): List<CardmarketApi.Listing> =
         if (card.game == Game.ONE_PIECE) runCatching { cardmarket.listings(card.number) }.getOrDefault(emptyList()) else emptyList()
@@ -806,7 +846,7 @@ class CardRepository(
                             val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
                             val lookup = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row), row.language) }
                             if (lookup.isFailure || lookup.getOrNull()?.amount?.let { it.isFinite() && it > 0 } != true) {
-                                db.cards().update(row.copy(priceNote = listOfNotNull(row.priceNote?.split(" · ")?.filterNot { it == AppStrings.get(R.string.quote_refresh_failed) || it.contains("Latest refresh unavailable") }?.joinToString(" · "), AppStrings.get(R.string.quote_refresh_failed)).joinToString(" · ")))
+                                db.cards().update(row.copy(priceNote = lookupNotice(row, lookup.isFailure)))
                                 continue
                             }
                             val price = lookup.getOrNull()

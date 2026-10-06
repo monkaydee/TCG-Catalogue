@@ -248,6 +248,9 @@ private fun CardDetail(
 ) {
     val scope = rememberCoroutineScope()
     val history by remember(c.id) { repo.priceHistory(c.id) }.collectAsState(initial = emptyList())
+    LaunchedEffect(c.id, c.variant, c.language, c.condition) {
+        if (!c.graded && Money.unitOrNull(c, s.currency, s.usdToEur) == null) runCatching { repo.refreshPrice(c.id) }
+    }
     Column(
         Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -268,7 +271,7 @@ private fun CardDetail(
             Text(listOfNotNull(c.game.label, c.rarity, c.variantLabel).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
             c.marketLabel?.let { Text(stringResource(R.string.card_cardmarket_label, it), style = MaterialTheme.typography.bodySmall) }
             Text(
-                Money.unitOrNull(c, s.currency, s.usdToEur)?.let { Money.valueText(c, s.currency, s.usdToEur) } ?: stringResource(R.string.card_no_market_price),
+                Money.unitOrNull(c, s.currency, s.usdToEur)?.let { Money.valueText(c, s.currency, s.usdToEur) } ?: stringResource(if (c.graded) R.string.card_no_graded_price else R.string.card_no_market_price),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
@@ -284,8 +287,6 @@ private fun CardDetail(
                 c.priceUpdatedAt?.let {
                     Text(stringResource(R.string.card_price_updated, android.text.format.DateUtils.getRelativeTimeSpanString(it)), style = MaterialTheme.typography.labelSmall)
                 }
-            } else {
-                Text(stringResource(R.string.card_no_market_price), style = MaterialTheme.typography.bodySmall)
             }
             c.manualPrice?.let {
                 val own = Money.format(Money.convert(it, c.manualCurrency ?: s.currency, s.currency, s.usdToEur), s.currency)
@@ -297,6 +298,7 @@ private fun CardDetail(
                 )
             }
             c.priceNote?.takeIf { c.manualPrice == null }?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
+            if (c.graded) RawReferencePanel(c, s, repo)
             CardLedgerPanel(repo, c, s)
             if (c.graded) {
                 Text(
@@ -351,6 +353,38 @@ private fun CardDetail(
     }
 }
 
+/** The raw quote remains visible even when this exact grader/grade has no quote. */
+@Composable
+private fun RawReferencePanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
+    var quote by remember(c.id, c.variant, c.language, s.pokemonSource) { mutableStateOf<com.monkaydee.tcgcatalogue.data.remote.Price?>(null) }
+    var loading by remember(c.id) { mutableStateOf(true) }
+    var failed by remember(c.id) { mutableStateOf(false) }
+    var refresh by remember(c.id) { mutableStateOf(0) }
+    LaunchedEffect(c.id, c.variant, c.language, s.pokemonSource, refresh) {
+        loading = true
+        val result = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.rawReferenceFor(c) }
+        quote = result.getOrNull()
+        failed = result.isFailure
+        loading = false
+    }
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.card_raw_reference), style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                if (loading) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                else TextButton(onClick = { refresh++ }) { Text(stringResource(R.string.card_refresh)) }
+            }
+            quote?.let { q ->
+                Text(Money.format(Money.convert(q.amount, q.currency, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.titleLarge)
+                Text(listOf(c.language, q.source.label).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
+                q.note?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
+            }
+            if (!loading && quote == null) Text(stringResource(if (failed) R.string.card_raw_reference_failed else R.string.card_raw_reference_missing), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.card_raw_reference_hint, listOfNotNull(c.grader, c.grade, c.gradeQualifier).joinToString(" ")), style = MaterialTheme.typography.labelSmall)
+        }
+    }
+}
+
 /** All prices from all sources for this card, loaded on request (it queries several sites). */
 @Composable
 private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
@@ -367,6 +401,7 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                     TextButton(onClick = {
                         loading = true
                         scope.launch {
+                            runCatching { repo.refreshPrice(c.id) }
                             groups = repo.priceOverview(c)
                             loading = false
                         }
@@ -401,7 +436,7 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
 @Composable
 private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
     var prices by remember(c.id) { mutableStateOf<List<com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.Graded>?>(null) }
-    var failed by remember(c.id) { mutableStateOf(false) }
+    var failure by remember(c.id) { mutableStateOf<Int?>(null) }
     var loading by remember(c.id) { mutableStateOf(false) }
     var cert by remember(c.id) { mutableStateOf<String?>(null) }
     var certLoading by remember(c.id) { mutableStateOf(false) }
@@ -417,7 +452,7 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                         loading = true
                         scope.launch {
                             val r = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.gradedPricesFor(c) }
-                            failed = r.isFailure
+                            failure = r.exceptionOrNull()?.let { if (it is com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.ProvidersUnavailableException) R.string.graded_providers_unavailable else R.string.graded_failed }
                             prices = r.getOrNull()
                             loading = false
                         }
@@ -425,7 +460,7 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 }
             }
             when {
-                failed -> Text(stringResource(R.string.graded_failed), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
+                failure != null -> Text(stringResource(failure!!), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
                 prices?.isEmpty() == true -> Text(stringResource(R.string.graded_none), style = MaterialTheme.typography.bodySmall)
             }
             prices.orEmpty().sortedWith(compareBy({ it.grader }, { -(it.grade.toDoubleOrNull() ?: 0.0) })).forEach { g ->

@@ -31,6 +31,17 @@ class PriceQuoteTest {
             assertEquals(java.time.Instant.parse("2026-09-01T00:00:00Z").toEpochMilli(),quote.fetchedAt)
         }
     }
+    @Test fun providerOutageIsDifferentFromAnUnreachableServer() = runBlocking {
+        MockWebServer().use { web ->
+            web.start(); val api = PriceServerApi { web.url("/").toString() to "test-key" }
+            web.enqueue(MockResponse().setBody("{\"ok\":true}"))
+            assertTrue(api.reachable())
+            web.enqueue(MockResponse().setBody("{\"results\":[{\"gradedReason\":\"unavailable\",\"graded\":[]}]}"))
+            val error = runCatching { api.graded(Game.POKEMON,"bw11-115","Zekrom","Legendary Treasures","115/113",90739,"Holofoil") }.exceptionOrNull()
+            assertTrue(error is PriceServerApi.ProvidersUnavailableException)
+        }
+    }
+
     @Test fun ambiguousOrNonEnglishCardmarketProductsAreNeverAutomaticallySelected() {
         fun listing(id:Long,set:String)=CardmarketApi.Listing(id,"OP01-001","Card",set,1,100.0,null,null,null)
         val japanese=listing(1,"Romance Dawn (Non-English)")
