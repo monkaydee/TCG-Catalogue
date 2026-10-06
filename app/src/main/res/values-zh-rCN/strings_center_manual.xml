@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">调整居中导轨</string>
-  <string name="center_hint">将每个参考线拖到所有四个侧面的同一打印框架上。首先确认卡片的整体轮廓。没有可比框架的卡片无法提供可靠的居中比。</string>
+  <string name="center_hint">每面都有两个导轨：外卡边缘和内印刷框架。拖动两者来测量它们的间隙。青色标记外导轨；绿色标记内部参考线。黄色是选定的指南。每面都使用相同的印刷框架。</string>
   <string name="center_left">左</string>
   <string name="center_right">右</string>
   <string name="center_top">顶部</string>
   <string name="center_bottom">底部</string>
-  <string name="center_detail">精选指南·2×细节</string>
+  <string name="center_detail">选定的指南详细信息</string>
+  <string name="center_outer">外缘</string>
+  <string name="center_inner">内框</string>
   <string name="center_minus_pixel">−1 图像像素</string>
   <string name="center_plus_pixel">+1 图像像素</string>
   <string name="center_manual_notice">手动对中测量。位置和照片视角会影响比例。手动指南不会产生总体成绩估计。</string>

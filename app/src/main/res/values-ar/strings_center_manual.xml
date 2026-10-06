@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">ضبط أدلة التمركز</string>
-  <string name="center_hint">اسحب كل دليل إلى نفس الإطار المطبوع على الجوانب الأربعة. قم أولاً بتأكيد مخطط البطاقة بالكامل. لا يمكن للبطاقات التي لا تحتوي على إطار مشابه أن تعطي نسبة توسيط موثوقة.</string>
+  <string name="center_hint">يحتوي كل جانب على دليلين: حافة البطاقة الخارجية والإطار المطبوع الداخلي. اسحب كلاهما لقياس الفجوة بينهما. سماوي علامات الأدلة الخارجية؛ العلامات الخضراء الأدلة الداخلية. الأصفر هو الدليل المحدد. استخدم نفس الإطار المطبوع على كل جانب.</string>
   <string name="center_left">اليسار</string>
   <string name="center_right">صحيح</string>
   <string name="center_top">أعلى</string>
   <string name="center_bottom">أسفل</string>
-  <string name="center_detail">الدليل المختار · 2× التفاصيل</string>
+  <string name="center_detail">تفاصيل الدليل المحدد</string>
+  <string name="center_outer">الحافة الخارجية</string>
+  <string name="center_inner">الإطار الداخلي</string>
   <string name="center_minus_pixel">-1 بكسل للصورة</string>
   <string name="center_plus_pixel">+1 بكسل الصورة</string>
   <string name="center_manual_notice">قياس توسيط يدوي. يؤثر الموضع ومنظور الصورة على النسبة. لا تنتج الأدلة اليدوية تقديرًا عامًا للدرجة.</string>

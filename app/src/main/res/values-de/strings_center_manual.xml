@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">Zentrierführungen anpassen</string>
-  <string name="center_hint">Ziehen Sie jede Hilfslinie auf allen vier Seiten auf denselben gedruckten Rahmen. Bestätigen Sie zunächst den gesamten Kartenumriss. Karten ohne vergleichbaren Rahmen können kein zuverlässiges Zentrierverhältnis liefern.</string>
+  <string name="center_hint">Jede Seite verfügt über zwei Führungen: äußere Kartenkante und innerer bedruckter Rahmen. Ziehen Sie beide, um ihren Abstand zu messen. Cyan markiert die äußeren Hilfslinien; Grün markiert innere Führungen. Gelb ist die ausgewählte Anleitung. Verwenden Sie auf jeder Seite den gleichen bedruckten Rahmen.</string>
   <string name="center_left">Links</string>
   <string name="center_right">Richtig</string>
   <string name="center_top">Top</string>
   <string name="center_bottom">Unten</string>
-  <string name="center_detail">Ausgewählter Reiseführer · 2× Detail</string>
+  <string name="center_detail">Ausgewähltes Reiseführerdetail</string>
+  <string name="center_outer">Außenkante</string>
+  <string name="center_inner">Innenrahmen</string>
   <string name="center_minus_pixel">−1 Bildpixel</string>
   <string name="center_plus_pixel">+1 Bildpixel</string>
   <string name="center_manual_notice">Manuelle Zentriermessung. Platzierung und Fotoperspektive beeinflussen das Verhältnis. Manuelle Leitfäden liefern keine Gesamtbewertung der Note.</string>

@@ -33,14 +33,18 @@ object Centering {
         val worst: Double get() = maxOf(leftRight, 100 - leftRight, topBottom, 100 - topBottom)
     }
 
-    /** User placed printed-frame guides on a confirmed, flattened whole card.
-     * Fractions are measured inward from its four edges, never from an artwork subject. */
-    fun manual(width: Int, height: Int, borders: List<Double>): Result? {
-        if (width <= 0 || height <= 0 || borders.size != 4) return null
-        if (borders.any { !it.isFinite() || it <= 0.0 || it >= 0.5 }) return null
-        val (l, r, t, b) = borders
-        if (l + r >= 1.0 || t + b >= 1.0) return null
-        return Result(l * width, r * width, t * height, b * height)
+    /** Inward fractions from the flattened image; each width is inner minus outer. */
+    fun manual(width: Int, height: Int, borders: List<Double>): Result? =
+        manual(width, height, List(4) { 0.0 }, borders)
+
+    fun manual(width: Int, height: Int, outer: List<Double>, inner: List<Double>): Result? {
+        if (width <= 0 || height <= 0 || outer.size != 4 || inner.size != 4) return null
+        if (outer.any { !it.isFinite() || it < 0.0 || it >= 0.5 } ||
+            inner.any { !it.isFinite() || it <= 0.0 || it >= 0.5 }) return null
+        if (outer.indices.any { inner[it] <= outer[it] }) return null
+        val dimensions = listOf(width, width, height, height)
+        val gaps = outer.indices.map { (inner[it] - outer[it]) * dimensions[it] }
+        return Result(gaps[0], gaps[1], gaps[2], gaps[3], outer.indices.map { outer[it] * dimensions[it] })
     }
 
     private class Side(val edge: Double, val frame: Double, val spread: Double, val support: Double) {

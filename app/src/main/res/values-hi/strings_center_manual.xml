@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">सेंटरिंग गाइड समायोजित करें</string>
-  <string name="center_hint">प्रत्येक गाइड को चारों तरफ एक ही मुद्रित फ्रेम पर खींचें। सबसे पहले पूरे कार्ड की रूपरेखा की पुष्टि करें. तुलनीय फ़्रेम के बिना कार्ड विश्वसनीय केंद्रीकरण अनुपात नहीं दे सकते।</string>
+  <string name="center_hint">प्रत्येक पक्ष में दो गाइड हैं: बाहरी कार्ड किनारा और आंतरिक मुद्रित फ्रेम। उनके अंतर को मापने के लिए दोनों को खींचें। सियान बाहरी मार्गदर्शकों को चिह्नित करता है; हरा आंतरिक मार्गदर्शकों को चिह्नित करता है। पीला चयनित मार्गदर्शक है. हर तरफ एक ही मुद्रित फ़्रेम का उपयोग करें।</string>
   <string name="center_left">वाम</string>
   <string name="center_right">ठीक है</string>
   <string name="center_top">शीर्ष</string>
   <string name="center_bottom">तल</string>
-  <string name="center_detail">चयनित मार्गदर्शिका · 2× विवरण</string>
+  <string name="center_detail">चयनित गाइड विवरण</string>
+  <string name="center_outer">बाहरी किनारा</string>
+  <string name="center_inner">भीतरी ढाँचा</string>
   <string name="center_minus_pixel">−1 छवि पिक्सेल</string>
   <string name="center_plus_pixel">+1 छवि पिक्सेल</string>
   <string name="center_manual_notice">मैनुअल केन्द्रीकरण माप. प्लेसमेंट और फोटो परिप्रेक्ष्य अनुपात को प्रभावित करते हैं। मैनुअल गाइड समग्र ग्रेड अनुमान उत्पन्न नहीं करते हैं।</string>

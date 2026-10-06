@@ -5,7 +5,7 @@ Centering, recognition, pricing and collection update.
 - A per-copy cost ledger tracks purchase, manual grading fees, shipping and tax in the lot's original currency. Current unrealized PnL includes all costs; partial sales allocate costs FIFO and subtract sale fees from realized PnL.
 - Added grading submissions, durable photo reviews, quote evidence and price challenges, plus local CSV/PDF insurance exports.
 - Optional shared learning collects text and individually approved card crops, with private storage, deletion, 90-day retention and moderated daily recognition hints. Production uses bounded private D1 image storage (32 MiB); R2 can expand capacity later. Cloudflare dashboard moderation is available without another app secret.
-- New centering editor: draggable printed-frame guides, live left/right and top/bottom ratios, 2× detail and one-pixel adjustments after confirming the whole card. Manual ratios remain separate from the overall grade model.
+- New centering editor: eight independent draggable guides (outer card edge and inner printed frame on each side), measured border gaps, live left/right and top/bottom ratios, up to 20× detail and one-pixel adjustments after confirming the whole card. Manual ratios remain separate from the overall grade model.
 - Converting a raw card to graded now requires an explicit grading fee instead of assuming grading was free.
 - Added company-specific PSA, CGC, BGS and SGC slab layouts, full-resolution pre-grading capture, whole-card outline confirmation and quality gates.
 - Database upgrades and older JSON restores preserve slab identities. Duplicate certificates are rejected across card, grade and language disagreements.

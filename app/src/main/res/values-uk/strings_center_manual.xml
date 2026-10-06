@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">Відрегулюйте центрувальні напрямні</string>
-  <string name="center_hint">Перетягніть кожну напрямну до однієї надрукованої рамки з усіх чотирьох сторін. Спочатку підтвердьте весь контур картки. Картки без відповідної рамки не можуть забезпечити надійне центрування.</string>
+  <string name="center_hint">Кожна сторона має дві напрямні: зовнішній край картки та внутрішню друковану рамку. Перетягніть обидва, щоб виміряти їх розрив. Блакитний колір позначає зовнішні напрямні; зеленим позначено внутрішні напрямні. Жовтий колір – вибраний напрямний. Використовуйте однакові друковані рамки з кожного боку.</string>
   <string name="center_left">Ліворуч</string>
   <string name="center_right">правильно</string>
   <string name="center_top">Топ</string>
   <string name="center_bottom">Дно</string>
-  <string name="center_detail">Вибраний посібник · 2× деталь</string>
+  <string name="center_detail">Вибрані напрямні деталі</string>
+  <string name="center_outer">Зовнішній край</string>
+  <string name="center_inner">Внутрішня рамка</string>
   <string name="center_minus_pixel">−1 піксель зображення</string>
   <string name="center_plus_pixel">+1 піксель зображення</string>
   <string name="center_manual_notice">Ручне центрування. Розташування та перспектива фотографії впливають на співвідношення. Ручні посібники не дають загальної оцінки.</string>

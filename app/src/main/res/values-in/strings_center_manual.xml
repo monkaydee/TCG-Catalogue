@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">Sesuaikan panduan pemusatan</string>
-  <string name="center_hint">Seret setiap panduan ke bingkai cetakan yang sama di keempat sisinya. Pertama konfirmasikan keseluruhan garis besar kartu. Kartu tanpa bingkai yang sebanding tidak dapat memberikan rasio pemusatan yang dapat diandalkan.</string>
+  <string name="center_hint">Setiap sisi memiliki dua pemandu: tepi kartu bagian luar dan bingkai cetakan bagian dalam. Seret keduanya untuk mengukur jaraknya. Cyan menandai panduan luar; hijau menandai panduan bagian dalam. Kuning adalah panduan yang dipilih. Gunakan bingkai cetak yang sama di setiap sisi.</string>
   <string name="center_left">Kiri</string>
   <string name="center_right">Benar</string>
   <string name="center_top">Atas</string>
   <string name="center_bottom">Bawah</string>
-  <string name="center_detail">Panduan yang dipilih · 2× detail</string>
+  <string name="center_detail">Detail panduan yang dipilih</string>
+  <string name="center_outer">Tepi luar</string>
+  <string name="center_inner">Bingkai bagian dalam</string>
   <string name="center_minus_pixel">−1 piksel gambar</string>
   <string name="center_plus_pixel">+1 piksel gambar</string>
   <string name="center_manual_notice">Pengukuran pemusatan manual. Penempatan dan perspektif foto mempengaruhi rasio. Panduan manual tidak menghasilkan perkiraan nilai keseluruhan.</string>

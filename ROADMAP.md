@@ -245,4 +245,4 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 - Wishlist sharing link, friends' collections, set-completion badges.
 
 ### Centering tool update
-Implemented adjustable printed-frame guides on the confirmed corrected card, live ratios, 2× detail and one-pixel controls. Manual measurements are marked and excluded from the overall grade model. The supplied Instagram reel could not be accessed; matching its exact interaction awaits an attached video or screenshots.
+Implemented eight independent outer/inner guides on the confirmed corrected card, four border gap measurements, live ratios, up to 20× draggable detail and one-pixel controls. Manual measurements are marked and excluded from the overall grade model. The supplied Instagram screenshots clarified the paired outer/inner guide interaction now implemented.

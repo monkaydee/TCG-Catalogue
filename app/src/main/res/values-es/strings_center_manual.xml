@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">Ajustar las guías de centrado.</string>
-  <string name="center_hint">Arrastra cada guía al mismo marco impreso en los cuatro lados. Primero confirme todo el esquema de la tarjeta. Las tarjetas sin un marco comparable no pueden ofrecer una relación de centrado fiable.</string>
+  <string name="center_hint">Cada lado tiene dos guías: borde exterior de la tarjeta y marco interior impreso. Arrastre ambos para medir su brecha. El cian marca las guías exteriores; Marcas verdes guías interiores. El amarillo es la guía seleccionada. Utilice el mismo marco impreso en todos los lados.</string>
   <string name="center_left">Izquierda</string>
   <string name="center_right">Derecha</string>
   <string name="center_top">Arriba</string>
   <string name="center_bottom">Abajo</string>
-  <string name="center_detail">Guía seleccionada · 2× detalle</string>
+  <string name="center_detail">Detalle de la guía seleccionada</string>
+  <string name="center_outer">borde exterior</string>
+  <string name="center_inner">marco interior</string>
   <string name="center_minus_pixel">−1 píxel de imagen</string>
   <string name="center_plus_pixel">+1 píxel de imagen</string>
   <string name="center_manual_notice">Medición de centrado manual. La ubicación y la perspectiva de la foto afectan la proporción. Las guías manuales no producen una estimación general de las calificaciones.</string>

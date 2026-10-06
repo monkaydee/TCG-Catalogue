@@ -3,6 +3,11 @@ package com.monkaydee.tcgcatalogue.screenshots
 import android.graphics.Bitmap
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.swipe
+import androidx.compose.ui.test.performTouchInput
+import org.junit.Assert.assertTrue
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.semantics.SemanticsActions
@@ -121,6 +126,29 @@ class Screenshots {
         rule.onNodeWithText("Adjust centering guides").performClick()
         rule.onNode(SemanticsMatcher.keyIsDefined(SemanticsActions.SetProgress)).performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(0.1f) }
         rule.onNodeWithText("Use these guides").performScrollTo().performClick()
+        rule.onNodeWithText("Adjust centering guides").performClick()
+        rule.onNodeWithText("Outer edge").performScrollTo().performClick()
+        rule.onNode(SemanticsMatcher.keyIsDefined(SemanticsActions.SetProgress)).performScrollTo()
+            .performSemanticsAction(SemanticsActions.SetProgress) { it(0.02f) }
+        rule.onNodeWithText("Use these guides").performScrollTo().performClick()
+        assertEquals(12.0, requireNotNull(applied).cuts[0], 1e-5)
+        assertEquals(48.0, requireNotNull(applied).left, 1e-5)
+        rule.onNodeWithText("Adjust centering guides").performClick()
+        rule.onNodeWithTag("center_main_canvas").performScrollTo().performTouchInput {
+            swipe(Offset(width * 0.02f, height / 2f), Offset(width * 0.06f, height / 2f), durationMillis = 600)
+        }
+        rule.onNodeWithText("Use these guides").performScrollTo().performClick()
+        assertTrue("Dragging the outer handle must move its cut", requireNotNull(applied).cuts[0] > 12.0)
+        val beforeDetail = requireNotNull(applied).cuts[0]
+        rule.onNodeWithText("Adjust centering guides").performClick()
+        rule.onNodeWithText("Outer edge").performScrollTo().performClick()
+        rule.onNodeWithText("20×").performScrollTo().performClick()
+        rule.onNodeWithTag("center_detail_canvas").performScrollTo().performTouchInput {
+            swipe(Offset(width / 2f, height / 2f), Offset(width * 0.6f, height / 2f), durationMillis = 600)
+        }
+        rule.onNodeWithText("Use these guides").performScrollTo().performClick()
+        assertTrue("Dragging in zoom detail must move the selected outer handle", requireNotNull(applied).cuts[0] > beforeDetail)
+        val savedCuts = requireNotNull(applied).cuts
         val savedLeft = requireNotNull(applied).left
         rule.onNodeWithText("Adjust centering guides").performClick()
         rule.onNode(SemanticsMatcher.keyIsDefined(SemanticsActions.SetProgress)).performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(0.2f) }
@@ -128,6 +156,7 @@ class Screenshots {
         rule.onNodeWithText("Adjust centering guides").performClick()
         rule.onNodeWithText("Use these guides").performScrollTo().performClick()
         assertEquals(savedLeft, requireNotNull(applied).left, 1e-6)
+        assertEquals(savedCuts, requireNotNull(applied).cuts)
     }
 
     @Test fun binderPages() {

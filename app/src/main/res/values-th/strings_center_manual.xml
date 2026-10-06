@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
   <string name="center_adjust">ปรับเส้นบอกแนวตรงกลาง</string>
-  <string name="center_hint">ลากแต่ละไกด์ไปยังกรอบที่พิมพ์เหมือนกันทั้งสี่ด้าน ขั้นแรกให้ยืนยันโครงร่างการ์ดทั้งหมด การ์ดที่ไม่มีกรอบที่เทียบเคียงกันไม่สามารถให้อัตราส่วนศูนย์กลางที่เชื่อถือได้</string>
+  <string name="center_hint">แต่ละด้านมีแถบกั้นสองด้าน: ขอบการ์ดด้านนอกและกรอบพิมพ์ด้านใน ลากทั้งคู่เพื่อวัดช่องว่าง สีฟ้าทำเครื่องหมายไกด์ด้านนอก เครื่องหมายสีเขียวคำแนะนำภายใน สีเหลืองคือแนวทางที่เลือก ใช้กรอบพิมพ์เดียวกันทุกด้าน</string>
   <string name="center_left">ซ้าย</string>
   <string name="center_right">ถูกต้อง</string>
   <string name="center_top">ด้านบน</string>
   <string name="center_bottom">ก้น</string>
-  <string name="center_detail">คู่มือที่เลือก·รายละเอียด 2 ×</string>
+  <string name="center_detail">รายละเอียดคำแนะนำที่เลือก</string>
+  <string name="center_outer">ขอบด้านนอก</string>
+  <string name="center_inner">กรอบด้านใน</string>
   <string name="center_minus_pixel">−1 พิกเซลของภาพ</string>
   <string name="center_plus_pixel">+1 พิกเซลของภาพ</string>
   <string name="center_manual_notice">การวัดการจัดกึ่งกลางด้วยตนเอง เปอร์สเปคทีฟของตำแหน่งและรูปภาพส่งผลต่ออัตราส่วน คู่มือคู่มือไม่ได้ให้การประมาณเกรดโดยรวม</string>
