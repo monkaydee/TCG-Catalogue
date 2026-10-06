@@ -212,6 +212,29 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
                         translate(-bitmap.width / 2f, -bitmap.height / 2f)
                     }) { drawImage(image) }
                 }
+                if (rotating) {
+                    // Screen-space references: only the photo turns beneath the grid.
+                    // Constant spacing and centre prevent the guides drifting as padding changes.
+                    clipRect(ox, oy, ox + vw, oy + vh) {
+                        val spacing = 32.dp.toPx()
+                        val centre = Offset(size.width / 2, size.height / 2)
+                        fun reference(start: Offset, end: Offset, central: Boolean) {
+                            drawLine(Color.Black.copy(alpha = 0.45f), start, end, 2.dp.toPx())
+                            drawLine(Color.White.copy(alpha = if (central) 0.85f else 0.5f), start, end,
+                                (if (central) 1f else 0.5f).dp.toPx())
+                        }
+                        val columns = (vw / spacing / 2).toInt() + 1
+                        val rows = (vh / spacing / 2).toInt() + 1
+                        for (i in -columns..columns) {
+                            val gx = centre.x + i * spacing
+                            reference(Offset(gx, oy), Offset(gx, oy + vh), i == 0)
+                        }
+                        for (i in -rows..rows) {
+                            val gy = centre.y + i * spacing
+                            reference(Offset(ox, gy), Offset(ox + vw, gy), i == 0)
+                        }
+                    }
+                }
                 repeat(8) { i ->
                     val a = i / 2; val f = if (a == 1 || a == 3) 1 - guides[i] else guides[i]
                     val line = if (a < 2) ((f * workWidth - x) / cw * vw).toFloat()

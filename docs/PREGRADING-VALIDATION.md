@@ -99,3 +99,9 @@ rotation and independent inner-frame pixel adjustment. Geometry tests check all 
 corners remain visible at positive/negative limits, inverse mapping, gesture angle wrap,
 asymmetric border preservation and reset. These tests establish editor behaviour; they
 do not validate photo-based grading accuracy on customer cards.
+
+Rotation mode also displays a screen-space horizontal/vertical grid with constant
+32dp spacing and stronger centre references. It renders after the photo transform,
+so image rotation and changing canvas padding cannot rotate or move these reference
+lines. White strokes with dark outlines remain visible against light/dark artwork.
+It hides on leaving rotation mode and never participates in centering calculations.
