@@ -45,6 +45,8 @@ class CardIndexApi(private val http: Http, private val dir: File) {
             runCatching {
                 val text = http.getText("$BASE/$name", accept = "application/json")
                 if (!text.isNullOrBlank()) withContext(Dispatchers.IO) {
+                    // An HTTP 200 error page or truncated response must not replace a usable cache.
+                    require(http.json.parseToJsonElement(text).obj() != null) { "Invalid catalogue JSON" }
                     dir.mkdirs()
                     val tmp = File(dir, "$name.tmp")
                     tmp.writeText(text)
@@ -90,6 +92,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
             runCatching {
                 val text = http.getText("$BASE/${game.name}.json", accept = "application/json")
                 if (!text.isNullOrBlank()) withContext(Dispatchers.IO) {
+                    parse(game, text) // Validate before atomically replacing the previous index.
                     dir.mkdirs()
                     val tmp = File(dir, "${game.name}.json.tmp")
                     tmp.writeText(text)
@@ -255,6 +258,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
 
     private fun parse(game: Game, text: String): Index {
         val root = http.json.parseToJsonElement(text)
+        require(root["groups"].obj() != null && root["cards"].arr() != null) { "Invalid card index schema" }
         val groups = root["groups"].obj().orEmpty().mapNotNull { (id, v) ->
             val a = v.arr() ?: return@mapNotNull null
             val gid = id.toIntOrNull() ?: return@mapNotNull null

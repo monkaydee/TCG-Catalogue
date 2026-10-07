@@ -63,4 +63,13 @@ class PriceQuoteTest {
         assertEquals(english,CardmarketApi.automaticListing(listOf(japanese,english)))
         assertNull(CardmarketApi.automaticListing(listOf(english,listing(3,"Reprint"))))
     }
+    @Test fun nonfiniteGradedQuotesAreRejected() = runBlocking {
+        MockWebServer().use { web ->
+            web.start(); val api = PriceServerApi { web.url("/").toString() to "test" }
+            web.enqueue(MockResponse().setBody("""{"results":[{"graded":[{"grader":"PSA","grade":"8","price":"Infinity"},{"grader":"PSA","grade":"9","price":99}]}]}"""))
+            val quotes = api.graded(Game.POKEMON,"x","X","Set","1",null)
+            assertEquals(1,quotes.size); assertEquals("9",quotes.single().grade)
+        }
+    }
+
 }

@@ -63,11 +63,15 @@ class PreGradeRevealTest {
         rule.onNodeWithTag("pregrade_revealed_grade").assertDoesNotExist()
         rule.onNodeWithTag("pregrade_reveal_continue").assertDoesNotExist()
         rule.onNodeWithText("pull").assertDoesNotExist()
-        rule.mainClock.advanceTimeBy(1500)
+        rule.mainClock.advanceTimeBy(2600)
         rule.onNodeWithTag("pregrade_paper").assertIsDisplayed()
         rule.onNodeWithText("pull").assertDoesNotExist()
         rule.mainClock.advanceTimeBy(2400)
         rule.onNodeWithText("pull").assertIsDisplayed()
+        val paperBounds = rule.onNodeWithTag("pregrade_paper").fetchSemanticsNode().boundsInRoot
+        val hintBounds = rule.onNodeWithTag("pregrade_pull_hint").fetchSemanticsNode().boundsInRoot
+        assertTrue("Hint follows the grade cover", kotlin.math.abs(hintBounds.center.x - paperBounds.center.x) < paperBounds.width)
+        assertTrue("Hint is directly beneath the grade cover", hintBounds.top >= paperBounds.bottom - 10f && hintBounds.top - paperBounds.bottom < paperBounds.height)
         save("pregrade_paper_pull")
         // A swipe toward the wrong direction must not reveal the grade.
         rule.onNodeWithTag("pregrade_paper").performTouchInput { swipe(center,Offset(0f,center.y),200) }

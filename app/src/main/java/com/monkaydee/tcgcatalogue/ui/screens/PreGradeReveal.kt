@@ -37,6 +37,8 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontFamily
+import com.monkaydee.tcgcatalogue.ui.components.PsaDisplayLabel
 import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.grade.AutomaticPreGrade
 import kotlinx.coroutines.delay
@@ -58,7 +60,7 @@ internal fun PreGradeReveal(photo: Bitmap, title: String, result: AutomaticPreGr
     val infinite = rememberInfiniteTransition(label = "pull-hint")
     val pulse by infinite.animateFloat(-1f, 1f, infiniteRepeatable(tween(600, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "synchronized-pull")
     LaunchedEffect(Unit) {
-        if (!settled) { entrance.animateTo(1f, tween(1600, easing = FastOutSlowInEasing)); settled = true }
+        if (!settled) { entrance.animateTo(1f, tween(2800, easing = FastOutSlowInEasing)); settled = true }
         delay(2200); hint = true
     }
     fun reveal() {
@@ -87,7 +89,7 @@ internal fun PreGradeReveal(photo: Bitmap, title: String, result: AutomaticPreGr
         }
         Box(Modifier.align(Alignment.Center).offset(y = (-16).dp).width(width).aspectRatio(.64f)
             .graphicsLayer {
-                rotationY = if (settled) 0f else -150f + entrance.value * 510f
+                rotationY = -360f * (1 - entrance.value)
                 rotationX = (1 - entrance.value) * 18
                 rotationZ = (1 - entrance.value) * -9
                 cameraDistance = 14 * density.density
@@ -96,17 +98,13 @@ internal fun PreGradeReveal(photo: Bitmap, title: String, result: AutomaticPreGr
             Column(Modifier.fillMaxSize().clip(RoundedCornerShape(width * .065f))
                 .background(Brush.linearGradient(listOf(Color(0xFFA5BDC6), Color(0xFFEBF7FC), Color(0xFF6B8A96), Color(0xFFD3EDF1))))
                 .border(3.dp, Color(0xFFCDDDE3), RoundedCornerShape(width * .065f)).padding(width * .045f),
-                verticalArrangement = Arrangement.spacedBy(width * .035f)) {
-                Row(Modifier.fillMaxWidth().height(width * .27f).background(Color(0xFFFBFCF8))
-                    .border(3.dp, Color(0xFFCB3440)).padding(horizontal = width * .028f), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Text("PSA", color = Color(0xFF165C97), fontWeight = FontWeight.Black, fontSize = (width.value * .075f).sp)
-                        Text("PRE-GRADE · DISPLAY", color = Color(0xFF38474C), fontSize = (width.value * .027f).sp, fontWeight = FontWeight.Bold)
-                        Text(title, color = Color(0xFF19282E), fontSize = (width.value * .035f).sp, maxLines = 1)
-                    }
-                    Box(Modifier.width(width * .27f).height(width * .22f), contentAlignment = Alignment.Center) {
-                        if (revealed) Text(result.grade.toString(), color = Color(0xFF16262B), fontWeight = FontWeight.Black,
-                            fontSize = (width.value * .17f).sp, modifier = Modifier.testTag("pregrade_revealed_grade"))
+                verticalArrangement = Arrangement.spacedBy(width * .065f)) {
+                PsaDisplayLabel(title, "CardNavo · photo estimate", null, width, null, display = true) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        if (revealed) Text(result.grade.toString(), color = Color(0xFF16262B),
+                            style = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.Bold, fontSize = (width.value * .15f).sp),
+                            modifier = Modifier.testTag("pregrade_revealed_grade"))
                         if (paper.value < 1) {
                             var dragging by remember { mutableStateOf(false) }
                             var dragProgress by remember { mutableFloatStateOf(0f) }
@@ -144,14 +142,20 @@ internal fun PreGradeReveal(photo: Bitmap, title: String, result: AutomaticPreGr
                     .clip(RoundedCornerShape(width * .025f)).border(2.dp, Color(0xFF859FA8), RoundedCornerShape(width * .025f)),
                     contentScale = ContentScale.Fit)
             }
+            if (settled && !revealed && hint) Row(
+                Modifier.align(Alignment.TopEnd).offset(x = -width * .045f, y = width * .325f)
+                    .width(width * .25f).height(width * .06f)
+                    .graphicsLayer { translationX = pulse * 3 * density.density }
+                    .testTag("pregrade_pull_hint"),
+                horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.pre_quick_pull), color = Color(0xFF173F45),
+                    style = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.SansSerif,
+                        fontSize = (width.value * .037f).sp, fontWeight = FontWeight.Bold))
+                Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = Color(0xFF173F45), modifier = Modifier.size(width * .055f))
+            }
             // Light sweep across the plastic during the short spin.
             if (!settled) Box(Modifier.fillMaxSize().graphicsLayer { alpha = .22f * (1 - entrance.value) }
                 .background(Brush.linearGradient(listOf(Color.Transparent, Color.White, Color.Transparent))))
-        }
-        if (settled && !revealed && hint) Column(Modifier.align(Alignment.BottomCenter).padding(bottom = 82.dp)
-            .graphicsLayer { translationX = pulse * 7 * density.density }, horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = Color(0xFF9CECDF), modifier = Modifier.size(32.dp))
-            Text(stringResource(R.string.pre_quick_pull), color = Color(0xFF9CECDF), fontWeight = FontWeight.Bold)
         }
         if (!settled) Text(stringResource(R.string.pre_quick_rotating), Modifier.align(Alignment.BottomCenter).padding(bottom = 96.dp),
             color = Color.White, style = MaterialTheme.typography.bodySmall)

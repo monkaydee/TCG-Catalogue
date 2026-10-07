@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">最近的查询未找到匹配价格；已保留之前的价格</string>
+</resources>

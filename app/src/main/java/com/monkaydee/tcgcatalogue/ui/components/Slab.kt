@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -191,9 +192,50 @@ private fun LabelText(value: String, color: Color, size: androidx.compose.ui.uni
         maxLines = 1, overflow = TextOverflow.Ellipsis)
 }
 
+/** PSA-inspired display label. Never invents a barcode, certificate or certification. */
+@Composable
+internal fun PsaDisplayLabel(title: String, subtitle: String, cert: String?, w: Dp,
+                            grade: String?, display: Boolean = false,
+                            gradeContent: (@Composable () -> Unit)? = null) {
+    val ink = Color(0xFF202329)
+    val fs = { fraction: Float -> (w.value * fraction).sp }
+    val shape = RoundedCornerShape(w * .008f)
+    Row(Modifier.fillMaxWidth().height(w * .28f).clip(shape)
+        .background(Color(0xFFFFFEFA))
+        .border((w * .012f).coerceAtLeast(.5.dp), Color(0xFFD52B36), shape)
+        .padding(horizontal = w * .026f, vertical = w * .023f)) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(w * .004f)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(w * .02f)) {
+                Text("PSA", style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Black,
+                    fontStyle = FontStyle.Italic, fontSize = fs(.06f), lineHeight = fs(.06f)), color = Color(0xFF184A80))
+                if (display) LabelText("PRE-GRADE", Color(0xFFA12A32), fs(.028f), family = FontFamily.SansSerif, weight = FontWeight.Bold)
+            }
+            if (w >= 90.dp) {
+                LabelText(title.uppercase(), ink, fs(.036f), family = FontFamily.SansSerif, weight = FontWeight.Bold)
+                LabelText(subtitle.uppercase(), ink, fs(.028f), family = FontFamily.SansSerif)
+                if (!cert.isNullOrBlank()) LabelText(cert, ink, fs(.027f), family = FontFamily.Monospace)
+                else if (display) LabelText("PHOTO ESTIMATE", Color(0xFF6E7278), fs(.024f), family = FontFamily.SansSerif)
+            }
+        }
+        Spacer(Modifier.width(w * .012f))
+        Box(Modifier.width(w * .24f).fillMaxSize(), contentAlignment = Alignment.Center) {
+            if (gradeContent != null) gradeContent()
+            else Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                if (w >= 90.dp) LabelText(gradeWords("PSA", grade, null), ink, fs(.028f), family = FontFamily.SansSerif, weight = FontWeight.Bold)
+                LabelText(grade ?: "—", ink, fs(if ((grade?.length ?: 0) > 2) .11f else .15f),
+                    family = FontFamily.SansSerif, weight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
 @Composable
 private fun SlabLabel(style: SlabStyle, grader: String, grade: String?, qualifier: String?,
                       title: String, subtitle: String, cert: String?, w: Dp) {
+    if (grader == "PSA") {
+        PsaDisplayLabel(title, subtitle, cert, w, grade)
+        return
+    }
     val small = w < 90.dp
     val fs = { fraction: Float -> (w.value * fraction).sp }
     val labelShape = RoundedCornerShape(w * 0.007f)

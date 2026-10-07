@@ -174,6 +174,9 @@ interface SealedDao {
     suspend fun getAll(): List<SealedItem>
 
     @Query("SELECT * FROM sealed_items WHERE id = :id")
+    suspend fun get(id: Long): SealedItem?
+
+    @Query("SELECT * FROM sealed_items WHERE id = :id")
     fun observe(id: Long): Flow<SealedItem?>
 
     @Query("SELECT * FROM sealed_items WHERE game = :game AND productId = :productId AND language = :language LIMIT 1")

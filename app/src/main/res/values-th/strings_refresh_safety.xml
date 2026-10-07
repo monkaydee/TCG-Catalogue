@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">การค้นหาล่าสุดไม่พบราคาที่ตรงกัน จึงเก็บราคาเดิมไว้</string>
+</resources>

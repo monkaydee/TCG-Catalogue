@@ -137,7 +137,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
             Graded(
                 grader = g["grader"].str() ?: return@mapNotNull null,
                 grade = g["grade"].str() ?: return@mapNotNull null,
-                price = g["price"].dbl()?.takeIf { it > 0 } ?: return@mapNotNull null,
+                price = g["price"].dbl()?.takeIf { it.isFinite() && it > 0 } ?: return@mapNotNull null,
                 currency = g["currency"].str() ?: "USD",
                 source = g["source"].str().orEmpty(),
                 date = g["date"].str(),

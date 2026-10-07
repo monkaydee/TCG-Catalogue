@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">पिछली खोज में कोई मेल खाता मूल्य नहीं मिला; पहले का मूल्य रखा गया है</string>
+</resources>

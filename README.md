@@ -236,3 +236,5 @@ Ideas for what comes next, all free: see [ROADMAP.md](ROADMAP.md).
   that are badly worn or shot at an angle, may need the manual search.
 - Free community APIs are used. If one goes down or changes, lookups for that game fail until
   it recovers or the client in `data/remote/` is adapted.
+
+Latest review: [quality audit](docs/QUALITY-AUDIT-2026-10-07.md) and [Go Shopping feasibility plan](docs/GO-SHOPPING-PLAN.md). The shopping feature is proposed only.

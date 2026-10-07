@@ -218,7 +218,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                 }
                 return@Column
             }
-            val open = { c: OwnedCard -> onOpenCard(order, c.id) }
+            val open = { c: OwnedCard -> if (turner.progress == 0f) onOpenCard(order, c.id) }
             val shownPage = pages[turner.page.coerceIn(pages.indices)]
             val footer = listOfNotNull(
                 shownPage.title?.takeIf { it.isNotBlank() },

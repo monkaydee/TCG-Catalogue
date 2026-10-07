@@ -78,9 +78,9 @@ class CardRepository(
     val settings: SettingsStore,
     /** Japanese Pokémon cards (ids prefixed "ja:"). */
     private val tcgdexJa: TcgDexApi = tcgdex.forLanguage("ja"),
+    /** Server-side prices and recognition; injectable for deterministic provider-failure checks. */
+    val server: PriceServerApi = PriceServerApi { settings.current().takeIf { it.hasServer }?.let { it.serverUrl to it.serverKey } },
 ) {
-    /** The app's price server (graded prices, PSA certs, online identification); off until set up. */
-    val server = PriceServerApi { settings.current().takeIf { it.hasServer }?.let { it.serverUrl to it.serverKey } }
 
     /** The TCGdex client for a Pokémon card or set id (Japanese ids start with "ja:"). */
     private fun pokemonApi(id: String) = if (id.startsWith(tcgdexJa.idPrefix)) tcgdexJa else tcgdex
@@ -472,7 +472,7 @@ class CardRepository(
     private suspend fun serverRawPrice(card: CardCandidate, variant: Variant, language: String = "EN", condition: String = "NM"): Price? {
         if (!server.isSetUp()) return null
         val r = attempt { server.raw(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), condition = condition, setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique) }
-            .getOrNull() ?: return null
+            .getOrThrow() ?: return null
         val note = listOfNotNull(r.source.takeIf { it.isNotBlank() }, listingsNote(r.listings, r.low, r.high, r.currency)).joinToString(" · ")
         return Price(r.amount, if (r.currency == "EUR") PriceSource.SERVER_EUR else PriceSource.SERVER, note = (note + if (r.stale) " · " + AppStrings.get(R.string.quote_stale) else "").ifBlank { null }, fetchedAt = r.fetchedAt, stale = r.stale)
     }
@@ -811,9 +811,10 @@ class CardRepository(
 
     private fun lookupNotice(row: OwnedCard, failed: Boolean): String {
         if (row.game == Game.POKEMON && row.language == "JA" && !row.cardId.startsWith("ja:")) return AppStrings.get(R.string.jp_printing_required)
-        val notice = AppStrings.get(if (row.price?.let { it.isFinite() && it > 0 } == true) R.string.quote_refresh_failed
-            else if (failed) R.string.quote_lookup_failed else R.string.quote_lookup_missing)
-        val outdated = listOf(R.string.quote_refresh_failed, R.string.quote_lookup_failed, R.string.quote_lookup_missing).map { AppStrings.get(it) }
+        val notice = AppStrings.get(if (row.price?.let { it.isFinite() && it > 0 } == true) {
+            if (failed) R.string.quote_refresh_failed else R.string.quote_refresh_missing
+        } else if (failed) R.string.quote_lookup_failed else R.string.quote_lookup_missing)
+        val outdated = listOf(R.string.quote_refresh_failed, R.string.quote_refresh_missing, R.string.quote_lookup_failed, R.string.quote_lookup_missing).map { AppStrings.get(it) }
         val notes = row.priceNote?.split(" · ")?.filterNot { it in outdated || it.contains("Latest refresh unavailable") || it == "Quote needs refresh after matching correction" }.orEmpty()
         return (notes + notice).distinct().joinToString(" · ")
     }
@@ -1267,14 +1268,21 @@ class CardRepository(
                 ?: com.monkaydee.tcgcatalogue.data.remote.SealedProduct(item.game, item.productId, item.name, item.groupName, null,
                     language = item.language, imageUrl = item.imageUrl)
             val p = runCatching { sealedQuote(catalogue) }.getOrNull()
-            if (p?.price == null) {
-                db.sealed().update(item.copy(imageUrl = p?.imageUrl ?: item.imageUrl, priceSource = item.priceSource.substringBefore(" · Latest quote unavailable") + " · Latest quote unavailable; previous quote retained"))
-                continue
-            }
-            // Preserve the original purchase currency when a quote changes market/currency.
-            p.price?.let { db.sealed().update(item.copy(price = it, priceCurrency = p.currency, imageUrl = p.imageUrl ?: item.imageUrl,
-                purchaseCurrency = item.purchaseCurrency ?: item.priceCurrency,
-                priceSource = p.source, priceScope = p.priceScope, priceUpdatedAt = p.fetchedAt ?: System.currentTimeMillis())) }
+            applySealedQuote(item, p)
+        }
+    }
+
+    /** Apply only quote fields to the latest row; a network refresh must not undo collection edits. */
+    internal suspend fun applySealedQuote(item: SealedItem, p: com.monkaydee.tcgcatalogue.data.remote.SealedProduct?) = db.withTransaction {
+        val current = db.sealed().get(item.id) ?: return@withTransaction
+        if (current.game != item.game || current.productId != item.productId || current.language != item.language) return@withTransaction
+        if (p?.price == null) {
+            db.sealed().update(current.copy(imageUrl = p?.imageUrl ?: current.imageUrl,
+                priceSource = current.priceSource.substringBefore(" · Latest quote unavailable") + " · Latest quote unavailable; previous quote retained"))
+        } else {
+            db.sealed().update(current.copy(price = p.price, priceCurrency = p.currency, imageUrl = p.imageUrl ?: current.imageUrl,
+                purchaseCurrency = current.purchaseCurrency ?: current.priceCurrency,
+                priceSource = p.source, priceScope = p.priceScope, priceUpdatedAt = p.fetchedAt ?: System.currentTimeMillis()))
         }
     }
 

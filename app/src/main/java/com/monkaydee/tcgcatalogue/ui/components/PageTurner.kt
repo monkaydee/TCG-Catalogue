@@ -1,6 +1,8 @@
 package com.monkaydee.tcgcatalogue.ui.components
 
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.spring
@@ -9,6 +11,7 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
@@ -28,7 +31,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -57,8 +65,10 @@ class PageTurnState(initialPage: Int) {
     /** Called once when a turn has finished and the page really changed. */
     internal var onPageChanged: (() -> Unit)? = null
     private var job: Job? = null
+    private var revision = 0
 
     internal fun stop() {
+        revision++
         job?.cancel()
         job = null
     }
@@ -66,13 +76,15 @@ class PageTurnState(initialPage: Int) {
     /** Lets the page go: it falls to [target] (-1, 0 or 1) at the finger's [velocity] (per second). */
     internal fun settle(scope: CoroutineScope, target: Float, velocity: Float = 0f, spec: AnimationSpec<Float> = FLING) {
         stop()
+        val expectedRevision = revision
         job = scope.launch {
-            animate(progress, target, velocity, spec) { value, _ -> progress = value }
+            animate(progress, target, velocity, spec) { value, _ -> progress = value.coerceIn(-1f, 1f) }
+            if (expectedRevision != revision) return@launch
             // The new page and the flat turn land in the same frame, so nothing flashes.
             val before = page
             when (target) {
-                1f -> page += 1
-                -1f -> page -= 1
+                1f -> page = (page + 1).coerceAtMost((pageCount - 1).coerceAtLeast(0))
+                -1f -> page = (page - 1).coerceAtLeast(0)
             }
             progress = 0f
             if (page != before) onPageChanged?.invoke()
@@ -97,8 +109,8 @@ class PageTurnState(initialPage: Int) {
 
     private companion object {
         // No bounce: paper doesn't spring back past where it lands.
-        val FLING = spring<Float>(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = 170f, visibilityThreshold = 0.001f)
-        val TURN = spring<Float>(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = 95f, visibilityThreshold = 0.001f)
+        val FLING = spring<Float>(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = 125f, visibilityThreshold = 0.001f)
+        val TURN = tween<Float>(780, easing = FastOutSlowInEasing)
     }
 }
 
@@ -125,6 +137,9 @@ fun PageTurner(
 ) {
     state.pageCount = pageCount
     state.onPageChanged = rememberTick()
+    DisposableEffect(state) {
+        onDispose { state.stop(); state.progress = 0f; state.onPageChanged = null }
+    }
     // Fewer pages after a filter or grid change: stay on the last one.
     LaunchedEffect(pageCount) { if (state.page > pageCount - 1) state.jump(pageCount - 1) }
     val scope = rememberCoroutineScope()
@@ -134,7 +149,7 @@ fun PageTurner(
     val current = state.page
 
     Box(
-        modifier.pointerInput(Unit) {
+        modifier.pointerInput(state) {
             var drag = 0f
             val tracker = VelocityTracker()
             detectHorizontalDragGestures(
@@ -194,6 +209,8 @@ private fun turned(progress: Float) = if (progress >= 0f) progress else 1f + pro
 
 @Composable
 private fun Sheet(state: PageTurnState, role: Role, pageBack: @Composable () -> Unit, content: @Composable () -> Unit) {
+    val frontLayer = rememberGraphicsLayer()
+    val backLayer = rememberGraphicsLayer()
     val z = when (role) { Role.TURNING -> 2f; Role.UNDER -> 1f; Role.HIDDEN -> 0f }
     Box(
         Modifier
@@ -205,19 +222,23 @@ private fun Sheet(state: PageTurnState, role: Role, pageBack: @Composable () -> 
                     Role.HIDDEN -> alpha = 0f
                     // Flat pages need no turning layer; only the moving page is rotated.
                     Role.UNDER -> alpha = if (p == 0f) 0f else 1f
-                    Role.TURNING -> {
-                        val a = turned(p)
-                        transformOrigin = TransformOrigin(0f, 0.5f)
-                        rotationY = -180f * a
-                        cameraDistance = 14f * density
-                        // Once turned over, the sheet's back fades as it lies down on the left.
-                        alpha = if (a <= 0.5f) 1f else 1f - (a - 0.5f) * 1.7f
-                    }
+                    Role.TURNING -> alpha = 1f
                 }
             }
             .drawWithContent {
-                drawContent()
                 val p = state.progress
+                if (role == Role.TURNING) {
+                    if (drawContext.canvas.nativeCanvas.isHardwareAccelerated) {
+                        frontLayer.record { this@drawWithContent.drawContent() }
+                        if (p == 0f) drawLayer(frontLayer)
+                        else drawCurvedPage(turned(p), { drawLayer(frontLayer) }, { drawLayer(backLayer) })
+                    } else if (p == 0f) drawContent()
+                    else {
+                        // Bitmap exports and software previews cannot draw Android RenderNodes.
+                        // Draw the existing content through the same curve, with a plain reverse.
+                        drawCurvedPage(turned(p), { this@drawWithContent.drawContent() }, { drawRect(Color(0xFF26262B)) })
+                    }
+                } else drawContent()
                 if (p == 0f) return@drawWithContent
                 val a = turned(p)
                 val lift = sin(a * PI).toFloat()
@@ -241,26 +262,45 @@ private fun Sheet(state: PageTurnState, role: Role, pageBack: @Composable () -> 
                             )
                         }
                     }
-                    Role.TURNING -> if (a < 0.5f) {
-                        // Light falls off towards the lifted edge, with a soft sheen across the paper.
-                        drawRect(
-                            Brush.horizontalGradient(
-                                0f to Color.Black.copy(alpha = 0.04f * lift),
-                                0.55f to Color.White.copy(alpha = 0.07f * lift),
-                                1f to Color.Black.copy(alpha = 0.32f * lift),
-                            ),
-                        )
-                    }
+                    Role.TURNING -> Unit // Curved strips carry their own lighting.
                     Role.HIDDEN -> Unit
                 }
             },
     ) {
         content()
-        if (role == Role.TURNING) {
-            // The back of the sheet shows once it is turned past upright (mirrored to read right).
-            val showBack by remember(state) { derivedStateOf { turned(state.progress) > 0.5f } }
-            if (showBack) {
-                Box(Modifier.fillMaxSize().graphicsLayer { scaleX = -1f }) { pageBack() }
+        // Record the plain reverse once per draw, without covering the interactive front.
+        if (role == Role.TURNING) Box(Modifier.fillMaxSize().drawWithContent {
+            backLayer.record { this@drawWithContent.drawContent() }
+        }) { pageBack() }
+    }
+}
+
+/** Cylindrical paper bend sampled into strips; the card grid is recorded once, not rebuilt per strip. */
+private fun DrawScope.drawCurvedPage(progress: Float, front: DrawScope.() -> Unit, back: DrawScope.() -> Unit) {
+    val segments = 24
+    val stripWidth = size.width / segments
+    val bend = sin(progress * PI).toFloat()
+    var projectedX = 0f
+    var height = 0f
+    // Keep most of the turn visible; once past upright the reverse folds away to the left.
+    val baseAngle = PI.toFloat() * progress * progress
+    for (i in 0 until segments) {
+        val angle = baseAngle + .60f * bend * (i + .5f) / segments
+        val projection = cos(angle)
+        val start = projectedX
+        val lift = height
+        projectedX += stripWidth * projection
+        height += stripWidth * sin(angle)
+        if (abs(projection) < .006f) continue
+        val perspective = 1f + lift / size.width * .07f
+        withTransform({
+            translate(start, size.height * (1 - perspective) / 2)
+            scale(projection, perspective, pivot = Offset.Zero)
+            translate(-i * stripWidth, 0f)
+        }) {
+            clipRect(i * stripWidth, 0f, (i + 1) * stripWidth + .7f, size.height) {
+                if (projection >= 0) front() else back()
+                drawRect(Color.Black.copy(alpha = (.20f * bend * (i.toFloat() / segments)).coerceIn(0f, .2f)))
             }
         }
     }
