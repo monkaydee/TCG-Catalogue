@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="price_coverage_missing" tools:ignore="MissingTranslation">Known prices only · %1$d copies awaiting prices</string>
     <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">The saved printing is unavailable in the current catalogue; previous quote retained</string>
-    <string name="card_no_graded_price" tools:ignore="MissingTranslation">No price for this grade available</string>
+    <string name="card_no_graded_price" tools:ignore="MissingTranslation">No matching slab quote retrieved</string>
     <string name="card_raw_reference" tools:ignore="MissingTranslation">Ungraded market reference</string>
     <string name="card_raw_reference_hint" tools:ignore="MissingTranslation">Raw reference only — not a %1$s valuation; excluded from slab totals.</string>
     <string name="card_raw_reference_failed" tools:ignore="MissingTranslation">The raw reference could not be loaded. Try refreshing.</string>
@@ -12,4 +12,8 @@
     <string name="quote_cardmarket_aggregate" tools:ignore="MissingTranslation">Cardmarket product-wide reference; this guide does not isolate language or condition</string>
     <string name="quote_native_cardmarket_reference" tools:ignore="MissingTranslation">%1$s catalogue confirms this Cardmarket product</string>
     <string name="quote_english_tcgplayer_reference" tools:ignore="MissingTranslation">English raw-card reference; not a quote for the saved card language</string>
+    <string name="graded_no_matching_quote" tools:ignore="MissingTranslation">No matching quote retrieved for %1$s. This does not mean there have been no sales.</string>
+    <string name="graded_no_quote_table" tools:ignore="MissingTranslation">No matching graded quote retrieved for this language and printing. eBay completed sales are not included in the listing feed.</string>
+    <string name="graded_no_quote_reason" tools:ignore="MissingTranslation">no matching graded quote retrieved</string>
+    <string name="graded_asking_reference" tools:ignore="MissingTranslation">eBay references use current asking prices, not sold prices. A small sample is limited evidence; shipping is excluded.</string>
 </resources>

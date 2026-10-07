@@ -296,23 +296,23 @@ class CardRepository(
 
     /**
      * Price of a graded copy, from the app's price server (graded sales collected by its providers).
-     * Without a server, or when nobody sold that grade, graded copies carry the user's own value,
+     * Without a matching quote, graded copies carry the user's own value,
      * helped by the price links on the card page.
      */
     suspend fun gradedLookup(card: CardCandidate, variant: Variant, grade: GradeInfo, language: String = "EN"): GradedResult {
         val grader = grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
         val value = grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
         if (!server.isSetUp()) return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
-        val prices = attempt { gradedPrices(card, variant, language) }.getOrElse { e -> return GradedResult(null, AppStrings.get(if (e is PriceServerApi.ProvidersUnavailableException) R.string.graded_providers_unavailable else R.string.data_graded_server_error), unavailable = true) }
+        val prices = attempt { gradedPrices(card, variant, language, grade) }.getOrElse { e -> return GradedResult(null, AppStrings.get(if (e is PriceServerApi.ProvidersUnavailableException) R.string.graded_providers_unavailable else R.string.data_graded_server_error), unavailable = true) }
         val match = prices.firstOrNull { it.grader.equals(grader, ignoreCase = true) && sameGrade(it.grade, value) && it.qualifier == grade.qualifier && it.currency in setOf("USD", "EUR") }
-            ?: return GradedResult(null, AppStrings.get(R.string.data_graded_no_sales, grade.label))
+            ?: return GradedResult(null, AppStrings.get(R.string.graded_no_matching_quote, grade.label))
         val source = if (match.currency == "EUR") PriceSource.GRADED_EUR else PriceSource.GRADED
         return GradedResult(Price(match.price, source, note = gradedNote(match), fetchedAt = match.fetchedAt, stale = match.stale), null)
     }
 
     /** All graded prices the price server has for a printing (every company and grade). */
-    suspend fun gradedPrices(card: CardCandidate, variant: Variant, language: String = "EN"): List<PriceServerApi.Graded> =
-        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique)
+    suspend fun gradedPrices(card: CardCandidate, variant: Variant, language: String = "EN", target: GradeInfo? = null): List<PriceServerApi.Graded> =
+        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique, grader = target?.grader, grade = target?.grade)
 
     /** The card's name in [language] for searching listings ("Flamara"), Pokémon only. */
     private suspend fun localName(card: CardCandidate, language: String): String? =
@@ -353,7 +353,7 @@ class CardRepository(
         if (!server.isSetUp()) return emptyList()
         val card = fetch(row.game, row.cardId) ?: return emptyList()
         val variant = card.variants.firstOrNull { it.key == row.variant } ?: card.defaultVariant
-        return gradedPrices(card, variant, row.language)
+        return gradedPrices(card, variant, row.language, if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null)
     }
 
     /** PSA's record of a cert number (card, grade, population), through the price server. */

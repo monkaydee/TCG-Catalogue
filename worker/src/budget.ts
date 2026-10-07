@@ -8,7 +8,7 @@
 import { budgetFor, type Budget } from "./config";
 import type { Env, ProviderName } from "./types";
 
-export const PROVIDERS: ProviderName[] = ["justtcg", "tcgapi", "poketrace", "rapidapi", "ppt", "psa", "ximilar"];
+export const PROVIDERS: ProviderName[] = ["justtcg", "tcgapi", "poketrace", "rapidapi", "ppt", "psa", "ximilar", "ebay"];
 
 // ---------- Pure date and budget math (unit tested) ----------
 

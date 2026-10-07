@@ -44,9 +44,16 @@ describe("helpers", () => {
 });
 
 describe("request parsing and cache keys", () => {
+  it("separates a targeted grade cache from other grades and the overview",()=>{
+    const base={game:"pokemon",id:"base5-4",graded:true,printing:"1st Edition Holofoil"};
+    const five=parseCard({...base,grader:"PSA",grade:"5"})!;
+    expect(five.key).not.toBe(parseCard({...base,grader:"PSA",grade:"8"})!.key);
+    expect(five.key).not.toBe(parseCard(base)!.key);
+    expect(parseCard({...base,grader:"anything"})?.grader).toBeUndefined();
+  });
   it("prefers the TCGplayer id in the key and includes the printing", () => {
-    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v5:pokemon:tcg42382:reverseholofoil:default");
-    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v5:magic:idabc:default");
+    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v6:pokemon:tcg42382:reverseholofoil:default");
+    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v6:magic:idabc:default");
   });
   it("accepts the app's enum names in any case and rejects unknown games", () => {
     expect(parseCard({ game: "ONE_PIECE", id: "OP01-024" })?.game).toBe("one_piece");

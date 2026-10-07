@@ -189,7 +189,7 @@ fun AddCardSheet(
     val shown = if (graded) gradedQuote else conditionQuote
     val loading = if (graded) gradedLoading else conditionLoading
     val gradedMissing = graded && !gradedLoading && gradedQuote == null
-    val note = if (gradedMissing) stringResource(R.string.add_graded_missing, gradedProblem ?: stringResource(R.string.add_no_sales_found)) else shown?.note
+    val note = if (gradedMissing) stringResource(R.string.add_graded_missing, gradedProblem ?: stringResource(R.string.graded_no_quote_reason)) else shown?.note
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dailyAllowance, daysInMonth, remainingToday, utcDay, utcMonth } from "../src/budget";
+import { Budgets, dailyAllowance, daysInMonth, remainingToday, utcDay, utcMonth } from "../src/budget";
 import { budgetFor, DEFAULT_BUDGETS } from "../src/config";
 import type { Env } from "../src/types";
 
@@ -68,6 +68,16 @@ describe("monthly budget spreading", () => {
 });
 
 describe("budget settings", () => {
+  it("loads and retains eBay usage and quota blocks in the provider status",async()=>{
+    const db={prepare:()=>({bind(){return this;},async all(){return {results:[{provider:"ebay",day:"2026-10-07",used:2380,blocked:0}]};},async run(){return {meta:{changes:1}};}})} as unknown as D1Database;
+    const budgets=await new Budgets(db,{} as Env,at("2026-10-07T04:00:00Z")).load();
+    expect(budgets.remaining("ebay")).toBe(20);
+    expect(await budgets.reserve("ebay",4)).toBe(4);
+    expect(budgets.remaining("ebay")).toBe(16);
+    await budgets.block("ebay");
+    expect(budgets.remaining("ebay")).toBe(0);
+    expect(budgets.report(p=>p==="ebay").ebay).toMatchObject({configured:true,usedToday:2384,blockedToday:true});
+  });
   it("defaults are the free tiers minus 10%", () => {
     expect(DEFAULT_BUDGETS.justtcg).toEqual({ daily: 90, monthly: 900 });
     expect(DEFAULT_BUDGETS.tcgapi.daily).toBe(90);

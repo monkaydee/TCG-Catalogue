@@ -121,10 +121,12 @@ export function justTcgGraded(): GradedProvider {
   return {
     name: "justtcg",
     batchSize: 1, // no v2 batch endpoint yet
-    supports: (card) => !!card.tcgplayerId,
+    supports: (card) => !!card.tcgplayerId && (!card.grader || ["PSA","BGS","CGC","BCCG","BVG","SGC"].includes(card.grader)),
     async fetch(cards, key) {
       const card = cards[0];
       const q = new URLSearchParams({ tcgplayer_id: card.tcgplayerId!, graded: "only", include: "periods.30d" });
+      if (card.grader) q.set("grading_company", card.grader);
+      if (card.grader && card.grade) q.set("grade", card.grade);
       const json = await fetchJson("justtcg", `${BASE}/v2/cards?${q}`, { headers: { "x-api-key": key } });
       const graded = parseJustTcgGraded(json, card);
       return new Map(graded.length ? [[card.key, graded]] : []);

@@ -248,8 +248,8 @@ private fun CardDetail(
 ) {
     val scope = rememberCoroutineScope()
     val history by remember(c.id) { repo.priceHistory(c.id) }.collectAsState(initial = emptyList())
-    LaunchedEffect(c.id, c.variant, c.language, c.condition) {
-        if (!c.graded && Money.unitOrNull(c, s.currency, s.usdToEur) == null) runCatching { repo.refreshPrice(c.id) }
+    LaunchedEffect(c.id, c.variant, c.language, c.condition, c.graded, c.grader, c.grade, c.gradeQualifier) {
+        if (Money.unitOrNull(c, s.currency, s.usdToEur) == null) runCatching { repo.refreshPrice(c.id) }
     }
     Column(
         Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
@@ -451,6 +451,7 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                     TextButton(onClick = {
                         loading = true
                         scope.launch {
+                            if (c.graded) runCatching { repo.refreshPrice(c.id) }
                             val r = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.gradedPricesFor(c) }
                             failure = r.exceptionOrNull()?.let { if (it is com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.ProvidersUnavailableException) R.string.graded_providers_unavailable else R.string.graded_failed }
                             prices = r.getOrNull()
@@ -461,7 +462,7 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
             }
             when {
                 failure != null -> Text(stringResource(failure!!), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
-                prices?.isEmpty() == true -> Text(stringResource(R.string.graded_none), style = MaterialTheme.typography.bodySmall)
+                prices?.isEmpty() == true -> Text(stringResource(R.string.graded_no_quote_table), style = MaterialTheme.typography.bodySmall)
             }
             prices.orEmpty().sortedWith(compareBy({ it.grader }, { -(it.grade.toDoubleOrNull() ?: 0.0) })).forEach { g ->
                 val mine = c.graded && g.grader.equals(c.grader, ignoreCase = true) && g.grade.toDoubleOrNull() == c.grade?.toDoubleOrNull() && c.gradeQualifier == g.qualifier
@@ -479,6 +480,9 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                         fontWeight = FontWeight.Medium,
                     )
                 }
+            }
+            if (prices.orEmpty().any { (it.listings ?: 0) > 0 }) {
+                Text(stringResource(R.string.graded_asking_reference), style = MaterialTheme.typography.bodySmall)
             }
             val certNumber = c.certNumber?.filter(Char::isDigit)?.takeIf { it.isNotEmpty() && c.grader == "PSA" }
             if (certNumber != null) {

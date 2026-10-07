@@ -8,6 +8,18 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class PriceQuoteTest {
+    @Test fun targetSlabAndFirstEditionAreForwardedWithoutDroppingEvidence() = runBlocking {
+        MockWebServer().use { web ->
+            web.start(); val api = PriceServerApi { web.url("/").toString() to "test-key" }
+            web.enqueue(MockResponse().setBody("""{"results":[{"graded":[{"grader":"PSA","grade":"5","price":480,"currency":"EUR","source":"eBay listings (asking, not sold)","listings":1,"low":480,"high":480,"evidence":"limited"}]}]}"""))
+            val quote = api.graded(Game.POKEMON,"base5-4","Dark Charizard","Team Rocket","4/82",84572,"1st Edition Holofoil",grader="PSA",grade="5").single()
+            val body = web.takeRequest().body.readUtf8()
+            assertTrue(body.contains("\"grader\":\"PSA\"")); assertTrue(body.contains("\"grade\":\"5\""))
+            assertTrue(body.contains("\"printing\":\"1st Edition Holofoil\""))
+            assertEquals(1,quote.listings); assertEquals("limited",quote.evidence)
+            assertTrue(quote.source.contains("not sold"))
+        }
+    }
     @Test fun exactConditionAndOriginalFreshnessSurviveTheApi() = runBlocking {
         MockWebServer().use { web ->
             web.start()

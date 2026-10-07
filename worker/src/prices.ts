@@ -18,7 +18,8 @@ export function cacheKey(c: Omit<CardRequest, "key">): string {
   const printing = c.printing ? `:${c.printing.toLowerCase().replace(/[^a-z0-9]/g, "")}` : "";
   const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
   // Version the cache after fixing language, printing and qualified-grade matching.
-  return `v5:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}`;
+  const slab = c.graded && c.grader ? `:slab:${c.grader}:${c.grade ?? "all"}` : "";
+  return `v6:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}${slab}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -46,6 +47,8 @@ export function parseCard(v: unknown): CardRequest | null {
     ...(language ? { language } : {}),
     ...(o.market === "US" || o.market === "DE" ? {market:o.market} : {}),
     ...(o.graded === true ? { graded: true } : {}),
+    ...(o.graded === true && /^(PSA|BGS|CGC|SGC|TAG|ACE|AOG|GSG|PI)$/.test(text(o.grader).toUpperCase()) ? {grader:text(o.grader).toUpperCase()} : {}),
+    ...(o.graded === true && /^(10|[1-9](?:\.5)?)$/.test(text(o.grade)) ? {grade:text(o.grade)} : {}),
   };
   if (!card.id && !card.tcgplayerId) return null;
   return { ...card, key: cacheKey(card) };

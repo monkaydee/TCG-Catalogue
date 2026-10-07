@@ -61,9 +61,9 @@ class TcgApp : Application() {
                 PriceRefreshWorker.runNow(this@TcgApp)
                 revisions.edit().putInt("revision", 4).apply()
             }
-            if (!revisions.getBoolean("native-cardmarket-reference-repair", false)) {
+            if (!revisions.getBoolean("graded-targeted-search-repair", false)) {
                 PriceRefreshWorker.runNow(this@TcgApp)
-                revisions.edit().putBoolean("native-cardmarket-reference-repair", true).apply()
+                revisions.edit().putBoolean("graded-targeted-search-repair", true).apply()
             }
         }
 

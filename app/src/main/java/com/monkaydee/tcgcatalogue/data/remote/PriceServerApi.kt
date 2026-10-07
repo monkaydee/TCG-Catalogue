@@ -104,7 +104,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     }
 
     /** Graded prices of a card (TCGplayer product [tcgplayerId]), or an empty list when there are none. */
-    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null, language: String = "EN", localName: String? = null, setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null, printingUnique: Boolean = false): List<Graded> {
+    suspend fun graded(game: Game, cardId: String, name: String, setName: String, number: String, tcgplayerId: Long?, printing: String? = null, language: String = "EN", localName: String? = null, setAliases: List<String> = emptyList(), releaseYear: String? = null, market: String? = null, printingUnique: Boolean = false, grader: String? = null, grade: String? = null): List<Graded> {
         val body = buildJsonObject {
             put("schemaVersion", 2)
             putJsonArray("cards") {
@@ -124,6 +124,8 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         if (language != "EN") put("language", language)
                         localName?.let { put("localName", it) }
                         put("graded", true)
+                        grader?.let { put("grader", it) }
+                        grade?.let { put("grade", it.replace(',', '.')) }
                     },
                 )
             }

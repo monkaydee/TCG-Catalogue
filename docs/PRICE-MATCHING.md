@@ -7,7 +7,7 @@ and sealed box/bundle/Battle/case/contents mismatches.
 
 ## Comparable quotes
 
-Card titles need an explicit printed language, set or complete One Piece release code, name,
+Card titles need an explicit language (or a verified eBay language facet for graded listings), set or complete One Piece release code, name,
 collector number and supported printing evidence. Known Base Set reprints are excluded. Declared
 release years and localized set names are supplied from TCGdex. Missing or ambiguous evidence
 abstains. This is conservative title matching, not verification of a seller's physical item.
@@ -16,7 +16,7 @@ PSA OC/MC/MK/ST/PD/OF and altered/authentic-only listings cannot enter ordinary-
 BGS Black Label and CGC Pristine/Perfect stay separate. Providers with aggregated BGS/CGC 10
 sold tiers that do not distinguish premium labels are skipped for those tiers.
 
-Graded asking quotes require five unique matching listings. Explicit raw conditions require
+Graded asking references can use one unique matching listing, with limited evidence below five. Explicit raw conditions require
 three comparables for EACH condition; mixed/unknown conditions cannot become NM. Sealed asking
 quotes require three unique matching listings for the exact format, set, edition and named
 contents. Extreme asking prices outside a factor of four around the median are excluded; a
@@ -79,3 +79,13 @@ A slab page automatically loads an ungraded market reference, independently of t
 The public Cardmarket guide is a product-wide aggregate, not an English-only transaction feed. For a non-English NM Pokémon row, a native TCGdex catalogue record may establish that the same set, collector number, variant and Cardmarket product have a positive guide value. The app can then save this as a clearly labelled Cardmarket reference. This is not a claim of a language- or condition-specific quote. English TCGplayer data remain excluded from non-English saved valuations.
 
 A missing native record, differing product ID, differing printing, or requested played condition prevents this fallback. English collector identities are never translated into Japanese release identities. Native references do not replace exact graded prices. Repair refreshes preserve manual values, quantities and cost information.
+
+## Graded lookup repair, revision 6
+
+TCGdex's hyphenated `1st-edition-holofoil` and `unlimited-holofoil` keys now retain their product IDs, prices and printing names. This repairs provider eligibility for the reported Dark Charizard and Jungle Flareon examples. The selected slab company and grade are sent to the server and included in its cache key, preventing popular PSA 10 listings from crowding out the requested grade.
+
+eBay graded searches use company names rather than requiring the word "graded". Queries cover English/local names and sets, GSG/AOG/PI, and decimal-comma grades. A bounded follow-up uses the Language aspect returned by eBay's search refinement. Only item IDs returned by that filtered search gain language evidence; an explicit conflicting language in a title still rejects the item. Marketplace alone never proves language. First-edition, collector-number, printing and special-label checks remain in force.
+
+One to four exact asking comparables are disclosed as limited evidence with listing counts and ranges. They are current listing references, not completed sales or a guarantee of realizable value. The app no longer reports "no recent sales" when it merely received no quote. Missing graded rows refresh on opening their page and graded-panel refresh updates the stored quote, preserving saved values if retrieval fails.
+
+Deployment verification includes the reported first-edition Dark Charizard PSA 5, unlimited Flareon PSA 8 and German Psyduck CGC 9 requests. It separately reports JustTCG v2 HTTP access and priced-variant counts without storing credentials. Successful schema checks alone do not establish graded market coverage. The public PSA API supplies certification/population data, not the estimates and sales history displayed by PSA's website. eBay Browse supplies active listings, not completed sales; neither screenshots nor an active asking-price median are converted into verified sale prices.

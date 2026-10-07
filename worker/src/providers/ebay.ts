@@ -18,7 +18,7 @@ import { fetchJson, obj, price, str } from "../util";
 const API = "https://api.ebay.com";
 /** eBay's "CCG Individual Cards" category (Pokémon, One Piece, Magic, …). */
 const SINGLES = "183454";
-const GRADERS = ["PSA", "BGS", "CGC", "SGC", "TAG", "ACE", "AOG", "GSG"];
+const GRADERS = ["PSA", "BGS", "CGC", "SGC", "TAG", "ACE", "AOG", "GSG", "PI"];
 /** Special 10s that sell far above a plain 10: never counted as one. */
 const NOT_A_SINGLE = /\b(lot|bundle|proxy|custom|reprint|orica|fan ?art|digital|choose|pick|you pick|break|box|pack|empty|label only)\b/i;
 
@@ -44,10 +44,10 @@ export async function accessToken(key: string): Promise<string> {
 export function gradeInTitle(title: string): { grader: string; grade: string; qualifier?: string } | null {
   // PSA qualifiers and altered/authentic-only slabs have separate markets. Abstain for now.
   if (/\b(?:OC|MC|MK|ST|PD|OF|off[- ]?cent(?:er|re)|miscut|marked|stained|altered|authentic|qualifier|qualified|recolou?red|trimmed)\b/i.test(title)) return null;
-  const re = new RegExp(`\\b(${GRADERS.join("|")}|BECKETT)\\s*(?:(?:GEM\\s*(?:MINT|MT)|MINT|NM-?MT|PRISTINE|PERFECT|BLACK\\s*LABEL)\\s*)?(10|9\\.5|[1-9](?:\\.5)?)(?![\\d.])`, "gi");
+  const re = new RegExp(`\\b(${GRADERS.join("|")}|BECKETT)\\s*(?:(?:GEM\\s*(?:MINT|MT)|MINT|NM-?MT|PRISTINE|PERFECT|BLACK\\s*LABEL)\\s*)?(10|9[.,]5|[1-9](?:[.,]5)?)(?![\\d.,])`, "gi");
   const found = new Set<string>();
   let m: RegExpExecArray | null;
-  while ((m = re.exec(title))) found.add(`${m[1].toUpperCase() === "BECKETT" ? "BGS" : m[1].toUpperCase()}|${m[2]}`);
+  while ((m = re.exec(title))) found.add(`${m[1].toUpperCase() === "BECKETT" ? "BGS" : m[1].toUpperCase()}|${m[2].replace(",", ".")}`);
   if (found.size !== 1) return null;
   const [grader, grade] = [...found][0].split("|");
   const qualifier = grade === "10" ? (
@@ -63,7 +63,7 @@ function shortNumber(n: string): string {
   return n.split("/")[0].replace(/^0+(?=\d)/, "");
 }
 
-const FIRST_EDITION = /\b(1st|first)\s*(ed\.?|edition)\b/i;
+const FIRST_EDITION = /\b(1st|first)\s*(ed\.?|edition)\b|\b1\.?\s*(edition|auflage)\b|\berste\s*(edition|auflage)\b/i;
 const SHADOWLESS = /\bshadowless\b/i;
 
 /** Words sellers use for a card's language (English and the local eBay site's language). */
@@ -99,14 +99,14 @@ export function marketplace(language?: string, market?: string): { site: string;
 const SITE_LANGUAGE: Record<string, string> = { EBAY_DE: "DE", EBAY_FR: "FR", EBAY_IT: "IT", EBAY_ES: "ES", EBAY_NL: "NL", EBAY_US: "EN" };
 
 /**
- * Require positive evidence for non-English cards; reject conflicting explicit languages.
+ * Require positive language evidence for every card; reject conflicting explicit languages.
  */
-export function languageMatches(title: string, language?: string): boolean {
+export function languageMatches(title: string, language?: string, verifiedLanguage?: string): boolean {
   const lang = language ?? "EN";
   const named = Object.entries(LANGUAGE_WORDS).filter(([, re]) => re.test(title)).map(([code]) => code);
   if (named.length > 0) return named.length === 1 && named[0] === lang;
   // Marketplace is the seller's market, not proof of the language printed on a card.
-  return false;
+  return verifiedLanguage === lang;
 }
 
 const SET_ALIASES: Record<string,string[]> = {
@@ -128,8 +128,8 @@ export function setMatches(title: string, card: CardRequest): boolean {
   return true;
 }
 
-export function titleMatches(title: string, card: CardRequest): boolean {
-  if (!languageMatches(title, card.language)) return false;
+export function titleMatches(title: string, card: CardRequest, verifiedLanguage?: string): boolean {
+  if (!languageMatches(title, card.language, verifiedLanguage)) return false;
   if (!setMatches(title, card)) return false;
   const t = title.toLowerCase();
   if (NOT_A_SINGLE.test(title)) return false;
@@ -144,7 +144,7 @@ export function titleMatches(title: string, card: CardRequest): boolean {
   const reverse = /\breverse\b|umgekehrtes holo/i.test(title);
   const holo = /\bholo(?:foil)?\b|\bfoil\b|holographic/i.test(title);
   if (/^(normal|nonholo|nonfoil)$/i.test(card.printing ?? "") && holo) return false;
-  if (/^(holo|holofoil|foil)$/i.test(card.printing ?? "") && (!holo && !card.printingUnique || /non[- ]?(?:holo|foil)/i.test(title))) return false;
+  if (/holo|foil/i.test(card.printing ?? "") && !/reverse|non[- ]?(?:holo|foil)/i.test(card.printing ?? "") && (!holo && !card.printingUnique || /non[- ]?(?:holo|foil)/i.test(title))) return false;
   if (/alt|parallel|manga|special art|full art/i.test(card.printing ?? "") && !phraseIn(title,card.printing!)) return false;
   if (/\bmanga\b|\balt(?:ernate)? art\b|\bparallel\b/i.test(title) && !/manga|alt|parallel/i.test(card.printing ?? "")) return false;
   if (/reverse/i.test(card.printing ?? "") !== reverse) return false;
@@ -156,7 +156,7 @@ export function titleMatches(title: string, card: CardRequest): boolean {
   if (!named(card.name) && !named(card.localName)) return false;
   if (!card.number) return false;
   // The grade itself (PSA 9) is not collector number #9.
-  const numberTitle = t.replace(new RegExp(`\\b(${GRADERS.join("|")}|beckett)\\s*(?:(?:gem\\s*(?:mint|mt)|mint|nm-?mt|pristine|perfect|black\\s*label)\\s*)?(10|[1-9](?:[.,]5)?)(?![\\d.])`, "gi"), "");
+  const numberTitle = t.replace(new RegExp(`\\b(${GRADERS.join("|")}|beckett)\\s*(?:(?:gem\\s*(?:mint|mt)|mint|nm-?mt|pristine|perfect|black\\s*label)\\s*)?(10|[1-9](?:[.,]5)?)(?![\\d.,])`, "gi"), "");
   const requestedTotal = card.number.split("/")[1];
   const titleTotal = /\b\d+\s*\/\s*(\d+)\b/.exec(numberTitle)?.[1];
   if (requestedTotal && titleTotal && Number(requestedTotal) !== Number(titleTotal)) return false;
@@ -165,7 +165,7 @@ export function titleMatches(title: string, card: CardRequest): boolean {
   return new RegExp(`(^|[^a-z0-9])0*${esc}([^a-z0-9]|$)`).test(numberTitle);
 }
 
-export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
+export function parseEbay(json: unknown, card: CardRequest, verifiedLanguageIds: ReadonlySet<string> = new Set()): GradedPrice[] {
   const by = new Map<string, number[]>(); const seen = new Set<string>();
   for (const it of Array.isArray(obj(json).itemSummaries) ? (obj(json).itemSummaries as unknown[]) : []) {
     const item = obj(it);
@@ -174,25 +174,25 @@ export function parseEbay(json: unknown, card: CardRequest): GradedPrice[] {
     if (seen.has(id)) continue;
     const p = obj(item.price);
     const value = price(typeof p.value === "string" ? Number(p.value) : p.value);
-    if (value === null || str(p.currency) !== marketplace(card.language,card.market).currency || !titleMatches(title, card)) continue;
+    if (value === null || str(p.currency) !== marketplace(card.language,card.market).currency || !titleMatches(title, card, verifiedLanguageIds.has(id) ? card.language ?? "EN" : undefined)) continue;
     const g = gradeInTitle(title);
-    if (!g) continue;
+    if (!g || card.grader && g.grader !== card.grader || card.grade && g.grade !== card.grade) continue;
     seen.add(id);
     const k = `${g.grader}|${g.grade}|${g.qualifier ?? ""}`;
     by.set(k, [...(by.get(k) ?? []), value]);
   }
   const date = new Date().toISOString().slice(0, 10);
   return [...by].flatMap(([k, list]) => {
-    const summary = comparableSummary(list,5);
+    const summary = comparableSummary(list,1);
     if (!summary) return [];
     const [grader, grade, qualifier] = k.split("|");
     return [{ grader, grade, ...(qualifier ? { qualifier } : {}), price:summary.amount,
-      currency:marketplace(card.language,card.market).currency, source:"eBay listings (asking, shipping excluded)", date,
+      currency:marketplace(card.language,card.market).currency, source:"eBay listings (asking, not sold; shipping excluded)", date,
       listings:summary.listings,low:summary.low,high:summary.high,evidence:summary.evidence,excluded:summary.excluded }];
   });
 }
 
-const SLAB = /\b(psa|bgs|beckett|cgc|sgc|tag|ace|aog|gsg|graded|slab)\b/i;
+const SLAB = /\b(psa|bgs|beckett|cgc|sgc|tag|ace|aog|gsg|pi|graded|slab)\b/i;
 
 /** Conditions must be explicit. Unknown and conflicting titles never become NM. */
 export function conditionInTitle(title: string): keyof RawPrice["conditions"] | null {
@@ -221,16 +221,63 @@ export function parseEbayRaw(json: unknown, card: CardRequest): RawPrice | null 
   return {conditions,conditionEvidence,market:null,source:"eBay condition listings (asking, shipping excluded)",currency:marketplace(card.language,card.market).currency,listings:count};
 }
 
-async function search(card: CardRequest, key: string, extra: string): Promise<unknown> {
+/** Query titles broadly, then verify language through eBay's actual item-specific facet. */
+export function searchParams(card: CardRequest, extra: string, graded = false, aspectFilter?: string): URLSearchParams {
   const first = /first|1st/i.test(card.printing ?? "") ? "1st edition" : "";
   const { site } = marketplace(card.language,card.market);
   const languageWord = { EN: "English", DE: "Deutsch", FR: "French", IT: "Italian", ES: "Spanish", NL: "Dutch", PT: "portuguese", PL: "polish", JA: "japanese", KO: "korean", ZH: "chinese" }[card.language ?? ""] ?? "";
   const localizedSet = card.language === "JA" ? card.setAliases?.find(a=>/^[\x00-\x7F]+$/.test(a)) : card.language && card.language !== "EN" ? card.setAliases?.find(a=>normalize(a)!==normalize(card.set) && !/^(?:SV|SWSH|SM|XY)\d/i.test(a)) : undefined;
-  const q = [card.localName ?? card.name, card.number || "", localizedSet ?? card.set, first, SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
+  const alternatives = (values: (string | undefined)[]) => {
+    const unique = [...new Set(values.filter((v):v is string=>!!v))];
+    const quoted = unique.map(v=>'"'+v.replace(/"/g, "")+'"');
+    return quoted.length > 1 ? '('+quoted.join(',')+')' : unique[0] ?? "";
+  };
+  const name = graded ? alternatives([card.name,card.localName]) : card.localName ?? card.name;
+  const set = graded ? alternatives([card.set,localizedSet]) : localizedSet ?? card.set;
+  const q = [name, graded ? shortNumber(card.number) : card.number, set, first, graded || SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
   const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
+  if (graded) params.set("fieldgroups", "MATCHING_ITEMS,ASPECT_REFINEMENTS");
+  if (aspectFilter) params.set("aspect_filter", aspectFilter);
+  return params;
+}
+
+async function search(card: CardRequest, key: string, extra: string, graded = false, aspectFilter?: string): Promise<unknown> {
+  const params = searchParams(card,extra,graded,aspectFilter);
   return fetchJson("ebay", `${API}/buy/browse/v1/item_summary/search?${params}`, {
-    headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": site },
+    headers: { Authorization: `Bearer ${await accessToken(key)}`, "X-EBAY-C-MARKETPLACE-ID": marketplace(card.language,card.market).site },
   });
+}
+
+/** Only a server-returned Language facet can establish language missing from a title. */
+export function languageAspectFilter(json: unknown, language = "EN"): string | undefined {
+  const refinement = obj(obj(json).refinement);
+  if (str(refinement.dominantCategoryId) !== SINGLES) return;
+  for (const aspect of Array.isArray(refinement.aspectDistributions) ? refinement.aspectDistributions : []) {
+    const a = obj(aspect), name = str(a.localizedAspectName);
+    if (!name || !/^(language|sprache|langue|lingua|idioma|taal)$/i.test(name)) continue;
+    for (const value of Array.isArray(a.aspectValueDistributions) ? a.aspectValueDistributions : []) {
+      const v = obj(value), label = str(v.localizedAspectValue);
+      if (label && languageMatches(label,language) && !/[{}:,|]/.test(label))
+        return `categoryId:${SINGLES},${name}:{${label}}`;
+    }
+  }
+}
+
+async function languageSearch(card: CardRequest, key: string, extra: string) {
+  const initial = await search(card,key,extra,true);
+  const filter = languageAspectFilter(initial,card.language);
+  let filtered: unknown = null;
+  if (filter) {
+    try { filtered = await search(card,key,extra,true,filter); }
+    catch (error) {
+      // A failed facet query must not hide already verified title matches.
+      if (!parseEbay(initial,card).length) throw error;
+    }
+  }
+  const items = (json: unknown) => Array.isArray(obj(json).itemSummaries) ? obj(json).itemSummaries as unknown[] : [];
+  const verified = new Set(items(filtered).map(it=>str(obj(it).itemId)).filter((id):id is string=>!!id));
+  // Prefer the filtered copy when duplicates occur; retain title-confirmed unfiltered items too.
+  return {items:[...items(filtered),...items(initial)],verified};
 }
 
 export function ebayRaw(): RawProvider {
@@ -250,25 +297,21 @@ export function ebay(): GradedProvider {
   return {
     name: "ebay",
     batchSize: 1,
-    callsPerBatch: 2,
+    // Two query groups, each with at most one language-facet follow-up.
+    callsPerBatch: 4,
     supports: (card) => !!card.name,
     async fetch(cards, key): Promise<BatchResult<GradedPrice[]>> {
       const card = cards[0];
-      // PSA fills most results, so the other companies get a search of their own.
-      const [all, others] = await Promise.all([
-        search(card, key, "graded"),
-        search(card, key, "-psa (bgs,cgc,sgc,tag,ace,beckett)"),
-      ]);
-      const seen = new Set<string>();
-      const items = [all, others]
-        .flatMap((j) => (Array.isArray(obj(j).itemSummaries) ? (obj(j).itemSummaries as unknown[]) : []))
-        .filter((it) => {
-          const id = str(obj(it).itemId) ?? str(obj(it).title) ?? "";
-          if (seen.has(id)) return false;
-          seen.add(id);
-          return true;
-        });
-      const graded = parseEbay({ itemSummaries: items }, card);
+      const groups = card.grader ? [card.grader + (card.grade ? " " + card.grade : "")] : [
+        "(psa,bgs,cgc,sgc,tag,ace,aog,gsg,pi,beckett)",
+        "-psa (bgs,cgc,sgc,tag,ace,aog,gsg,pi,beckett)",
+      ];
+      const outcomes = await Promise.allSettled(groups.map(extra=>languageSearch(card,key,extra)));
+      const results = outcomes.flatMap(r=>r.status === "fulfilled" ? [r.value] : []);
+      const verified = new Set(results.flatMap(r=>[...r.verified]));
+      const graded = parseEbay({itemSummaries:results.flatMap(r=>r.items)},card,verified);
+      const failed = outcomes.find(r=>r.status === "rejected");
+      if (!graded.length && failed?.status === "rejected") throw failed.reason;
       return new Map(graded.length ? [[card.key, graded]] : []);
     },
   };

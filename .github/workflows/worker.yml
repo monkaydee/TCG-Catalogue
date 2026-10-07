@@ -173,6 +173,7 @@ jobs:
         if: steps.deploy.outputs.url != ''
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
+          JUSTTCG_KEY: ${{ secrets.JUSTTCG_KEY }}
           URL: ${{ steps.deploy.outputs.url }}
         run: python ../scripts/check_prices.py
 

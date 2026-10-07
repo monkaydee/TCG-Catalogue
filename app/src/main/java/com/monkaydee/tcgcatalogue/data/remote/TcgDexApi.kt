@@ -129,7 +129,9 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
             imageUrl = c["image"].str()?.let { "$it/high.webp" } ?: pokemonTcgImage(id, large = true),
             variants = variants,
             cardmarketId = pricing["cardmarket"]["idProduct"].str()?.toLongOrNull(),
-            printingUnique = listOf("normal", "holo", "reverse", "firstEdition", "wPromo").count { flags[it].bool() } == 1,
+            // First edition changes the edition, not this collector number's finish.
+            // The price server still checks edition separately before accepting a listing.
+            printingUnique = listOf("normal", "holo", "reverse", "wPromo").count { flags[it].bool() } == 1,
             attacks = c["attacks"].arr().orEmpty().mapNotNull { it["name"].str() },
         )
     }
@@ -161,9 +163,9 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
         val tcg = pricing["tcgplayer"]
         val cm = pricing["cardmarket"]
         val tcgKeys = when (key) {
-            "holo" -> listOf("holofoil", "normal")
+            "holo" -> listOf("unlimited-holofoil", "unlimitedHolofoil", "holofoil", "normal")
             "reverse" -> listOf("reverse-holofoil", "reverseHolofoil")
-            else -> listOf("normal", "holofoil")
+            else -> listOf("unlimited-normal", "unlimitedNormal", "normal", "holofoil")
         }
         val tcgKey = tcgKeys.firstOrNull { k -> tcg[k]["marketPrice"].dbl() != null || tcg[k]["midPrice"].dbl() != null }
         val tcgPrice = tcgKey?.let { k -> tcg[k]["marketPrice"].dbl() ?: tcg[k]["midPrice"].dbl() }
@@ -192,9 +194,9 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
     private fun printingName(key: String) = when (key) {
         "holofoil" -> "Holofoil"
         "reverse-holofoil", "reverseHolofoil" -> "Reverse Holofoil"
-        "1stEditionHolofoil" -> "1st Edition Holofoil"
-        "1stEditionNormal", "1stEdition" -> "1st Edition"
-        "unlimitedHolofoil" -> "Unlimited Holofoil"
+        "1st-edition-holofoil", "1stEditionHolofoil" -> "1st Edition Holofoil"
+        "1st-edition-normal", "1st-edition", "1stEditionNormal", "1stEdition" -> "1st Edition"
+        "unlimited-holofoil", "unlimitedHolofoil" -> "Holofoil"
         else -> "Normal"
     }
 
@@ -204,7 +206,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
         }
         val p = detailed["pricing"]
         val tcg = p["tcgplayer"] ?: pricing["tcgplayer"]
-        val firstKey = listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition")
+        val firstKey = listOf("1st-edition-holofoil", "1st-edition-normal", "1st-edition", "1stEditionHolofoil", "1stEditionNormal", "1stEdition")
             .firstOrNull { k -> tcg[k]["marketPrice"].dbl() != null }
         val tcgPrice = firstKey?.let { tcg[it]["marketPrice"].dbl() }
         // Cardmarket often sells 1st Edition as the same product as Unlimited; its price is then the
@@ -212,10 +214,10 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
         val ownProduct = p["cardmarket"]["idProduct"].str()?.takeIf { it != pricing["cardmarket"]["idProduct"].str() }
         val cmPrice = if (ownProduct == null) null else p["cardmarket"]["trend"].dbl()?.takeIf { it > 0 } ?: p["cardmarket"]["avg"].dbl()?.takeIf { it > 0 }
         val productId = detailed["thirdParty"]["tcgplayer"].str()?.toLongOrNull()
-            ?: tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal").firstNotNullOfOrNull { t[it]["productId"].str()?.toLongOrNull() } }
-        val tcgFirst = tcg?.let { t -> listOf("1stEditionHolofoil", "1stEditionNormal", "1stEdition").firstNotNullOfOrNull { k -> t[k].takeIf { it != null } } }
+            ?: tcg?.let { t -> listOf("1st-edition-holofoil", "1st-edition-normal", "1stEditionHolofoil", "1stEditionNormal").firstNotNullOfOrNull { t[it]["productId"].str()?.toLongOrNull() } }
+        val tcgFirst = tcg?.let { t -> listOf("1st-edition-holofoil", "1st-edition-normal", "1st-edition", "1stEditionHolofoil", "1stEditionNormal", "1stEdition").firstNotNullOfOrNull { k -> t[k].takeIf { it != null } } }
         return Variant(
-            "firstEdition", AppStrings.get(R.string.data_variant_first_edition), prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = if (firstKey == "1stEditionHolofoil") "1st Edition Holofoil" else "1st Edition",
+            "firstEdition", AppStrings.get(R.string.data_variant_first_edition), prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = (firstKey ?: tcg?.let { t -> listOf("1st-edition-holofoil", "1stEditionHolofoil", "1st-edition-normal", "1stEditionNormal").firstOrNull { t[it] != null } })?.let(::printingName) ?: "1st Edition",
             details = (if (ownProduct != null) cardmarketDetails(p["cardmarket"], "") else emptyList()) + tcgplayerDetails(tcgFirst),
         )
     }
@@ -243,4 +245,3 @@ fun pokemonTcgImage(cardId: String, large: Boolean): String? {
     val number = if (raw.all(Char::isDigit)) raw.trimStart('0').ifEmpty { "0" } else raw
     return "https://images.pokemontcg.io/$set/$number${if (large) "_hires" else ""}.png"
 }
-

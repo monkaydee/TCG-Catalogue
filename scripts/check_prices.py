@@ -5,6 +5,7 @@ import math
 import os
 import subprocess
 import time
+from urllib.parse import urlencode
 from pathlib import Path
 
 def main():
@@ -21,7 +22,7 @@ def main():
     # workers.dev edges can briefly serve the previous version after deployment.
     for attempt in range(9):
         status = call("/v1/status")
-        if status.get("priceMatchingRevision") == 5:
+        if status.get("priceMatchingRevision") == 6:
             break
         if attempt == 8:
             raise AssertionError("Updated price service did not propagate")
@@ -34,10 +35,19 @@ def main():
         {"game":"POKEMON","id":"sv10-193","name":"Misty's Psyduck","set":"Destined Rivals","number":"193/182","tcgplayerId":"632993","printing":"Holofoil","printingUnique":True,"language":"EN","market":"US","graded":True},
         {"game":"ONE_PIECE","id":"OP01-001","name":"Roronoa Zoro","set":"Romance Dawn","number":"OP01-001","language":"EN","market":"US","graded":True},
         {"game":"ONE_PIECE","id":"OP01-001","name":"Roronoa Zoro","set":"Romance Dawn","number":"OP01-001","language":"JA","market":"DE","graded":True},
+        {"game":"POKEMON","id":"base5-4","name":"Dark Charizard","set":"Team Rocket","number":"4/82","tcgplayerId":"84572","printing":"1st Edition Holofoil","printingUnique":True,"language":"EN","market":"DE","graded":True,"grader":"PSA","grade":"5"},
+        {"game":"POKEMON","id":"base2-3","name":"Flareon","set":"Jungle","number":"3/64","tcgplayerId":"45129","printing":"Holofoil","printingUnique":True,"language":"EN","market":"DE","graded":True,"grader":"PSA","grade":"8"},
+        {"game":"POKEMON","id":"sv10-193","name":"Misty's Psyduck","localName":"Mistys Enton","set":"Destined Rivals","setAliases":["Ewige Rivalen"],"number":"193/182","printing":"Holofoil","printingUnique":True,"language":"DE","market":"DE","graded":True,"grader":"CGC","grade":"9"},
     ]
     rows=[]
     for card in fixtures:
-        result=call("/v1/prices", {"schemaVersion":2,"cards":[card]})
+        for attempt in range(9):
+            result=call("/v1/prices", {"schemaVersion":2,"cards":[card]})
+            if all(r.get("key", "").startswith("v6:") for r in result.get("results",[])):
+                break
+            if attempt == 8:
+                raise AssertionError("Price request still served an older matching revision")
+            time.sleep(5)
         assert len(result.get("results",[]))==1, "Missing price result"
         row=result["results"][0]; rows.append(row)
         for amount in [row.get("market")] + list((row.get("conditions") or {}).values()):
@@ -51,7 +61,10 @@ def main():
             assert grade["currency"] in ["USD","EUR"] and grade.get("source")
             assert grade.get("fetchedAt") and isinstance(grade.get("stale"),bool), "Missing graded freshness: " + json.dumps(row)
             if "eBay" in grade["source"]:
-                assert grade.get("listings",0)>=5 and grade["low"]<=grade["price"]<=grade["high"]
+                assert grade.get("listings",0)>=1 and grade["low"]<=grade["price"]<=grade["high"]
+                assert "asking" in grade["source"]
+                if grade["listings"]<5:
+                    assert grade.get("evidence")=="limited"
         if "eBay" in (row.get("source") or ""):
             assert row.get("market") is None, "Condition-mixed asking price cannot become NM"
     assert len({row["key"] for row in rows})==len(rows), "Language/market cache collision"
@@ -68,9 +81,26 @@ def main():
             assert quote["listings"]>=3 and quote["currency"]==("EUR" if market=="DE" else "USD")
             assert quote["low"]<=quote["amount"]<=quote["high"]
         sealed.append({"name":name,"language":language,"market":market,**answer})
-    report={"status":status,"cards":rows,"sealed":sealed}
+    # Inspect graded-provider access directly: HTTP/schema/counts only, never credentials.
+    provider_probe={"configured":bool(os.environ.get("JUSTTCG_KEY"))}
+    if provider_probe["configured"]:
+        config='header = '+json.dumps('x-api-key: '+os.environ["JUSTTCG_KEY"])+ '\n'
+        query=urlencode({"tcgplayer_id":"45129","graded":"only","grading_company":"PSA","grade":"8"})
+        try:
+            response=subprocess.check_output(["curl","--silent","--show-error","--max-time","30","--config","-","--write-out","\n%{http_code}","https://api.justtcg.com/v2/cards?"+query],input=config.encode())
+            body,code=response.rsplit(b"\n",1)
+            provider_probe["httpStatus"]=int(code)
+            if code==b"200":
+                data=json.loads(body).get("data",[])
+                variants=[v for c in data for v in c.get("variants",[]) if v.get("type")=="graded"]
+                provider_probe["gradedVariants"]=len(variants)
+                provider_probe["pricedGradedVariants"]=sum(any(isinstance(m.get("price"),(int,float)) and m["price"]>0 for m in v.get("markets",[])) for v in variants)
+        except (subprocess.SubprocessError,ValueError,TypeError,AttributeError):
+            provider_probe["probeFailed"]=True
+    report={"status":status,"cards":rows,"sealed":sealed,"gradedProviderProbe":provider_probe}
     Path("price-verification.json").write_text(json.dumps(report,indent=2))
     print("Live price API: schema, source, currency and language separation checks passed.")
+    print("Graded provider access:",json.dumps(provider_probe))
     for card,row in zip(fixtures,rows):
         print(card["game"],card["language"],row.get("source") or row.get("reason"),row.get("conditions"), "graded comparables:",len(row.get("graded",[])))
     for item in sealed:

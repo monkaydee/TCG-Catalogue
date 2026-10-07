@@ -51,6 +51,9 @@ export interface CardRequest {
   /** The card's name in [language] (e.g. "Flamara" for Flareon in German), when known. */
   localName?: string;
   graded?: boolean;
+  /** Optional slab to target; never substitutes a different grade or company. */
+  grader?: string;
+  grade?: string;
   /** Cache key (game + best identifier + printing), filled in by the server. */
   key: string;
 }

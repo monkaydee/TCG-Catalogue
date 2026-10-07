@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="price_coverage_missing" tools:ignore="MissingTranslation">Nur bekannte Preise · Für %1$d Exemplare fehlt ein Preis</string>
     <string name="quote_printing_unavailable" tools:ignore="MissingTranslation">Die gespeicherte Variante fehlt im aktuellen Katalog; der vorherige Preis bleibt erhalten</string>
-    <string name="card_no_graded_price" tools:ignore="MissingTranslation">Kein Preis für diesen Grad verfügbar</string>
+    <string name="card_no_graded_price" tools:ignore="MissingTranslation">Kein passender Slab-Preis abgerufen</string>
     <string name="card_raw_reference" tools:ignore="MissingTranslation">Marktreferenz ohne Grading</string>
     <string name="card_raw_reference_hint" tools:ignore="MissingTranslation">Nur Referenz ohne Grading — keine Bewertung für %1$s; nicht in Slab-Summen enthalten.</string>
     <string name="card_raw_reference_failed" tools:ignore="MissingTranslation">Die Referenz konnte nicht geladen werden. Bitte aktualisieren.</string>
@@ -12,4 +12,8 @@
     <string name="quote_cardmarket_aggregate" tools:ignore="MissingTranslation">Produktweite Cardmarket-Referenz; Sprache und Zustand werden im Preisführer nicht getrennt</string>
     <string name="quote_native_cardmarket_reference" tools:ignore="MissingTranslation">Der %1$s-Katalog bestätigt dieses Cardmarket-Produkt</string>
     <string name="quote_english_tcgplayer_reference" tools:ignore="MissingTranslation">Referenz für englische Karten ohne Grading; kein Preis für die gespeicherte Kartensprache</string>
+    <string name="graded_no_matching_quote" tools:ignore="MissingTranslation">Kein passender Preis für %1$s abgerufen. Das bedeutet nicht, dass es keine Verkäufe gab.</string>
+    <string name="graded_no_quote_table" tools:ignore="MissingTranslation">Kein passender Grading-Preis für diese Sprache und Variante abgerufen. Der Angebotsfeed enthält keine abgeschlossenen eBay-Verkäufe.</string>
+    <string name="graded_no_quote_reason" tools:ignore="MissingTranslation">kein passender Grading-Preis abgerufen</string>
+    <string name="graded_asking_reference" tools:ignore="MissingTranslation">eBay-Referenzen basieren auf aktuellen Angebotspreisen, nicht auf Verkaufspreisen. Eine kleine Stichprobe liefert begrenzte Aussagekraft; Versand ist ausgeschlossen.</string>
 </resources>
