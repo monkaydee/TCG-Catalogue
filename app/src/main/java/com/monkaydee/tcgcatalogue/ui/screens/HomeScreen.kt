@@ -9,6 +9,7 @@ import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.ui.components.Backdrop
 import com.monkaydee.tcgcatalogue.ui.components.EmptyIllustration
 import com.monkaydee.tcgcatalogue.ui.components.EmptyKind
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.wrapContentSize
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import com.monkaydee.tcgcatalogue.ui.theme.LocalLook
@@ -29,30 +30,38 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.filled.AddPhotoAlternate
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Straighten
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Inventory2
-import androidx.compose.material.icons.filled.Paid
-import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
+import androidx.compose.material.icons.outlined.AddPhotoAlternate
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.MoreHoriz
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExtendedFloatingActionButton
+import com.monkaydee.tcgcatalogue.ui.components.AppButton
+import com.monkaydee.tcgcatalogue.ui.components.ActionStyle
+import com.monkaydee.tcgcatalogue.ui.components.AppSelector
+import com.monkaydee.tcgcatalogue.ui.components.SelectorOption
+import androidx.compose.material.icons.outlined.Straighten
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Inventory2
+import androidx.compose.material.icons.outlined.Paid
+import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.flow.map
-import androidx.compose.material3.Button
+import com.monkaydee.tcgcatalogue.ui.components.StandardButton as Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.FilledTonalButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardTonalButton as FilledTonalButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -165,6 +174,7 @@ fun HomeScreen(
     val s = state.settings
     val refreshing = refreshState == WorkInfo.State.RUNNING || refreshState == WorkInfo.State.ENQUEUED
 
+    var more by remember { mutableStateOf(false) }
     val picture = LocalLook.current.homeImage
     Backdrop(picture) {
     Scaffold(
@@ -174,18 +184,29 @@ fun HomeScreen(
                 colors = appBarColors(overPicture = picture != null),
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
-                    IconButton(onClick = onBinder) { Icon(Icons.AutoMirrored.Filled.MenuBook, stringResource(R.string.home_binder)) }
-                    IconButton(onClick = onPreGrade) { Icon(Icons.Default.Straighten, stringResource(R.string.grade_open)) }
-                    IconButton(onClick = onPhotos) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.home_import_photos)) }
-                    IconButton(onClick = onSearch) { Icon(Icons.Default.Search, stringResource(R.string.home_search)) }
-                    if (refreshing) {
-                        CircularProgressIndicator(Modifier.size(24.dp).padding(2.dp), strokeWidth = 2.dp)
-                        Spacer(Modifier.width(12.dp))
-                    } else {
-                        IconButton(onClick = onRefresh) { Icon(Icons.Default.Refresh, stringResource(R.string.home_refresh)) }
+                    IconButton(onClick = onSearch) { Icon(Icons.Outlined.Search, stringResource(R.string.home_search)) }
+                    if (refreshing) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                    Box {
+                        IconButton(onClick = { more = true }) { Icon(Icons.Outlined.MoreHoriz, stringResource(R.string.design_more)) }
+                        DropdownMenu(more, onDismissRequest = { more = false }) {
+                            listOf(
+                                Triple(R.string.home_binder, Icons.AutoMirrored.Outlined.MenuBook, onBinder),
+                                Triple(R.string.grade_open, Icons.Outlined.Straighten, onPreGrade),
+                                Triple(R.string.home_import_photos, Icons.Outlined.AddPhotoAlternate, onPhotos),
+                                Triple(R.string.home_refresh, Icons.Outlined.Refresh, onRefresh),
+                            ).forEach { (label, icon, action) ->
+                                DropdownMenuItem(text = { Text(stringResource(label)) }, leadingIcon = { Icon(icon, null) },
+                                    onClick = { more = false; action() }, enabled = label != R.string.home_refresh || !refreshing)
+                            }
+                        }
                     }
                 },
             )
+        },
+        floatingActionButton = {
+            if (state.loaded && state.cards.isNotEmpty()) ExtendedFloatingActionButton(onClick = onScan,
+                icon = { Icon(Icons.Outlined.CameraAlt, null) }, text = { Text(stringResource(R.string.nav_scan)) },
+                shape = RoundedCornerShape(16.dp))
         },
     ) { padding ->
         if (state.loaded && state.cards.isEmpty()) {
@@ -212,7 +233,7 @@ fun HomeScreen(
 
         LazyColumn(
             Modifier.padding(padding).fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 96.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
@@ -259,11 +280,8 @@ fun HomeScreen(
                             ),
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        FilledTonalButton(onClick = onBinder, modifier = Modifier.padding(top = 8.dp)) {
-                            Icon(Icons.AutoMirrored.Filled.MenuBook, null, Modifier.size(18.dp))
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.home_open_binder))
-                        }
+                        AppButton(stringResource(R.string.home_open_binder), onBinder, Modifier.padding(top = 8.dp),
+                            Icons.AutoMirrored.Outlined.MenuBook, style = ActionStyle.TONAL)
                         if (gameFilter == null) {
                             Spacer(Modifier.height(12.dp))
                             if (history.size >= 2) ValueChart(history)
@@ -303,10 +321,9 @@ fun HomeScreen(
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.home_sets, sets.size), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                    SetSort.entries.forEach { o ->
-                        FilterChip(o == sort, { sort = o }, { Text(stringResource(o.label)) }, modifier = Modifier.padding(start = 4.dp))
-                    }
                 }
+                AppSelector(stringResource(R.string.design_sort), sort,
+                    SetSort.entries.map { SelectorOption(it, stringResource(it.label)) }, { sort = it })
             }
             items(sets, key = { "${it.game}/${it.setId}" }) { set -> SetRow(set, s.currency) { onOpenSet(set.game, set.setId) } }
         }
@@ -359,12 +376,12 @@ private fun ListsRow(
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(stringResource(R.string.lists_title), style = MaterialTheme.typography.titleMedium)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ListShortcut(Icons.Default.Favorite, stringResource(R.string.wish_title), wishCount, onWishlist, Modifier.weight(1f))
-            ListShortcut(Icons.Default.SwapHoriz, stringResource(R.string.trade_title), tradeCount, onTradeList, Modifier.weight(1f))
+            ListShortcut(Icons.Outlined.Favorite, stringResource(R.string.wish_title), wishCount, onWishlist, Modifier.weight(1f))
+            ListShortcut(Icons.Outlined.SwapHoriz, stringResource(R.string.trade_title), tradeCount, onTradeList, Modifier.weight(1f))
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ListShortcut(Icons.Default.Paid, stringResource(R.string.sold_title), soldCount, onSold, Modifier.weight(1f))
-            ListShortcut(Icons.Default.Inventory2, stringResource(R.string.sealed_title), sealedCount, onSealed, Modifier.weight(1f))
+            ListShortcut(Icons.Outlined.Paid, stringResource(R.string.sold_title), soldCount, onSold, Modifier.weight(1f))
+            ListShortcut(Icons.Outlined.Inventory2, stringResource(R.string.sealed_title), sealedCount, onSealed, Modifier.weight(1f))
         }
     }
 }
@@ -393,12 +410,12 @@ private fun EmptyState(modifier: Modifier, onScan: () -> Unit, onPhotos: () -> U
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = onScan) {
-                Icon(Icons.Default.CameraAlt, null)
+                Icon(Icons.Outlined.CameraAlt, null)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.home_scan_card))
             }
             OutlinedButton(onClick = onPhotos) {
-                Icon(Icons.Default.AddPhotoAlternate, null)
+                Icon(Icons.Outlined.AddPhotoAlternate, null)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.home_import_photos))
             }

@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalIconButton
@@ -118,11 +118,11 @@ fun ListEmptyState(icon: ImageVector, title: String, text: String, modifier: Mod
 fun BoundedStepper(value: Int, onChange: (Int) -> Unit, min: Int, max: Int, modifier: Modifier = Modifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         FilledTonalIconButton(onClick = { onChange((value - 1).coerceAtLeast(min)) }, enabled = value > min) {
-            Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.common_less))
+            Icon(Icons.Outlined.Remove, contentDescription = stringResource(R.string.common_less))
         }
         Text("$value", style = MaterialTheme.typography.titleLarge, modifier = Modifier.width(40.dp), textAlign = TextAlign.Center)
         FilledTonalIconButton(onClick = { onChange((value + 1).coerceAtMost(max)) }, enabled = value < max) {
-            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.common_more))
+            Icon(Icons.Outlined.Add, contentDescription = stringResource(R.string.common_more))
         }
     }
 }

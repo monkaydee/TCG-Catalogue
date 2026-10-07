@@ -6,8 +6,8 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -305,7 +305,7 @@ internal fun ManualCenteringPanel(side: PreGrader.Side, fullscreen: Boolean = fa
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             if (fullscreen) listOf(-1, 1).forEach { direction ->
                 IconButton(onClick = { move(selected, guides[selected] + direction.toDouble() / dimensions[selected / 2]) }, modifier = Modifier.size(40.dp)) {
-                    Icon(if (direction < 0) Icons.Default.Remove else Icons.Default.Add,
+                    Icon(if (direction < 0) Icons.Outlined.Remove else Icons.Outlined.Add,
                         stringResource(if (direction < 0) R.string.center_minus_pixel else R.string.center_plus_pixel))
                 }
             }

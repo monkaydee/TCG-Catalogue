@@ -11,6 +11,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Surface
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Collections
+import com.monkaydee.tcgcatalogue.ui.components.AppSelector
+import com.monkaydee.tcgcatalogue.ui.components.SelectorOption
+import com.monkaydee.tcgcatalogue.ui.components.StatusBadge
+import com.monkaydee.tcgcatalogue.ui.components.AppButton
+import com.monkaydee.tcgcatalogue.ui.components.ActionStyle
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,10 +32,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Checkbox
@@ -97,11 +110,11 @@ fun SealedScreen(repo: CardRepository, onBack: () -> Unit) {
             TopAppBar(
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.sealed_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.binder_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.binder_back)) } },
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = { adding = true }, icon = { Icon(Icons.Default.Add, null) }, text = { Text(stringResource(R.string.sealed_add)) })
+            ExtendedFloatingActionButton(onClick = { adding = true }, icon = { Icon(Icons.Outlined.Add, null) }, text = { Text(stringResource(R.string.sealed_add)) })
         },
     ) { padding ->
         LazyColumn(
@@ -242,26 +255,16 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
     }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
-        Column(Modifier.padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(Modifier.fillMaxWidth().fillMaxHeight(0.9f).padding(horizontal = 16.dp).padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             val p = picked
             if (p == null) {
                 Text(stringResource(R.string.sealed_add), style = MaterialTheme.typography.titleLarge)
-                GameChips(selected = game, onSelect = {
-                    if (it != null) {
-                        if (it == Game.ONE_PIECE && language == "DE") language = "EN"
-                        game = it
-                    }
-                }, games = Game.entries, nullLabel = null)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf("EN" to "English", "DE" to "Deutsch", "JA" to "日本語 (JP)").forEach { (code, label) ->
-                        FilterChip(selected = language == code, onClick = { language = code }, enabled = game != Game.ONE_PIECE || code != "DE", label = { Text(label) })
-                    }
-                }
+                SealedFilters(game, language, { game = it }, { language = it })
                 Text(stringResource(if (game == Game.ONE_PIECE) R.string.sealed_one_piece_no_german else R.string.sealed_printed_language_hint), style = MaterialTheme.typography.bodySmall)
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 OutlinedTextField(
                     query, { query = it },
-                    leadingIcon = { Icon(Icons.Default.Search, null) },
+                    leadingIcon = { Icon(Icons.Outlined.Search, null) },
                     label = { Text(stringResource(R.string.sealed_search_hint)) },
                     singleLine = true, modifier = Modifier.fillMaxWidth(),
                 )
@@ -269,7 +272,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 if (!loading && error == null && query.isNotBlank() && results.isEmpty()) {
                     Text(stringResource(R.string.sealed_no_results), style = MaterialTheme.typography.bodySmall)
                 }
-                LazyColumn(Modifier.fillMaxWidth().aspectRatio(0.8f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                LazyColumn(Modifier.fillMaxWidth().weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(bottom = 8.dp)) {
                     items(results, key = { it.productId }) { r ->
                         val priced = previews[r.productId] ?: r
                         LaunchedEffect(r.game, r.productId, r.language, s.currency) {
@@ -277,7 +280,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                                 pricePreview(r)
                             }
                         }
-                        Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable {
+                        SealedSearchRow(priced, s) {
                             picked = priced; confirmedLanguage = !priced.requiresLanguageConfirmation; error = null; quoting = priced.price == null && priced.quoteReason == null
                             scope.launch {
                                 try {
@@ -288,25 +291,11 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                                 catch (_: Exception) { error = "Language-specific price unavailable; you can still add the product without a valuation." }
                                 finally { quoting = false }
                             }
-                        }.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                            SealedImage(priced.imageUrl, Modifier.size(48.dp))
-                            Spacer(Modifier.width(10.dp))
-                            Column(Modifier.weight(1f)) {
-                                Text(r.name, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                                Text(r.groupName, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            }
-                            Column(horizontalAlignment = Alignment.End, modifier = Modifier.width(100.dp)) {
-                                Text(priced.price?.let { Money.format(Money.convert(it, priced.currency, s.currency, s.usdToEur), s.currency) }
-                                    ?: stringResource(if (priced.quoteReason == null) R.string.sealed_checking_price else if (priced.quoteReason == "not_found") R.string.sealed_no_matching_price else R.string.sealed_price_unavailable), style = MaterialTheme.typography.labelLarge)
-                                if (priced.priceScope == "language-specific-asking" && priced.price != null) {
-                                    Text(stringResource(if (priced.quoteEvidence == "limited") R.string.sealed_limited_reference else R.string.sealed_asking_reference), style = MaterialTheme.typography.labelSmall)
-                                    priced.quoteListings?.let { count -> Text(pluralStringResource(R.plurals.data_listings_count, count, count), style = MaterialTheme.typography.labelSmall) }
-                                }
-                            }
                         }
                     }
                 }
             } else {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     SealedImage(p.imageUrl, Modifier.size(96.dp))
                     Spacer(Modifier.width(12.dp))
@@ -336,14 +325,66 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                     label = { Text(stringResource(R.string.add_purchase_price, s.currency)) },
                     singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth(),
                 )
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = { picked = null }) { Text(stringResource(R.string.ui_cancel)) }
-                    TextButton(enabled = confirmedLanguage && !quoting, onClick = {
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    AppButton(stringResource(R.string.ui_cancel), { picked = null }, Modifier.weight(1f), style = ActionStyle.SECONDARY)
+                    AppButton(stringResource(R.string.add_confirm), enabled = confirmedLanguage && !quoting, modifier = Modifier.weight(1f), onClick = {
                         scope.launch {
                             repo.addSealed(p, qty, paid.replace(',', '.').toDoubleOrNull())
                             onDismiss()
                         }
-                    }) { Text(stringResource(R.string.add_confirm)) }
+                    })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+internal fun SealedFilters(game: Game?, language: String, onGame: (Game) -> Unit, onLanguage: (String) -> Unit) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    AppSelector(stringResource(R.string.design_game), game,
+                        Game.entries.map { SelectorOption<Game?>(it, it.short) }, { selected ->
+                            if (selected != null) {
+                                if (selected == Game.ONE_PIECE && language == "DE") onLanguage("EN")
+                                onGame(selected)
+                            }
+                        }, Modifier.weight(1f), Icons.Outlined.Collections)
+                    AppSelector(stringResource(R.string.design_language), language,
+                        listOf(SelectorOption("EN", "English"), SelectorOption("DE", "Deutsch", game != Game.ONE_PIECE),
+                            SelectorOption("JA", "日本語 (JP)")), onLanguage, Modifier.weight(1f), Icons.Outlined.Language)
+                }
+}
+
+/** A title and price row with language/evidence below, rather than a wide error column. */
+@Composable
+internal fun SealedSearchRow(product: SealedProduct, settings: AppSettings, onClick: () -> Unit) {
+    val amount = product.price?.takeIf { it.isFinite() && it > 0 }
+    Surface(onClick = onClick, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Surface(Modifier.size(60.dp), shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.surfaceContainerHigh) {
+                    SealedImage(product.imageUrl, Modifier.fillMaxSize().padding(4.dp))
+                }
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(product.name, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(product.groupName, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                Text(amount?.let { Money.format(Money.convert(it, product.currency, settings.currency, settings.usdToEur), settings.currency) } ?: "—",
+                    style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, maxLines = 1)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                StatusBadge(CardLanguage.displayCode(product.language))
+                if (product.priceScope == "language-specific-asking" && amount != null) {
+                    StatusBadge(stringResource(if (product.quoteEvidence == "limited") R.string.sealed_limited_reference else R.string.sealed_asking_reference))
+                    product.quoteListings?.let { count -> Text(pluralStringResource(R.plurals.data_listings_count, count, count), style = MaterialTheme.typography.labelSmall) }
+                } else if (amount == null) {
+                    Text(stringResource(if (product.quoteReason == null) R.string.sealed_checking_price else if (product.quoteReason == "not_found")
+                        R.string.sealed_no_matching_price else R.string.sealed_price_unavailable), Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -356,6 +397,6 @@ private fun SealedImage(url: String?, modifier: Modifier) {
     SubcomposeAsyncImage(
         model = url, contentDescription = null, modifier = modifier, contentScale = ContentScale.Fit,
         loading = { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(Modifier.size(18.dp)) } },
-        error = { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Icon(Icons.Default.Inventory2, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) } },
+        error = { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Icon(Icons.Outlined.Inventory2, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) } },
     )
 }

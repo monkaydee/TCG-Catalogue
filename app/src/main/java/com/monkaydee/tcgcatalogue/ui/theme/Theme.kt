@@ -21,14 +21,19 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import com.monkaydee.tcgcatalogue.R
 import androidx.core.graphics.ColorUtils
 import com.monkaydee.tcgcatalogue.data.Area
 import com.monkaydee.tcgcatalogue.data.Look
 import com.monkaydee.tcgcatalogue.data.Palette
 import com.monkaydee.tcgcatalogue.data.ThemeMode
 
-val Gain = Color(0xFF2E7D32)
-val Loss = Color(0xFFC62828)
+val Gain: Color
+    @Composable get() = if (MaterialTheme.colorScheme.background.luminance() < 0.5f) Color(0xFF72D69B) else Color(0xFF2E7D32)
+val Loss: Color
+    @Composable get() = if (MaterialTheme.colorScheme.background.luminance() < 0.5f) Color(0xFFFF929B) else Color(0xFFC62828)
 
 /**
  * The parts of the look that aren't in Material's colour scheme: bar and binder colours, and the
@@ -92,12 +97,30 @@ val AppShapes = Shapes(
 )
 
 /** Slightly tighter, bolder headings than the defaults, for a cleaner look. */
+val AppFontFamily = FontFamily(
+    Font(R.font.inter_regular, FontWeight.Normal),
+    Font(R.font.inter_medium, FontWeight.Medium),
+    Font(R.font.inter_semibold, FontWeight.SemiBold),
+    Font(R.font.inter_bold, FontWeight.Bold),
+)
+
 private val AppTypography = Typography().let { t ->
     t.copy(
-        headlineSmall = t.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-        titleLarge = t.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-        titleMedium = t.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-        titleSmall = t.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+        displayLarge = t.displayLarge.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        displayMedium = t.displayMedium.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        displaySmall = t.displaySmall.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        headlineLarge = t.headlineLarge.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        headlineMedium = t.headlineMedium.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        headlineSmall = t.headlineSmall.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        titleLarge = t.titleLarge.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        titleMedium = t.titleMedium.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        titleSmall = t.titleSmall.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        bodyLarge = t.bodyLarge.copy(fontFamily = AppFontFamily),
+        bodyMedium = t.bodyMedium.copy(fontFamily = AppFontFamily),
+        bodySmall = t.bodySmall.copy(fontFamily = AppFontFamily),
+        labelLarge = t.labelLarge.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold),
+        labelMedium = t.labelMedium.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.Medium),
+        labelSmall = t.labelSmall.copy(fontFamily = AppFontFamily, fontWeight = FontWeight.Medium),
     )
 }
 

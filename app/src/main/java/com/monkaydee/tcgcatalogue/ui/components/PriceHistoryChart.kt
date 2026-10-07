@@ -76,6 +76,8 @@ fun PriceHistoryCard(history: List<PriceHistory>, s: AppSettings, modifier: Modi
 private fun PriceLine(points: List<Pair<Long, Double>>, modifier: Modifier) {
     val line = MaterialTheme.colorScheme.primary
     val guide = MaterialTheme.colorScheme.outlineVariant
+    val gainInk = Gain
+    val lossInk = Loss
     Canvas(modifier) {
         val min = points.minOf { it.second }
         val max = points.maxOf { it.second }
@@ -105,8 +107,8 @@ private fun PriceLine(points: List<Pair<Long, Double>>, modifier: Modifier) {
         if (max > min) {
             val hi = points.maxBy { it.second }
             val lo = points.minBy { it.second }
-            drawCircle(Gain, radius = 3.5.dp.toPx(), center = Offset(x(hi.first), y(hi.second)))
-            drawCircle(Loss, radius = 3.5.dp.toPx(), center = Offset(x(lo.first), y(lo.second)))
+            drawCircle(gainInk, radius = 3.5.dp.toPx(), center = Offset(x(hi.first), y(hi.second)))
+            drawCircle(lossInk, radius = 3.5.dp.toPx(), center = Offset(x(lo.first), y(lo.second)))
         }
         drawCircle(line, radius = 4.dp.toPx(), center = Offset(x(points.last().first), y(points.last().second)))
     }

@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Paid
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Paid
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,14 +82,14 @@ fun SoldScreen(repo: CardRepository, onBack: () -> Unit) {
             TopAppBar(
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.sold_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.lists_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.lists_back)) } },
             )
         },
     ) { padding ->
         val sold = list ?: return@Scaffold
         if (sold.isEmpty()) {
             ListEmptyState(
-                Icons.Default.Paid,
+                Icons.Outlined.Paid,
                 stringResource(R.string.sold_empty_title),
                 stringResource(R.string.sold_empty_text),
                 Modifier.padding(padding),
@@ -169,7 +169,7 @@ private fun SoldRow(c: SoldCard, s: AppSettings, onDelete: () -> Unit) {
                     },
                 )
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, stringResource(R.string.sold_delete), Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Icon(Icons.Outlined.Delete, stringResource(R.string.sold_delete), Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

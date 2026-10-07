@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Meer acties</string>
+    <string name="design_game">Spel</string>
+    <string name="design_select">Kiezen</string>
+    <string name="design_sort">Sorteren</string>
+    <string name="design_layout">Weergave</string>
+    <string name="design_language">Taal</string>
+    <string name="design_capture">Foto</string>
+    <string name="design_alignment">Uitlijning</string>
+    <string name="design_inspection">Inspectie</string>
+    <string name="design_result">Resultaat</string>
+    <string name="design_stage">Stap %1$d van %2$d · %3$s</string>
+    <string name="design_expanded">Uitgeklapt</string>
+    <string name="design_collapsed">Ingeklapt</string>
+    <string name="design_evidence">Prijsbronnen</string>
+    <string name="design_details">Kaartdetails</string>
+    <string name="design_slab_hint">Prijzen passen bij het vastgelegde gradingbedrijf, cijfer en de gedrukte taal. Referenties zonder grading staan apart.</string>
+</resources>

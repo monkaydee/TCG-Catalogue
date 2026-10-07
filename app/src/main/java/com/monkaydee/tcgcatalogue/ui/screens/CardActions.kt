@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -15,14 +16,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.NotificationAdd
-import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.filled.Sell
-import androidx.compose.material.icons.filled.SwapHoriz
-import androidx.compose.material.icons.automirrored.filled.TrendingDown
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.outlined.MoreHoriz
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.NotificationAdd
+import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.Sell
+import androidx.compose.material.icons.outlined.SwapHoriz
+import androidx.compose.material.icons.automirrored.outlined.TrendingDown
+import androidx.compose.material.icons.automirrored.outlined.TrendingUp
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import com.monkaydee.tcgcatalogue.ui.components.AppButton
+import com.monkaydee.tcgcatalogue.ui.components.ActionStyle
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -40,6 +51,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -79,68 +91,46 @@ fun CardActionBar(
     onDelete: () -> Unit,
 ) {
     val hasAlert = card.alertAbove != null || card.alertBelow != null
-    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerHigh) {
-        Row(Modifier.padding(horizontal = 4.dp, vertical = 6.dp)) {
-            ActionItem(Icons.Default.Edit, stringResource(R.string.lists_card_edit), onEdit, busy = editLoading)
-            ActionItem(Icons.Default.Sell, stringResource(R.string.sold_sell), onSell)
-            ActionItem(
-                Icons.Default.SwapHoriz, stringResource(R.string.trade_toggle), { onToggleTrade(!card.forTrade) },
-                selected = card.forTrade, toggle = true,
-            )
-            ActionItem(
-                if (hasAlert) Icons.Default.NotificationsActive else Icons.Default.NotificationAdd,
-                stringResource(R.string.alert_ui_short), onAlert, selected = hasAlert,
-            )
-            ActionItem(Icons.Default.Delete, stringResource(R.string.lists_card_remove), onDelete, danger = true)
+    var more by remember { mutableStateOf(false) }
+    val moreMenu: @Composable () -> Unit = {
+        Box {
+            IconButton(onClick = { more = true }, modifier = Modifier.size(48.dp)) {
+                Icon(Icons.Outlined.MoreHoriz, stringResource(R.string.design_more))
+            }
+            DropdownMenu(expanded = more, onDismissRequest = { more = false }) {
+                DropdownMenuItem(text = { Text(stringResource(R.string.trade_toggle)) },
+                    onClick = { more = false; onToggleTrade(!card.forTrade) },
+                    leadingIcon = { Icon(Icons.Outlined.SwapHoriz, null) },
+                    trailingIcon = if (card.forTrade) ({ Icon(Icons.Outlined.Check, null) }) else null)
+                DropdownMenuItem(text = { Text(stringResource(R.string.alert_ui_short)) },
+                    onClick = { more = false; onAlert() },
+                    leadingIcon = { Icon(if (hasAlert) Icons.Outlined.NotificationsActive else Icons.Outlined.NotificationAdd, null) },
+                    trailingIcon = if (hasAlert) ({ Icon(Icons.Outlined.Check, null) }) else null)
+                DropdownMenuItem(text = { Text(stringResource(R.string.lists_card_remove), color = MaterialTheme.colorScheme.error) },
+                    onClick = { more = false; onDelete() }, leadingIcon = { Icon(Icons.Outlined.Delete, null, tint = MaterialTheme.colorScheme.error) })
+            }
         }
     }
-}
-
-@Composable
-private fun RowScope.ActionItem(
-    icon: ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    selected: Boolean = false,
-    busy: Boolean = false,
-    danger: Boolean = false,
-    toggle: Boolean = false,
-) {
-    val colors = MaterialTheme.colorScheme
-    val tint = when {
-        selected -> colors.onSecondaryContainer
-        danger -> colors.error
-        else -> colors.onSurfaceVariant
-    }
-    val interaction = if (toggle) {
-        Modifier.toggleable(value = selected, role = Role.Switch, enabled = !busy, onValueChange = { onClick() })
-    } else {
-        Modifier.clickable(role = Role.Button, enabled = !busy, onClick = onClick)
-    }
-    Column(
-        Modifier.weight(1f).clip(RoundedCornerShape(14.dp)).then(interaction).padding(vertical = 6.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        // A pill behind the icon marks the switched-on actions, like a navigation bar indicator.
-        Box(
-            Modifier
-                .size(width = 52.dp, height = 32.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(if (selected) colors.secondaryContainer else Color.Transparent),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (busy) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-            else Icon(icon, null, tint = tint)
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        if (maxWidth < 340.dp || LocalDensity.current.fontScale > 1.2f) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AppButton(stringResource(R.string.lists_card_edit), onEdit, Modifier.fillMaxWidth(),
+                    icon = Icons.Outlined.Edit, enabled = !editLoading)
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    AppButton(stringResource(R.string.sold_sell), onSell, Modifier.weight(1f),
+                        icon = Icons.Outlined.Sell, style = ActionStyle.TONAL)
+                    moreMenu()
+                }
+            }
+        } else {
+            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                AppButton(stringResource(R.string.lists_card_edit), onEdit, Modifier.weight(1f).fillMaxHeight(),
+                    icon = Icons.Outlined.Edit, enabled = !editLoading)
+                AppButton(stringResource(R.string.sold_sell), onSell, Modifier.weight(1f).fillMaxHeight(),
+                    icon = Icons.Outlined.Sell, style = ActionStyle.TONAL)
+                moreMenu()
+            }
         }
-        Text(
-            label,
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-            color = if (danger) colors.error else colors.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
     }
 }
 
@@ -156,14 +146,14 @@ fun ActiveAlerts(card: OwnedCard, s: AppSettings, onClick: () -> Unit) {
             AssistChip(
                 onClick = onClick,
                 label = { Text(stringResource(R.string.alert_ui_active_above, Money.format(it, s.currency))) },
-                leadingIcon = { Icon(Icons.AutoMirrored.Filled.TrendingUp, null, Modifier.size(AssistChipDefaults.IconSize), tint = Gain) },
+                leadingIcon = { Icon(Icons.AutoMirrored.Outlined.TrendingUp, null, Modifier.size(AssistChipDefaults.IconSize), tint = Gain) },
             )
         }
         below?.let {
             AssistChip(
                 onClick = onClick,
                 label = { Text(stringResource(R.string.alert_ui_active_below, Money.format(it, s.currency))) },
-                leadingIcon = { Icon(Icons.AutoMirrored.Filled.TrendingDown, null, Modifier.size(AssistChipDefaults.IconSize), tint = Loss) },
+                leadingIcon = { Icon(Icons.AutoMirrored.Outlined.TrendingDown, null, Modifier.size(AssistChipDefaults.IconSize), tint = Loss) },
             )
         }
     }
@@ -183,7 +173,7 @@ fun SellDialog(card: OwnedCard, s: AppSettings, onDismiss: () -> Unit, onConfirm
     val count = quantity.coerceIn(1, card.quantity.coerceAtLeast(1))
     AlertDialog(
         onDismissRequest = onDismiss,
-        icon = { Icon(Icons.Default.Sell, null) },
+        icon = { Icon(Icons.Outlined.Sell, null) },
         title = { Text(stringResource(R.string.sold_sell_title, card.name), maxLines = 2, overflow = TextOverflow.Ellipsis) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -228,7 +218,7 @@ fun PriceAlertDialog(card: OwnedCard, s: AppSettings, onDismiss: () -> Unit, onS
     val active = card.alertAbove != null || card.alertBelow != null
     AlertDialog(
         onDismissRequest = onDismiss,
-        icon = { Icon(Icons.Default.NotificationsActive, null) },
+        icon = { Icon(Icons.Outlined.NotificationsActive, null) },
         title = { Text(stringResource(R.string.alert_ui_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

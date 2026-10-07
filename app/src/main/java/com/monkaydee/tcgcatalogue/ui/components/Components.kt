@@ -18,8 +18,9 @@ import androidx.compose.material3.SelectableChipColors
 import com.monkaydee.tcgcatalogue.data.db.Game
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.Collections
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
@@ -66,14 +67,12 @@ fun GameChips(
     nullLabel: String? = stringResource(R.string.common_auto),
     colors: SelectableChipColors? = null,
 ) {
-    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        if (nullLabel != null) {
-            FilterChip(selected == null, { onSelect(null) }, { Text(nullLabel) }, colors = colors ?: FilterChipDefaults.filterChipColors())
-        }
-        games.forEach { g ->
-            FilterChip(selected == g, { onSelect(g) }, { Text(g.short) }, colors = colors ?: FilterChipDefaults.filterChipColors())
-        }
+    val options = buildList<SelectorOption<Game?>> {
+        if (nullLabel != null) add(SelectorOption(null, nullLabel))
+        games.forEach { add(SelectorOption(it, it.short)) }
     }
+    AppSelector(stringResource(R.string.design_game), selected, options, onSelect,
+        modifier = Modifier.fillMaxWidth(), icon = Icons.Outlined.Collections)
 }
 
 /** Low-resolution URL for list thumbnails (TCGdex serves several sizes). */
@@ -158,11 +157,11 @@ fun CardImage(url: String?, modifier: Modifier = Modifier, thumb: Boolean = fals
 fun QuantityStepper(value: Int, onChange: (Int) -> Unit, min: Int = 1) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         FilledTonalIconButton(onClick = { if (value > min) onChange(value - 1) }, enabled = value > min) {
-            Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.common_less))
+            Icon(Icons.Outlined.Remove, contentDescription = stringResource(R.string.common_less))
         }
         Text("$value", style = MaterialTheme.typography.titleLarge, modifier = Modifier.width(40.dp), textAlign = TextAlign.Center)
         FilledTonalIconButton(onClick = { onChange(value + 1) }) {
-            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.common_more))
+            Icon(Icons.Outlined.Add, contentDescription = stringResource(R.string.common_more))
         }
     }
 }

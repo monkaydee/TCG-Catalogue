@@ -442,7 +442,7 @@ class Screenshots {
         rule.onNodeWithText("Experimental Pokémon photo estimate").assertDoesNotExist()
         rule.onNodeWithText("More evidence needed").performScrollTo().assertIsDisplayed()
         rule.onNodeWithText("• Front: review all four corners and four edges").assertIsDisplayed()
-        rule.onNodeWithText("Experimental pre-grade").assertIsDisplayed()
+        rule.onNodeWithText("Non-professional pre-grade estimate", substring = true).performScrollTo().assertIsDisplayed()
     }
 
     @Test fun unchangedGuideReviewPreservesAutomaticModelInputs() = checkCenteringReviewKeepsCalibrationOnlyWhenUnchanged(false)

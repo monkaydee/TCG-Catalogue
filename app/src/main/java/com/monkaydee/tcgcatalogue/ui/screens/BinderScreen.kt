@@ -15,7 +15,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Collections
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.MoreHoriz
+import androidx.compose.material.icons.outlined.Check
+import com.monkaydee.tcgcatalogue.ui.components.AppSelector
+import com.monkaydee.tcgcatalogue.ui.components.SelectorOption
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.asAndroidBitmap
@@ -36,10 +42,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Sort
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.Sort
+import androidx.compose.material.icons.outlined.ChevronLeft
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -120,7 +126,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
             TopAppBar(
                 colors = appBarColors(overPicture = picture != null),
                 title = { Text(stringResource(R.string.binder_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.binder_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.binder_back)) } },
                 actions = {
                     IconButton(
                         enabled = shareInfo != null && !sharing,
@@ -138,7 +144,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                                 sharing = false
                             }
                         },
-                    ) { Icon(Icons.Default.Share, stringResource(R.string.share_page)) }
+                    ) { Icon(Icons.Outlined.Share, stringResource(R.string.share_page)) }
                 },
             )
         },
@@ -168,33 +174,40 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
         LaunchedEffect(pager.currentPage) { if (!s.binderAnimation) turner.jump(pager.currentPage) }
 
         Column(Modifier.padding(padding).fillMaxSize()) {
-            Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 val games = Game.entries.filter { g -> cards.any { it.game == g } }
-                if (games.size > 1) {
-                    GameChips(selected = game, onSelect = { game = it; restart = true }, games = games, nullLabel = stringResource(R.string.home_all_games))
-                }
-                Row(
-                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Binder.GRIDS.forEach { g ->
-                        FilterChip(s.binderGrid == g, {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    AppSelector(stringResource(R.string.design_game), game,
+                        listOf(SelectorOption<Game?>(null, stringResource(R.string.home_all_games))) + games.map { SelectorOption<Game?>(it, it.short) },
+                        { game = it; restart = true }, Modifier.weight(1f), Icons.Outlined.Collections)
+                    AppSelector(stringResource(R.string.design_layout), s.binderGrid,
+                        Binder.GRIDS.map { SelectorOption(it, "$it × $it") }, { grid ->
                             keepCard = pages.getOrNull(turner.page)?.cards?.firstOrNull()?.id
-                            scope.launch { repo.settings.setBinderGrid(g) }
-                        }, { Text("$g×$g") })
-                    }
-                    Menu(Icons.AutoMirrored.Filled.Sort, stringResource(s.binderSort.label), BinderSort.entries, { stringResource(it.label) }) {
-                        restart = true
-                        scope.launch { repo.settings.setBinderSort(it) }
-                    }
+                            scope.launch { repo.settings.setBinderGrid(grid) }
+                        }, Modifier.weight(1f), Icons.Outlined.GridView)
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    AppSelector(stringResource(R.string.design_sort), s.binderSort,
+                        BinderSort.entries.map { SelectorOption(it, stringResource(it.label)) }, {
+                            restart = true; scope.launch { repo.settings.setBinderSort(it) }
+                        }, Modifier.weight(1f), Icons.AutoMirrored.Outlined.Sort)
                     if (s.binderSort == BinderSort.SET) {
-                        Menu(null, stringResource(R.string.binder_in_set, stringResource(s.binderSetOrder.label)), SetOrder.entries, { stringResource(it.label) }) {
-                            restart = true
-                            scope.launch { repo.settings.setBinderSetOrder(it) }
+                        AppSelector(stringResource(R.string.design_sort), s.binderSetOrder,
+                            SetOrder.entries.map { SelectorOption(it, stringResource(it.label)) }, {
+                                restart = true; scope.launch { repo.settings.setBinderSetOrder(it) }
+                            }, Modifier.weight(1f))
+                    }
+                    var menu by remember { mutableStateOf(false) }
+                    Box {
+                        IconButton(onClick = { menu = true }, modifier = Modifier.size(48.dp)) {
+                            Icon(Icons.Outlined.MoreHoriz, stringResource(R.string.design_more))
+                        }
+                        DropdownMenu(menu, onDismissRequest = { menu = false }) {
+                            DropdownMenuItem(text = { Text(stringResource(R.string.binder_animation)) },
+                                onClick = { menu = false; scope.launch { repo.settings.setBinderAnimation(!s.binderAnimation) } },
+                                trailingIcon = if (s.binderAnimation) ({ Icon(Icons.Outlined.Check, null) }) else null)
                         }
                     }
-                    FilterChip(s.binderAnimation, { scope.launch { repo.settings.setBinderAnimation(!s.binderAnimation) } }, { Text(stringResource(R.string.binder_animation)) })
                 }
             }
 
@@ -238,7 +251,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                 val page = turner.page.coerceIn(pages.indices)
                 IconButton(onClick = {
                     if (s.binderAnimation) turner.previous(scope) else scope.launch { pager.animateScrollToPage(page - 1) }
-                }, enabled = page > 0) { Icon(Icons.Default.ChevronLeft, stringResource(R.string.binder_previous)) }
+                }, enabled = page > 0) { Icon(Icons.Outlined.ChevronLeft, stringResource(R.string.binder_previous)) }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         stringResource(R.string.binder_page, page + 1, pages.size, Money.coverage(pages[page].cards, s.currency, s.usdToEur).text(s.currency)),
@@ -257,7 +270,7 @@ fun BinderScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Lon
                 }
                 IconButton(onClick = {
                     if (s.binderAnimation) turner.next(scope) else scope.launch { pager.animateScrollToPage(page + 1) }
-                }, enabled = page < pages.size - 1) { Icon(Icons.Default.ChevronRight, stringResource(R.string.binder_next)) }
+                }, enabled = page < pages.size - 1) { Icon(Icons.Outlined.ChevronRight, stringResource(R.string.binder_next)) }
             }
         }
     }
@@ -339,7 +352,7 @@ private fun Pocket(card: OwnedCard?, width: Dp, grid: Int, s: AppSettings, onOpe
         Modifier
             .size(width, width * (88f / 63f))
             .clip(shape)
-            .background(LocalLook.current.onBinderPage.copy(alpha = 0.12f))
+            .background(LocalLook.current.onBinderPage.copy(alpha = 0.045f))
             .border(0.5.dp, LocalLook.current.onBinderPage.copy(alpha = 0.12f), shape)
             .then(if (card != null) Modifier.clickable { onOpen(card) } else Modifier),
     ) {
@@ -352,7 +365,7 @@ private fun Pocket(card: OwnedCard?, width: Dp, grid: Int, s: AppSettings, onOpe
             Text(
                 "×${card.quantity}",
                 color = Color.White,
-                style = TextStyle(fontSize = fs, fontWeight = FontWeight.Bold, lineHeight = fs),
+                style = TextStyle(fontFamily = com.monkaydee.tcgcatalogue.ui.theme.AppFontFamily, fontSize = fs, fontWeight = FontWeight.Bold, lineHeight = fs),
                 modifier = Modifier.align(Alignment.BottomEnd).padding(2.dp).clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.7f)).padding(horizontal = 3.dp),
             )
         }
@@ -360,9 +373,9 @@ private fun Pocket(card: OwnedCard?, width: Dp, grid: Int, s: AppSettings, onOpe
             Text(
                 (if (card.quantity > 1) "×${card.quantity} · " else "") + Money.unitText(card, s.currency, s.usdToEur),
                 color = Color.White,
-                style = TextStyle(fontSize = fs, fontWeight = FontWeight.Bold, lineHeight = fs),
+                style = TextStyle(fontFamily = com.monkaydee.tcgcatalogue.ui.theme.AppFontFamily, fontSize = fs, fontWeight = FontWeight.Bold, lineHeight = fs),
                 maxLines = 1,
-                modifier = Modifier.align(Alignment.BottomCenter).padding(3.dp).clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.65f)).padding(horizontal = 4.dp, vertical = 1.dp),
+                modifier = Modifier.align(Alignment.BottomCenter).padding(3.dp).clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.65f)).padding(horizontal = 5.dp, vertical = 3.dp),
             )
         }
     }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Diğer işlemler</string>
+    <string name="design_game">Oyun</string>
+    <string name="design_select">Seç</string>
+    <string name="design_sort">Sırala</string>
+    <string name="design_layout">Görünüm</string>
+    <string name="design_language">Dil</string>
+    <string name="design_capture">Fotoğraf</string>
+    <string name="design_alignment">Hizalama</string>
+    <string name="design_inspection">İnceleme</string>
+    <string name="design_result">Sonuç</string>
+    <string name="design_stage">Adım %1$d / %2$d · %3$s</string>
+    <string name="design_expanded">Genişletildi</string>
+    <string name="design_collapsed">Daraltıldı</string>
+    <string name="design_evidence">Fiyat kaynakları</string>
+    <string name="design_details">Kart ayrıntıları</string>
+    <string name="design_slab_hint">Fiyatlar kayıtlı derecelendirme şirketi, not ve baskı diliyle eşleşir. Derecelendirilmemiş kart referansları ayrı gösterilir.</string>
+</resources>

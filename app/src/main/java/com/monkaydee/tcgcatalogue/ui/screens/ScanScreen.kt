@@ -1,13 +1,13 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
-import androidx.compose.material.icons.filled.ImageSearch
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material.icons.outlined.ImageSearch
+import com.monkaydee.tcgcatalogue.ui.components.StandardTonalButton as FilledTonalButton
 import com.monkaydee.tcgcatalogue.data.remote.attempt
 import com.monkaydee.tcgcatalogue.scan.PictureSearch
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.clickable
 import android.Manifest
@@ -40,18 +40,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FlashOff
-import androidx.compose.material.icons.filled.FlashOn
-import androidx.compose.material.icons.filled.Keyboard
-import androidx.compose.material.icons.filled.PhotoLibrary
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.outlined.FlashOff
+import androidx.compose.material.icons.outlined.FlashOn
+import androidx.compose.material.icons.outlined.Keyboard
+import androidx.compose.material.icons.outlined.PhotoLibrary
+import com.monkaydee.tcgcatalogue.ui.components.StandardButton as Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -405,7 +405,7 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
                     )
                 }
                 FilledTonalIconButton(onClick = { torch = !torch; camera?.cameraControl?.enableTorch(torch) }) {
-                    Icon(if (torch) Icons.Default.FlashOff else Icons.Default.FlashOn, stringResource(R.string.scan_torch))
+                    Icon(if (torch) Icons.Outlined.FlashOff else Icons.Outlined.FlashOn, stringResource(R.string.scan_torch))
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -442,19 +442,19 @@ fun ScanScreen(repo: CardRepository, onManual: () -> Unit, onPhotos: () -> Unit)
             if (state.stack && state.session.isNotEmpty()) StackStrip(state.session, onUndo = vm::undo, onReview = vm::review)
             if (state.canFindByPicture && !state.loading) {
                 FilledTonalButton(onClick = vm::findByPicture) {
-                    Icon(Icons.Default.ImageSearch, null)
+                    Icon(Icons.Outlined.ImageSearch, null)
                     Spacer(Modifier.size(8.dp))
                     Text(stringResource(R.string.picture_find))
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = onPhotos) {
-                    Icon(Icons.Default.PhotoLibrary, null)
+                    Icon(Icons.Outlined.PhotoLibrary, null)
                     Spacer(Modifier.size(8.dp))
                     Text(stringResource(R.string.scan_from_photos))
                 }
                 Button(onClick = onManual) {
-                    Icon(Icons.Default.Keyboard, null)
+                    Icon(Icons.Outlined.Keyboard, null)
                     Spacer(Modifier.size(8.dp))
                     Text(stringResource(R.string.scan_type_it_in))
                 }
@@ -576,7 +576,7 @@ private fun StackStrip(items: List<SessionItem>, onUndo: (SessionItem) -> Unit, 
                     )
                 }
                 IconButton(onClick = { onUndo(item) }, modifier = Modifier.align(Alignment.TopEnd).size(24.dp)) {
-                    Icon(Icons.Default.Close, stringResource(if (item.needsReview) R.string.stack_discard else R.string.stack_undo), tint = Color.White, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Outlined.Close, stringResource(if (item.needsReview) R.string.stack_discard else R.string.stack_undo), tint = Color.White, modifier = Modifier.size(16.dp))
                 }
             }
         }

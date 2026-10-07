@@ -45,10 +45,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.PhotoLibrary
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.PhotoLibrary
+import com.monkaydee.tcgcatalogue.ui.components.AppButton
+import com.monkaydee.tcgcatalogue.ui.components.ActionStyle
+import com.monkaydee.tcgcatalogue.ui.components.GameChips
+import com.monkaydee.tcgcatalogue.ui.components.InspectionStages
+import com.monkaydee.tcgcatalogue.ui.components.ExpandablePanel
+import com.monkaydee.tcgcatalogue.ui.components.StandardButton as Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -60,7 +65,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -204,11 +209,13 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                 title = {
                     Column {
                         Text(stringResource(if (editingCentering != null) R.string.pre_center_screen else if (adjusting) R.string.pre_outline_screen else R.string.grade_title))
-                        title?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
+                        if (editingCentering != null || adjusting) Text(stringResource(R.string.design_stage, 2, 4,
+                            stringResource(R.string.design_alignment)), style = MaterialTheme.typography.labelSmall)
+                        else title?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { if (editingCentering != null) editingCentering = null else if (adjusting) adjusting = false else if (camera) { camera = false; surfaceTarget = null } else onBack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) }
+                    IconButton(onClick = { if (editingCentering != null) editingCentering = null else if (adjusting) adjusting = false else if (camera) { camera = false; surfaceTarget = null } else onBack() }) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.card_back)) }
                 },
             )
         },
@@ -344,10 +351,10 @@ private fun CaptureStep(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            stringResource(if (step == Step.FRONT) R.string.grade_step_front else R.string.grade_step_back),
+            stringResource(if (step == Step.FRONT) R.string.grade_front else R.string.grade_back),
             style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
         )
-        LinearProgressIndicator(progress = { if (step == Step.FRONT) 0.33f else 0.66f }, modifier = Modifier.fillMaxWidth())
+        InspectionStages(if (side == null) 0 else 1)
         when {
             busy -> {
                 Spacer(Modifier.height(40.dp))
@@ -356,11 +363,11 @@ private fun CaptureStep(
             }
             side != null -> {
                 if (side.outlineConfirmed) {
-                    Button(onClick = onEditCentering, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_open_centering)) }
+                    AppButton(stringResource(R.string.pre_open_centering), onEditCentering, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
                     Text(stringResource(if (side.centering == null) R.string.pre_center_missing else R.string.pre_center_ready))
                 } else {
-                    Button(onClick = onConfirm, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.center_confirm_next)) }
-                    if (side.photo != null) OutlinedButton(onClick = onAdjust, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pre_outline_adjust)) }
+                    AppButton(stringResource(R.string.center_confirm_next), onConfirm, Modifier.fillMaxWidth())
+                    if (side.photo != null) AppButton(stringResource(R.string.pre_outline_adjust), onAdjust, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
                 }
                 side.photo?.let { original ->
                     Box(Modifier.fillMaxWidth().aspectRatio(original.width.toFloat() / original.height)) {
@@ -394,23 +401,17 @@ private fun CaptureStep(
                 Text(stringResource(R.string.tools_outline_hint))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedButton(onClick = onRetake) { Text(stringResource(R.string.grade_retake)) }
-                    Button(onClick = onNext, enabled = side.outlineConfirmed) { Text(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.grade_show_result)) }
+                    AppButton(stringResource(R.string.grade_retake), onRetake, Modifier.weight(1f), style = ActionStyle.SECONDARY)
+                    AppButton(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.grade_show_result),
+                        onNext, Modifier.weight(1f), enabled = side.outlineConfirmed)
                 }
             }
             else -> {
-                Text(stringResource(R.string.pre_choose_game))
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(Game.entries) { g -> FilterChip(selected = game == g, onClick = { onGame(g) }, label = { Text(g.short) }) }
-                }
-                Tips()
+                GameChips(game, { it?.let(onGame) }, nullLabel = null)
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
-                Button(onClick = onCamera, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Default.CameraAlt, null); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.grade_take_photo))
-                }
-                OutlinedButton(onClick = onGallery, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Default.PhotoLibrary, null); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.grade_choose_photo))
-                }
+                AppButton(stringResource(R.string.grade_take_photo), onCamera, Modifier.fillMaxWidth(), Icons.Outlined.CameraAlt)
+                AppButton(stringResource(R.string.grade_choose_photo), onGallery, Modifier.fillMaxWidth(), Icons.Outlined.PhotoLibrary, style = ActionStyle.SECONDARY)
+                Tips()
                 onSkip?.let { TextButton(onClick = it) { Text(stringResource(R.string.grade_skip_back)) } }
             }
         }
@@ -419,12 +420,9 @@ private fun CaptureStep(
 
 @Composable
 private fun Tips() {
-    Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)) {
-        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(stringResource(R.string.grade_tips_title), style = MaterialTheme.typography.titleSmall)
-            listOf(R.string.grade_tip_sleeve, R.string.grade_tip_background, R.string.grade_tip_light, R.string.grade_tip_straight).forEach {
-                Text("• " + stringResource(it), style = MaterialTheme.typography.bodySmall)
-            }
+    ExpandablePanel(stringResource(R.string.grade_tips_title)) {
+        listOf(R.string.grade_tip_sleeve, R.string.grade_tip_background, R.string.grade_tip_light, R.string.grade_tip_straight).forEach {
+            Text("• " + stringResource(it), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -469,10 +467,22 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(Game.entries) { g -> FilterChip(selected = game == g, onClick = { onGame(g) }, label = { Text(g.short) }) }
+        InspectionStages(if (estimate == null) 2 else 3)
+        GameChips(game, { it?.let(onGame) }, nullLabel = null)
+        Card(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.grade_title), style = MaterialTheme.typography.titleMedium)
+                if (estimate == null) {
+                    Text(stringResource(R.string.pre_more_evidence), style = MaterialTheme.typography.headlineSmall)
+                    missing.forEach { Text("• ${preGradeMessage(it)}", style = MaterialTheme.typography.bodySmall) }
+                } else {
+                    Text(stringResource(R.string.pre_range, estimate.low, estimate.high), style = MaterialTheme.typography.headlineSmall)
+                    estimate.reasons.forEach { Text("• ${preGradeMessage(it)}", style = MaterialTheme.typography.bodySmall) }
+                }
+                Text(stringResource(R.string.pre_range_disclaimer), style = MaterialTheme.typography.bodySmall)
+            }
         }
-        Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+        Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.pre_potential_title), style = MaterialTheme.typography.titleMedium)
                 Text(stringResource(when (potential) {
@@ -480,7 +490,7 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
                     CenteringPotential.Status.BORDERLINE_10 -> R.string.pre_potential_borderline
                     CenteringPotential.Status.BELOW_10 -> R.string.pre_potential_below
                     null -> if (front?.centering != null && back?.centering != null) R.string.pre_quality_blocked else R.string.pre_potential_incomplete
-                }), style = MaterialTheme.typography.headlineSmall)
+                }), style = MaterialTheme.typography.titleLarge)
                 Text(stringResource(R.string.pre_potential_scope), style = MaterialTheme.typography.bodySmall)
                 listOf(Step.FRONT to front, Step.BACK to back).forEach { (target, side) ->
                     if (side != null) OutlinedButton(onClick = { onEdit(target) }, modifier = Modifier.fillMaxWidth()) {
@@ -490,19 +500,6 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
                         Text(stringResource(if (target == Step.FRONT) R.string.pre_retake_front else R.string.pre_retake_back))
                     }
                 }
-            }
-        }
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Experimental pre-grade", style = MaterialTheme.typography.titleMedium)
-                if (estimate == null) {
-                    Text(stringResource(R.string.pre_more_evidence), style = MaterialTheme.typography.headlineSmall)
-                    missing.forEach { Text("• ${preGradeMessage(it)}", style = MaterialTheme.typography.bodySmall) }
-                } else {
-                    Text(stringResource(R.string.pre_range, estimate.low, estimate.high), style = MaterialTheme.typography.headlineSmall)
-                    estimate.reasons.forEach { Text("• ${preGradeMessage(it)}", style = MaterialTheme.typography.bodySmall) }
-                }
-                Text(stringResource(R.string.pre_range_disclaimer), style = MaterialTheme.typography.bodySmall)
             }
         }
         OutlinedButton(onClick = {
@@ -520,7 +517,7 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
             context.startActivity(android.content.Intent.createChooser(android.content.Intent(android.content.Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(android.content.Intent.EXTRA_TEXT, report) }, "Share inspection report"))
         }, modifier = Modifier.fillMaxWidth()) { Text("Share inspection report") }
         // Centering
-        Section(stringResource(R.string.grade_centering)) {
+        ExpandablePanel(stringResource(R.string.grade_centering)) {
             CenteringLine(stringResource(R.string.grade_front), front?.centering, limit = 55.0)
             CenteringLine(stringResource(R.string.grade_back), back?.centering, limit = 75.0)
             if (front?.manualCentering == true || back?.manualCentering == true) {
@@ -530,7 +527,7 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
             HorizontalDivider()
 
         }
-        Section("Surface · multiple lighting angles") {
+        ExpandablePanel("Surface · multiple lighting angles") {
             listOf(Step.FRONT to front, Step.BACK to back).forEach { (target, side) ->
                 if (side != null) {
                     SurfaceInspectionPanel(side, if (target == Step.FRONT) "Front" else "Back", { onSurfaceCamera(target) }, { onSurface(target, it) })
@@ -552,7 +549,7 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
             }
         }
         Text(stringResource(R.string.pre_assessment_notice), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        OutlinedButton(onClick = onRedo, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.grade_again)) }
+        AppButton(stringResource(R.string.grade_again), onRedo, Modifier.fillMaxWidth())
     }
 }
 
@@ -792,7 +789,7 @@ private fun GradeCamera(label: String, allowAuto: Boolean = true, onPhoto: (Bitm
             modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp).size(72.dp),
             shape = CircleShape,
         ) {
-            if (taking) CircularProgressIndicator(Modifier.size(28.dp), color = Color.White) else Icon(Icons.Default.CameraAlt, stringResource(R.string.grade_take_photo))
+            if (taking) CircularProgressIndicator(Modifier.size(28.dp), color = Color.White) else Icon(Icons.Outlined.CameraAlt, stringResource(R.string.grade_take_photo))
         }
     }
 }

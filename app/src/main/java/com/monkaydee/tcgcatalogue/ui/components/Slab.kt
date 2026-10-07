@@ -185,7 +185,7 @@ private fun canonicalGrader(grader: String?): String = when (val code = grader?.
 @Composable
 private fun LabelText(value: String, color: Color, size: androidx.compose.ui.unit.TextUnit,
                       modifier: Modifier = Modifier, weight: FontWeight = FontWeight.Medium,
-                      family: FontFamily = FontFamily.SansSerif) {
+                      family: FontFamily = com.monkaydee.tcgcatalogue.ui.theme.AppFontFamily) {
     Text(value, modifier, color = color,
         style = TextStyle(fontFamily = family, fontSize = size, fontWeight = weight, lineHeight = size * 1.1f),
         maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -217,7 +217,7 @@ private fun SlabLabel(style: SlabStyle, grader: String, grade: String?, qualifie
                 if (grader !in setOf("CGC", "ACE", "AOG")) {
                     LabelText(if (small && grader == "BGS") "BGS" else style.logo, if (grader == "PSA") Color(0xFF184A80) else style.accent,
                         fs(if (small) 0.095f else 0.064f), weight = FontWeight.Black,
-                        family = if (grader == "BGS") FontFamily.Serif else FontFamily.SansSerif)
+                        family = if (grader == "BGS") FontFamily.Serif else com.monkaydee.tcgcatalogue.ui.theme.AppFontFamily)
                 }
                 if (!small) {
                     LabelText(title.uppercase(), style.text, fs(0.040f), weight = FontWeight.Bold)

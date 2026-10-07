@@ -26,12 +26,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Checklist
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import com.monkaydee.tcgcatalogue.ui.components.StandardButton as Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -40,7 +40,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -143,7 +143,7 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
                         Text(name, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.lists_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.lists_back)) } },
             )
         },
         snackbarHost = { SnackbarHost(snackbar) },
@@ -160,7 +160,7 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
                 Text(stringResource(R.string.checklist_loading), style = MaterialTheme.typography.bodyMedium)
             }
             list.isEmpty() -> ListEmptyState(
-                Icons.Default.Checklist,
+                Icons.Outlined.Checklist,
                 stringResource(R.string.checklist_empty_title),
                 stringResource(R.string.checklist_empty_text),
                 Modifier.padding(padding),
@@ -335,7 +335,7 @@ private fun ChecklistCell(e: ChecklistEntry, copies: Int, wished: Boolean, onCli
             }
             if (wished) {
                 Icon(
-                    Icons.Default.Favorite,
+                    Icons.Outlined.Favorite,
                     stringResource(R.string.checklist_on_wishlist),
                     tint = colors.tertiary,
                     modifier = Modifier
@@ -416,7 +416,7 @@ private fun MissingCardSheet(
                     }
                     if (wished) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Icon(Icons.Default.Favorite, null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.tertiary)
+                            Icon(Icons.Outlined.Favorite, null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.tertiary)
                             Text(stringResource(R.string.checklist_on_wishlist), style = MaterialTheme.typography.labelMedium)
                         }
                     }
@@ -440,7 +440,7 @@ private fun MissingCardSheet(
                     enabled = c != null && variant != null,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Icon(if (wished) Icons.Default.Favorite else Icons.Default.FavoriteBorder, null, Modifier.size(18.dp))
+                    Icon(if (wished) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder, null, Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
                     Text(stringResource(R.string.checklist_add_wishlist), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
@@ -449,7 +449,7 @@ private fun MissingCardSheet(
                     enabled = c != null,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Icon(Icons.Default.Add, null, Modifier.size(18.dp))
+                    Icon(Icons.Outlined.Add, null, Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
                     Text(stringResource(R.string.checklist_add_collection), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }

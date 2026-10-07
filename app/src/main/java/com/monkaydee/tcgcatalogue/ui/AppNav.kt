@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Collections
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.Collections
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -61,10 +61,10 @@ import kotlinx.coroutines.flow.map
 private data class Tab(val route: String, @androidx.annotation.StringRes val label: Int, val icon: ImageVector)
 
 private val tabs = listOf(
-    Tab("home", R.string.nav_collection, Icons.Default.Collections),
-    Tab("scan", R.string.nav_scan, Icons.Default.CameraAlt),
-    Tab("tools", R.string.tools_title, Icons.Default.Assessment),
-    Tab("settings", R.string.nav_settings, Icons.Default.Settings),
+    Tab("home", R.string.nav_collection, Icons.Outlined.Collections),
+    Tab("scan", R.string.nav_scan, Icons.Outlined.CameraAlt),
+    Tab("tools", R.string.tools_title, Icons.Outlined.Assessment),
+    Tab("settings", R.string.nav_settings, Icons.Outlined.Settings),
 )
 
 @Composable

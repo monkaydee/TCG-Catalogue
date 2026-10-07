@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,14 +69,14 @@ fun SetSwitchBar(previous: SetLink?, next: SetLink?, onSwitch: (String) -> Unit)
     Surface(tonalElevation = 3.dp) {
         Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 4.dp)) {
             TextButton(onClick = { previous?.let { onSwitch(it.setId) } }, enabled = previous != null, modifier = Modifier.weight(1f)) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, stringResource(R.string.set_previous), Modifier.size(20.dp))
+                Icon(Icons.AutoMirrored.Outlined.KeyboardArrowLeft, stringResource(R.string.set_previous), Modifier.size(20.dp))
                 Spacer(Modifier.width(4.dp))
                 Text(previous?.name.orEmpty(), maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
             }
             TextButton(onClick = { next?.let { onSwitch(it.setId) } }, enabled = next != null, modifier = Modifier.weight(1f)) {
                 Text(next?.name.orEmpty(), maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f), textAlign = androidx.compose.ui.text.style.TextAlign.End)
                 Spacer(Modifier.width(4.dp))
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, stringResource(R.string.set_next), Modifier.size(20.dp))
+                Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, stringResource(R.string.set_next), Modifier.size(20.dp))
             }
         }
     }

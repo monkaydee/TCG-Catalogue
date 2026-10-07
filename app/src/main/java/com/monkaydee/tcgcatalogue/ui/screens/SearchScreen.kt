@@ -15,8 +15,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -49,8 +49,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -185,7 +185,7 @@ private fun WishToggle(wished: Boolean, pending: Boolean, onClick: () -> Unit, m
             CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp)
         } else {
             Icon(
-                if (wished) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                if (wished) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
                 stringResource(if (wished) R.string.wish_remove else R.string.wish_add),
                 Modifier.size(18.dp),
                 tint = if (wished) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -220,7 +220,7 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit, replaceId: Long? = nu
             TopAppBar(
                 colors = appBarColors(),
                 title = { Text(if (replaceId != null) stringResource(R.string.search_title_replace) else stringResource(R.string.search_title_add)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.search_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.search_back)) } },
             )
         },
     ) { padding ->
@@ -232,7 +232,7 @@ fun SearchScreen(repo: CardRepository, onBack: () -> Unit, replaceId: Long? = nu
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 label = { Text(stringResource(searchHint(game))) },
-                trailingIcon = { IconButton(onClick = { vm.search(game, query) }) { Icon(Icons.Default.Search, stringResource(R.string.search_search)) } },
+                trailingIcon = { IconButton(onClick = { vm.search(game, query) }) { Icon(Icons.Outlined.Search, stringResource(R.string.search_search)) } },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { vm.search(game, query) }),
             )

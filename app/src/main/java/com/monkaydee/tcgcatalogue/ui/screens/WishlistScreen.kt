@@ -14,11 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.NotificationAdd
-import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.NotificationAdd
+import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -87,7 +87,7 @@ fun WishlistScreen(repo: CardRepository, onBack: () -> Unit) {
             TopAppBar(
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.wish_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.lists_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.lists_back)) } },
             )
         },
         snackbarHost = { SnackbarHost(snackbar) },
@@ -95,7 +95,7 @@ fun WishlistScreen(repo: CardRepository, onBack: () -> Unit) {
         val wishes = list ?: return@Scaffold
         if (wishes.isEmpty()) {
             ListEmptyState(
-                Icons.Default.FavoriteBorder,
+                Icons.Outlined.FavoriteBorder,
                 stringResource(R.string.wish_empty_title),
                 stringResource(R.string.wish_empty_text),
                 Modifier.padding(padding),
@@ -181,14 +181,14 @@ private fun WishRow(w: WishCard, s: AppSettings, onTarget: () -> Unit, onRemove:
                 Row {
                     IconButton(onClick = onTarget) {
                         Icon(
-                            if (target != null) Icons.Default.NotificationsActive else Icons.Default.NotificationAdd,
+                            if (target != null) Icons.Outlined.NotificationsActive else Icons.Outlined.NotificationAdd,
                             stringResource(R.string.wish_set_target),
                             tint = if (target != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp),
                         )
                     }
                     IconButton(onClick = onRemove) {
-                        Icon(Icons.Default.Delete, stringResource(R.string.wish_remove), Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Icon(Icons.Outlined.Delete, stringResource(R.string.wish_remove), Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -204,7 +204,7 @@ private fun TargetDialog(w: WishCard, s: AppSettings, onDismiss: () -> Unit, onS
     val bad = text.isNotBlank() && amount == null
     AlertDialog(
         onDismissRequest = onDismiss,
-        icon = { Icon(Icons.Default.NotificationsActive, null) },
+        icon = { Icon(Icons.Outlined.NotificationsActive, null) },
         title = { Text(stringResource(R.string.wish_target_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

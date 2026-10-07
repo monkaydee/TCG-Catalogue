@@ -16,13 +16,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.RemoveCircleOutline
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.RemoveCircleOutline
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardTonalButton as FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -71,10 +71,10 @@ fun TradeListScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (Long)
             TopAppBar(
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.trade_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.lists_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.lists_back)) } },
                 actions = {
                     if (!trade.isNullOrEmpty()) {
-                        IconButton(onClick = { shareTradeList(context, trade, s) }) { Icon(Icons.Default.Share, stringResource(R.string.trade_share)) }
+                        IconButton(onClick = { shareTradeList(context, trade, s) }) { Icon(Icons.Outlined.Share, stringResource(R.string.trade_share)) }
                     }
                 },
             )
@@ -83,7 +83,7 @@ fun TradeListScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (Long)
         val cards = trade ?: return@Scaffold
         if (cards.isEmpty()) {
             ListEmptyState(
-                Icons.Default.SwapHoriz,
+                Icons.Outlined.SwapHoriz,
                 stringResource(R.string.trade_empty_title),
                 stringResource(R.string.trade_empty_text),
                 Modifier.padding(padding),
@@ -102,7 +102,7 @@ fun TradeListScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (Long)
                     val copies = cards.sumOf { it.quantity }
                     Text(pluralStringResource(R.plurals.home_cards, copies, copies), style = MaterialTheme.typography.bodySmall)
                     FilledTonalButton(onClick = { shareTradeList(context, cards, s) }, modifier = Modifier.padding(top = 8.dp)) {
-                        Icon(Icons.Default.Share, null, Modifier.size(18.dp))
+                        Icon(Icons.Outlined.Share, null, Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.trade_share))
                     }
@@ -143,7 +143,7 @@ private fun TradeRow(c: OwnedCard, s: AppSettings, onClick: () -> Unit, onRemove
                 }
             }
             IconButton(onClick = onRemove) {
-                Icon(Icons.Default.RemoveCircleOutline, stringResource(R.string.trade_remove), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                Icon(Icons.Outlined.RemoveCircleOutline, stringResource(R.string.trade_remove), tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

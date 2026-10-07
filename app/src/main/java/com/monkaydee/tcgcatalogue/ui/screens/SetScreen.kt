@@ -17,11 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import com.monkaydee.tcgcatalogue.ui.components.StandardTonalButton as FilledTonalButton
 import androidx.compose.material3.Card
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -74,8 +74,8 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
             TopAppBar(
                 colors = appBarColors(),
                 title = { Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.set_back)) } },
-                actions = { IconButton(onClick = onChecklist) { Icon(Icons.Default.Checklist, stringResource(R.string.checklist_open)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.set_back)) } },
+                actions = { IconButton(onClick = onChecklist) { Icon(Icons.Outlined.Checklist, stringResource(R.string.checklist_open)) } },
             )
         },
         bottomBar = { SetSwitchBar(previousSet, nextSet, onSwitchSet) },
@@ -107,7 +107,7 @@ fun SetScreen(repo: CardRepository, game: Game, setId: String, onBack: () -> Uni
                     )
                     if (total > 0) LinearProgressIndicator(progress = { (owned.toFloat() / total).coerceAtMost(1f) }, modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
                     FilledTonalButton(onClick = onChecklist, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
-                        Icon(Icons.Default.Checklist, null, Modifier.size(18.dp))
+                        Icon(Icons.Outlined.Checklist, null, Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.checklist_open))
                     }

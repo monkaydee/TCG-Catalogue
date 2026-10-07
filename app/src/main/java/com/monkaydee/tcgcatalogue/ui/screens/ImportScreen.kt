@@ -28,20 +28,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AddPhotoAlternate
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.AddPhotoAlternate
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Close
+import com.monkaydee.tcgcatalogue.ui.components.StandardButton as Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardTonalButton as FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -365,8 +365,8 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
             TopAppBar(
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.import_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.import_back)) } },
-                actions = { IconButton(onClick = pick) { Icon(Icons.Default.AddPhotoAlternate, stringResource(R.string.import_add_photos)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.import_back)) } },
+                actions = { IconButton(onClick = pick) { Icon(Icons.Outlined.AddPhotoAlternate, stringResource(R.string.import_add_photos)) } },
             )
         },
     ) { padding ->
@@ -387,7 +387,7 @@ fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, 
                         )
                         Spacer(Modifier.size(16.dp))
                         Button(onClick = pick) {
-                            Icon(Icons.Default.AddPhotoAlternate, null)
+                            Icon(Icons.Outlined.AddPhotoAlternate, null)
                             Spacer(Modifier.width(8.dp))
                             Text(stringResource(R.string.import_choose_photos))
                         }
@@ -497,7 +497,7 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
                     }
                     ImportStatus.ADDED -> {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.CheckCircle, null, tint = Gain, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Outlined.CheckCircle, null, tint = Gain, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(4.dp))
                             Text(stringResource(R.string.import_added), style = MaterialTheme.typography.titleSmall, color = Gain, fontWeight = FontWeight.Bold)
                         }
@@ -526,7 +526,7 @@ private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardReposit
             when (item.status) {
                 ImportStatus.READING, ImportStatus.LOOKING_UP -> CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
                 ImportStatus.ADDED -> Unit
-                else -> IconButton(onClick = onRemove) { Icon(Icons.Default.Close, stringResource(R.string.import_dismiss)) }
+                else -> IconButton(onClick = onRemove) { Icon(Icons.Outlined.Close, stringResource(R.string.import_dismiss)) }
             }
         }
     }

@@ -29,17 +29,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import com.monkaydee.tcgcatalogue.ui.components.StandardButton as Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
@@ -508,8 +508,8 @@ private fun PaletteDot(colors: List<Color>?, selected: Boolean, label: String, o
             contentAlignment = Alignment.Center,
         ) {
             when {
-                selected -> Icon(Icons.Default.Check, null, tint = Color.White)
-                colors == null -> Icon(Icons.Default.Wallpaper, null, tint = Color.White)
+                selected -> Icon(Icons.Outlined.Check, null, tint = Color.White)
+                colors == null -> Icon(Icons.Outlined.Wallpaper, null, tint = Color.White)
             }
         }
         Text(label, style = MaterialTheme.typography.labelSmall, maxLines = 1)

@@ -1,11 +1,11 @@
-Fix German sealed search and hidden Japanese asking references.
+A cleaner CardNavo interface with readable typography and consistent controls.
 
-- German Pokémon search accepts umlauts, ae/oe/ue spellings, punctuation, joined words and common packaging terms such as Boosterbox, Display and Top-Trainer-Box. English set names also remain searchable under Deutsch.
-- Restore German Schwarze Blitze / Weiße Flammen (Black Bolt / White Flare) products that shared Japanese set names had incorrectly filtered out. Keep explicitly JP products separate.
-- Refresh the regional catalogue on update. Keep specific set aliases separate, including Prismatic Evolutions versus Evolutions and current Mega Evolution versus older BREAKthrough collections.
-- Disable Deutsch for One Piece and explain that no German printed edition exists. Switching from German Pokémon to One Piece selects English; Japanese remains available.
-- Query Japanese One Piece using native set codes in the selected market, supporting titles that omit the English set name.
-- Show references from one or two verified sealed listings instead of hiding them. Label limited samples and show their listing count. These are asking references, not confirmed sales; language, set, sealed state, product unit and contents checks remain in place.
-- Preserve product photos, purchase costs and manual values. Distinguish connection failures from an empty catalogue search.
+- Bundle Inter typography and use matching outlined icons throughout the app, including slab labels and binder exports.
+- Standardise action buttons and spacing. Stack card actions on small phones or with larger text; keep Edit and Sell prominent and place trade, alerts and removal in More actions.
+- Group card prices with language, exact grade and price scope. Keep missing-price and retained-quote warnings visible, with detailed evidence and provider prices available in expandable sections.
+- Simplify collection and binder controls with bounded game, sorting and layout selectors. Make scanning prominent and reduce visual noise around binder pockets.
+- Reorganise sealed search with game and language selectors, compact product rows, thumbnail placeholders and clear asking-reference labels and listing counts. Preserve product images and regional catalogue matching.
+- Give pre-grading a visible stage indicator, clear photo actions and expandable tips and measurements. Keep the existing non-professional disclaimer and evidence requirements.
+- Improve gain/loss contrast in dark themes and add translated control labels across all supported languages.
 
-CardNavo name, signing and the 0.1.<build-number> release convention are preserved. Listings and asking prices can change, and limited references should be compared with further market evidence.
+The CardNavo name, signing key and 0.1.<build-number> release convention are preserved. Existing collection data and pricing rules are retained.

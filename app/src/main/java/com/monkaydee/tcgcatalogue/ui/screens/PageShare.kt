@@ -38,10 +38,10 @@ internal object PageShare {
 
         val size = footer * 0.42f
         val baseline = source.height + margin + footer * 0.5f + size * 0.35f
-        val brand = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = foreground; textSize = size; typeface = Typeface.DEFAULT_BOLD }
+        val brand = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = foreground; textSize = size; typeface = androidx.core.content.res.ResourcesCompat.getFont(context, com.monkaydee.tcgcatalogue.R.font.inter_semibold) ?: Typeface.DEFAULT_BOLD }
         val brandWidth = brand.measureText(right)
         canvas.drawText(right, width - margin - brandWidth, baseline, brand)
-        val title = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = foreground; alpha = 210; textSize = size }
+        val title = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = foreground; alpha = 210; textSize = size; typeface = androidx.core.content.res.ResourcesCompat.getFont(context, com.monkaydee.tcgcatalogue.R.font.inter_regular) }
         val room = width - margin * 3 - brandWidth
         canvas.drawText(TextUtils.ellipsize(left, android.text.TextPaint(title), room, TextUtils.TruncateAt.END).toString(), margin.toFloat(), baseline, title)
 

@@ -14,11 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material.icons.filled.Straighten
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
+import androidx.compose.material.icons.outlined.Straighten
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -64,6 +65,10 @@ import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import com.monkaydee.tcgcatalogue.ui.components.CONDITIONS
 import com.monkaydee.tcgcatalogue.ui.components.CardImage
 import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
+import com.monkaydee.tcgcatalogue.ui.components.CardPriceSummary
+import com.monkaydee.tcgcatalogue.ui.components.ExpandablePanel
+import com.monkaydee.tcgcatalogue.ui.components.AppButton
+import com.monkaydee.tcgcatalogue.ui.components.ActionStyle
 import com.monkaydee.tcgcatalogue.ui.components.QuantityStepper
 import kotlinx.coroutines.launch
 import androidx.compose.ui.res.pluralStringResource
@@ -142,7 +147,7 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
                         }
                     }
                 },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.card_back)) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.card_back)) } },
             )
         },
     ) { padding ->
@@ -260,7 +265,7 @@ private fun CardDetail(
         // Room around the card so its shadow and lean aren't cut off.
         HoloCard(
             tilt = tilt,
-            modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(if (c.graded) 0.8f else 0.75f),
+            modifier = Modifier.padding(vertical = 8.dp).heightIn(max = 300.dp).fillMaxWidth(if (c.graded) 0.7f else 0.65f),
             // Slab corners scale with its width (see GradedSlab).
             shape = if (c.graded) RoundedCornerShape(percent = 6) else RoundedCornerShape(12.dp),
         ) {
@@ -271,60 +276,23 @@ private fun CardDetail(
             Text("${c.setName} · ${c.number}", style = MaterialTheme.typography.bodyMedium)
             Text(listOfNotNull(c.game.label, c.rarity, c.variantLabel).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
             c.marketLabel?.let { Text(stringResource(R.string.card_cardmarket_label, it), style = MaterialTheme.typography.bodySmall) }
-            Text(
-                Money.unitOrNull(c, s.currency, s.usdToEur)?.let { Money.valueText(c, s.currency, s.usdToEur) } ?: stringResource(if (c.graded) R.string.card_no_graded_price else R.string.card_no_market_price),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
-            )
-            if (c.price != null && c.price.isFinite() && c.price > 0) {
-                val unit = Money.unitText(c, s.currency, s.usdToEur)
-                val original = Money.format(c.price, c.priceCurrency)
-                Text(
-                    c.priceSource?.let { stringResource(R.string.card_unit_price_on_source, unit, original, it) }
-                        ?: stringResource(R.string.card_unit_price_on_market, unit, original),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-                c.priceUpdatedAt?.let {
-                    Text(stringResource(R.string.card_price_updated, android.text.format.DateUtils.getRelativeTimeSpanString(it)), style = MaterialTheme.typography.labelSmall)
-                }
-            }
-            c.manualPrice?.let {
-                val own = Money.format(Money.convert(it, c.manualCurrency ?: s.currency, s.currency, s.usdToEur), s.currency)
-                Text(
-                    c.price?.let { m -> stringResource(R.string.card_own_value_with_market, own, Money.format(Money.convert(m, c.priceCurrency, s.currency, s.usdToEur), s.currency)) }
-                        ?: stringResource(R.string.card_own_value, own),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
-            }
-            c.priceNote?.takeIf { c.manualPrice == null }?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
-            if (c.graded) RawReferencePanel(c, s, repo)
-            CardLedgerPanel(repo, c, s)
-            if (c.graded) {
-                Text(
-                    listOfNotNull(c.condition, c.certNumber?.let { stringResource(R.string.card_cert, it) }).joinToString(" · "),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
-                Text(stringResource(R.string.card_graded_hint), style = MaterialTheme.typography.labelSmall)
-            } else {
-                Text(stringResource(R.string.card_raw_hint), style = MaterialTheme.typography.labelSmall)
-            }
         }
+        CardPriceSummary(c, s)
+
         actions()
         if (!c.graded) {
-            OutlinedButton(onClick = onPreGrade, modifier = Modifier.fillMaxWidth()) {
-                Icon(Icons.Default.Straighten, null)
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.grade_open))
-            }
+            AppButton(stringResource(R.string.grade_open), onPreGrade, Modifier.fillMaxWidth(),
+                Icons.Outlined.Straighten, style = ActionStyle.SECONDARY)
         }
         ActiveAlerts(c, s, onAlert)
         PriceHistoryCard(history, s)
-        PriceLinks(c, s)
+        ExpandablePanel(stringResource(R.string.card_check_prices)) { PriceLinks(c, s) }
         PriceOverview(c, s, repo)
         if (s.hasServer) GradedPanel(c, s, repo)
+        if (c.graded) RawReferencePanel(c, s, repo)
+        ExpandablePanel(stringResource(R.string.design_details)) {
+            CardLedgerPanel(repo, c, s)
+        }
         Text(stringResource(R.string.card_quantity), style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
         QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
         if (c.game == Game.ONE_PIECE && s.pokemonSource == PriceSource.CARDMARKET) {
@@ -390,25 +358,28 @@ private fun RawReferencePanel(c: OwnedCard, s: AppSettings, repo: CardRepository
 @Composable
 private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
     var groups by remember(c.id) { mutableStateOf<List<CardRepository.PriceGroup>?>(null) }
+    var overviewFailed by remember(c.id) { mutableStateOf(false) }
     var loading by remember(c.id) { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.card_all_prices), style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-                if (loading) {
-                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                } else {
-                    TextButton(onClick = {
-                        loading = true
-                        scope.launch {
-                            if (!c.graded) runCatching { repo.refreshPrice(c.id) }
-                            groups = repo.priceOverview(c)
-                            loading = false
-                        }
-                    }) { Text(stringResource(if (groups == null) R.string.card_show else R.string.card_refresh)) }
-                }
+    fun refresh() {
+        if (loading) return
+        loading = true
+        scope.launch {
+            try {
+                if (!c.graded) runCatching { repo.refreshPrice(c.id) }
+                val result = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.priceOverview(c) }
+                groups = result.getOrNull()
+                overviewFailed = result.isFailure
+            } finally { loading = false }
+        }
+    }
+    ExpandablePanel(stringResource(R.string.card_all_prices), onExpandedChange = { if (it && groups == null) refresh() }) {
+            LaunchedEffect(c.id) { if (groups == null && !loading) refresh() }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                if (loading) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                else TextButton(onClick = { refresh() }) { Text(stringResource(R.string.card_refresh)) }
             }
+            if (overviewFailed) Text(stringResource(R.string.sealed_price_unavailable), style = MaterialTheme.typography.bodySmall)
             groups?.forEach { g ->
                 HorizontalDivider()
                 Text(g.title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
@@ -426,7 +397,6 @@ private fun PriceOverview(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 }
                 g.problem?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
             }
-        }
     }
 }
 
@@ -442,24 +412,23 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
     var cert by remember(c.id) { mutableStateOf<String?>(null) }
     var certLoading by remember(c.id) { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.graded_title), style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-                if (loading) {
-                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                } else {
-                    TextButton(onClick = {
-                        loading = true
-                        scope.launch {
-                            if (c.graded) runCatching { repo.refreshPrice(c.id) }
-                            val r = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.gradedPricesFor(c) }
-                            failure = r.exceptionOrNull()?.let { if (it is com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.ProvidersUnavailableException) R.string.graded_providers_unavailable else R.string.graded_failed }
-                            prices = r.getOrNull()
-                            loading = false
-                        }
-                    }) { Text(stringResource(if (prices == null) R.string.card_show else R.string.card_refresh)) }
-                }
+    fun refresh() {
+        if (loading) return
+        loading = true
+        scope.launch {
+            try {
+                if (c.graded) runCatching { repo.refreshPrice(c.id) }
+                val r = com.monkaydee.tcgcatalogue.data.remote.attempt { repo.gradedPricesFor(c) }
+                failure = r.exceptionOrNull()?.let { if (it is com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.ProvidersUnavailableException) R.string.graded_providers_unavailable else R.string.graded_failed }
+                prices = r.getOrNull()
+            } finally { loading = false }
+        }
+    }
+    ExpandablePanel(stringResource(R.string.graded_title), onExpandedChange = { if (it && prices == null) refresh() }) {
+            LaunchedEffect(c.id) { if (prices == null && !loading) refresh() }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                if (loading) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                else TextButton(onClick = { refresh() }) { Text(stringResource(R.string.card_refresh)) }
             }
             when {
                 failure != null -> Text(stringResource(failure!!), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
@@ -515,7 +484,6 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 }
                 cert?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
             }
-        }
     }
 }
 
