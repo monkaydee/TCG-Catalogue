@@ -71,6 +71,10 @@ class JapanesePricingTest {
     @Test fun languageOnlyChangeCannotPriceEnglishNumbersAsJapanese() = runBlocking {
         Fixture().use { f ->
             val english = f.english("me01-150")
+            // International catalogue metadata must leave language detection to the scan.
+            assertNull(english.language)
+            assertFalse(f.repo.isConfident(listOf(english.copy(language = "JA", score = 1.0))))
+            assertTrue(f.repo.isConfident(listOf(english.copy(language = "DE", score = 1.0))))
             assertNull(f.repo.conditionPrice(english, english.defaultVariant, "NM", f.settings.current(), language = "JA"))
             assertTrue(f.repo.gradedLookup(english, english.defaultVariant, GradeInfo("PSA", "9"), "JA").problem!!.contains("Japanese set"))
             val legacy = OwnedCard(game = Game.POKEMON, cardId = english.cardId, variant = "holo", variantLabel = "Holo",
@@ -91,6 +95,7 @@ class JapanesePricingTest {
             for ((id, amount, product) in listOf(Triple("M1L-066", 2.19, 647175L), Triple("M1L-073", 2.21, 647182L))) {
                 val card = f.japanese(id)
                 assertEquals("JA", card.language)
+                assertTrue(f.repo.isConfident(listOf(card)))
                 assertEquals(product, card.defaultVariant.tcgplayerId)
                 assertTrue(card.imageUrl!!.contains("/$product"))
                 val quote = f.repo.conditionPrice(card, card.defaultVariant, "NM", f.settings.current(), language = "JA")!!

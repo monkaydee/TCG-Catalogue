@@ -218,6 +218,7 @@ class CardRepository(
     /** True when the best match is clearly the right card, so it can be added without asking. */
     fun isConfident(candidates: List<CardCandidate>): Boolean {
         val top = candidates.firstOrNull() ?: return false
+        if (needsJapanesePrinting(top, top.language ?: "EN")) return false
         // Never add a card automatically when the scan's name contradicts it.
         if (top.warning != null) return false
         // Alt arts share the number: only add on its own when the picture told which one it is.

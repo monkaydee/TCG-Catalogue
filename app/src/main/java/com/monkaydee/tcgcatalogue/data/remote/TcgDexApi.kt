@@ -136,7 +136,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
             // The price server still checks edition separately before accepting a listing.
             printingUnique = listOf("normal", "holo", "reverse", "wPromo").count { flags[it].bool() } == 1,
             attacks = c["attacks"].arr().orEmpty().mapNotNull { it["name"].str() },
-            language = lang.uppercase(),
+            language = lang.uppercase().takeUnless { lang == "en" },
             artworkMetadata = if (c["illustrator"].str() != null && c["hp"].str() != null && c["rarity"].str() != null) {
                 listOf(c["illustrator"].str(), c["hp"].str(), c["rarity"].str(), c["stage"].str(), c["regulationMark"].str(),
                     c["dexId"].toString(), c["attacks"].arr().orEmpty().joinToString(";") { it["cost"].toString() + ":" + it["damage"].toString() }).joinToString("|")

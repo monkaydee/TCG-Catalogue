@@ -211,7 +211,7 @@ class ScanViewModel(private val repo: CardRepository, private val context: andro
             val picture = lastPicture
             val texts = lastTexts.toList()
             val result = runCatching { VisualMatcher.rank(context, picture, repo.checkedByName(repo.resolve(hit), texts), VisualMatcher.Source.CAMERA) }
-            val candidates = result.getOrDefault(emptyList())
+            val candidates = result.getOrDefault(emptyList()).map { it.copy(language = it.language ?: hit.language) }
             cooldownKey = hit.key
             cooldownUntil = System.currentTimeMillis() + 2500
             when {

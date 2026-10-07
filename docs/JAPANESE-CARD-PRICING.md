@@ -2,7 +2,7 @@
 
 Japanese editions use different set identities and collector numbers from international editions. Changing only the language of `me01-150` (Steelix, Mega Evolution 150/132) does not make it `ja:M1L-073` (ハガネール, Mega Brave 073/063).
 
-When JP is selected for an international Pokémon candidate, Add/Edit loads native Japanese entries through the existing English-name alias index and TCGdex. Matching language-independent metadata ranks the options; the app does not silently choose a set or number from a name or price. The user confirms the printed Japanese identity, which is then saved with its native set, number and photo. Existing purchase costs and manual values follow the existing edit path.
+When JP is selected for an international Pokémon candidate, Add/Edit loads native Japanese entries through the existing English-name alias index and TCGdex. Matching language-independent metadata ranks the options; the app does not silently choose a set or number from a name or price. International catalogue entries leave printed language to the scan. Quick-add requires a native identity for a Japanese Pokémon scan. The user confirms the printed Japanese identity, which is then saved with its native set, number and photo. Existing purchase costs and manual values follow the existing edit path.
 
 The matching artwork examples reported for Mega Evolution correspond to Exeggutor M1L 066/063 and Steelix M1L 073/063 in the Japanese catalogue. Verify the number printed on the physical card; regular printings and reprints have their own identities.
 
