@@ -55,6 +55,11 @@
             android:value="ocr" />
 
         <!-- Home-screen widget: collection value. -->
+        <activity android:name=".widget.WidgetConfigureActivity" android:exported="true" android:theme="@style/Theme.TcgCatalogue">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
         <receiver
             android:name=".widget.PortfolioWidgetReceiver"
             android:exported="true"

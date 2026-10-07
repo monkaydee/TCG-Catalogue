@@ -14,10 +14,10 @@ Graded requests keep the selected native number, product ID, language and set al
 
 ## Older saved cards
 
-An older row may have `language=JA` with an international card ID. Price refresh flags it for repair and clears the incompatible market quote, without clearing costs or manual values. Open Edit, choose Japanese printing using the number on the card, and Save. Unknown native identities and missing quotes remain unknown. Background refresh updates are guarded against concurrent changes to printing, language and slab identity, and preserve current user-entered fields.
+An older row may have `language=JA` with an international card ID. Price refresh flags it for repair and clears the incompatible market quote, without clearing costs or manual values. The card detail screen now loads native Japanese choices with product references directly. Select the printing matching the number on your card, then Save. Add/Edit also places these photo-and-price choices near the top instead of beneath the language controls. Unknown native identities and missing quotes remain unknown. Background refresh updates are guarded against concurrent changes to printing, language and slab identity, and preserve current user-entered fields.
 
 English-name search supports `JP Steelix`, `JP Exeggutor` and similar names present in the alias index. Printed native codes (for example `M1L 073/063`) and Japanese name searches remain available.
 
 ## Verification
 
-Regression fixtures record TCGdex responses for the reported international and native Japanese printings. Tests check native prices and product photos, explicit Japanese condition filtering, cache isolation, correct identity persistence, cost/manual-value preservation, and the Add/Edit selector. Live catalogue checks verify that the native product IDs differ from the English product IDs.
+Regression fixtures record TCGdex responses for the reported international and native Japanese printings. Tests check native prices and product photos, explicit Japanese condition filtering, cache isolation, correct identity persistence, cost/manual-value preservation, and the Add/Edit selector. A detail-screen repair regression selects the native Steelix product, saves it, and verifies its Japanese price while retaining purchase cost and quantity. Live catalogue checks verify that the native product IDs differ from the English product IDs.

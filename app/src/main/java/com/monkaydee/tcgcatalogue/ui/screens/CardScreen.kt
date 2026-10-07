@@ -117,11 +117,12 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
     var editing by remember { mutableStateOf<OwnedCard?>(null) }
     var editCandidate by remember { mutableStateOf<CardCandidate?>(null) }
     var editLoading by remember { mutableStateOf(false) }
+    var japaneseEditCandidate by remember { mutableStateOf<CardCandidate?>(null) }
     val context = LocalContext.current
     LaunchedEffect(editing) {
         val card = editing ?: return@LaunchedEffect
         editLoading = true
-        editCandidate = repo.candidateFor(card)
+        editCandidate = japaneseEditCandidate ?: repo.candidateFor(card)
         editLoading = false
         if (editCandidate == null) {
             Toast.makeText(context, context.getString(R.string.card_load_failed), Toast.LENGTH_LONG).show()
@@ -168,12 +169,16 @@ fun CardScreen(repo: CardRepository, id: Long, onBack: () -> Unit, onReplace: (L
                     CardActionBar(
                         card = card,
                         editLoading = editLoading && editing?.id == card.id,
-                        onEdit = { if (!editLoading) editing = card },
+                        onEdit = { if (!editLoading) { japaneseEditCandidate = null; editing = card } },
                         onSell = { sellId = card.id },
                         onToggleTrade = { on -> scope.launch { repo.setForTrade(card, on) } },
                         onAlert = { alertId = card.id },
                         onDelete = { deleteId = card.id },
                     )
+                },
+                onJapanesePrinting = { native ->
+                    japaneseEditCandidate = native
+                    editing = card
                 },
                 onAlert = { alertId = card.id },
                 onPreGrade = { onPreGrade("${card.name} · ${card.number}", card.game) },
@@ -251,6 +256,7 @@ private fun CardDetail(
     actions: @Composable () -> Unit,
     onAlert: () -> Unit,
     onPreGrade: () -> Unit = {},
+    onJapanesePrinting: (CardCandidate) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val history by remember(c.id) { repo.priceHistory(c.id) }.collectAsState(initial = emptyList())
@@ -277,7 +283,10 @@ private fun CardDetail(
             Text(listOfNotNull(c.game.label, c.rarity, c.variantLabel).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
             c.marketLabel?.let { Text(stringResource(R.string.card_cardmarket_label, it), style = MaterialTheme.typography.bodySmall) }
         }
-        CardPriceSummary(c, s)
+        if (c.game == Game.POKEMON && c.language == "JA" && !c.cardId.startsWith("ja:")) {
+            if (c.manualPrice != null) CardPriceSummary(c, s)
+            com.monkaydee.tcgcatalogue.ui.components.JapanesePrintingRepair(c, s, repo, onJapanesePrinting)
+        } else CardPriceSummary(c, s)
 
         actions()
         if (!c.graded) {

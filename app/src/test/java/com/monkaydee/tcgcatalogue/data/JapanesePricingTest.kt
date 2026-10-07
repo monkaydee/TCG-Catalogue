@@ -76,7 +76,7 @@ class JapanesePricingTest {
             assertFalse(f.repo.isConfident(listOf(english.copy(language = "JA", score = 1.0))))
             assertTrue(f.repo.isConfident(listOf(english.copy(language = "DE", score = 1.0))))
             assertNull(f.repo.conditionPrice(english, english.defaultVariant, "NM", f.settings.current(), language = "JA"))
-            assertTrue(f.repo.gradedLookup(english, english.defaultVariant, GradeInfo("PSA", "9"), "JA").problem!!.contains("Japanese set"))
+            assertTrue(f.repo.gradedLookup(english, english.defaultVariant, GradeInfo("PSA", "9"), "JA").problem!!.contains("set code"))
             val legacy = OwnedCard(game = Game.POKEMON, cardId = english.cardId, variant = "holo", variantLabel = "Holo",
                 name = english.name, setId = english.setId, setName = english.setName, number = english.number,
                 language = "JA", price = 7.6, priceCurrency = "EUR", purchasePrice = 12.0, manualPrice = 70.0, manualCurrency = "EUR")
@@ -86,7 +86,7 @@ class JapanesePricingTest {
             assertNull(row.price)
             assertEquals(70.0, row.manualPrice!!, 0.001)
             assertEquals(12.0, row.purchasePrice!!, 0.001)
-            assertTrue(row.priceNote!!.contains("open Edit"))
+            assertTrue(row.priceNote!!.contains("set code"))
         }
     }
 
@@ -164,6 +164,37 @@ class JapanesePricingTest {
         }
     }
 
+    @Test fun existingJapaneseCardCanSelectPricedNativePrintingDirectlyFromDetailRepair() {
+        Fixture().use { f ->
+            val english = runBlocking { f.english("me01-150") }
+            val old = OwnedCard(game = Game.POKEMON, cardId = english.cardId, variant = "holo", variantLabel = "Holo",
+                name = english.name, number = english.number, setId = english.setId, setName = english.setName,
+                quantity = 3, language = "JA", purchasePrice = 12.0, priceCurrency = "EUR")
+            val id = runBlocking { f.db.cards().insert(old) }
+            val row = old.copy(id = id)
+            val selected = androidx.compose.runtime.mutableStateOf<CardCandidate?>(null)
+            var request: AddRequest? = null
+            rule.setContent { TcgTheme {
+                val native = selected.value
+                if (native == null) com.monkaydee.tcgcatalogue.ui.components.JapanesePrintingRepair(row, AppSettings(), f.repo) { selected.value = it }
+                else AddCardSheet(listOf(native), AppSettings(), f.repo, initial = row,
+                    confirmLabel = "Save", onAdd = { request = it }, onDismiss = {})
+            } }
+            rule.waitUntil(10_000) { rule.onAllNodesWithText("M1L · 073/063").fetchSemanticsNodes().isNotEmpty() }
+            rule.onNodeWithText("€2.21").assertIsDisplayed()
+            rule.onNodeWithText("M1L · 073/063").performClick()
+            assertEquals("ja:M1L-073", selected.value!!.cardId)
+            rule.onNodeWithText("Save").performScrollTo().assertIsEnabled().performClick()
+            runBlocking { f.repo.saveEdit(row, request!!) }
+            val saved = runBlocking { f.db.cards().get(id)!! }
+            assertEquals("ja:M1L-073", saved.cardId)
+            assertEquals("073/063", saved.number)
+            assertEquals(2.21, saved.price!!, 0.001)
+            assertEquals(3, saved.quantity)
+            assertEquals(12.0, saved.purchasePrice!!, 0.001)
+        }
+    }
+
     @Test fun JapaneseChoiceRequiresNativeIdentityBeforeSave() {
         Fixture().use { f ->
             val english = runBlocking { f.english("me01-135") }
@@ -173,9 +204,9 @@ class JapanesePricingTest {
             rule.onNodeWithText("Japanese (JP)").performScrollTo().performClick()
             rule.onNodeWithText("Add").performScrollTo().assertIsNotEnabled()
             rule.waitUntil(10_000) { rule.onAllNodesWithText("Japanese printing").fetchSemanticsNodes().isNotEmpty() }
-            rule.onNodeWithText("Japanese printing").performScrollTo().performClick()
-            rule.onNodeWithText("M1L · 066/063 · ナッシー").performClick()
-            rule.onNodeWithText("ナッシー").performScrollTo().assertIsDisplayed()
+            rule.onNodeWithText("Japanese printing").performScrollTo()
+            rule.onNodeWithText("M1L · 066/063").performClick()
+            rule.onAllNodesWithText("ナッシー").onFirst().performScrollTo().assertIsDisplayed()
             rule.waitUntil(5_000) { rule.onAllNodesWithText("€2.19").fetchSemanticsNodes().isNotEmpty() }
             rule.onNodeWithText("066/063 · Illustration rare").assertIsDisplayed()
             val view = org.robolectric.shadows.ShadowDialog.getLatestDialog().window!!.decorView

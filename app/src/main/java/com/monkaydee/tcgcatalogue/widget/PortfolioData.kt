@@ -19,6 +19,7 @@ data class PortfolioData(
     val updatedAt: Long,
     val missingCopies: Int = 0,
     val hasKnownValue: Boolean = true,
+    val sealedCount: Int = 0,
 ) {
     companion object {
         const val DAYS = 30L
@@ -46,6 +47,7 @@ data class PortfolioData(
                 updatedAt = settings.lastPriceRefresh.takeIf { it > 0 } ?: now,
                 missingCopies = coverage.missingCopies,
                 hasKnownValue = coverage.amount != null,
+                sealedCount = sealed.sumOf { it.quantity },
             )
         }
     }

@@ -270,6 +270,17 @@ fun AddCardSheet(
                     note?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary) }
                 }
             }
+            if (repo.needsJapanesePrinting(sourceCard, language)) {
+                if (needsJapanesePrinting) Text(stringResource(R.string.jp_printing_required),
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (japaneseLoading) Text(stringResource(R.string.jp_printing_loading), style = MaterialTheme.typography.bodySmall)
+                if (japaneseOptions.isNotEmpty()) JapanesePrintingChoices(japaneseOptions, japaneseSelection?.cardId,
+                    settings, repo) { japaneseSelection = it }
+                if (!japaneseLoading && japaneseOptions.isEmpty()) {
+                    Text(stringResource(if (japaneseFailed) R.string.jp_printing_failed else R.string.jp_printing_empty), style = MaterialTheme.typography.bodySmall)
+                    TextButton(onClick = { japaneseRetry++ }) { Text(stringResource(R.string.card_refresh)) }
+                }
+            }
             card.warning?.let {
                 Text(it, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.error)
             }
@@ -342,18 +353,6 @@ fun AddCardSheet(
             Text(stringResource(R.string.add_language), style = MaterialTheme.typography.labelLarge)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CARD_LANGUAGES.forEach { (code, name) -> FilterChip(selected = code == language, onClick = { language = code }, label = { Text(name) }) }
-            }
-            if (repo.needsJapanesePrinting(sourceCard, language)) {
-                if (needsJapanesePrinting) Text(stringResource(R.string.jp_printing_required),
-                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                if (japaneseLoading) Text(stringResource(R.string.jp_printing_loading), style = MaterialTheme.typography.bodySmall)
-                if (japaneseOptions.isNotEmpty()) AppSelector(stringResource(R.string.jp_printing_title), japaneseSelection?.cardId,
-                    japaneseOptions.map { SelectorOption<String?>(it.cardId, "${it.setId.substringAfter(':')} · ${it.number} · ${it.name}") },
-                    { id -> japaneseSelection = japaneseOptions.firstOrNull { it.cardId == id } })
-                if (!japaneseLoading && japaneseOptions.isEmpty()) {
-                    Text(stringResource(if (japaneseFailed) R.string.jp_printing_failed else R.string.jp_printing_empty), style = MaterialTheme.typography.bodySmall)
-                    TextButton(onClick = { japaneseRetry++ }) { Text(stringResource(R.string.card_refresh)) }
-                }
             }
             if (initial == null) OutlinedTextField(
                 value = paid,

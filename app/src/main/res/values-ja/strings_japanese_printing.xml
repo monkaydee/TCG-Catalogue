@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="jp_printing_title" tools:ignore="MissingTranslation">日本語版のカード</string>
-    <string name="jp_printing_required" tools:ignore="MissingTranslation">下で日本語版のセットとカード番号を選んでください。言語だけを変更しても英語版のカード情報は変わらず、その価格は日本語版の価格ではありません。登録済みカードは編集から印刷された情報を選んでください。</string>
+    <string name="jp_printing_required">日本語カードに印刷されたセットコードと番号を選択して価格を取得してください。</string>
     <string name="jp_printing_loading" tools:ignore="MissingTranslation">日本語版を検索中…</string>
     <string name="jp_printing_failed" tools:ignore="MissingTranslation">日本語版を読み込めませんでした。再試行するか、印刷されたセット記号と番号で検索してください。</string>
     <string name="jp_printing_empty" tools:ignore="MissingTranslation">該当する日本語版が見つかりません。印刷されたセット記号と番号（例：M1L 073/063）で検索してください。</string>
     <string name="jp_cardmarket_reference" tools:ignore="MissingTranslation">この日本語版商品のCardmarket参考価格。状態ごとの価格ではありません。</string>
+    <string name="jp_printing_repair_title">この日本語カードの価格を探す</string>
+    <string name="jp_printing_match_number">カードに印刷されたセットコードと番号を選択し、保存して価格を更新してください。</string>
+    <string name="jp_printing_select">この収録版を選択</string>
+    <string name="jp_printing_price_reference">日本語商品の参考価格です。保存する価格は選択した加工と状態に基づきます。</string>
 </resources>

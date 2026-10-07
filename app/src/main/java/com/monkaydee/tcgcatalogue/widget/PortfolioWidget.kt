@@ -1,40 +1,18 @@
 package com.monkaydee.tcgcatalogue.widget
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
 import android.text.format.DateUtils
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpSize
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.glance.GlanceId
-import androidx.glance.GlanceModifier
-import androidx.glance.GlanceTheme
-import androidx.glance.LocalContext
-import androidx.glance.LocalSize
+import androidx.glance.*
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.*
 import androidx.glance.appwidget.action.actionStartActivity
-import androidx.glance.appwidget.appWidgetBackground
-import androidx.glance.appwidget.cornerRadius
-import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.updateAll
-import androidx.glance.background
-import androidx.glance.color.ColorProvider
-import androidx.glance.layout.Alignment
-import androidx.glance.layout.Column
-import androidx.glance.layout.Row
-import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.fillMaxWidth
-import androidx.glance.layout.padding
-import androidx.glance.text.FontWeight
-import androidx.glance.text.Text
-import androidx.glance.text.TextStyle
+import androidx.glance.layout.*
 import com.monkaydee.tcgcatalogue.MainActivity
 import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.TcgApp
@@ -46,111 +24,82 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import kotlin.math.abs
 
-/** The texts of one widget rendering, made outside the composition so they follow the app's language. */
-private data class WidgetModel(
-    val title: String,
-    val value: String,
-    val change: String?,
-    val up: Boolean,
-    val cards: String,
-    val updated: String,
-)
-
-/**
- * "Portfolio" home-screen widget: the collection's total value, its change over the last 30 days,
- * the number of cards and when prices were last refreshed. Small sizes show the value only.
- */
 class PortfolioWidget : GlanceAppWidget() {
-    override val sizeMode = SizeMode.Responsive(setOf(SMALL, LARGE))
+    override val sizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val model = runCatching { load(context) }.getOrNull()
-        provideContent {
-            GlanceTheme {
-                if (model == null) Body(WidgetModel(AppStrings.get(R.string.widget_title), "–", null, true, "", "")) else Body(model)
-            }
-        }
-    }
-
-    private suspend fun load(context: Context): WidgetModel = withContext(Dispatchers.IO) {
-        val repo = (context.applicationContext as TcgApp).repository
-        val settings = repo.settings.current()
-        val data = PortfolioData.compute(
-            cards = repo.cards.first(),
-            sealed = repo.sealed.first(),
-            snapshots = repo.snapshots.first(),
-            settings = settings,
-            today = LocalDate.now().toEpochDay(),
-            now = System.currentTimeMillis(),
-        )
-        val change = data.change?.let { c ->
-            val sign = if (c >= 0) "+" else "−"
-            val percent = data.changePercent?.let { " (%s%.1f%%)".format(if (it >= 0) "+" else "−", abs(it)) }.orEmpty()
-            AppStrings.get(R.string.widget_change_30d, sign + Money.format(abs(c), data.currency) + percent)
-        }
-        WidgetModel(
-            title = AppStrings.get(R.string.widget_title),
-            value = if (data.hasKnownValue) Money.format(data.value, data.currency) else "—",
-            change = if (data.missingCopies > 0) AppStrings.get(R.string.price_coverage_missing, data.missingCopies) else change ?: AppStrings.get(R.string.widget_no_history),
-            up = (data.change ?: 0.0) >= 0,
-            cards = AppStrings.get(R.string.widget_cards, data.cardCount),
-            updated = AppStrings.get(R.string.widget_updated, stamp(context, data.updatedAt)),
-        )
-    }
-
-    /** The time for today, the date otherwise. */
-    private fun stamp(context: Context, millis: Long): String =
-        if (DateUtils.isToday(millis)) DateFormat.getTimeFormat(context).format(millis)
-        else DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH)
-
-    companion object {
-        private val SMALL = DpSize(100.dp, 48.dp)
-        private val LARGE = DpSize(100.dp, 100.dp)
-
-        private val green = ColorProvider(day = Color(0xFF1B7F3B), night = Color(0xFF6FD28A))
-        private val red = ColorProvider(day = Color(0xFFB3261E), night = Color(0xFFF2B8B5))
-
-        /** Redraws every placed Portfolio widget with the current data (cheap when there is none). */
-        suspend fun refresh(context: Context) {
-            runCatching { PortfolioWidget().updateAll(context) }
-        }
+        val manager = GlanceAppWidgetManager(context)
+        val appWidgetId = manager.getAppWidgetId(id)
+        val appearance = WidgetAppearanceStore(context).load(appWidgetId)
+        val model = runCatching { loadWidgetModel(context) }.getOrElse { emptyWidgetModel() }
+        provideContent { Body(model, appearance, appWidgetId) }
     }
 
     @Composable
-    private fun Body(m: WidgetModel) {
-        val large = LocalSize.current.height >= LARGE.height
-        val colors = GlanceTheme.colors
-        Column(
-            modifier = GlanceModifier
-                .fillMaxSize()
-                .appWidgetBackground()
-                .background(colors.widgetBackground)
-                .cornerRadius(20.dp)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
-                .clickable(actionStartActivity(Intent(LocalContext.current, MainActivity::class.java))),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (large) Text(m.title, maxLines = 1, style = TextStyle(color = colors.onSurfaceVariant, fontSize = 12.sp))
-            Text(
-                m.value,
-                maxLines = 1,
-                style = TextStyle(color = colors.onSurface, fontSize = if (large) 28.sp else 22.sp, fontWeight = FontWeight.Bold),
-            )
-            if (large) {
-                m.change?.let {
-                    Text(it, maxLines = 1, style = TextStyle(color = if (m.up) green else red, fontSize = 13.sp, fontWeight = FontWeight.Medium))
-                }
-                Spacer(GlanceModifier.padding(top = 6.dp))
-                Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(m.cards, maxLines = 1, style = TextStyle(color = colors.onSurfaceVariant, fontSize = 11.sp))
-                    Spacer(GlanceModifier.defaultWeight())
-                    Text(m.updated, maxLines = 1, style = TextStyle(color = colors.onSurfaceVariant, fontSize = 11.sp))
-                }
+    private fun Body(model: WidgetModel, appearance: WidgetAppearance, id: Int) {
+        val context = LocalContext.current
+        val size = LocalSize.current
+        val bitmap = remember(model, appearance, size) {
+            WidgetRenderer.render(context, model, appearance, size.width.value.toInt(), size.height.value.toInt())
+        }
+        Box(GlanceModifier.fillMaxSize().appWidgetBackground()
+            .clickable(actionStartActivity(Intent(context, MainActivity::class.java)))) {
+            Image(ImageProvider(bitmap), model.description, GlanceModifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+            Box(GlanceModifier.fillMaxSize(), contentAlignment = Alignment.TopEnd) {
+                Image(ImageProvider(R.drawable.ic_widget_customize), AppStrings.get(R.string.widget_customize),
+                    GlanceModifier.size(44.dp).padding(12.dp).clickable(actionStartActivity(
+                        Intent(context, WidgetConfigureActivity::class.java)
+                            .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id))),
+                    colorFilter = ColorFilter.tint(androidx.glance.color.ColorProvider(
+                        day = androidx.compose.ui.graphics.Color(appearance.textColor), night = androidx.compose.ui.graphics.Color(appearance.textColor))))
             }
         }
     }
+
+    companion object {
+        suspend fun refresh(context: Context) { runCatching { PortfolioWidget().updateAll(context) } }
+    }
 }
+
+internal suspend fun loadWidgetModel(context: Context): WidgetModel = withContext(Dispatchers.IO) {
+    val repo = (context.applicationContext as TcgApp).repository
+    val settings = repo.settings.current()
+    val data = PortfolioData.compute(repo.cards.first(), repo.sealed.first(), repo.snapshots.first(), settings,
+        LocalDate.now().toEpochDay(), System.currentTimeMillis())
+    val change = data.change?.let { change ->
+        val sign = if (change >= 0) "+" else "−"
+        val percent = data.changePercent?.let { " (%s%.1f%%)".format(if (it >= 0) "+" else "−", abs(it)) }.orEmpty()
+        sign + Money.format(abs(change), data.currency) + percent
+    }
+    val stamp = if (DateUtils.isToday(data.updatedAt)) DateFormat.getTimeFormat(context).format(data.updatedAt)
+        else DateUtils.formatDateTime(context, data.updatedAt, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH)
+    WidgetModel(
+        AppStrings.get(R.string.widget_title),
+        if (data.hasKnownValue) Money.format(data.value, data.currency) else "—",
+        change, (data.change ?: 0.0) >= 0,
+        "${data.cardCount} " + AppStrings.get(R.string.widget_short_cards),
+        "${data.sealedCount} " + AppStrings.get(R.string.widget_short_sealed),
+        "${data.missingCopies} " + AppStrings.get(R.string.widget_short_missing),
+        AppStrings.get(when { !data.hasKnownValue -> R.string.widget_waiting; data.missingCopies > 0 -> R.string.widget_known_only; else -> R.string.widget_all_priced }),
+        AppStrings.get(R.string.widget_updated, stamp),
+    )
+}
+
+internal fun emptyWidgetModel() = WidgetModel(AppStrings.get(R.string.widget_title), "—", null, true,
+    "0 " + AppStrings.get(R.string.widget_short_cards), "0 " + AppStrings.get(R.string.widget_short_sealed),
+    "0 " + AppStrings.get(R.string.widget_short_missing), AppStrings.get(R.string.widget_waiting), "")
 
 class PortfolioWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = PortfolioWidget()
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        appWidgetIds.forEach { WidgetAppearanceStore(context).delete(it) }
+        super.onDeleted(context, appWidgetIds)
+    }
+    override fun onRestored(context: Context, oldWidgetIds: IntArray, newWidgetIds: IntArray) {
+        val store = WidgetAppearanceStore(context)
+        val appearances = oldWidgetIds.map { store.load(it) }
+        oldWidgetIds.forEach(store::delete)
+        newWidgetIds.forEachIndexed { index, id -> appearances.getOrNull(index)?.let { store.save(id, it) } }
+        super.onRestored(context, oldWidgetIds, newWidgetIds)
+    }
 }

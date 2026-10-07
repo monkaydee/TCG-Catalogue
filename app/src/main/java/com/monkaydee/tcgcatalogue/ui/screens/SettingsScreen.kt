@@ -150,6 +150,12 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             CloudPendingCard()
+            Section(stringResource(R.string.widget_customize)) {
+                Text(stringResource(R.string.widget_default_note), style = MaterialTheme.typography.bodySmall)
+                OutlinedButton(onClick = {
+                    context.startActivity(android.content.Intent(context, com.monkaydee.tcgcatalogue.widget.WidgetConfigureActivity::class.java))
+                }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.widget_customize)) }
+            }
             Section(stringResource(R.string.tools_learning)) { LearningPanel(repo) }
 
             Section(stringResource(R.string.appearance_title)) {
