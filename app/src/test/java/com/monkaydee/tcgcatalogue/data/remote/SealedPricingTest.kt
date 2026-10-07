@@ -8,6 +8,45 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SealedPricingTest {
+    @Test fun germanPokemonSearchAcceptsUmlautsTransliterationsAndPackagingTerms() = runBlocking {
+        val dir = java.nio.file.Files.createTempDirectory("sealed-german-search").toFile()
+        try {
+            java.io.File(dir,"SEALED_POKEMON.json").writeText("""{"groups":{},"items":[]}""")
+            java.io.File(dir,"SEALED_REGIONAL_V5_POKEMON.json").writeText("""{"schemaVersion":5,"items":[
+              {"productId":-784949,"name":"Surging Sparks Booster Box","groupName":"Pokémon Display","candidateLanguages":["EN","DE"],"aliases":["Stürmische Funken"],"imageUrls":{"EN":"https://tcgplayer-cdn.tcgplayer.com/product/1_in_400x400.jpg"}},
+              {"productId":-784948,"name":"Surging Sparks Booster","groupName":"Pokémon Booster","candidateLanguages":["EN","DE"],"aliases":["Stürmische Funken"]},
+              {"productId":-100,"name":"Terastal Festival ex Booster Box","candidateLanguages":["JA"],"aliases":["SV8a"]},
+              {"productId":-200,"name":"Prismatic Evolutions Elite Trainer Box","groupName":"Pokémon Top Trainer Box","candidateLanguages":["EN","DE"],"aliases":["Prismatische Entwicklungen"]}
+            ]}""")
+            val api=CardIndexApi(Http(),dir)
+            for (query in listOf("Stürmische Funken","Sturmische Funken","Stuermische Funken","Surging Sparks","Surging-Sparks")) {
+                assertEquals(query,2,api.searchSealed(Game.POKEMON,query,"DE").size)
+            }
+            for (query in listOf("Pokemon Sturmische Funken Boosterbox","Pokémon Stuermische Funken Display")) {
+                val product=api.searchSealed(Game.POKEMON,query,"DE").single()
+                assertEquals(-784949L,product.productId)
+                assertEquals("DE",product.language)
+                assertNull(product.imageUrl)
+                assertNull(product.price)
+            }
+            assertTrue(api.searchSealed(Game.POKEMON,"Terastal Festival","DE").isEmpty())
+            assertEquals(-200L,api.searchSealed(Game.POKEMON,"Prismatische Entwicklungen Top-Trainer-Box","DE").single().productId)
+            assertEquals(-200L,api.searchSealed(Game.POKEMON,"Prismatic Evolutions ETB","DE").single().productId)
+        } finally { dir.deleteRecursively() }
+    }
+
+    @Test fun thinSealedReferenceRetainsCountAndLimitedEvidence() = runBlocking {
+        MockWebServer().use { web ->
+            web.start()
+            val api=PriceServerApi { web.url("/").toString() to "test-key" }
+            web.enqueue(MockResponse().setBody("""{"price":{"amount":65,"currency":"EUR","source":"eBay sealed listings (asking, shipping excluded)","listings":1,"evidence":"limited"}}"""))
+            val result=api.sealed(SealedProduct(Game.ONE_PIECE,-9000000010142,"The Azure Sea's Seven Japanese Booster Box","Booster Boxes",null,language="JA"))
+            assertEquals(65.0,result.quote!!.amount,0.0)
+            assertEquals(1,result.quote!!.listings)
+            assertEquals("limited",result.quote!!.evidence)
+        }
+    }
+
     @Test fun publisherJapaneseAzureEntriesAreFoundByEnglishNameAndNativeCode() = runBlocking {
         val dir = java.nio.file.Files.createTempDirectory("sealed-publisher-regression").toFile()
         try {

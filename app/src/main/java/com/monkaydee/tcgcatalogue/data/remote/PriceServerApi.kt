@@ -153,7 +153,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         }
     }
 
-    data class SealedQuote(val amount: Double, val currency: String, val source: String, val fetchedAt: Long?, val stale: Boolean, val listings: Int?)
+    data class SealedQuote(val amount: Double, val currency: String, val source: String, val fetchedAt: Long?, val stale: Boolean, val listings: Int?, val evidence: String? = null)
     data class SealedResult(val quote: SealedQuote?, val reason: String?, val imageUrl: String? = null)
     suspend fun sealed(product: SealedProduct): SealedResult {
         val body = buildJsonObject {
@@ -171,7 +171,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         val currency = p?.get("currency").str()?.takeIf { it in setOf("USD", "EUR") }
         if (amount == null || currency == null) return SealedResult(null, result["reason"].str() ?: "not_found", imageUrl)
         return SealedResult(SealedQuote(amount, currency, p["source"].str().orEmpty(),
-            p["fetchedAt"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }, p["stale"].str() == "true", p["listings"].int()), result["reason"].str(), imageUrl)
+            p["fetchedAt"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }, p["stale"].str() == "true", p["listings"].int(), p["evidence"].str()), result["reason"].str(), imageUrl)
     }
 
     /** PSA's record for a cert number, or null when PSA doesn't know it. */

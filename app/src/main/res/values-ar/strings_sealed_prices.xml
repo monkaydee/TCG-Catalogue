@@ -5,4 +5,5 @@
     <string name="sealed_no_matching_price">لا يوجد سعر مطابق</string>
     <string name="sealed_price_unavailable">السعر غير متاح</string>
     <string name="sealed_asking_reference">سعر العرض المرجعي</string>
+    <string name="sealed_limited_reference">مرجع محدود</string>
 </resources>

@@ -76,20 +76,23 @@ def main():
         ("Romance Dawn Booster Box","JA","-2",["OP01","ロマンスドーン"],"DE","ONE_PIECE"),
         ("Two Legends Booster Box (Non-English)","JA","-766868",["OP08","Two Legends","二つの伝説"],"DE","ONE_PIECE"),
         ("The Azure Sea's Seven Japanese Booster Box","JA","-9000000010142",["OP14","蒼海の七傑","The Azure Sea's Seven"],"DE","ONE_PIECE"),
+        ("The Azure Sea's Seven Japanese Booster Pack","JA","-9000000010141",["OP14","蒼海の七傑","The Azure Sea's Seven"],"DE","ONE_PIECE"),
     ]:
         for attempt in range(9):
             answer=call("/v1/sealed/price",{"game":game,"productId":product_id,"name":name,"language":language,"aliases":aliases,"market":market})
-            if answer.get("sealedMatchingRevision")==7:
+            if answer.get("sealedMatchingRevision")==8:
                 break
             if attempt==8:
                 raise AssertionError("Updated sealed matching did not propagate")
             time.sleep(5)
         quote=answer.get("price")
         if quote:
-            assert quote["listings"]>=3 and quote["currency"] in ["EUR","USD"]
+            assert quote["listings"]>=1 and quote["currency"] in ["EUR","USD"]
             if quote["currency"]!=("EUR" if market=="DE" else "USD"):
                 assert "international reference" in quote["source"]
             assert quote["low"]<=quote["amount"]<=quote["high"]
+        if quote and quote["listings"] < 5:
+            assert quote.get("evidence") == "limited"
         if answer.get("imageUrl"):
             assert answer["imageUrl"].startswith("https://i.ebayimg.com/")
         sealed.append({"name":name,"language":language,"market":market,**answer})
@@ -112,7 +115,7 @@ def main():
     report={"status":status,"cards":rows,"sealed":sealed,"gradedProviderProbe":provider_probe}
     Path("price-verification.json").write_text(json.dumps(report,indent=2))
     for item in sealed:
-        if item["name"] in ["Surging Sparks Booster Box", "Two Legends Booster Box (Non-English)"]:
+        if item["name"] in ["Surging Sparks Booster Box", "Two Legends Booster Box (Non-English)", "The Azure Sea's Seven Japanese Booster Box", "The Azure Sea's Seven Japanese Booster Pack"]:
             assert item.get("price"), "No exact-language sealed quote for regression fixture: "+json.dumps(item)
     assert any(row.get("graded") for row in rows), "No graded quotes returned across the entire live fixture set; see price-verification.json"
     print("Live price API: schema, source, currency and language separation checks passed.")

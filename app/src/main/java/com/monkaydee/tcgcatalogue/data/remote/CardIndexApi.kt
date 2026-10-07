@@ -141,7 +141,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     suspend fun regionalSealed(game: Game, language: String): List<SealedProduct> {
         if (game != Game.POKEMON && game != Game.ONE_PIECE) return emptyList()
         // New catalogue filename bypasses pre-fix daily caches immediately after this update.
-        val file = dailyFile("SEALED_REGIONAL_V4_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
+        val file = dailyFile("SEALED_REGIONAL_V5_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_V4_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
         return withContext(Dispatchers.Default) {
             val root = http.json.parseToJsonElement(file.readText())
             root["items"].arr().orEmpty().mapNotNull { row ->
@@ -163,7 +163,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     }
 
     suspend fun searchSealed(game: Game, query: String, language: String = "EN", limit: Int = 80): List<SealedProduct> {
-        val words = query.lowercase().split(' ').filter { it.isNotBlank() }
+        val words = sealedSearchText(query, language).split(' ').filter { it.isNotBlank() }
         val native = if (language == "EN" || language == "JA") sealed(game).filter { it.language == language } else emptyList()
         val regional = try { regionalSealed(game, language) }
         catch (cancel: kotlinx.coroutines.CancellationException) { throw cancel }
@@ -173,7 +173,10 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         val catalogue = native.map { product ->
             product.copy(aliases = (product.aliases + regionalByNativeId[product.productId]?.aliases.orEmpty()).distinct())
         } + regional.filter { it.catalogueProductId !in nativeIds }
-        return catalogue.filter { p -> words.all { w -> p.name.lowercase().contains(w) || p.groupName.lowercase().contains(w) || p.aliases.any { it.lowercase().contains(w) } } }
+        return catalogue.filter { p ->
+            val fields = (listOf(p.name, p.groupName, p.game.short) + p.aliases).map { sealedSearchText(it, language) }
+            words.all { word -> fields.any { it.contains(word) || it.replace(" ", "").contains(word) } }
+        }
             .distinctBy { it.productId }.take(limit)
     }
 
@@ -254,6 +257,19 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     }
 
     companion object {
+        /** Search spelling is forgiving; stored product identity and price-request aliases stay exact. */
+        internal fun sealedSearchText(value: String, language: String): String {
+            var text = java.text.Normalizer.normalize(value, java.text.Normalizer.Form.NFKD)
+                .replace(Regex("\\p{M}+"), "").lowercase(java.util.Locale.ROOT)
+                .replace("ß", "ss").replace("’", "").replace("'", "")
+                .replace(Regex("[^\\p{L}\\p{N}]+"), " ").trim()
+            if (language == "DE") text = text.replace("ae", "a").replace("oe", "o").replace("ue", "u")
+            return text.replace(Regex("\\bbooster\\s*box\\b"), "booster box")
+                .replace(Regex("\\b(?:top\\s*trainer\\s*box|ttb|etb)\\b"), "elite trainer box")
+                .replace(Regex("\\bdisplay\\b"), "booster box")
+                .replace(Regex("\\b(op|prb|eb)\\s+(\\d{2})\\b"), "$1$2")
+        }
+
         /** Also filter yesterday's schema-2 file immediately after an app upgrade. */
         internal fun regionalCandidateLanguages(game: Game, name: String, aliases: List<String>, declared: List<String>): List<String> {
             if (declared.isNotEmpty()) return declared

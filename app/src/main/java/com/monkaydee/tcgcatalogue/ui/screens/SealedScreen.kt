@@ -233,10 +233,9 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
     LaunchedEffect(game, query, language) {
         val g = game ?: return@LaunchedEffect
         if (query.isBlank()) { results = emptyList(); loading = false; error = null; return@LaunchedEffect }
-        kotlinx.coroutines.delay(250)
         loading = true
         results = emptyList(); error = null
-        try { results = repo.searchSealed(g, query, language) }
+        try { kotlinx.coroutines.delay(250); results = repo.searchSealed(g, query, language) }
         catch (cancel: kotlinx.coroutines.CancellationException) { throw cancel }
         catch (_: Exception) { error = "Catalogue could not be fetched. Check your connection and try again." }
         finally { loading = false }
@@ -247,13 +246,18 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
             val p = picked
             if (p == null) {
                 Text(stringResource(R.string.sealed_add), style = MaterialTheme.typography.titleLarge)
-                GameChips(selected = game, onSelect = { if (it != null) game = it }, games = Game.entries, nullLabel = null)
+                GameChips(selected = game, onSelect = {
+                    if (it != null) {
+                        if (it == Game.ONE_PIECE && language == "DE") language = "EN"
+                        game = it
+                    }
+                }, games = Game.entries, nullLabel = null)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("EN" to "English", "DE" to "Deutsch", "JA" to "日本語 (JP)").forEach { (code, label) ->
-                        FilterChip(selected = language == code, onClick = { language = code }, label = { Text(label) })
+                        FilterChip(selected = language == code, onClick = { language = code }, enabled = game != Game.ONE_PIECE || code != "DE", label = { Text(label) })
                     }
                 }
-                Text(stringResource(if (game == Game.ONE_PIECE && language == "DE") R.string.sealed_one_piece_no_german else R.string.sealed_printed_language_hint), style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(if (game == Game.ONE_PIECE) R.string.sealed_one_piece_no_german else R.string.sealed_printed_language_hint), style = MaterialTheme.typography.bodySmall)
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 OutlinedTextField(
                     query, { query = it },
@@ -262,7 +266,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                     singleLine = true, modifier = Modifier.fillMaxWidth(),
                 )
                 if (loading) CircularProgressIndicator(Modifier.size(24.dp))
-                if (!loading && query.isNotBlank() && results.isEmpty()) {
+                if (!loading && error == null && query.isNotBlank() && results.isEmpty()) {
                     Text(stringResource(R.string.sealed_no_results), style = MaterialTheme.typography.bodySmall)
                 }
                 LazyColumn(Modifier.fillMaxWidth().aspectRatio(0.8f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -294,7 +298,10 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                             Column(horizontalAlignment = Alignment.End, modifier = Modifier.width(100.dp)) {
                                 Text(priced.price?.let { Money.format(Money.convert(it, priced.currency, s.currency, s.usdToEur), s.currency) }
                                     ?: stringResource(if (priced.quoteReason == null) R.string.sealed_checking_price else if (priced.quoteReason == "not_found") R.string.sealed_no_matching_price else R.string.sealed_price_unavailable), style = MaterialTheme.typography.labelLarge)
-                                if (priced.priceScope == "language-specific-asking" && priced.price != null) Text(stringResource(R.string.sealed_asking_reference), style = MaterialTheme.typography.labelSmall)
+                                if (priced.priceScope == "language-specific-asking" && priced.price != null) {
+                                    Text(stringResource(if (priced.quoteEvidence == "limited") R.string.sealed_limited_reference else R.string.sealed_asking_reference), style = MaterialTheme.typography.labelSmall)
+                                    priced.quoteListings?.let { count -> Text(pluralStringResource(R.plurals.data_listings_count, count, count), style = MaterialTheme.typography.labelSmall) }
+                                }
                             }
                         }
                     }

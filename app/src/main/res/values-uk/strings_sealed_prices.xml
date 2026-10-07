@@ -5,4 +5,5 @@
     <string name="sealed_no_matching_price">Немає відповідної ціни</string>
     <string name="sealed_price_unavailable">Ціна недоступна</string>
     <string name="sealed_asking_reference">Ціна оголошення</string>
+    <string name="sealed_limited_reference">Мало даних</string>
 </resources>

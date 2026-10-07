@@ -90,6 +90,7 @@ data class SealedProduct(
     val fetchedAt: Long? = null, val market: String? = null, val availabilityEvidence: String? = null,
     val quoteReason: String? = null,
     val catalogueProductId: Long? = null,
+    val quoteListings: Int? = null, val quoteEvidence: String? = null,
 )
 
 /** One card of a set, for the set checklist. [cardId] matches [com.monkaydee.tcgcatalogue.data.db.OwnedCard.cardId]. */

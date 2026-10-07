@@ -3,6 +3,18 @@ from build_sealed_index import build, candidate_languages, parse_official_booste
 from build_card_index import sealed_item, japanese_name_aliases
 
 class SealedIndexTest(unittest.TestCase):
+    def test_localized_aliases_keep_full_set_identity(self):
+        localized={'Evolutions':'Evolution','Prismatic Evolutions':'Prismatische Entwicklungen',
+                   'Mega Evolution':'Mega-Entwicklung','BREAKthrough':'TURBOstart'}
+        rows=build('POKEMON',[{'idProduct':1,'name':'Prismatic Evolutions Booster Box','categoryName':'Pokémon Display'},
+                              {'idProduct':2,'name':'BREAKthrough: Mega Evolution Three Pin 3-Pack Blister','categoryName':'Pokémon Blister'},
+                              {'idProduct':3,'name':'Mega Evolution Booster Box','categoryName':'Pokémon Display'}],[],localized)['items']
+        self.assertIn('Prismatische Entwicklungen',rows[0]['aliases'])
+        self.assertNotIn('Evolution',rows[0]['aliases'])
+        self.assertIn('TURBOstart',rows[1]['aliases'])
+        self.assertNotIn('Mega-Entwicklung',rows[1]['aliases'])
+        self.assertIn('Mega-Entwicklung',rows[2]['aliases'])
+
     def test_publisher_japanese_op14_exists_without_cardmarket_non_english_row(self):
         html='''<li class="linkListColBox" data-cat="boosters"><a href="/products/boosters/op14.php"><img data-src="/op14-pack.webp"><h4 class="linkListColTitle">ブースターパック 蒼海の七傑【OP-14】</h4><time datetime="2025-11-22"></time></a></li>'''
         entries=parse_official_boosters(html, today='2026-10-07')

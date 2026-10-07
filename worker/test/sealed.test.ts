@@ -24,9 +24,10 @@ it("falls back across markets while retaining Japanese identity and charging eac
   expect(result.price.amount).toBe(60);
   expect(result.price.currency).toBe("USD");
   expect(result.price.source).toContain("EBAY_US international reference");
-  expect(result.sealedMatchingRevision).toBe(7);
+  expect(result.sealedMatchingRevision).toBe(8);
   expect(result.imageUrl).toBe("https://i.ebayimg.com/images/japanese-box.jpg");
   expect(searches.map(s=>s.market)).toEqual(["EBAY_DE","EBAY_US"]);
+  expect(searches[0].url.searchParams.get("q")).toContain("OP-08");
   expect(searches[1].url.searchParams.get("q")).toContain("OP-08");
   expect(reserved).toBe(2);
 });
@@ -46,7 +47,8 @@ describe("exact-language sealed prices", () => {
       {...listing("Pokemon Surging Sparks English Booster Box sealed","100","EUR","wrong"),image:{imageUrl:"https://i.ebayimg.com/images/wrong.jpg"}},
       {...listing("Pokemon Stürmische Funken Booster Box Deutsch OVP","100","EUR","valid"),image:{imageUrl:"https://i.ebayimg.com/images/german.jpg"}},
     ]};
-    expect(parseSealedListings(rows,p)).toBeNull();
+    expect(parseSealedListings(rows,p)?.amount).toBe(100);
+    expect(parseSealedListings(rows,p)?.evidence).toBe("limited");
     expect(sealedListingImage(rows,p)).toBe("https://i.ebayimg.com/images/german.jpg");
     expect(sealedListingImage({itemSummaries:[{...rows.itemSummaries[1],image:{imageUrl:"https://unrelated.example/image.jpg"}}]},p)).toBeNull();
   });
@@ -82,9 +84,12 @@ describe("exact-language sealed prices", () => {
       "Pokemon Terastal Festival ex Japanese Booster Box not sealed",
       "Pokemon Terastal Festival ex Japanese Booster Box"]) expect(sealedTitleMatches(title,product),title).toBe(false);
   });
-  it("requires three unique matching listings and keeps currency", () => {
+  it("exposes one or two unique matches as limited asking references and keeps currency", () => {
     const title="Pokemon Terastal Festival ex Japanese Booster Box sealed";
-    expect(parseSealedListings({itemSummaries:[listing(title,"80","USD","1"),listing(title,"90","USD","2")]},product)).toBeNull();
+    const one=parseSealedListings({itemSummaries:[listing(title,"80","USD","1"),listing(title,"999","USD","1")]},product)!;
+    expect(one.amount).toBe(80);expect(one.listings).toBe(1);expect(one.evidence).toBe("limited");
+    const two=parseSealedListings({itemSummaries:[listing(title,"80","USD","1"),listing(title,"90","USD","2")]},product)!;
+    expect(two.amount).toBe(85);expect(two.listings).toBe(2);expect(two.evidence).toBe("limited");
     const quote=parseSealedListings({itemSummaries:[listing(title,"80","USD","1"),listing(title,"90","USD","2"),listing(title,"100","USD","3"),listing(title,"1","EUR","4"),listing(title,"9000","USD","3")]},product)!;
     expect(quote.amount).toBe(90); expect(quote.listings).toBe(3); expect(quote.currency).toBe("USD"); expect(quote.source).toContain("asking");
   });

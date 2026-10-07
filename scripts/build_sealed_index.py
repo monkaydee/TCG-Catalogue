@@ -190,9 +190,11 @@ def build(game, products, guides, localized=None):
         if matching:
             code, english, native = max(matching, key=lambda item: len(key(item[1])))
             aliases.extend([code, native, english])
-        for english, native in (localized or {}).items():
-            if key(english) in key(name):
-                aliases.append(native)
+        localized_matches = [(english, native) for english, native in (localized or {}).items() if key(english) in key(name)]
+        if localized_matches:
+            # Prefer a leading set name: "BREAKthrough: Mega Evolution ..." belongs to BREAKthrough.
+            english, native = max(localized_matches, key=lambda item: (key(name).startswith(key(item[0])), len(key(item[0]))))
+            aliases.append(native)
         # Namespace avoids collisions with existing positive TCGplayer product ids.
         guide = prices.get(p["idProduct"], {})
         reference = guide.get("trend") or guide.get("avg30") or guide.get("avg7")
@@ -201,7 +203,7 @@ def build(game, products, guides, localized=None):
         rows.append({"productId": -p["idProduct"], "cardmarketId": p["idProduct"], "name": name,
                      "groupName": category, "languages": ["JA"] if re.search(r"\bJapanese\b|\bJapan\b", name, re.I) else ["DE"] if re.search(r"\bGerman\b|\bDeutsch\b", name, re.I) else [],
                      "candidateLanguages": candidate_languages(game, name, aliases), "aliases": sorted(set(aliases)), "referencePrice": reference})
-    return {"schemaVersion": 4, "game": game, "updated": datetime.now(timezone.utc).isoformat(),
+    return {"schemaVersion": 5, "game": game, "updated": datetime.now(timezone.utc).isoformat(),
             "priceScope": "aggregate-reference-not-language-specific", "items": rows}
 
 def main(out):
@@ -221,6 +223,7 @@ def main(out):
         encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
         (out / f"SEALED_REGIONAL_{game}.json").write_text(encoded)
         (out / f"SEALED_REGIONAL_V4_{game}.json").write_text(encoded)
+        (out / f"SEALED_REGIONAL_V5_{game}.json").write_text(encoded)
         print(game, len(data["items"]), "sealed product templates")
 
 if __name__ == "__main__":

@@ -1175,8 +1175,10 @@ class CardRepository(
         val response = server.sealed(product.copy(market = if (settings.current().currency == "EUR") "DE" else "US"))
         val quote = response.quote ?: return product.copy(quoteReason = response.reason, imageUrl = response.imageUrl ?: product.imageUrl)
         return product.copy(price = quote.amount, currency = quote.currency, imageUrl = response.imageUrl ?: product.imageUrl,
-            source = quote.source + (quote.listings?.let { " · $it listings" } ?: "") + if (quote.stale) " · stale" else "",
+            source = quote.source + (quote.listings?.let { " · $it ${if (it == 1) "listing" else "listings"}" } ?: "") +
+                (if (quote.evidence == "limited") " · " + AppStrings.get(R.string.sealed_limited_reference) else "") + if (quote.stale) " · stale" else "",
             priceScope = "language-specific-asking", fetchedAt = quote.fetchedAt,
+            quoteListings = quote.listings, quoteEvidence = quote.evidence,
             availabilityEvidence = "Exact-language matching listings", requiresLanguageConfirmation = true)
     }
 

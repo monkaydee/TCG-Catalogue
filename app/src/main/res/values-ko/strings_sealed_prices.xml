@@ -5,4 +5,5 @@
     <string name="sealed_no_matching_price">일치하는 가격 없음</string>
     <string name="sealed_price_unavailable">가격을 가져올 수 없음</string>
     <string name="sealed_asking_reference">판매 희망가</string>
+    <string name="sealed_limited_reference">제한된 참고 가격</string>
 </resources>

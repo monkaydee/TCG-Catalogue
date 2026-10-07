@@ -1,9 +1,10 @@
-Fix missing Japanese sealed search results and regional product photos.
+Fix German sealed search and hidden Japanese asking references.
 
-- Add Bandai-published Japanese One Piece booster sets, including OP-14 The Azure Sea's Seven / 蒼海の七傑. Search by English name, Japanese name or set code; preserve separate Japanese product identities and prices.
-- Refresh the regional catalogue immediately after this app update. Keep JP visible while retaining the standard Japanese API language mapping.
-- Attach matching-language TCGplayer catalogue photos where available, and remove duplicate English catalogue results. Never depict a German or Japanese product with an English package image.
-- Load regional photos from eBay listings that match the printed language, set and sealed unit. Photos can appear even when fewer than three listings prevent a reliable price reference. Save and refresh these photos for existing sealed products too.
-- Show a product placeholder for unavailable or failed photos instead of blank space. Keep unknown prices unknown and label asking references.
+- German Pokémon search accepts umlauts, ae/oe/ue spellings, punctuation, joined words and common packaging terms such as Boosterbox, Display and Top-Trainer-Box. English set names also remain searchable under Deutsch.
+- Refresh the regional catalogue on update. Keep specific set aliases separate, including Prismatic Evolutions versus Evolutions and current Mega Evolution versus older BREAKthrough collections.
+- Disable Deutsch for One Piece and explain that no German printed edition exists. Switching from German Pokémon to One Piece selects English; Japanese remains available.
+- Query Japanese One Piece using native set codes in the selected market, supporting titles that omit the English set name.
+- Show references from one or two verified sealed listings instead of hiding them. Label limited samples and show their listing count. These are asking references, not confirmed sales; language, set, sealed state, product unit and contents checks remain in place.
+- Preserve product photos, purchase costs and manual values. Distinguish connection failures from an empty catalogue search.
 
-CardNavo name, signing and the 0.1.<build-number> release convention are preserved. One Piece has no German card edition; German-language Pokémon products remain supported. Marketplace coverage determines whether a matching-language price or photo is available.
+CardNavo name, signing and the 0.1.<build-number> release convention are preserved. Listings and asking prices can change, and limited references should be compared with further market evidence.

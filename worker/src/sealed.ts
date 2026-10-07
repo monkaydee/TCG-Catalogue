@@ -114,7 +114,9 @@ export function parseSealedListings(json: unknown, card: SealedRequest, verified
     if (seen.has(id) || value === null || p.currency !== currency || !sealedTitleMatches(title, card, verifiedIds.has(id) ? card.language : undefined)) continue;
     seen.add(id); values.push(value);
   }
-  const summary=comparableSummary(values,3);
+  // A verified asking reference is useful even for a thin market. Counts and limited evidence
+  // remain explicit; it must never be presented as a confirmed sale or a robust market sample.
+  const summary=comparableSummary(values,1);
   if (!summary) return null;
   return { ...summary, currency, source:"eBay sealed listings (asking, shipping excluded)", fetchedAt:new Date().toISOString() };
 }
@@ -166,7 +168,7 @@ async function searchSealedListings(card: SealedRequest, auth: string, budgets: 
   return {quote:parseSealedListings(data,card,verified),imageUrl:sealedListingImage(data,card,verified)};
 }
 export async function sealedPrice(req: Request, env: Env): Promise<Response> {
-  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:7}), { status, headers: { "content-type": "application/json" } });
+  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:8}), { status, headers: { "content-type": "application/json" } });
   if (Number(req.headers.get("content-length") ?? 0) > 4000) return json({error:"body_too_large"},413);
   let o: Record<string, unknown>;
   try { o = obj(await req.json()); } catch { return json({error:"invalid_json"},400); }
@@ -175,7 +177,7 @@ export async function sealedPrice(req: Request, env: Env): Promise<Response> {
   if (!["pokemon","one_piece"].includes(game ?? "") || !["EN","DE","JA"].includes(language ?? "") || !name || name.length > 200 || !productId || !/^-?\d{1,16}$/.test(productId)) return json({error:"invalid_product"},400);
   const aliases = Array.isArray(o.aliases) ? o.aliases.filter((v): v is string => typeof v === "string" && v.length <= 100).slice(0, 12) : [];
   const card = { game, name, language, productId, aliases, market:o.market === "DE" || o.market === "US" ? o.market : undefined } as SealedRequest;
-  const key = `sealed:v7:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
+  const key = `sealed:v8:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
   const cache = new Cache(env.DB), now = Date.now();
   const entry = (await cache.getMany<SealedLookup>([key])).get(key);
   if (entry && entry.expiresAt > now) return json({price:entry.value.quote,imageUrl:entry.value.imageUrl,reason:entry.value.quote ? null : "not_found"});
@@ -184,7 +186,9 @@ export async function sealedPrice(req: Request, env: Env): Promise<Response> {
   const budgets = await new Budgets(env.DB,env).load();
   if (!budgets.remaining("ebay")) return json({price:entry?.value.quote ? {...entry.value.quote,stale:true} : null,imageUrl:entry?.value.imageUrl,reason:"budget_exhausted"});
   try {
-    let result = await searchSealedListings(card,auth,budgets,false);
+    // Japanese One Piece titles commonly use OP-14/OP14 rather than the English set name.
+    // Search that identity in the selected market before trying a foreign-market reference.
+    let result = await searchSealedListings(card,auth,budgets,card.game === "one_piece" && card.language === "JA");
     if (!result.quote) {
       // At most four Browse calls. A failed fallback must not cache a false negative.
       const other: SealedRequest = {...card,market:marketplace(card.language,card.market).currency === "EUR" ? "US" : "DE"};
