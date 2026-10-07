@@ -4,10 +4,14 @@ import com.monkaydee.tcgcatalogue.data.db.Game
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.OkHttpClient
 import org.junit.Assert.*
 import org.junit.Test
 
 class SealedPricingTest {
+    private fun offlineCatalogueHttp() = Http(OkHttpClient.Builder().addInterceptor {
+        error("Catalogue regression attempted a network request instead of reading its fixture")
+    }.build())
     @Test fun germanPokemonSearchAcceptsUmlautsTransliterationsAndPackagingTerms() = runBlocking {
         val dir = java.nio.file.Files.createTempDirectory("sealed-german-search").toFile()
         try {
@@ -18,7 +22,7 @@ class SealedPricingTest {
               {"productId":-100,"name":"Terastal Festival ex Booster Box","candidateLanguages":["JA"],"aliases":["SV8a"]},
               {"productId":-200,"name":"Prismatic Evolutions Elite Trainer Box","groupName":"Pokémon Top Trainer Box","candidateLanguages":["EN","DE"],"aliases":["Prismatische Entwicklungen"]}
             ]}""")
-            val api=CardIndexApi(Http(),dir)
+            val api=CardIndexApi(offlineCatalogueHttp(),dir)
             for (query in listOf("Stürmische Funken","Sturmische Funken","Stuermische Funken","Surging Sparks","Surging-Sparks")) {
                 assertEquals(query,2,api.searchSealed(Game.POKEMON,query,"DE").size)
             }
@@ -51,12 +55,12 @@ class SealedPricingTest {
         val dir = java.nio.file.Files.createTempDirectory("sealed-publisher-regression").toFile()
         try {
             java.io.File(dir,"SEALED_ONE_PIECE.json").writeText("""{"groups":{"24537":"The Azure Sea's Seven"},"items":[[665598,"The Azure Sea's Seven Booster Box",24537,269.83,"EN","TCGplayer market"]]}""")
-            java.io.File(dir,"SEALED_REGIONAL_V4_ONE_PIECE.json").writeText("""{"schemaVersion":4,"items":[
+            java.io.File(dir,"SEALED_REGIONAL_V5_ONE_PIECE.json").writeText("""{"schemaVersion":5,"items":[
               {"productId":-864452,"name":"The Azure Sea's Seven Booster Box","candidateLanguages":["EN"],"aliases":["OP14"],"imageUrls":{"EN":"https://tcgplayer-cdn.tcgplayer.com/product/665598_in_400x400.jpg"},"catalogueProductIds":{"EN":665598}},
               {"productId":-9000000010142,"name":"The Azure Sea's Seven Japanese Booster Box","candidateLanguages":["JA"],"languages":["JA"],"aliases":["OP14","OP-14","蒼海の七傑"],"availabilityEvidence":"Japanese set confirmed by Bandai · OP14"},
               {"productId":-9000000010141,"name":"The Azure Sea's Seven Japanese Booster Pack","candidateLanguages":["JA"],"languages":["JA"],"aliases":["OP14","OP-14","蒼海の七傑"],"imageUrl":"https://www.onepiece-cardgame.com/op14-pack.webp"}
             ]}""")
-            val api = CardIndexApi(Http(),dir)
+            val api = CardIndexApi(offlineCatalogueHttp(),dir)
             val japanese = api.searchSealed(Game.ONE_PIECE,"the azure","JA")
             assertEquals(2,japanese.size)
             assertTrue(japanese.all { it.language == "JA" && it.price == null })
