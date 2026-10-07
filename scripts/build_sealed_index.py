@@ -42,6 +42,9 @@ JP_SETS = {
     "S11": ("Lost Abyss", "ロストアビス"), "S11a": ("Incandescent Arcana", "白熱のアルカナ"),
     "S12": ("Paradigm Trigger", "パラダイムトリガー"),
 }
+# These expansion names are shared by distinct Japanese and international releases.
+# A generated SV11 alias does not establish the language of a product template.
+SHARED_POKEMON_SETS = {"Black Bolt", "White Flare"}
 OP_SETS = {
     "OP01": ("Romance Dawn", "ロマンスドーン"), "OP02": ("Paramount War", "頂上決戦"),
     "OP03": ("Pillars of Strength", "強大な敵"), "OP04": ("Kingdoms of Intrigue", "謀略の王国"),
@@ -135,6 +138,7 @@ def add_official_one_piece(index, entries):
 def image_identity(name):
     # Preserve edition, contents, packaging and region qualifiers when deduplicating.
     name = re.sub(r'\((?:Non-English|English|Japanese|German)\)', '', name, flags=re.I)
+    name = re.sub(r'\bJP\b', '', name, flags=re.I)
     name = re.sub(r'\bbooster\b(?!\s*(?:box|pack|bundle|display))', 'Booster Pack', name, flags=re.I)
     return key(name)
 
@@ -160,19 +164,26 @@ def fetch(url):
 def key(s):
     return re.sub(r"[^a-z0-9]", "", s.lower().replace("é", "e"))
 
-def candidate_languages(game, name, aliases):
-    # Candidate availability is separate from proof of a listing's printed language.
-    # Bandai lists EN/JA/FR/ZH/KO, not DE: never clone generic One Piece rows into DE.
+def explicit_languages(name):
     explicit = [(code, pattern) for code, pattern in [
-        ("JA", r"\bJapanese\b|\bJapan\b"), ("DE", r"\bGerman\b|\bDeutsch\b"),
+        ("JA", r"\bJapanese\b|\bJapan\b|\bJP\b"), ("DE", r"\bGerman\b|\bDeutsch\b"),
         ("ZH", r"\bChinese\b"), ("KO", r"\bKorean\b"), ("FR", r"\bFrench\b"),
         ("EN", r"\bEnglish\b")]
         if re.search(pattern, name, re.I) and not (code == "EN" and "non-english" in name.lower())]
+    return [code for code, _ in explicit]
+
+def candidate_languages(game, name, aliases):
+    # Candidate availability is separate from proof of a listing's printed language.
+    # Bandai lists EN/JA/FR/ZH/KO, not DE: never clone generic One Piece rows into DE.
+    explicit = explicit_languages(name)
     if explicit:
-        return [code for code, _ in explicit]
+        return explicit
     if game == "ONE_PIECE":
         return ["JA"] if "non-english" in name.lower() else ["EN"]
-    native_set = any(re.fullmatch(r"(?:SV|SM|S|M)\d+[A-Za-z]*", a) for a in aliases)
+    if re.search(r"\b(?:SV|SM|S|M)\d+[A-Za-z]*\b", name, re.I):
+        return ["JA"]
+    shared_set = any(key(s) in key(name) for s in SHARED_POKEMON_SETS)
+    native_set = not shared_set and any(re.fullmatch(r"(?:SV|SM|S|M)\d+[A-Za-z]*", a) for a in aliases)
     return ["JA"] if native_set else ["EN", "DE"]
 
 def build(game, products, guides, localized=None):
@@ -190,20 +201,25 @@ def build(game, products, guides, localized=None):
         if matching:
             code, english, native = max(matching, key=lambda item: len(key(item[1])))
             aliases.extend([code, native, english])
+        candidates = candidate_languages(game, name, aliases)
+        if game == "POKEMON" and "JA" not in candidates:
+            aliases = [a for a in aliases if a not in {v for code, english, native in matching for v in (code, native)}]
         localized_matches = [(english, native) for english, native in (localized or {}).items() if key(english) in key(name)]
-        if localized_matches:
+        if localized_matches and "JA" not in candidates:
             # Prefer a leading set name: "BREAKthrough: Mega Evolution ..." belongs to BREAKthrough.
             english, native = max(localized_matches, key=lambda item: (key(name).startswith(key(item[0])), len(key(item[0]))))
             aliases.append(native)
+            # Both sets occur in the combined international Unova tins/collections.
+            aliases.extend(native for english, native in localized_matches if english in SHARED_POKEMON_SETS)
         # Namespace avoids collisions with existing positive TCGplayer product ids.
         guide = prices.get(p["idProduct"], {})
         reference = guide.get("trend") or guide.get("avg30") or guide.get("avg7")
         if not isinstance(reference, (int, float)) or reference <= 0:
             reference = None
         rows.append({"productId": -p["idProduct"], "cardmarketId": p["idProduct"], "name": name,
-                     "groupName": category, "languages": ["JA"] if re.search(r"\bJapanese\b|\bJapan\b", name, re.I) else ["DE"] if re.search(r"\bGerman\b|\bDeutsch\b", name, re.I) else [],
-                     "candidateLanguages": candidate_languages(game, name, aliases), "aliases": sorted(set(aliases)), "referencePrice": reference})
-    return {"schemaVersion": 5, "game": game, "updated": datetime.now(timezone.utc).isoformat(),
+                     "groupName": category, "languages": explicit_languages(name),
+                     "candidateLanguages": candidates, "aliases": sorted(set(aliases)), "referencePrice": reference})
+    return {"schemaVersion": 6, "game": game, "updated": datetime.now(timezone.utc).isoformat(),
             "priceScope": "aggregate-reference-not-language-specific", "items": rows}
 
 def main(out):
@@ -224,6 +240,7 @@ def main(out):
         (out / f"SEALED_REGIONAL_{game}.json").write_text(encoded)
         (out / f"SEALED_REGIONAL_V4_{game}.json").write_text(encoded)
         (out / f"SEALED_REGIONAL_V5_{game}.json").write_text(encoded)
+        (out / f"SEALED_REGIONAL_V6_{game}.json").write_text(encoded)
         print(game, len(data["items"]), "sealed product templates")
 
 if __name__ == "__main__":

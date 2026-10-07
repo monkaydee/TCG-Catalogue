@@ -25,7 +25,7 @@ Explicit catalogue languages narrow templates; unknown variants are labelled unv
 Matching requires explicit language, game, identifiable set/name, unit type, unopened/sealed
 wording and matching named quantity. Opened, empty, resealed, breaks, proxies, wrong-language
 products, mismatched box/pack/case units and duplicate listing ids are excluded. A quote requires
-at least three matching listings. The result is the median **asking price**, shipping excluded;
+at least one distinct matching listing. Samples below five listings and broad price spreads are labelled limited evidence. The result is the median **asking price**, shipping excluded;
 it is not a completed-sale price. The selected display currency chooses the import marketplace independently of printed language:
 EUR uses EBAY_DE, USD uses EBAY_US. Japanese quotes are import asking prices, not domestic
 Japanese JPY sales. Prices expose listing count, source and date.
@@ -39,3 +39,5 @@ The deploy workflow runs live schema/currency/language-separation checks and pub
 `price-verification` artifact. Provider credentials and quotas determine live coverage; fixtures
 cannot establish that a source currently has every requested sealed product. The daily index
 workflow publishes the regional files alongside the existing card/name indexes.
+
+Regional schema 6 separates shared Black Bolt / White Flare expansion names from language evidence. International products keep German set aliases; explicit JP or native-code products remain Japanese. Japanese code aliases are excluded from international price requests. Combined international collections retain both German set names. The V6 filename bypasses the incorrectly classified cached catalogue.

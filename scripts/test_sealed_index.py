@@ -3,6 +3,31 @@ from build_sealed_index import build, candidate_languages, parse_official_booste
 from build_card_index import sealed_item, japanese_name_aliases
 
 class SealedIndexTest(unittest.TestCase):
+    def test_shared_japanese_international_names_do_not_hide_german_products(self):
+        names=['Black Bolt Booster', 'White Flare Elite Trainer Box',
+               'Black Bolt & White Flare: Unova Mini Tin Display',
+               'Black Bolt JP Booster Box', 'White Flare JP Deluxe Booster',
+               'Black Bolt SV11B Booster Box']
+        products=[{'idProduct':i+1,'name':n,'categoryName':'Pokémon Sealed'} for i,n in enumerate(names)]
+        rows=build('POKEMON',products,[],{'Black Bolt':'Schwarze Blitze','White Flare':'Weiße Flammen'})['items']
+        for row in rows[:3]:
+            self.assertEqual(['EN','DE'],row['candidateLanguages'])
+            self.assertNotIn('SV11B',row['aliases'])
+            self.assertNotIn('SV11W',row['aliases'])
+            self.assertNotIn('ブラックボルト',row['aliases'])
+        self.assertIn('Schwarze Blitze',rows[0]['aliases'])
+        self.assertIn('Weiße Flammen',rows[1]['aliases'])
+        self.assertTrue({'Schwarze Blitze','Weiße Flammen'}.issubset(rows[2]['aliases']))
+        for row in rows[3:]:
+            self.assertEqual(['JA'],row['candidateLanguages'])
+            self.assertNotIn('Schwarze Blitze',row['aliases'])
+            self.assertNotIn('Weiße Flammen',row['aliases'])
+        self.assertEqual(['JA'],rows[3]['languages'])
+        attach_catalogue_images({'items':rows},{'items':[[100,'Black Bolt Booster Box',1,100,'JA'],[101,'Black Bolt Booster Pack',2,10,'EN']]})
+        self.assertIn('/100_',rows[3]['imageUrls']['JA'])
+        self.assertIn('/101_',rows[0]['imageUrls']['EN'])
+        self.assertNotIn('DE',rows[0]['imageUrls'])
+
     def test_localized_aliases_keep_full_set_identity(self):
         localized={'Evolutions':'Evolution','Prismatic Evolutions':'Prismatische Entwicklungen',
                    'Mega Evolution':'Mega-Entwicklung','BREAKthrough':'TURBOstart'}

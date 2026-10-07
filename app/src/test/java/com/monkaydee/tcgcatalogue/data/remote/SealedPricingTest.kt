@@ -16,11 +16,14 @@ class SealedPricingTest {
         val dir = java.nio.file.Files.createTempDirectory("sealed-german-search").toFile()
         try {
             java.io.File(dir,"SEALED_POKEMON.json").writeText("""{"groups":{},"items":[]}""")
-            java.io.File(dir,"SEALED_REGIONAL_V5_POKEMON.json").writeText("""{"schemaVersion":5,"items":[
+            java.io.File(dir,"SEALED_REGIONAL_V6_POKEMON.json").writeText("""{"schemaVersion":6,"items":[
               {"productId":-784949,"name":"Surging Sparks Booster Box","groupName":"Pokémon Display","candidateLanguages":["EN","DE"],"aliases":["Stürmische Funken"],"imageUrls":{"EN":"https://tcgplayer-cdn.tcgplayer.com/product/1_in_400x400.jpg"}},
               {"productId":-784948,"name":"Surging Sparks Booster","groupName":"Pokémon Booster","candidateLanguages":["EN","DE"],"aliases":["Stürmische Funken"]},
               {"productId":-100,"name":"Terastal Festival ex Booster Box","candidateLanguages":["JA"],"aliases":["SV8a"]},
-              {"productId":-200,"name":"Prismatic Evolutions Elite Trainer Box","groupName":"Pokémon Top Trainer Box","candidateLanguages":["EN","DE"],"aliases":["Prismatische Entwicklungen"]}
+              {"productId":-200,"name":"Prismatic Evolutions Elite Trainer Box","groupName":"Pokémon Top Trainer Box","candidateLanguages":["EN","DE"],"aliases":["Prismatische Entwicklungen"]},
+              {"productId":-300,"name":"Black Bolt Booster Bundle","candidateLanguages":["EN","DE"],"aliases":["Schwarze Blitze"]},
+              {"productId":-301,"name":"White Flare Elite Trainer Box","candidateLanguages":["EN","DE"],"aliases":["Weiße Flammen"]},
+              {"productId":-302,"name":"Black Bolt JP Booster Box","candidateLanguages":["JA"],"languages":["JA"],"aliases":["SV11B"]}
             ]}""")
             val api=CardIndexApi(offlineCatalogueHttp(),dir)
             for (query in listOf("Stürmische Funken","Sturmische Funken","Stuermische Funken","Surging Sparks","Surging-Sparks")) {
@@ -34,9 +37,22 @@ class SealedPricingTest {
                 assertNull(product.price)
             }
             assertTrue(api.searchSealed(Game.POKEMON,"Terastal Festival","DE").isEmpty())
+            assertEquals(-300L,api.searchSealed(Game.POKEMON,"Schwarze Blitze Booster Bundle","DE").single().productId)
+            assertEquals(-301L,api.searchSealed(Game.POKEMON,"Weisse Flammen TTB","DE").single().productId)
+            assertEquals(-302L,api.searchSealed(Game.POKEMON,"Black Bolt Booster Box","JA").single().productId)
+            assertTrue(api.searchSealed(Game.POKEMON,"Black Bolt Booster Box","DE").isEmpty())
             assertEquals(-200L,api.searchSealed(Game.POKEMON,"Prismatische Entwicklungen Top-Trainer-Box","DE").single().productId)
             assertEquals(-200L,api.searchSealed(Game.POKEMON,"Prismatic Evolutions ETB","DE").single().productId)
         } finally { dir.deleteRecursively() }
+    }
+
+    @Test fun sharedSetNamesRemainGermanCandidatesWhileJpProductsStayJapanese() {
+        for (name in listOf("Black Bolt Booster", "White Flare Elite Trainer Box", "Black Bolt & White Flare: Unova Mini Tin Display")) {
+            assertEquals(listOf("EN", "DE"), CardIndexApi.regionalCandidateLanguages(Game.POKEMON, name, listOf("SV11B", "SV11W"), emptyList()))
+        }
+        for (name in listOf("Black Bolt JP Booster Box", "White Flare JP Deluxe Booster", "Black Bolt SV11B Booster Box")) {
+            assertEquals(listOf("JA"), CardIndexApi.regionalCandidateLanguages(Game.POKEMON, name, listOf("SV11B"), emptyList()))
+        }
     }
 
     @Test fun thinSealedReferenceRetainsCountAndLimitedEvidence() = runBlocking {
@@ -55,7 +71,7 @@ class SealedPricingTest {
         val dir = java.nio.file.Files.createTempDirectory("sealed-publisher-regression").toFile()
         try {
             java.io.File(dir,"SEALED_ONE_PIECE.json").writeText("""{"groups":{"24537":"The Azure Sea's Seven"},"items":[[665598,"The Azure Sea's Seven Booster Box",24537,269.83,"EN","TCGplayer market"]]}""")
-            java.io.File(dir,"SEALED_REGIONAL_V5_ONE_PIECE.json").writeText("""{"schemaVersion":5,"items":[
+            java.io.File(dir,"SEALED_REGIONAL_V6_ONE_PIECE.json").writeText("""{"schemaVersion":6,"items":[
               {"productId":-864452,"name":"The Azure Sea's Seven Booster Box","candidateLanguages":["EN"],"aliases":["OP14"],"imageUrls":{"EN":"https://tcgplayer-cdn.tcgplayer.com/product/665598_in_400x400.jpg"},"catalogueProductIds":{"EN":665598}},
               {"productId":-9000000010142,"name":"The Azure Sea's Seven Japanese Booster Box","candidateLanguages":["JA"],"languages":["JA"],"aliases":["OP14","OP-14","蒼海の七傑"],"availabilityEvidence":"Japanese set confirmed by Bandai · OP14"},
               {"productId":-9000000010141,"name":"The Azure Sea's Seven Japanese Booster Pack","candidateLanguages":["JA"],"languages":["JA"],"aliases":["OP14","OP-14","蒼海の七傑"],"imageUrl":"https://www.onepiece-cardgame.com/op14-pack.webp"}

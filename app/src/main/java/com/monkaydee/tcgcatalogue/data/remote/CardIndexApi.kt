@@ -141,14 +141,16 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     suspend fun regionalSealed(game: Game, language: String): List<SealedProduct> {
         if (game != Game.POKEMON && game != Game.ONE_PIECE) return emptyList()
         // New catalogue filename bypasses pre-fix daily caches immediately after this update.
-        val file = dailyFile("SEALED_REGIONAL_V5_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_V4_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
+        val file = dailyFile("SEALED_REGIONAL_V6_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_V5_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_V4_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
         return withContext(Dispatchers.Default) {
             val root = http.json.parseToJsonElement(file.readText())
             root["items"].arr().orEmpty().mapNotNull { row ->
                 val declared = row["languages"].arr().orEmpty().mapNotNull { it.str() }
                 val name = row["name"].str().orEmpty()
                 val aliases = row["aliases"].arr().orEmpty().mapNotNull { it.str() }
-                val candidates = row["candidateLanguages"].arr()?.mapNotNull { it.str() }
+                val candidates = if ((root["schemaVersion"].int() ?: 0) < 6 && game == Game.POKEMON && sharedPokemonSet(name)) {
+                    regionalCandidateLanguages(game, name, aliases, declared)
+                } else row["candidateLanguages"].arr()?.mapNotNull { it.str() }
                 if (language !in (candidates ?: regionalCandidateLanguages(game, name, aliases, declared))) return@mapNotNull null
                 val id = row["productId"].str()?.toLongOrNull() ?: return@mapNotNull null
                 SealedProduct(game, id, name, row["groupName"].str().orEmpty(), null,
@@ -273,7 +275,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         /** Also filter yesterday's schema-2 file immediately after an app upgrade. */
         internal fun regionalCandidateLanguages(game: Game, name: String, aliases: List<String>, declared: List<String>): List<String> {
             if (declared.isNotEmpty()) return declared
-            val explicit = listOf("JA" to "japanese|japan", "DE" to "german|deutsch", "ZH" to "chinese", "KO" to "korean", "FR" to "french")
+            val explicit = listOf("JA" to "japanese|japan|jp", "DE" to "german|deutsch", "ZH" to "chinese", "KO" to "korean", "FR" to "french")
                 .filter { (_, words) -> Regex("\\b($words)\\b", RegexOption.IGNORE_CASE).containsMatchIn(name) }.map { it.first }
             if (explicit.isNotEmpty()) return explicit
             if (!name.contains("non-english", ignoreCase = true) && Regex("\\benglish\\b", RegexOption.IGNORE_CASE).containsMatchIn(name)) return listOf("EN")
@@ -281,8 +283,13 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                 val nonEnglish = name.contains("non-english", ignoreCase = true)
                 return if (nonEnglish) listOf("JA") else listOf("EN")
             }
-            return if (aliases.any { Regex("(?:SV|SM|S|M)\\d+[A-Za-z]*").matches(it) }) listOf("JA") else listOf("EN", "DE")
+            val code = Regex("\\b(?:SV|SM|S|M)\\d+[A-Za-z]*\\b", RegexOption.IGNORE_CASE)
+            val nativeSet = code.containsMatchIn(name) || (!sharedPokemonSet(name) && aliases.any { code.matches(it) })
+            return if (nativeSet) listOf("JA") else listOf("EN", "DE")
         }
+
+        private fun sharedPokemonSet(name: String): Boolean =
+            Regex("\\b(?:Black Bolt|White Flare)\\b", RegexOption.IGNORE_CASE).containsMatchIn(name)
 
         const val BASE = "https://raw.githubusercontent.com/monkaydee/TCG-Catalogue/data"
         private const val DAY = 24 * 60 * 60 * 1000L

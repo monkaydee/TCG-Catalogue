@@ -1,6 +1,7 @@
 Fix German sealed search and hidden Japanese asking references.
 
 - German Pokémon search accepts umlauts, ae/oe/ue spellings, punctuation, joined words and common packaging terms such as Boosterbox, Display and Top-Trainer-Box. English set names also remain searchable under Deutsch.
+- Restore German Schwarze Blitze / Weiße Flammen (Black Bolt / White Flare) products that shared Japanese set names had incorrectly filtered out. Keep explicitly JP products separate.
 - Refresh the regional catalogue on update. Keep specific set aliases separate, including Prismatic Evolutions versus Evolutions and current Mega Evolution versus older BREAKthrough collections.
 - Disable Deutsch for One Piece and explain that no German printed edition exists. Switching from German Pokémon to One Piece selects English; Japanese remains available.
 - Query Japanese One Piece using native set codes in the selected market, supporting titles that omit the English set name.

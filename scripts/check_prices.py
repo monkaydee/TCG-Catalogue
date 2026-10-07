@@ -73,6 +73,8 @@ def main():
         ("Terastal Festival ex Booster Box","JA","-1",["SV8a","テラスタルフェスex"],"US","POKEMON"),
         ("Terastal Festival ex Booster Box","JA","-1",["SV8a","テラスタルフェスex"],"DE","POKEMON"),
         ("Surging Sparks Booster Box","DE","-784949",["Stürmische Funken"],"DE","POKEMON"),
+        ("Black Bolt Booster Bundle","DE","-824107",["Black Bolt","Schwarze Blitze"],"DE","POKEMON"),
+        ("White Flare Elite Trainer Box","DE","-824089",["Weiße Flammen","White Flare"],"DE","POKEMON"),
         ("Romance Dawn Booster Box","JA","-2",["OP01","ロマンスドーン"],"DE","ONE_PIECE"),
         ("Two Legends Booster Box (Non-English)","JA","-766868",["OP08","Two Legends","二つの伝説"],"DE","ONE_PIECE"),
         ("The Azure Sea's Seven Japanese Booster Box","JA","-9000000010142",["OP14","蒼海の七傑","The Azure Sea's Seven"],"DE","ONE_PIECE"),
