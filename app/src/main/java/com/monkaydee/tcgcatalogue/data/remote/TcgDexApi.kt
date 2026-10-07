@@ -110,12 +110,13 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
         val number = if (official > 0) "$localId/${prefix}${official.toString().padStart(localId.length - prefix.length, '0')}" else localId
         val pricing = c["pricing"]
         val flags = c["variants"]
+        val thirdPartyProduct = c["thirdParty"]["tcgplayer"].str()?.toLongOrNull()?.takeIf { lang == "ja" }
         val variants = buildList {
-            if (flags["normal"].bool()) add(variant("normal", AppStrings.get(R.string.data_variant_normal), pricing))
-            if (flags["holo"].bool()) add(variant("holo", AppStrings.get(R.string.data_variant_holo), pricing))
-            if (flags["reverse"].bool()) add(variant("reverse", AppStrings.get(R.string.data_variant_reverse_holo), pricing))
+            if (flags["normal"].bool()) add(variant("normal", AppStrings.get(R.string.data_variant_normal), pricing, thirdPartyProduct))
+            if (flags["holo"].bool()) add(variant("holo", AppStrings.get(R.string.data_variant_holo), pricing, thirdPartyProduct))
+            if (flags["reverse"].bool()) add(variant("reverse", AppStrings.get(R.string.data_variant_reverse_holo), pricing, thirdPartyProduct))
             if (flags["firstEdition"].bool()) add(firstEdition(c, pricing))
-            if (isEmpty()) add(variant("normal", AppStrings.get(R.string.data_variant_normal), pricing))
+            if (isEmpty()) add(variant("normal", AppStrings.get(R.string.data_variant_normal), pricing, thirdPartyProduct))
         }
         return CardCandidate(
             game = Game.POKEMON,
@@ -126,13 +127,20 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
             setName = set["name"].str().orEmpty(),
             setTotal = official,
             rarity = c["rarity"].str(),
-            imageUrl = c["image"].str()?.let { "$it/high.webp" } ?: pokemonTcgImage(id, large = true),
+            imageUrl = c["image"].str()?.let { "$it/high.webp" }
+                ?: thirdPartyProduct?.takeIf { lang == "ja" }?.let { "https://tcgplayer-cdn.tcgplayer.com/product/${it}_in_1000x1000.jpg" }
+                ?: pokemonTcgImage(id, large = true),
             variants = variants,
             cardmarketId = pricing["cardmarket"]["idProduct"].str()?.toLongOrNull(),
             // First edition changes the edition, not this collector number's finish.
             // The price server still checks edition separately before accepting a listing.
             printingUnique = listOf("normal", "holo", "reverse", "wPromo").count { flags[it].bool() } == 1,
             attacks = c["attacks"].arr().orEmpty().mapNotNull { it["name"].str() },
+            language = lang.uppercase(),
+            artworkMetadata = if (c["illustrator"].str() != null && c["hp"].str() != null && c["rarity"].str() != null) {
+                listOf(c["illustrator"].str(), c["hp"].str(), c["rarity"].str(), c["stage"].str(), c["regulationMark"].str(),
+                    c["dexId"].toString(), c["attacks"].arr().orEmpty().joinToString(";") { it["cost"].toString() + ":" + it["damage"].toString() }).joinToString("|")
+            } else null,
         )
     }
 
@@ -159,7 +167,7 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
     /** [card], cached for the session (used to compare look-alike cards of a set). */
     suspend fun cachedCard(cardId: String): CardCandidate? = cardCache[cardId] ?: card(cardId)?.also { cardCache[cardId] = it }
 
-    private fun variant(key: String, label: String, pricing: kotlinx.serialization.json.JsonElement?): Variant {
+    private fun variant(key: String, label: String, pricing: kotlinx.serialization.json.JsonElement?, thirdPartyProduct: Long? = null): Variant {
         val tcg = pricing["tcgplayer"]
         val cm = pricing["cardmarket"]
         val tcgKeys = when (key) {
@@ -175,9 +183,9 @@ class TcgDexApi(private val http: Http, val lang: String = "en") {
         } else {
             cm["trend"].dbl()?.takeIf { it > 0 } ?: cm["avg"].dbl()?.takeIf { it > 0 }
         }
-        val productId = (tcgKey ?: tcgKeys.firstOrNull { tcg[it] != null })?.let { tcg[it]["productId"].str()?.toLongOrNull() }
+        val productId = (tcgKey ?: tcgKeys.firstOrNull { tcg[it] != null })?.let { tcg[it]["productId"].str()?.toLongOrNull() } ?: thirdPartyProduct
         val details = cardmarketDetails(cm, if (key == "reverse") "-holo" else "") + tcgplayerDetails(tcgKey?.let { tcg[it] })
-        return Variant(key, label, prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = tcgKey?.let(::printingName), details = details)
+        return Variant(key, label, prices(cmPrice, tcgPrice), tcgplayerId = productId, tcgplayerPrinting = tcgKey?.let(::printingName) ?: if (key == "holo") "Holofoil" else if (key == "reverse") "Reverse Holofoil" else "Normal", details = details)
     }
 
     private fun cardmarketDetails(cm: kotlinx.serialization.json.JsonElement?, suffix: String) = listOf(

@@ -1,11 +1,10 @@
-A cleaner CardNavo interface with readable typography and consistent controls.
+Fix Japanese Pokémon printing selection and price lookup.
 
-- Bundle Inter typography and use matching outlined icons throughout the app, including slab labels and binder exports.
-- Standardise action buttons and spacing. Stack card actions on small phones or with larger text; keep Edit and Sell prominent and place trade, alerts and removal in More actions.
-- Group card prices with language, exact grade and price scope. Keep missing-price and retained-quote warnings visible, with detailed evidence and provider prices available in expandable sections.
-- Simplify collection and binder controls with bounded game, sorting and layout selectors. Make scanning prominent and reduce visual noise around binder pockets.
-- Reorganise sealed search with game and language selectors, compact product rows, thumbnail placeholders and clear asking-reference labels and listing counts. Preserve product images and regional catalogue matching.
-- Give pre-grading a visible stage indicator, clear photo actions and expandable tips and measurements. Keep the existing non-professional disclaimer and evidence requirements.
-- Improve gain/loss contrast in dark themes and add translated control labels across all supported languages.
+- Selecting JP now offers native Japanese printings with their own set codes and collector numbers. Confirm the number printed on the card before saving; an English printing with only its language changed is no longer treated as a Japanese price identity.
+- Fetch prices and images from the selected Japanese catalogue entry. Keep its exact TCGplayer product link when the catalogue supplies it, and separate Japanese condition data from English data and caches.
+- Add English-name searches such as “JP Steelix” and retain searches by native printed codes and Japanese names.
+- Explain how to repair older Japanese entries that still use English identities: open Edit, choose Japanese printing, then Save. Remove incompatible market prices during refresh while preserving purchase costs and manual values.
+- Prevent a background refresh from reverting a printing or language edited during lookup.
+- Include the native Japanese set code in graded-price searches. Keep price sources and condition limitations visible.
 
-The CardNavo name, signing key and 0.1.<build-number> release convention are preserved. Existing collection data and pricing rules are retained.
+CardNavo name, signing key and the 0.1.<build-number> release convention are preserved. Provider coverage varies; missing quotes are not replaced with English prices.

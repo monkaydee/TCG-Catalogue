@@ -74,6 +74,8 @@ data class CardCandidate(
     val language: String? = null,
     /** One finish for this collector number; edition is matched separately. */
     val printingUnique: Boolean = false,
+    /** Language-independent metadata used to rank matching Japanese printings, never as a price identity. */
+    val artworkMetadata: String? = null,
 ) {
     /** The printing to preselect: the recognised one, otherwise the first. */
     val defaultVariant: Variant get() = variants.firstOrNull { it.key == preferredVariant } ?: variants.first()

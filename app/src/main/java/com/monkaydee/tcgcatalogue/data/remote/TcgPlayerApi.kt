@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Market prices per condition (Near Mint ... Damaged) from TCGplayer's sales history, the same
- * data as the price-history chart on a TCGplayer product page. English printings only.
+ * data as the price-history chart on a TCGplayer product page. Language is matched explicitly; markets never imply the printed language.
  */
 class TcgPlayerApi(private val http: Http) {
     /** printing ("Normal", "Holofoil", ...) -> condition ("Near Mint", ...) -> market price in USD */
@@ -12,15 +12,17 @@ class TcgPlayerApi(private val http: Http) {
 
     private data class Cached(val prices: ConditionPrices?, val at: Long)
 
-    private val cache = ConcurrentHashMap<Long, Cached>()
+    private val cache = ConcurrentHashMap<Pair<Long, String>, Cached>()
 
-    suspend fun conditionPrices(productId: Long): ConditionPrices? {
-        cache[productId]?.takeIf { System.currentTimeMillis() - it.at < TTL }?.let { return it.prices }
+    suspend fun conditionPrices(productId: Long, language: String = "EN"): ConditionPrices? {
+        val key = productId to language
+        cache[key]?.takeIf { System.currentTimeMillis() - it.at < TTL }?.let { return it.prices }
         val root = http.getText("https://infinite-api.tcgplayer.com/price/history/$productId/detailed?range=quarter", accept = "application/json", userAgent = BROWSER)
             ?.takeIf { it.isNotBlank() }?.let(http.json::parseToJsonElement)
         val byPrinting = mutableMapOf<String, MutableMap<String, Double>>()
         root["result"].arr().orEmpty().forEach { r ->
-            if (r["language"].str() != "English") return@forEach
+            val expected = if (language == "JA") "Japanese" else if (language == "EN") "English" else return@forEach
+            if (!r["language"].str().equals(expected, ignoreCase = true)) return@forEach
             val printing = r["variant"].str() ?: return@forEach
             val condition = r["condition"].str() ?: return@forEach
             // Buckets are newest first; take the latest known market price.
@@ -29,7 +31,7 @@ class TcgPlayerApi(private val http: Http) {
             byPrinting.getOrPut(printing) { mutableMapOf() }[condition] = price
         }
         val result = byPrinting.takeIf { it.isNotEmpty() }?.let { ConditionPrices(it) }
-        cache[productId] = Cached(result, System.currentTimeMillis())
+        cache[key] = Cached(result, System.currentTimeMillis())
         return result
     }
 

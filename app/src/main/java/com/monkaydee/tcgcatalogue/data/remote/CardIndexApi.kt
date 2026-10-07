@@ -138,6 +138,22 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         return set?.get("setAliases").arr().orEmpty().mapNotNull { it.str() } to names.singleOrNull()
     }
 
+    /** English aliases point to native Japanese set/number identities, including secret cards. */
+    suspend fun japanesePrintings(name: String): List<CardBrief> {
+        val file = dailyFile("JAPANESE_NAME_ALIASES.json") ?: return emptyList()
+        val sets = http.json.parseToJsonElement(file.readText())["sets"].obj().orEmpty()
+        fun normalized(s: String) = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFKC)
+            .lowercase().replace(Regex("[^\\p{L}0-9]"), "")
+        val target = normalized(name)
+        return sets.flatMap { (code, set) ->
+            set["cards"].obj().orEmpty().mapNotNull { (number, aliases) ->
+                val alias = aliases.arr().orEmpty().mapNotNull { it.str() }.singleOrNull() ?: return@mapNotNull null
+                if (normalized(alias) != target || !number.all(Char::isDigit)) return@mapNotNull null
+                CardBrief(Game.POKEMON, "ja:$code-${number.padStart(3, '0')}", alias, number, null)
+            }
+        }.distinctBy { it.cardId }
+    }
+
     suspend fun regionalSealed(game: Game, language: String): List<SealedProduct> {
         if (game != Game.POKEMON && game != Game.ONE_PIECE) return emptyList()
         // New catalogue filename bypasses pre-fix daily caches immediately after this update.

@@ -232,7 +232,12 @@ class CardRepository(
         val q = query.trim()
         return when (game) {
             // Japanese names (kana/kanji) search the Japanese cards.
-            Game.POKEMON -> if (q.any { Character.UnicodeScript.of(it.code) in JAPANESE }) tcgdexJa.searchByName(q) else tcgdex.searchByName(q)
+            Game.POKEMON -> {
+                val japaneseName = Regex("(?i)^(?:JP|JA|Japanese)\\s+(.+)$").matchEntire(q)?.groupValues?.get(1)
+                if (japaneseName != null) cardIndex.japanesePrintings(japaneseName)
+                else if (q.any { Character.UnicodeScript.of(it.code) in JAPANESE }) tcgdexJa.searchByName(q)
+                else tcgdex.searchByName(q)
+            }
             Game.ONE_PIECE -> CardTextParser.findOnePiece(listOf(com.monkaydee.tcgcatalogue.scan.OcrLine(q.uppercase())))
                 ?.let { listOfNotNull(onePiece.card(it.code)?.toBrief()) }.orEmpty()
             Game.MAGIC -> {
@@ -263,6 +268,22 @@ class CardRepository(
         else -> brief.cardId.toLongOrNull()?.let { cardIndex.byProduct(brief.game, it) }
     }
 
+    /** A language selection cannot reuse an international Pokémon set/collector number in Japan. */
+    fun needsJapanesePrinting(card: CardCandidate, language: String): Boolean =
+        card.game == Game.POKEMON && language == "JA" && !card.cardId.startsWith("ja:")
+
+    /** Native identities are presented for confirmation; metadata ranks, but never chooses a price identity. */
+    suspend fun japanesePrintings(card: CardCandidate): List<CardCandidate> = coroutineScope {
+        if (card.game != Game.POKEMON) return@coroutineScope emptyList()
+        val gate = Semaphore(4)
+        val candidates = cardIndex.japanesePrintings(card.name).take(80).map { brief -> async {
+            gate.withPermit { attempt { tcgdexJa.cachedCard(brief.cardId) }.getOrNull() }
+        } }.mapNotNull { it.await() }
+        candidates.sortedWith(compareByDescending<CardCandidate> {
+            card.artworkMetadata != null && card.artworkMetadata == it.artworkMetadata
+        }.thenByDescending { it.rarity == card.rarity }.thenBy { it.setId }.thenBy { it.number })
+    }
+
     // ---- Prices ----
 
     /**
@@ -272,7 +293,7 @@ class CardRepository(
     fun rawPrice(card: CardCandidate, variant: Variant, s: AppSettings, listing: CardmarketApi.Listing? = null): Price? {
         if (s.pokemonSource == PriceSource.CARDMARKET) listing?.takeUnless { it.nonEnglish }?.price?.let { return Price(it, PriceSource.CARDMARKET, "Cardmarket aggregate reference; condition/language are not verified") }
         val quote = Pricing.pick(variant, card.rarity, Pricing.sourceFor(card.game, s.pokemonSource), s.usdToEur, PriceTexts.App)
-        return quote?.let { if (it.source == PriceSource.CARDMARKET) it.copy(note = listOfNotNull(it.note, AppStrings.get(R.string.quote_cardmarket_aggregate)).distinct().joinToString(" · ")) else it }
+        return quote?.let { if (it.source == PriceSource.CARDMARKET) it.copy(note = listOfNotNull(it.note, AppStrings.get(if (card.cardId.startsWith("ja:")) R.string.jp_cardmarket_reference else R.string.quote_cardmarket_aggregate)).distinct().joinToString(" · ")) else it }
     }
 
     /** Cardmarket's listings (every print) of a One Piece card, empty for other games. */
@@ -300,6 +321,7 @@ class CardRepository(
      * helped by the price links on the card page.
      */
     suspend fun gradedLookup(card: CardCandidate, variant: Variant, grade: GradeInfo, language: String = "EN"): GradedResult {
+        if (needsJapanesePrinting(card, language)) return GradedResult(null, AppStrings.get(R.string.jp_printing_required))
         val grader = grade.grader ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grader))
         val value = grade.grade ?: return GradedResult(null, AppStrings.get(R.string.data_graded_choose_grade))
         if (!server.isSetUp()) return GradedResult(null, AppStrings.get(R.string.data_graded_no_source))
@@ -311,8 +333,10 @@ class CardRepository(
     }
 
     /** All graded prices the price server has for a printing (every company and grade). */
-    suspend fun gradedPrices(card: CardCandidate, variant: Variant, language: String = "EN", target: GradeInfo? = null): List<PriceServerApi.Graded> =
-        server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique, grader = target?.grader, grade = target?.grade)
+    suspend fun gradedPrices(card: CardCandidate, variant: Variant, language: String = "EN", target: GradeInfo? = null): List<PriceServerApi.Graded> {
+        if (needsJapanesePrinting(card, language)) return emptyList()
+        return server.graded(card.game, card.cardId, card.name, card.setName, card.number, tcgplayerProduct(card, variant), variant.tcgplayerPrinting ?: variant.key, language, localName(card, language), setAliases = setAliases(card, language), releaseYear = releaseYear(card), market = if (settings.current().currency == "EUR") "DE" else "US", printingUnique = card.printingUnique, grader = target?.grader, grade = target?.grade)
+    }
 
     /** The card's name in [language] for searching listings ("Flamara"), Pokémon only. */
     private suspend fun localName(card: CardCandidate, language: String): String? =
@@ -329,7 +353,8 @@ class CardRepository(
         val local = attempt { tcgdex.forLanguage(language.lowercase()).setDetails(id) }.getOrNull()
         val english = if (language == "EN" || card.cardId.startsWith("ja:")) null else attempt { tcgdex.setDetails(id) }.getOrNull()
         val japanese = if (language == "JA" && card.cardId.startsWith("ja:")) attempt { cardIndex.japaneseAliases(card.setId,card.number).first }.getOrDefault(emptyList()) else emptyList()
-        val aliases = (listOfNotNull(local?.first?.name, english?.first?.name) + japanese).distinct()
+        val aliases = (listOfNotNull(local?.first?.name, english?.first?.name) + japanese +
+            if (card.cardId.startsWith("ja:")) listOf(id) else emptyList()).distinct()
         return (aliases to (local?.second ?: english?.second)?.take(4)).also { setMetadata[key] = it }
     }
     private suspend fun setAliases(card: CardCandidate, language: String) = metadata(card, language).first
@@ -415,6 +440,7 @@ class CardRepository(
 
     /** Raw price for a copy in [condition] (NM, LP, MP, HP, DMG), based on TCGplayer's sales per condition. */
     suspend fun conditionPrice(card: CardCandidate, variant: Variant, condition: String, s: AppSettings, listing: CardmarketApi.Listing? = null, language: String = "EN"): Price? {
+        if (needsJapanesePrinting(card, language)) return null
         if (!ownLanguage(card, language)) {
             val reference = if (condition == "NM") nativeCardmarketReference(card, variant, language) else null
             if (s.pokemonSource == PriceSource.CARDMARKET && reference != null) return reference
@@ -425,7 +451,7 @@ class CardRepository(
         }
         val base = rawPrice(card, variant, s, listing)?.takeIf { it.amount.isFinite() && it.amount > 0 }
         if (condition == "NM" && base != null) return base
-        val table = if (language == "EN") runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it) } }.getOrNull() else null
+        val table = if (language in setOf("EN", "JA")) runCatching { tcgplayerProduct(card, variant)?.let { tcgplayer.conditionPrices(it, language) } }.getOrNull() else null
         return Pricing.forCondition(base, condition, table?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }, PriceTexts.App)
             ?: serverRawPrice(card, variant, language, condition)
     }
@@ -707,11 +733,12 @@ class CardRepository(
         val variant = fresh.variants.firstOrNull { it.key == card.variant } ?: fresh.variants.first()
         val listing = async { attempt { listingOf(card) }.getOrNull() }
         val conditions = async {
-            attempt { tcgplayerProduct(fresh, variant)?.let { tcgplayer.conditionPrices(it) } }
+            attempt { tcgplayerProduct(fresh, variant)?.let { tcgplayer.conditionPrices(it, if (fresh.cardId.startsWith("ja:")) "JA" else "EN") } }
                 .getOrNull()?.let { TcgPlayerApi.forPrinting(it, variant.tcgplayerPrinting) }
         }
 
         val groups = mutableListOf<PriceGroup>()
+        if (needsJapanesePrinting(fresh, card.language)) groups += PriceGroup(AppStrings.get(R.string.jp_printing_title), emptyList(), AppStrings.get(R.string.jp_printing_required))
         val cm = variant.details.filter { it.source == PriceSource.CARDMARKET }
         val l = listing.await()
         val cmLines = if (l != null) {
@@ -727,10 +754,11 @@ class CardRepository(
         groups += PriceGroup(
             "Cardmarket" + (l?.let { " · ${it.label}" } ?: ""),
             cmLines,
-            if (cmLines.isEmpty()) AppStrings.get(R.string.data_overview_no_cardmarket) else AppStrings.get(R.string.quote_cardmarket_aggregate),
+            if (cmLines.isEmpty()) AppStrings.get(R.string.data_overview_no_cardmarket) else AppStrings.get(
+                if (fresh.cardId.startsWith("ja:")) R.string.jp_cardmarket_reference else R.string.quote_cardmarket_aggregate),
         )
         val tcg = variant.details.filter { it.source == PriceSource.TCGPLAYER }
-        val englishReference = card.language != "EN"
+        val englishReference = card.language != "EN" && !fresh.cardId.startsWith("ja:")
         groups += PriceGroup("TCGplayer", tcg, if (tcg.isEmpty()) AppStrings.get(R.string.data_overview_no_tcgplayer) else if (englishReference) AppStrings.get(R.string.quote_english_tcgplayer_reference) else null)
         val byCondition = conditions.await()
         groups += PriceGroup(
@@ -756,7 +784,9 @@ class CardRepository(
             if (current.cardId != row.cardId || current.variant != row.variant || current.language != row.language ||
                 current.condition != row.condition || current.graded != row.graded || current.grader != row.grader ||
                 current.grade != row.grade || current.gradeQualifier != row.gradeQualifier || current.marketProductId != row.marketProductId) return@withTransaction false
-            db.cards().update(if (quote == null) current.copy(priceNote = lookupNotice(current, lookup.isFailure)) else current.copy(
+            db.cards().update(if (needsJapanesePrinting(fresh, current.language)) current.copy(price = null, priceSource = null,
+                priceUpdatedAt = null, priceNote = AppStrings.get(R.string.jp_printing_required))
+            else if (quote == null) current.copy(priceNote = lookupNotice(current, lookup.isFailure)) else current.copy(
                 price = quote.amount, priceCurrency = quote.currency, priceSource = quote.source.label,
                 priceUpdatedAt = quote.fetchedAt ?: System.currentTimeMillis(), priceNote = quote.note,
                 purchasePrice = current.purchasePrice?.let { Money.convert(it, current.priceCurrency, quote.currency, s.usdToEur) },
@@ -765,7 +795,21 @@ class CardRepository(
         }
     }
 
+    /** A refresh started before an edit must never restore the old language or printing. */
+    private suspend fun applyPriceLookup(row: OwnedCard, transform: (OwnedCard) -> OwnedCard): Pair<OwnedCard, OwnedCard>? =
+        db.withTransaction {
+            val current = db.cards().get(row.id) ?: return@withTransaction null
+            if (current.game != row.game || current.cardId != row.cardId || current.variant != row.variant ||
+                current.language != row.language || current.condition != row.condition || current.grader != row.grader ||
+                current.grade != row.grade || current.gradeQualifier != row.gradeQualifier || current.copyKey != row.copyKey ||
+                current.certNumber != row.certNumber || current.marketProductId != row.marketProductId) return@withTransaction null
+            val next = transform(current)
+            db.cards().update(next)
+            current to next
+        }
+
     private fun lookupNotice(row: OwnedCard, failed: Boolean): String {
+        if (row.game == Game.POKEMON && row.language == "JA" && !row.cardId.startsWith("ja:")) return AppStrings.get(R.string.jp_printing_required)
         val notice = AppStrings.get(if (row.price?.let { it.isFinite() && it > 0 } == true) R.string.quote_refresh_failed
             else if (failed) R.string.quote_lookup_failed else R.string.quote_lookup_missing)
         val outdated = listOf(R.string.quote_refresh_failed, R.string.quote_lookup_failed, R.string.quote_lookup_missing).map { AppStrings.get(it) }
@@ -854,32 +898,38 @@ class CardRepository(
                     if (fresh != null) {
                         runCatching { ensureSet(fresh) }
                         for (row in rows) {
+                            if (needsJapanesePrinting(fresh, row.language)) {
+                                applyPriceLookup(row) { it.copy(price = null, priceSource = null, priceUpdatedAt = null,
+                                    priceNote = AppStrings.get(R.string.jp_printing_required)) }
+                                continue
+                            }
                             val variant = fresh.variants.firstOrNull { it.key == row.variant }
                             if (variant == null) {
-                                db.cards().update(row.copy(priceNote = AppStrings.get(R.string.quote_printing_unavailable)))
+                                applyPriceLookup(row) { it.copy(priceNote = AppStrings.get(R.string.quote_printing_unavailable)) }
                                 continue
                             }
                             val grade = if (row.graded) GradeInfo(row.grader, row.grade, row.gradeQualifier, row.certNumber) else null
                             val lookup = runCatching { priceFor(fresh, variant, grade, row.condition, s, listingOf(row), row.language) }
                             if (lookup.isFailure || lookup.getOrNull()?.amount?.let { it.isFinite() && it > 0 } != true) {
-                                db.cards().update(row.copy(priceNote = lookupNotice(row, lookup.isFailure)))
+                                applyPriceLookup(row) { it.copy(priceNote = lookupNotice(it, lookup.isFailure)) }
                                 continue
                             }
-                            val price = lookup.getOrNull()
-                            val next = row.copy(
-                                price = price?.amount,
-                                purchasePrice = row.purchasePrice?.let { Money.convert(it, row.priceCurrency, price?.currency ?: row.priceCurrency, s.usdToEur) },
-                                priceCurrency = price?.currency ?: row.priceCurrency,
-                                priceSource = price?.source?.label,
-                                priceUpdatedAt = price?.let { it.fetchedAt ?: System.currentTimeMillis() },
-                                priceNote = price?.note,
-                                rarity = fresh.rarity ?: row.rarity,
-                                // cards added before a picture fallback existed get one now
-                                imageUrl = row.imageUrl ?: variant.imageUrl ?: fresh.imageUrl,
-                            )
-                            db.cards().update(next)
-                            alertFor(row, next, s)?.let { alerts += it }
-                            updated.incrementAndGet()
+                            val price = lookup.getOrNull() ?: continue
+                            val change = applyPriceLookup(row) { current -> current.copy(
+                                price = price.amount,
+                                purchasePrice = current.purchasePrice?.let { Money.convert(it, current.priceCurrency, price.currency, s.usdToEur) },
+                                priceCurrency = price.currency,
+                                priceSource = price.source.label,
+                                priceUpdatedAt = price.fetchedAt ?: System.currentTimeMillis(),
+                                priceNote = price.note,
+                                rarity = fresh.rarity ?: current.rarity,
+                                // Only fill an absent picture; retain edits made while the lookup was running.
+                                imageUrl = current.imageUrl ?: variant.imageUrl ?: fresh.imageUrl,
+                            ) }
+                            if (change != null) {
+                                alertFor(change.first, change.second, s)?.let { alerts += it }
+                                updated.incrementAndGet()
+                            }
                         }
                     }
                     onProgress(done.incrementAndGet(), groups.size)

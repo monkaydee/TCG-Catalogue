@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="jp_printing_title" tools:ignore="MissingTranslation">Japanischer Druck</string>
+    <string name="jp_printing_required" tools:ignore="MissingTranslation">Wähle das japanische Set und die Kartennummer unten. Die Sprache allein ändert den englischen Druck nicht; dessen Preis ist kein japanischer Preis. Öffne bei einer vorhandenen Karte Bearbeiten und wähle ihre aufgedruckte japanische Identität.</string>
+    <string name="jp_printing_loading" tools:ignore="MissingTranslation">Japanische Drucke werden gesucht…</string>
+    <string name="jp_printing_failed" tools:ignore="MissingTranslation">Japanische Drucke konnten nicht geladen werden. Erneut versuchen oder nach dem aufgedruckten Set-Code und der Nummer suchen.</string>
+    <string name="jp_printing_empty" tools:ignore="MissingTranslation">Kein passender japanischer Druck gefunden. Suche nach dem aufgedruckten Set-Code und der Nummer, z. B. M1L 073/063.</string>
+    <string name="jp_cardmarket_reference" tools:ignore="MissingTranslation">Cardmarket-Referenz für dieses japanische Produkt; der Zustand wird nicht getrennt erfasst</string>
+</resources>

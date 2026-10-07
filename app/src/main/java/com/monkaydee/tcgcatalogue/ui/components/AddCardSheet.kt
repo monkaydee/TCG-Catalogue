@@ -118,8 +118,25 @@ fun AddCardSheet(
     val startGrade = initialGrade ?: initial?.takeIf { it.graded }?.let { GradeInfo(it.grader, it.grade, it.gradeQualifier, it.certNumber) }
     if (candidates.isEmpty()) return
     var selected by remember(candidates) { mutableIntStateOf(0) }
-    val card = candidates[selected.coerceIn(candidates.indices)]
-    var language by remember(card) { mutableStateOf(initial?.language ?: card.language ?: if (card.cardId.startsWith("ja:")) "JA" else "EN") }
+    val sourceCard = candidates[selected.coerceIn(candidates.indices)]
+    var language by remember(sourceCard) { mutableStateOf(initial?.language ?: sourceCard.language ?: if (sourceCard.cardId.startsWith("ja:")) "JA" else "EN") }
+    var japaneseSelection by remember(sourceCard) { mutableStateOf<CardCandidate?>(null) }
+    var japaneseOptions by remember(sourceCard) { mutableStateOf<List<CardCandidate>>(emptyList()) }
+    var japaneseLoading by remember(sourceCard) { mutableStateOf(false) }
+    var japaneseFailed by remember(sourceCard) { mutableStateOf(false) }
+    var japaneseRetry by remember(sourceCard) { mutableIntStateOf(0) }
+    val card = if (language == "JA") japaneseSelection ?: sourceCard else sourceCard
+    val needsJapanesePrinting = repo.needsJapanesePrinting(card, language)
+    LaunchedEffect(sourceCard, language, japaneseRetry) {
+        if (!repo.needsJapanesePrinting(sourceCard, language)) return@LaunchedEffect
+        japaneseLoading = true
+        japaneseFailed = false
+        try {
+            val result = attempt { repo.japanesePrintings(sourceCard) }
+            japaneseOptions = result.getOrDefault(emptyList())
+            japaneseFailed = result.isFailure
+        } finally { japaneseLoading = false }
+    }
     var variantKey by remember(card) {
         mutableStateOf(initial?.variant?.takeIf { k -> card.variants.any { it.key == k } } ?: card.defaultVariant.key)
     }
@@ -162,9 +179,15 @@ fun AddCardSheet(
     var conditionQuote by remember { mutableStateOf<Price?>(null) }
     var conditionLoading by remember { mutableStateOf(false) }
     LaunchedEffect(card, variant, condition, graded, listing, language) {
+        if (needsJapanesePrinting) {
+            conditionLoading = false
+            conditionQuote = null
+            return@LaunchedEffect
+        }
         // NM English is the market price itself, unless the card databases have none (then the price server is asked)
         if (graded || (condition == "NM" && raw != null && language == "EN")) {
             conditionQuote = raw
+            conditionLoading = false
             return@LaunchedEffect
         }
         conditionLoading = true
@@ -177,6 +200,12 @@ fun AddCardSheet(
     var gradedLoading by remember { mutableStateOf(false) }
     LaunchedEffect(card, variant, graded, gradeInfo.grader, gradeInfo.grade, gradeInfo.qualifier, language) {
         if (!graded) return@LaunchedEffect
+        if (needsJapanesePrinting) {
+            gradedLoading = false
+            gradedQuote = null
+            gradedProblem = AppStrings.get(R.string.jp_printing_required)
+            return@LaunchedEffect
+        }
         gradedLoading = true
         gradedQuote = null
         gradedProblem = null
@@ -314,6 +343,18 @@ fun AddCardSheet(
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CARD_LANGUAGES.forEach { (code, name) -> FilterChip(selected = code == language, onClick = { language = code }, label = { Text(name) }) }
             }
+            if (repo.needsJapanesePrinting(sourceCard, language)) {
+                if (needsJapanesePrinting) Text(stringResource(R.string.jp_printing_required),
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (japaneseLoading) Text(stringResource(R.string.jp_printing_loading), style = MaterialTheme.typography.bodySmall)
+                if (japaneseOptions.isNotEmpty()) AppSelector(stringResource(R.string.jp_printing_title), japaneseSelection?.cardId,
+                    japaneseOptions.map { SelectorOption<String?>(it.cardId, "${it.setId.substringAfter(':')} · ${it.number} · ${it.name}") },
+                    { id -> japaneseSelection = japaneseOptions.firstOrNull { it.cardId == id } })
+                if (!japaneseLoading && japaneseOptions.isEmpty()) {
+                    Text(stringResource(if (japaneseFailed) R.string.jp_printing_failed else R.string.jp_printing_empty), style = MaterialTheme.typography.bodySmall)
+                    TextButton(onClick = { japaneseRetry++ }) { Text(stringResource(R.string.card_refresh)) }
+                }
+            }
             if (initial == null) OutlinedTextField(
                 value = paid,
                 onValueChange = { paid = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.take(10) },
@@ -337,7 +378,7 @@ fun AddCardSheet(
                 QuantityStepper(quantity, { quantity = it })
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onDismiss) { Text(stringResource(R.string.add_cancel)) }
-                    Button(onClick = {
+                    Button(enabled = !needsJapanesePrinting, onClick = {
                         val price = paid.replace(',', '.').toDoubleOrNull()
                         val own = myValue.replace(',', '.').toDoubleOrNull()
                         onAdd(AddRequest(card, variant, quantity, condition, gradeInfo.takeIf { graded }, listing, price, own, language))

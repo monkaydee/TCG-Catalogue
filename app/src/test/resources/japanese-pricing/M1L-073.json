@@ -1,0 +1,73 @@
+{
+  "id": "M1L-073",
+  "name": "ハガネール",
+  "localId": "073",
+  "set": {
+    "cardCount": {
+      "official": 63,
+      "total": 92
+    },
+    "id": "M1L",
+    "name": "メガブレイブ"
+  },
+  "variants": {
+    "firstEdition": false,
+    "holo": true,
+    "normal": false,
+    "reverse": false,
+    "wPromo": false
+  },
+  "pricing": {
+    "cardmarket": {
+      "updated": "2026-10-06T22:54:32.765Z",
+      "unit": "EUR",
+      "idProduct": 840368,
+      "avg": 2.43,
+      "low": 1.3,
+      "trend": 2.21,
+      "avg1": 2.27,
+      "avg7": 2.24,
+      "avg30": 2.42,
+      "avg-holo": null,
+      "low-holo": null,
+      "trend-holo": 0,
+      "avg1-holo": null,
+      "avg7-holo": null,
+      "avg30-holo": null
+    },
+    "tcgplayer": null
+  },
+  "thirdParty": {
+    "cardmarket": 840368,
+    "tcgplayer": 647182
+  },
+  "illustrator": "Tonji Matsuno",
+  "hp": 200,
+  "rarity": "Illustration rare",
+  "stage": "Stage1",
+  "regulationMark": "I",
+  "dexId": [
+    208
+  ],
+  "attacks": [
+    {
+      "cost": [
+        "Colorless",
+        "Colorless"
+      ],
+      "name": "ウェルカムテール",
+      "effect": "自分のサイドの残り枚数が6枚なら、200ダメージ追加。",
+      "damage": "40+"
+    },
+    {
+      "cost": [
+        "Metal",
+        "Metal",
+        "Colorless",
+        "Colorless"
+      ],
+      "name": "ロケットずつき",
+      "damage": 140
+    }
+  ]
+}
