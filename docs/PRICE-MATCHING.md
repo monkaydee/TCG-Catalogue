@@ -80,7 +80,7 @@ The public Cardmarket guide is a product-wide aggregate, not an English-only tra
 
 A missing native record, differing product ID, differing printing, or requested played condition prevents this fallback. English collector identities are never translated into Japanese release identities. Native references do not replace exact graded prices. Repair refreshes preserve manual values, quantities and cost information.
 
-## Graded lookup repair, revision 6
+## Graded lookup repair, revisions 6–7
 
 TCGdex's hyphenated `1st-edition-holofoil` and `unlimited-holofoil` keys now retain their product IDs, prices and printing names. This repairs provider eligibility for the reported Dark Charizard and Jungle Flareon examples. The selected slab company and grade are sent to the server and included in its cache key, preventing popular PSA 10 listings from crowding out the requested grade.
 
@@ -89,3 +89,5 @@ eBay graded searches use company names rather than requiring the word "graded". 
 One to four exact asking comparables are disclosed as limited evidence with listing counts and ranges. They are current listing references, not completed sales or a guarantee of realizable value. The app no longer reports "no recent sales" when it merely received no quote. Missing graded rows refresh on opening their page and graded-panel refresh updates the stored quote, preserving saved values if retrieval fails.
 
 Deployment verification includes the reported first-edition Dark Charizard PSA 5, unlimited Flareon PSA 8 and German Psyduck CGC 9 requests. It separately reports JustTCG v2 HTTP access and priced-variant counts without storing credentials. Successful schema checks alone do not establish graded market coverage. The public PSA API supplies certification/population data, not the estimates and sales history displayed by PSA's website. eBay Browse supplies active listings, not completed sales; neither screenshots nor an active asking-price median are converted into verified sale prices.
+
+Revision 7 adds a bounded international fallback for targeted slabs when the selected market returns no quote. The alternate market is queried for the same language, card, printing, company and grade. Its currency and international-reference label are retained rather than merging USD and EUR comparables. Targeted requests still reserve at most four eBay search calls. Graded-only app lookups skip raw-provider calls; independent raw reference panels request raw prices separately. An unpriced JustTCG graded variant remains unpriced.

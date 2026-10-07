@@ -194,6 +194,17 @@ function deps(cache: CacheLike, rawProviders: ChainProvider<RawPrice>[], gate: G
 }
 
 describe("getPrices", () => {
+  it("does not spend raw-provider calls for a graded-only lookup, but keeps duplicate raw requests",async()=>{
+    const [c]=cards(1,{graded:true,gradedOnly:true});
+    const jt=fakeProvider("justtcg",20,()=>true);
+    const provider:ChainProvider<GradedPrice[]>={name:"ppt",batchSize:1,supports:()=>true,
+      async fetch(list){return new Map(list.map(c=>[c.key,[{grader:"PSA",grade:"8",price:130,currency:"USD",source:"test"}]]));}};
+    const d=deps(memoryCache(),[jt],fakeGate({justtcg:10,ppt:2}),[provider]);
+    const [quote]=await getPrices([c],d);
+    expect(jt.batches).toEqual([]);expect(quote.graded).toHaveLength(1);expect(quote.conditions).toBeNull();expect(quote.reason).toBeNull();
+    await getPrices([c,{...c,graded:false,gradedOnly:false}],d);
+    expect(jt.batches).toHaveLength(1);
+  });
   it("fills CGC/BGS gaps after a PSA-only provider without replacing preferred PSA prices", async () => {
     const [c] = cards(1, { graded: true });
     const grade = (grader: string, amount: number): GradedPrice => ({ grader, grade: "10", price: amount, currency: "USD", source: "test" });

@@ -309,8 +309,20 @@ export function ebay(): GradedProvider {
       const outcomes = await Promise.allSettled(groups.map(extra=>languageSearch(card,key,extra)));
       const results = outcomes.flatMap(r=>r.status === "fulfilled" ? [r.value] : []);
       const verified = new Set(results.flatMap(r=>[...r.verified]));
-      const graded = parseEbay({itemSummaries:results.flatMap(r=>r.items)},card,verified);
+      let graded = parseEbay({itemSummaries:results.flatMap(r=>r.items)},card,verified);
       const failed = outcomes.find(r=>r.status === "rejected");
+      // A targeted query uses at most two calls, leaving two for a cross-market fallback.
+      // Retain the original currency; the app converts it and discloses the source.
+      if (!graded.length && card.grader) {
+        const alternate: CardRequest = {...card,market:marketplace(card.language,card.market).currency === "EUR" ? "US" : "DE"};
+        try {
+          const other = await languageSearch(alternate,key,groups[0]);
+          graded = parseEbay({itemSummaries:other.items},alternate,other.verified);
+          graded = graded.map(g=>({...g,source:g.source+` · ${marketplace(alternate.language,alternate.market).site} international reference`}));
+        } catch (error) {
+          if (!graded.length) throw error;
+        }
+      }
       if (!graded.length && failed?.status === "rejected") throw failed.reason;
       return new Map(graded.length ? [[card.key, graded]] : []);
     },

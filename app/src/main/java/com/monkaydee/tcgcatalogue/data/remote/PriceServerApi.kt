@@ -124,6 +124,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         if (language != "EN") put("language", language)
                         localName?.let { put("localName", it) }
                         put("graded", true)
+                        put("gradedOnly", true)
                         grader?.let { put("grader", it) }
                         grade?.let { put("grade", it.replace(',', '.')) }
                     },

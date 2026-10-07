@@ -6,6 +6,18 @@ const item=(title:string,value:string,id=title)=>({itemId:id,title,price:{value,
 const copies=(title:string,values:number[])=>values.map((v,i)=>item(title,String(v),`${title}-${i}`));
 afterEach(()=>vi.unstubAllGlobals());
 describe("the reported missing slabs",()=>{
+ it("falls back from an empty EUR market to an exact USD reference without currency mixing",async()=>{
+  const requested={...flareon,market:"DE" as const,language:"EN",grader:"PSA",grade:"8",printing:"Holofoil",printingUnique:true};
+  const sites:string[]=[];
+  vi.stubGlobal("fetch",vi.fn(async(input:string,init?:RequestInit)=>{
+    if(input.includes("oauth2/token")) return new Response(JSON.stringify({access_token:"fixture",expires_in:7200}));
+    const site=new Headers(init?.headers).get("X-EBAY-C-MARKETPLACE-ID")!;sites.push(site);
+    return new Response(JSON.stringify({itemSummaries:site==="EBAY_US" ? [item("Flareon 3/64 Jungle English PSA 8","130","us-8")] : []}));
+  }));
+  const quote=(await ebay().fetch([requested],"test:secret")).get(requested.key)![0];
+  expect(sites).toEqual(["EBAY_DE","EBAY_US"]);
+  expect(quote).toMatchObject({price:130,currency:"USD",grader:"PSA",grade:"8",listings:1,evidence:"limited",source:expect.stringContaining("international reference")});
+ });
  const dark={...flareon,id:"base5-4",name:"Dark Charizard",set:"Team Rocket",number:"4/82",printing:"1st Edition Holofoil",grader:"PSA",grade:"5"};
  it("keeps first-edition PSA 5 separate from unlimited, other grades and raw",()=>{
   const titles=["Dark Charizard 4/82 Team Rocket Holo 1st Edition PSA 5", "Dark Charizard 4/82 Team Rocket Holo PSA 5", "Dark Charizard 4/82 Team Rocket Holo 1st Edition PSA 6", "Dark Charizard 4/82 Team Rocket Holo 1st Edition"];

@@ -19,7 +19,7 @@ export function cacheKey(c: Omit<CardRequest, "key">): string {
   const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
   // Version the cache after fixing language, printing and qualified-grade matching.
   const slab = c.graded && c.grader ? `:slab:${c.grader}:${c.grade ?? "all"}` : "";
-  return `v6:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}${slab}`;
+  return `v7:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}${slab}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -47,6 +47,7 @@ export function parseCard(v: unknown): CardRequest | null {
     ...(language ? { language } : {}),
     ...(o.market === "US" || o.market === "DE" ? {market:o.market} : {}),
     ...(o.graded === true ? { graded: true } : {}),
+    ...(o.graded === true && o.gradedOnly === true ? {gradedOnly:true} : {}),
     ...(o.graded === true && /^(PSA|BGS|CGC|SGC|TAG|ACE|AOG|GSG|PI)$/.test(text(o.grader).toUpperCase()) ? {grader:text(o.grader).toUpperCase()} : {}),
     ...(o.graded === true && /^(10|[1-9](?:\.5)?)$/.test(text(o.grade)) ? {grade:text(o.grade)} : {}),
   };
@@ -206,7 +207,11 @@ export const hours = (h: number) => h * HOUR;
 export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<CardPrice[]> {
   // The same card may be listed twice; only look it up once.
   const byKey = new Map<string, CardRequest>();
-  for (const c of cards) byKey.set(c.key, { ...c, graded: c.graded || byKey.get(c.key)?.graded });
+  for (const c of cards) {
+    const previous = byKey.get(c.key);
+    byKey.set(c.key, { ...c, graded: c.graded || previous?.graded,
+      gradedOnly: c.gradedOnly === true && (!previous || previous.gradedOnly === true) });
+  }
   const unique = [...byKey.values()];
   const rawKey = (c: CardRequest) => `raw|${c.key}`;
   const gradedKey = (c: CardRequest) => `graded|${c.key}`;
@@ -221,7 +226,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
   // Graded first: those are the cards people care most about, and their providers are scarcer.
   const gradedMiss = unique.filter((c) => c.graded && !fresh(gradedKey(c)));
   const graded = await runChain(gradedMiss, d.graded, d.gate, calls, d.wait, mergeGraded);
-  const rawMiss = unique.filter((c) => !fresh(rawKey(c)));
+  const rawMiss = unique.filter((c) => !c.gradedOnly && !fresh(rawKey(c)));
   const raw = await runChain(rawMiss, d.raw, d.gate, calls, d.wait, undefined, p => !hasAnyCondition(p.conditions));
 
   // Store what we learned.
@@ -268,7 +273,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
 
     const p = rawEntry?.value.price ?? null;
     let reason: CardPrice["reason"] = null;
-    if (!p) {
+    if (!p && !c.gradedOnly) {
       if (rawEntry) reason = "not_found";
       else if (raw.unsupported.has(c.key)) reason = "unsupported";
       else reason = "unavailable";

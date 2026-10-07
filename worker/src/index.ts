@@ -240,7 +240,7 @@ async function status(env: Env): Promise<Response> {
   const budgets = await new Budgets(env.DB, env).load();
   return json({
     ok: true,
-    priceMatchingRevision: 6,
+    priceMatchingRevision: 7,
     time: new Date().toISOString(),
     providers: budgets.report((p) => !!keyOf(env, p)),
     cache: await new Cache(env.DB).count(),

@@ -15,6 +15,7 @@ class PriceQuoteTest {
             val quote = api.graded(Game.POKEMON,"base5-4","Dark Charizard","Team Rocket","4/82",84572,"1st Edition Holofoil",grader="PSA",grade="5").single()
             val body = web.takeRequest().body.readUtf8()
             assertTrue(body.contains("\"grader\":\"PSA\"")); assertTrue(body.contains("\"grade\":\"5\""))
+            assertTrue(body.contains("\"gradedOnly\":true"))
             assertTrue(body.contains("\"printing\":\"1st Edition Holofoil\""))
             assertEquals(1,quote.listings); assertEquals("limited",quote.evidence)
             assertTrue(quote.source.contains("not sold"))

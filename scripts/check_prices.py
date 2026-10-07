@@ -22,7 +22,7 @@ def main():
     # workers.dev edges can briefly serve the previous version after deployment.
     for attempt in range(9):
         status = call("/v1/status")
-        if status.get("priceMatchingRevision") == 6:
+        if status.get("priceMatchingRevision") == 7:
             break
         if attempt == 8:
             raise AssertionError("Updated price service did not propagate")
@@ -35,15 +35,15 @@ def main():
         {"game":"POKEMON","id":"sv10-193","name":"Misty's Psyduck","set":"Destined Rivals","number":"193/182","tcgplayerId":"632993","printing":"Holofoil","printingUnique":True,"language":"EN","market":"US","graded":True},
         {"game":"ONE_PIECE","id":"OP01-001","name":"Roronoa Zoro","set":"Romance Dawn","number":"OP01-001","language":"EN","market":"US","graded":True},
         {"game":"ONE_PIECE","id":"OP01-001","name":"Roronoa Zoro","set":"Romance Dawn","number":"OP01-001","language":"JA","market":"DE","graded":True},
-        {"game":"POKEMON","id":"base5-4","name":"Dark Charizard","set":"Team Rocket","number":"4/82","tcgplayerId":"84572","printing":"1st Edition Holofoil","printingUnique":True,"language":"EN","market":"DE","graded":True,"grader":"PSA","grade":"5"},
-        {"game":"POKEMON","id":"base2-3","name":"Flareon","set":"Jungle","number":"3/64","tcgplayerId":"45129","printing":"Holofoil","printingUnique":True,"language":"EN","market":"DE","graded":True,"grader":"PSA","grade":"8"},
-        {"game":"POKEMON","id":"sv10-193","name":"Misty's Psyduck","localName":"Mistys Enton","set":"Destined Rivals","setAliases":["Ewige Rivalen"],"number":"193/182","printing":"Holofoil","printingUnique":True,"language":"DE","market":"DE","graded":True,"grader":"CGC","grade":"9"},
+        {"game":"POKEMON","id":"base5-4","name":"Dark Charizard","set":"Team Rocket","number":"4/82","tcgplayerId":"84572","printing":"1st Edition Holofoil","printingUnique":True,"language":"EN","market":"DE","graded":True,"grader":"PSA","grade":"5","gradedOnly":True},
+        {"game":"POKEMON","id":"base2-3","name":"Flareon","set":"Jungle","number":"3/64","tcgplayerId":"45129","printing":"Holofoil","printingUnique":True,"language":"EN","market":"DE","graded":True,"grader":"PSA","grade":"8","gradedOnly":True},
+        {"game":"POKEMON","id":"sv10-193","name":"Misty's Psyduck","localName":"Mistys Enton","set":"Destined Rivals","setAliases":["Ewige Rivalen"],"number":"193/182","printing":"Holofoil","printingUnique":True,"language":"DE","market":"DE","graded":True,"grader":"CGC","grade":"9","gradedOnly":True},
     ]
     rows=[]
     for card in fixtures:
         for attempt in range(9):
             result=call("/v1/prices", {"schemaVersion":2,"cards":[card]})
-            if all(r.get("key", "").startswith("v6:") for r in result.get("results",[])):
+            if all(r.get("key", "").startswith("v7:") for r in result.get("results",[])):
                 break
             if attempt == 8:
                 raise AssertionError("Price request still served an older matching revision")
@@ -99,6 +99,7 @@ def main():
             provider_probe["probeFailed"]=True
     report={"status":status,"cards":rows,"sealed":sealed,"gradedProviderProbe":provider_probe}
     Path("price-verification.json").write_text(json.dumps(report,indent=2))
+    assert any(row.get("graded") for row in rows), "No graded quotes returned across the entire live fixture set; see price-verification.json"
     print("Live price API: schema, source, currency and language separation checks passed.")
     print("Graded provider access:",json.dumps(provider_probe))
     for card,row in zip(fixtures,rows):
