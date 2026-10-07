@@ -8,6 +8,41 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SealedPricingTest {
+    @Test fun publisherJapaneseAzureEntriesAreFoundByEnglishNameAndNativeCode() = runBlocking {
+        val dir = java.nio.file.Files.createTempDirectory("sealed-publisher-regression").toFile()
+        try {
+            java.io.File(dir,"SEALED_ONE_PIECE.json").writeText("""{"groups":{"24537":"The Azure Sea's Seven"},"items":[[665598,"The Azure Sea's Seven Booster Box",24537,269.83,"EN","TCGplayer market"]]}""")
+            java.io.File(dir,"SEALED_REGIONAL_V4_ONE_PIECE.json").writeText("""{"schemaVersion":4,"items":[
+              {"productId":-864452,"name":"The Azure Sea's Seven Booster Box","candidateLanguages":["EN"],"aliases":["OP14"],"imageUrls":{"EN":"https://tcgplayer-cdn.tcgplayer.com/product/665598_in_400x400.jpg"},"catalogueProductIds":{"EN":665598}},
+              {"productId":-9000000010142,"name":"The Azure Sea's Seven Japanese Booster Box","candidateLanguages":["JA"],"languages":["JA"],"aliases":["OP14","OP-14","蒼海の七傑"],"availabilityEvidence":"Japanese set confirmed by Bandai · OP14"},
+              {"productId":-9000000010141,"name":"The Azure Sea's Seven Japanese Booster Pack","candidateLanguages":["JA"],"languages":["JA"],"aliases":["OP14","OP-14","蒼海の七傑"],"imageUrl":"https://www.onepiece-cardgame.com/op14-pack.webp"}
+            ]}""")
+            val api = CardIndexApi(Http(),dir)
+            val japanese = api.searchSealed(Game.ONE_PIECE,"the azure","JA")
+            assertEquals(2,japanese.size)
+            assertTrue(japanese.all { it.language == "JA" && it.price == null })
+            assertEquals(2,api.searchSealed(Game.ONE_PIECE,"OP-14","JA").size)
+            assertEquals(2,api.searchSealed(Game.ONE_PIECE,"蒼海の七傑","JA").size)
+            assertNotNull(japanese.first { it.name.endsWith("Pack") }.imageUrl)
+            assertTrue(api.searchSealed(Game.ONE_PIECE,"the azure","DE").isEmpty())
+            assertTrue(api.searchSealed(Game.ONE_PIECE,"the azure","EN").single().imageUrl!!.contains("665598"))
+            assertEquals(665598L,api.searchSealed(Game.ONE_PIECE,"OP14","EN").single().productId)
+        } finally { dir.deleteRecursively() }
+    }
+
+    @Test fun matchingPhotoSurvivesAResponseWithoutEnoughPriceEvidence() = runBlocking {
+        MockWebServer().use { web ->
+            web.start()
+            val api = PriceServerApi { web.url("/").toString() to "test-key" }
+            val p = SealedProduct(Game.POKEMON,-784949,"Surging Sparks Booster Box","Display",null,language="DE")
+            web.enqueue(MockResponse().setBody("""{"price":null,"reason":"not_found","imageUrl":"https://i.ebayimg.com/images/german-box.jpg"}"""))
+            val result = api.sealed(p)
+            assertNull(result.quote)
+            assertEquals("not_found",result.reason)
+            assertEquals("https://i.ebayimg.com/images/german-box.jpg",result.imageUrl)
+        }
+    }
+
     @Test fun yesterdayCatalogueDoesNotInventGermanOnePieceOrGermanJapanesePokemon() {
         assertEquals(listOf("EN"), CardIndexApi.regionalCandidateLanguages(Game.ONE_PIECE, "Two Legends Booster Box", listOf("OP08"), emptyList()))
         assertEquals(listOf("JA"), CardIndexApi.regionalCandidateLanguages(Game.ONE_PIECE, "Two Legends Booster Box (Non-English)", listOf("OP08"), emptyList()))

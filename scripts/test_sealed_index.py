@@ -1,8 +1,44 @@
 import unittest
-from build_sealed_index import build, candidate_languages
+from build_sealed_index import build, candidate_languages, parse_official_boosters, add_official_one_piece, attach_catalogue_images
 from build_card_index import sealed_item, japanese_name_aliases
 
 class SealedIndexTest(unittest.TestCase):
+    def test_publisher_japanese_op14_exists_without_cardmarket_non_english_row(self):
+        html='''<li class="linkListColBox" data-cat="boosters"><a href="/products/boosters/op14.php"><img data-src="/op14-pack.webp"><h4 class="linkListColTitle">ブースターパック 蒼海の七傑【OP-14】</h4><time datetime="2025-11-22"></time></a></li>'''
+        entries=parse_official_boosters(html, today='2026-10-07')
+        self.assertEqual('OP14',entries[0]['code'])
+        self.assertEqual([],parse_official_boosters(html,today='2025-01-01'))
+        index=build('ONE_PIECE',[{'idProduct':864452,'name':"The Azure Sea's Seven Booster Box",'categoryName':'One Piece Booster Boxes'}],[])
+        add_official_one_piece(index,entries)
+        japanese=[r for r in index['items'] if r['candidateLanguages']==['JA']]
+        self.assertEqual(2,len(japanese))
+        self.assertTrue(all("The Azure Sea's Seven" in r['name'] and 'OP14' in r['aliases'] and '蒼海の七傑' in r['aliases'] for r in japanese))
+        self.assertTrue(all(r['referencePrice'] is None for r in japanese))
+        pack=next(r for r in japanese if r['name'].endswith('Pack'))
+        box=next(r for r in japanese if r['name'].endswith('Box'))
+        self.assertTrue(pack['imageUrl'].endswith('op14-pack.webp'))
+        self.assertIsNone(box['imageUrl'])
+        ids=[r['productId'] for r in japanese]
+        add_official_one_piece(index,entries)
+        self.assertEqual(ids,[r['productId'] for r in index['items'] if r['candidateLanguages']==['JA']])
+
+    def test_images_are_attached_only_to_the_same_printed_language_and_unit(self):
+        index=build('POKEMON',[{'idProduct':784949,'name':'Surging Sparks Booster Box','categoryName':'Pokémon Display'},
+                              {'idProduct':784950,'name':'Surging Sparks Booster','categoryName':'Pokémon Booster'}],[])
+        native={'items':[[100,'Surging Sparks Booster Box',1,20,'EN'],[101,'Surging Sparks Booster Pack',1,2,'EN']]}
+        attach_catalogue_images(index,native)
+        self.assertIn('/100_',index['items'][0]['imageUrls']['EN'])
+        self.assertIn('/101_',index['items'][1]['imageUrls']['EN'])
+        self.assertNotIn('DE',index['items'][0]['imageUrls'])
+        half=build('POKEMON',[{'idProduct':784951,'name':'Surging Sparks Booster Box (18 Packs)','categoryName':'Pokémon Display'}],[])
+        attach_catalogue_images(half,native)
+        self.assertNotIn('imageUrls',half['items'][0])
+
+    def test_second_premium_booster_is_not_tagged_as_the_first(self):
+        index=build('ONE_PIECE',[{'idProduct':900,'name':'One Piece Card The Best vol.2 Booster Box (Non-English)','categoryName':'One Piece Booster Boxes'}],[])
+        self.assertIn('PRB02',index['items'][0]['aliases'])
+        self.assertNotIn('PRB01',index['items'][0]['aliases'])
+
     def test_one_piece_is_not_cloned_into_german_and_non_english_is_only_a_candidate(self):
         products=[{"idProduct":753001,"name":"Two Legends Booster Box","categoryName":"One Piece Booster Boxes"},
                   {"idProduct":766868,"name":"Two Legends Booster Box (Non-English)","categoryName":"One Piece Booster Boxes"}]

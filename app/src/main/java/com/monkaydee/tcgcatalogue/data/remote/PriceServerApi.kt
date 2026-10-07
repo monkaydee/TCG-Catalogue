@@ -154,7 +154,7 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     }
 
     data class SealedQuote(val amount: Double, val currency: String, val source: String, val fetchedAt: Long?, val stale: Boolean, val listings: Int?)
-    data class SealedResult(val quote: SealedQuote?, val reason: String?)
+    data class SealedResult(val quote: SealedQuote?, val reason: String?, val imageUrl: String? = null)
     suspend fun sealed(product: SealedProduct): SealedResult {
         val body = buildJsonObject {
             put("game", product.game.name); put("productId", product.productId.toString())
@@ -164,11 +164,14 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         }
         val result = post("/v1/sealed/price", body.toString().toRequestBody(JSON)) ?: return SealedResult(null, "unavailable")
         val p = result["price"]
+        val imageUrl = result["imageUrl"].str()?.takeIf { url ->
+            runCatching { val uri = java.net.URI(url); uri.scheme == "https" && uri.host == "i.ebayimg.com" }.getOrDefault(false)
+        }
         val amount = p?.get("amount").dbl()?.takeIf { it.isFinite() && it > 0 }
         val currency = p?.get("currency").str()?.takeIf { it in setOf("USD", "EUR") }
-        if (amount == null || currency == null) return SealedResult(null, result["reason"].str() ?: "not_found")
+        if (amount == null || currency == null) return SealedResult(null, result["reason"].str() ?: "not_found", imageUrl)
         return SealedResult(SealedQuote(amount, currency, p["source"].str().orEmpty(),
-            p["fetchedAt"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }, p["stale"].str() == "true", p["listings"].int()), result["reason"].str())
+            p["fetchedAt"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }, p["stale"].str() == "true", p["listings"].int()), result["reason"].str(), imageUrl)
     }
 
     /** PSA's record for a cert number, or null when PSA doesn't know it. */

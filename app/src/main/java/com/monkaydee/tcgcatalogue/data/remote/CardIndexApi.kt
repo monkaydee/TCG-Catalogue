@@ -140,7 +140,8 @@ class CardIndexApi(private val http: Http, private val dir: File) {
 
     suspend fun regionalSealed(game: Game, language: String): List<SealedProduct> {
         if (game != Game.POKEMON && game != Game.ONE_PIECE) return emptyList()
-        val file = dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
+        // New catalogue filename bypasses pre-fix daily caches immediately after this update.
+        val file = dailyFile("SEALED_REGIONAL_V4_${game.name}.json") ?: dailyFile("SEALED_REGIONAL_${game.name}.json") ?: throw java.io.IOException("Regional sealed catalogue unavailable")
         return withContext(Dispatchers.Default) {
             val root = http.json.parseToJsonElement(file.readText())
             root["items"].arr().orEmpty().mapNotNull { row ->
@@ -153,8 +154,10 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                 SealedProduct(game, id, name, row["groupName"].str().orEmpty(), null,
                     language = language, currency = "EUR", source = "", referencePrice = row["referencePrice"].dbl(),
                     referenceCurrency = "EUR", referenceSource = "Cardmarket aggregate guide (not language-specific)",
+                    imageUrl = row["imageUrls"]?.get(language).str() ?: row["imageUrl"].str(),
+                    catalogueProductId = row["catalogueProductIds"]?.get(language).str()?.toLongOrNull(),
                     aliases = aliases, requiresLanguageConfirmation = true,
-                    availabilityEvidence = if (declared.isNotEmpty()) "Catalogue explicitly names ${CardLanguage.displayCode(language)}" else "Language variant not verified")
+                    availabilityEvidence = row["availabilityEvidence"].str() ?: if (declared.isNotEmpty()) "Catalogue explicitly names ${CardLanguage.displayCode(language)}" else "Language variant not verified")
             }
         }
     }
@@ -165,7 +168,11 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         val regional = try { regionalSealed(game, language) }
         catch (cancel: kotlinx.coroutines.CancellationException) { throw cancel }
         catch (failure: Exception) { if (language == "EN" || native.isNotEmpty()) emptyList() else throw failure }
-        val catalogue = native + regional
+        val nativeIds = native.map { it.productId }.toSet()
+        val regionalByNativeId = regional.filter { it.catalogueProductId != null }.associateBy { it.catalogueProductId }
+        val catalogue = native.map { product ->
+            product.copy(aliases = (product.aliases + regionalByNativeId[product.productId]?.aliases.orEmpty()).distinct())
+        } + regional.filter { it.catalogueProductId !in nativeIds }
         return catalogue.filter { p -> words.all { w -> p.name.lowercase().contains(w) || p.groupName.lowercase().contains(w) || p.aliases.any { it.lowercase().contains(w) } } }
             .distinctBy { it.productId }.take(limit)
     }

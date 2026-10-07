@@ -3,6 +3,7 @@ package com.monkaydee.tcgcatalogue.ui.screens
 import com.monkaydee.tcgcatalogue.data.CardLanguage
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Checkbox
@@ -59,7 +61,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
@@ -162,10 +164,7 @@ private fun SealedRow(item: SealedItem, s: AppSettings, onClick: () -> Unit) {
     val unitPrice = item.price?.takeIf { it.isFinite() && it > 0 }
     Card(Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            AsyncImage(
-                model = item.imageUrl, contentDescription = null, contentScale = ContentScale.Fit,
-                modifier = Modifier.size(64.dp).clip(RoundedCornerShape(8.dp)),
-            )
+            SealedImage(item.imageUrl, Modifier.size(64.dp).clip(RoundedCornerShape(8.dp)))
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(item.name, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
@@ -286,7 +285,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                                 finally { quoting = false }
                             }
                         }.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                            AsyncImage(r.imageUrl, null, Modifier.size(48.dp), contentScale = ContentScale.Fit)
+                            SealedImage(priced.imageUrl, Modifier.size(48.dp))
                             Spacer(Modifier.width(10.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(r.name, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
@@ -302,7 +301,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 }
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    AsyncImage(p.imageUrl, null, Modifier.size(96.dp), contentScale = ContentScale.Fit)
+                    SealedImage(p.imageUrl, Modifier.size(96.dp))
                     Spacer(Modifier.width(12.dp))
                     Column {
                         Text(p.name, style = MaterialTheme.typography.titleMedium)
@@ -342,4 +341,14 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
             }
         }
     }
+}
+
+/** Keep missing/failed product photos visible as a product placeholder instead of blank space. */
+@Composable
+private fun SealedImage(url: String?, modifier: Modifier) {
+    SubcomposeAsyncImage(
+        model = url, contentDescription = null, modifier = modifier, contentScale = ContentScale.Fit,
+        loading = { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(Modifier.size(18.dp)) } },
+        error = { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Icon(Icons.Default.Inventory2, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) } },
+    )
 }

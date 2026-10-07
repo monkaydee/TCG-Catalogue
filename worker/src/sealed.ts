@@ -7,11 +7,14 @@ import type { Env } from "./types";
 
 export interface SealedRequest { game: "pokemon" | "one_piece"; productId: string; name: string; language: "EN" | "DE" | "JA"; aliases?: string[]; market?: "US" | "DE"; }
 export interface SealedPrice { amount: number; currency: string; source: string; listings: number; low: number; high: number; fetchedAt: string; stale?: boolean; evidence?: string; excluded?: number; }
+interface SealedLookup { quote: SealedPrice | null; imageUrl: string | null; }
 const OP_CODES: Record<string, string> = {
   "romance dawn": "OP01", "paramount war": "OP02", "pillars of strength": "OP03", "kingdoms of intrigue": "OP04",
   "awakening of the new era": "OP05", "wings of the captain": "OP06", "500 years in the future": "OP07",
   "two legends": "OP08", "emperors in the new world": "OP09", "royal blood": "OP10", "a fist of divine speed": "OP11",
   "legacy of the master": "OP12", "carrying on his will": "OP13", "the best": "PRB01", "memorial collection": "EB01",
+  "the azure sea's seven": "OP14", "adventure on kami's island": "OP15", "the time of battle": "OP16",
+  "the world's strongest warriors": "OP17", "the dominance of god": "OP18", "egghead crisis": "EB04",
 };
 export function sealedType(name: string): string {
   if (/build\s*(?:&|and|und)\s*battle.*stadium/i.test(name)) return "battle-stadium";
@@ -116,6 +119,22 @@ export function parseSealedListings(json: unknown, card: SealedRequest, verified
   return { ...summary, currency, source:"eBay sealed listings (asking, shipping excluded)", fetchedAt:new Date().toISOString() };
 }
 
+/** Only photos belonging to the same verified language, set and sealed unit are usable. */
+export function sealedListingImage(json: unknown, card: SealedRequest, verifiedIds: ReadonlySet<string> = new Set()): string | null {
+  const rows = obj(json).itemSummaries;
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const item = obj(row), id = str(item.itemId) ?? "", title = str(item.title) ?? "";
+    if (!sealedTitleMatches(title, card, verifiedIds.has(id) ? card.language : undefined)) continue;
+    const image = str(obj(item.image).imageUrl);
+    if (!image) continue;
+    try {
+      const url = new URL(image);
+      if (url.protocol === "https:" && url.hostname === "i.ebayimg.com") return url.href;
+    } catch { /* A missing or malformed photo does not remove usable price evidence. */ }
+  }
+  return null;
+}
+
 /** Broad identity query: language and sealed state are verified on the returned items. */
 export function sealedSearchParams(card: SealedRequest, useCode = false): URLSearchParams {
   const name = card.name.replace(/\([^)]*\)/g, "").trim();
@@ -126,7 +145,7 @@ export function sealedSearchParams(card: SealedRequest, useCode = false): URLSea
   return new URLSearchParams({q:[card.game === "pokemon" ? "Pokemon" : "One Piece",identity,family].filter(Boolean).join(" "),filter:"buyingOptions:{FIXED_PRICE}",limit:"100",fieldgroups:"MATCHING_ITEMS,ASPECT_REFINEMENTS"});
 }
 
-async function searchSealedListings(card: SealedRequest, auth: string, budgets: Budgets, useCode: boolean): Promise<SealedPrice | null> {
+async function searchSealedListings(card: SealedRequest, auth: string, budgets: Budgets, useCode: boolean): Promise<SealedLookup> {
   const params = sealedSearchParams(card,useCode);
   const search = async () => {
     if (!(await budgets.reserve("ebay",1))) throw new Error("budget_exhausted");
@@ -143,10 +162,11 @@ async function searchSealedListings(card: SealedRequest, auth: string, budgets: 
   }
   const items = (data:unknown) => Array.isArray(obj(data).itemSummaries) ? obj(data).itemSummaries as unknown[] : [];
   const verified = new Set(items(filtered).map(i=>str(obj(i).itemId)).filter((id):id is string=>!!id));
-  return parseSealedListings({itemSummaries:[...items(filtered),...items(initial)]},card,verified);
+  const data = {itemSummaries:[...items(filtered),...items(initial)]};
+  return {quote:parseSealedListings(data,card,verified),imageUrl:sealedListingImage(data,card,verified)};
 }
 export async function sealedPrice(req: Request, env: Env): Promise<Response> {
-  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:6}), { status, headers: { "content-type": "application/json" } });
+  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:7}), { status, headers: { "content-type": "application/json" } });
   if (Number(req.headers.get("content-length") ?? 0) > 4000) return json({error:"body_too_large"},413);
   let o: Record<string, unknown>;
   try { o = obj(await req.json()); } catch { return json({error:"invalid_json"},400); }
@@ -155,23 +175,24 @@ export async function sealedPrice(req: Request, env: Env): Promise<Response> {
   if (!["pokemon","one_piece"].includes(game ?? "") || !["EN","DE","JA"].includes(language ?? "") || !name || name.length > 200 || !productId || !/^-?\d{1,16}$/.test(productId)) return json({error:"invalid_product"},400);
   const aliases = Array.isArray(o.aliases) ? o.aliases.filter((v): v is string => typeof v === "string" && v.length <= 100).slice(0, 12) : [];
   const card = { game, name, language, productId, aliases, market:o.market === "DE" || o.market === "US" ? o.market : undefined } as SealedRequest;
-  const key = `sealed:v6:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
+  const key = `sealed:v7:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
   const cache = new Cache(env.DB), now = Date.now();
-  const entry = (await cache.getMany<SealedPrice | null>([key])).get(key);
-  if (entry && entry.expiresAt > now) return json({price:entry.value,reason:entry.value ? null : "not_found"});
+  const entry = (await cache.getMany<SealedLookup>([key])).get(key);
+  if (entry && entry.expiresAt > now) return json({price:entry.value.quote,imageUrl:entry.value.imageUrl,reason:entry.value.quote ? null : "not_found"});
   const auth = env.EBAY_CLIENT_ID && env.EBAY_CLIENT_SECRET ? `${env.EBAY_CLIENT_ID}:${env.EBAY_CLIENT_SECRET}` : null;
-  if (!auth) return json({price:entry?.value ? {...entry.value,stale:true} : null,reason:"provider_not_configured"});
+  if (!auth) return json({price:entry?.value.quote ? {...entry.value.quote,stale:true} : null,imageUrl:entry?.value.imageUrl,reason:"provider_not_configured"});
   const budgets = await new Budgets(env.DB,env).load();
-  if (!budgets.remaining("ebay")) return json({price:entry?.value ? {...entry.value,stale:true} : null,reason:"budget_exhausted"});
+  if (!budgets.remaining("ebay")) return json({price:entry?.value.quote ? {...entry.value.quote,stale:true} : null,imageUrl:entry?.value.imageUrl,reason:"budget_exhausted"});
   try {
     let result = await searchSealedListings(card,auth,budgets,false);
-    if (!result) {
+    if (!result.quote) {
       // At most four Browse calls. A failed fallback must not cache a false negative.
       const other: SealedRequest = {...card,market:marketplace(card.language,card.market).currency === "EUR" ? "US" : "DE"};
-      result = await searchSealedListings(other,auth,budgets,true);
-      if (result) result = {...result,source:result.source+` · ${marketplace(other.language,other.market).site} international reference`};
+      const fallback = await searchSealedListings(other,auth,budgets,true);
+      result = {quote:fallback.quote ? {...fallback.quote,source:fallback.quote.source+` · ${marketplace(other.language,other.market).site} international reference`} : null,
+        imageUrl:fallback.imageUrl ?? result.imageUrl};
     }
-    await cache.putMany([{key,value:result,source:result?.source ?? null,fetchedAt:now,ttlMs:result ? 86_400_000 : 3_600_000}]);
-    return json({price:result,reason:result ? null : "not_found"});
-  } catch { return json({price:entry?.value ? {...entry.value,stale:true} : null,reason:"unavailable"}); }
+    await cache.putMany([{key,value:result,source:result.quote?.source ?? null,fetchedAt:now,ttlMs:result.quote ? 86_400_000 : 3_600_000}]);
+    return json({price:result.quote,imageUrl:result.imageUrl,reason:result.quote ? null : "not_found"});
+  } catch { return json({price:entry?.value.quote ? {...entry.value.quote,stale:true} : null,imageUrl:entry?.value.imageUrl,reason:"unavailable"}); }
 }

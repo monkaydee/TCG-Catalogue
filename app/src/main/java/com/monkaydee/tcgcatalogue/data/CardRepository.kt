@@ -1173,8 +1173,8 @@ class CardRepository(
         if (product.productId > 0 && product.price != null) return product.copy(source = product.source + if (product.fetchedAt?.let { System.currentTimeMillis() - it > 2 * 86_400_000L } == true) " · " + AppStrings.get(R.string.quote_catalogue_stale) else "")
         if (!server.isSetUp()) return product.copy(quoteReason = "provider_not_configured")
         val response = server.sealed(product.copy(market = if (settings.current().currency == "EUR") "DE" else "US"))
-        val quote = response.quote ?: return product.copy(quoteReason = response.reason)
-        return product.copy(price = quote.amount, currency = quote.currency,
+        val quote = response.quote ?: return product.copy(quoteReason = response.reason, imageUrl = response.imageUrl ?: product.imageUrl)
+        return product.copy(price = quote.amount, currency = quote.currency, imageUrl = response.imageUrl ?: product.imageUrl,
             source = quote.source + (quote.listings?.let { " · $it listings" } ?: "") + if (quote.stale) " · stale" else "",
             priceScope = "language-specific-asking", fetchedAt = quote.fetchedAt,
             availabilityEvidence = "Exact-language matching listings", requiresLanguageConfirmation = true)
@@ -1215,11 +1215,11 @@ class CardRepository(
                     language = item.language, imageUrl = item.imageUrl)
             val p = runCatching { sealedQuote(catalogue) }.getOrNull()
             if (p?.price == null) {
-                db.sealed().update(item.copy(priceSource = item.priceSource.substringBefore(" · Latest quote unavailable") + " · Latest quote unavailable; previous quote retained"))
+                db.sealed().update(item.copy(imageUrl = p?.imageUrl ?: item.imageUrl, priceSource = item.priceSource.substringBefore(" · Latest quote unavailable") + " · Latest quote unavailable; previous quote retained"))
                 continue
             }
             // Preserve the original purchase currency when a quote changes market/currency.
-            p.price?.let { db.sealed().update(item.copy(price = it, priceCurrency = p.currency,
+            p.price?.let { db.sealed().update(item.copy(price = it, priceCurrency = p.currency, imageUrl = p.imageUrl ?: item.imageUrl,
                 purchaseCurrency = item.purchaseCurrency ?: item.priceCurrency,
                 priceSource = p.source, priceScope = p.priceScope, priceUpdatedAt = p.fetchedAt ?: System.currentTimeMillis())) }
         }

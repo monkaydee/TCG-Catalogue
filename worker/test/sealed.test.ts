@@ -1,5 +1,5 @@
 import { afterEach, describe, it, expect, vi } from "vitest";
-import { parseSealedListings, sealedPrice, sealedSearchParams, sealedTitleMatches, type SealedRequest } from "../src/sealed";
+import { parseSealedListings, sealedListingImage, sealedPrice, sealedSearchParams, sealedTitleMatches, type SealedRequest } from "../src/sealed";
 import { languageAspectFilter } from "../src/providers/ebay";
 import type { Env } from "../src/types";
 
@@ -16,21 +16,40 @@ it("falls back across markets while retaining Japanese identity and charging eac
     const market=new Headers(init?.headers).get("X-EBAY-C-MARKETPLACE-ID");
     searches.push({url:new URL(input),market});
     const title="One Piece OP-08 Japanese Booster Box sealed";
-    return new Response(JSON.stringify({itemSummaries:market==="EBAY_DE" ? [] : [listing(title,"50","USD","1"),listing(title,"60","USD","2"),listing(title,"70","USD","3")]}));
+    return new Response(JSON.stringify({itemSummaries:market==="EBAY_DE" ? [] : [{...listing(title,"50","USD","1"),image:{imageUrl:"https://i.ebayimg.com/images/japanese-box.jpg"}},listing(title,"60","USD","2"),listing(title,"70","USD","3")]}));
   }));
   const request={game:"one_piece",productId:"-766868",name:"Two Legends Booster Box (Non-English)",language:"JA",aliases:["OP08"],market:"DE"};
   const response=await sealedPrice(new Request("https://fixture/v1/sealed/price",{method:"POST",body:JSON.stringify(request)}),{DB:db,EBAY_CLIENT_ID:"fixture",EBAY_CLIENT_SECRET:"fixture"} as Env);
-  const result=await response.json() as {price:{amount:number;currency:string;source:string};sealedMatchingRevision:number};
+  const result=await response.json() as {price:{amount:number;currency:string;source:string};sealedMatchingRevision:number;imageUrl:string};
   expect(result.price.amount).toBe(60);
   expect(result.price.currency).toBe("USD");
   expect(result.price.source).toContain("EBAY_US international reference");
-  expect(result.sealedMatchingRevision).toBe(6);
+  expect(result.sealedMatchingRevision).toBe(7);
+  expect(result.imageUrl).toBe("https://i.ebayimg.com/images/japanese-box.jpg");
   expect(searches.map(s=>s.market)).toEqual(["EBAY_DE","EBAY_US"]);
   expect(searches[1].url.searchParams.get("q")).toContain("OP-08");
   expect(reserved).toBe(2);
 });
 
 describe("exact-language sealed prices", () => {
+  it("matches OP14 Japanese boxes by code and rejects different codes and languages",()=>{
+    const p:SealedRequest={game:"one_piece",productId:"-9000000010142",name:"The Azure Sea's Seven Japanese Booster Box",language:"JA",aliases:["OP14","蒼海の七傑"]};
+    expect(sealedTitleMatches("One Piece OP-14 Japanese Booster Box sealed 24 Packs",p)).toBe(true);
+    expect(sealedTitleMatches("One Piece OP-15 Japanese Booster Box sealed",p)).toBe(false);
+    expect(sealedTitleMatches("One Piece OP-14 EB-04 Japanese Booster Box sealed",p)).toBe(false);
+    expect(sealedTitleMatches("One Piece OP-14 English Booster Box sealed",p)).toBe(false);
+    expect(sealedSearchParams(p,true).get("q")).toContain("OP-14");
+  });
+  it("can show a matching German photo with fewer than three price comparables",()=>{
+    const p:SealedRequest={game:"pokemon",productId:"-784949",name:"Surging Sparks Booster Box",language:"DE",aliases:["Stürmische Funken"]};
+    const rows={itemSummaries:[
+      {...listing("Pokemon Surging Sparks English Booster Box sealed","100","EUR","wrong"),image:{imageUrl:"https://i.ebayimg.com/images/wrong.jpg"}},
+      {...listing("Pokemon Stürmische Funken Booster Box Deutsch OVP","100","EUR","valid"),image:{imageUrl:"https://i.ebayimg.com/images/german.jpg"}},
+    ]};
+    expect(parseSealedListings(rows,p)).toBeNull();
+    expect(sealedListingImage(rows,p)).toBe("https://i.ebayimg.com/images/german.jpg");
+    expect(sealedListingImage({itemSummaries:[{...rows.itemSummaries[1],image:{imageUrl:"https://unrelated.example/image.jpg"}}]},p)).toBeNull();
+  });
   it("uses the sealed item's Language facet without inferring it from a German seller", () => {
     const title="One Piece Two Legends Booster Box OVP";
     const p:SealedRequest={game:"one_piece",productId:"-766868",name:"Two Legends Booster Box (Non-English)",language:"JA",market:"DE",aliases:["OP08"]};

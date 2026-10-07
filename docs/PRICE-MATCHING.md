@@ -111,3 +111,6 @@ Pack-count matching distinguishes German 18er half displays from full 36-pack bo
 ## Japanese short labels
 
 The app shows Japanese cards and sealed products as JP, including language badges, product confirmation, price-reference labels and collection exports. Language selectors show Japanese (JP) or 日本語 (JP). Existing collection records, JSON backups, native catalogue identifiers and price requests keep the ISO Japanese language code JA/ja, so changing the displayed shorthand does not split saved identities or alter price matching.
+
+
+Regional sealed catalogue schema 4 supplements Cardmarket with released Japanese One Piece booster sets from Bandai's publisher catalogue. OP-14 has independent Japanese pack/box identities, native and English names, and OP14/OP-14 aliases; it does not require a Cardmarket Non-English row. The versioned V4 filename bypasses old daily caches after the app update. Pack artwork is used for packs only. Exact-language TCGplayer catalogue matches provide photos and deduplicate existing native results. Other regional photos come from eBay items accepted by the same language/set/unit checks as prices, with a separate photo field so insufficient price evidence does not suppress the photo. Sealed cache revision 7 retains that image metadata.

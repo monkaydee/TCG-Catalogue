@@ -75,10 +75,11 @@ def main():
         ("Surging Sparks Booster Box","DE","-784949",["Stürmische Funken"],"DE","POKEMON"),
         ("Romance Dawn Booster Box","JA","-2",["OP01","ロマンスドーン"],"DE","ONE_PIECE"),
         ("Two Legends Booster Box (Non-English)","JA","-766868",["OP08","Two Legends","二つの伝説"],"DE","ONE_PIECE"),
+        ("The Azure Sea's Seven Japanese Booster Box","JA","-9000000010142",["OP14","蒼海の七傑","The Azure Sea's Seven"],"DE","ONE_PIECE"),
     ]:
         for attempt in range(9):
             answer=call("/v1/sealed/price",{"game":game,"productId":product_id,"name":name,"language":language,"aliases":aliases,"market":market})
-            if answer.get("sealedMatchingRevision")==6:
+            if answer.get("sealedMatchingRevision")==7:
                 break
             if attempt==8:
                 raise AssertionError("Updated sealed matching did not propagate")
@@ -89,6 +90,8 @@ def main():
             if quote["currency"]!=("EUR" if market=="DE" else "USD"):
                 assert "international reference" in quote["source"]
             assert quote["low"]<=quote["amount"]<=quote["high"]
+        if answer.get("imageUrl"):
+            assert answer["imageUrl"].startswith("https://i.ebayimg.com/")
         sealed.append({"name":name,"language":language,"market":market,**answer})
     # Inspect graded-provider access directly: HTTP/schema/counts only, never credentials.
     provider_probe={"configured":bool(os.environ.get("JUSTTCG_KEY"))}
