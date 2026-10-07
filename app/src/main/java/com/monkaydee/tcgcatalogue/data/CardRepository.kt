@@ -438,7 +438,7 @@ class CardRepository(
             native.cardmarketId == null || native.cardmarketId != card.cardmarketId) return null
         val localVariant = native.variants.firstOrNull { it.key == variant.key } ?: return null
         val amount = localVariant.prices[PriceSource.CARDMARKET]?.takeIf { it.isFinite() && it > 0 } ?: return null
-        return Price(amount, PriceSource.CARDMARKET, AppStrings.get(R.string.quote_native_cardmarket_reference, language) + " · " + AppStrings.get(R.string.quote_cardmarket_aggregate))
+        return Price(amount, PriceSource.CARDMARKET, AppStrings.get(R.string.quote_native_cardmarket_reference, CardLanguage.displayCode(language)) + " · " + AppStrings.get(R.string.quote_cardmarket_aggregate))
     }
 
     /** A printing the card databases have no price for (e.g. many 1st Editions): the price server's, if any. */

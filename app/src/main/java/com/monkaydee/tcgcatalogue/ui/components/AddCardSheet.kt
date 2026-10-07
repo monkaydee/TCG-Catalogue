@@ -93,7 +93,7 @@ data class AddRequest(
 /** Card languages, named in the app's language ("Japanese" in English, "Japanisch" in German). */
 val CARD_LANGUAGES: List<Pair<String, String>>
     get() = listOf("EN", "DE", "FR", "IT", "ES", "PT", "NL", "PL", "JA", "KO", "ZH").map { code ->
-        code to java.util.Locale(code.lowercase()).getDisplayLanguage(java.util.Locale.getDefault()).replaceFirstChar { it.titlecase(java.util.Locale.getDefault()) }
+        code to (java.util.Locale(code.lowercase()).getDisplayLanguage(java.util.Locale.getDefault()).replaceFirstChar { it.titlecase(java.util.Locale.getDefault()) } + if (code == "JA") " (JP)" else "")
     }
 
 /**

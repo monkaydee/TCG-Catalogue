@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import com.monkaydee.tcgcatalogue.data.CardLanguage
 import androidx.compose.foundation.layout.Arrangement
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import androidx.compose.foundation.layout.Column
@@ -376,7 +377,7 @@ private fun RawReferencePanel(c: OwnedCard, s: AppSettings, repo: CardRepository
             }
             quote?.let { q ->
                 Text(Money.format(Money.convert(q.amount, q.currency, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.titleLarge)
-                Text(listOf(c.language, q.source.label).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
+                Text(listOf(CardLanguage.displayCode(c.language), q.source.label).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
                 q.note?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
             }
             if (!loading && quote == null) Text(stringResource(if (failed) R.string.card_raw_reference_failed else R.string.card_raw_reference_missing), style = MaterialTheme.typography.bodySmall)

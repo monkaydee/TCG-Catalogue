@@ -106,3 +106,8 @@ Sealed matching revision 6 queries identity and product format without requiring
 Live deployment verification requires positive quotes for the reported Japanese Two Legends booster box and German Surging Sparks booster box, in addition to the wider sealed fixtures.
 
 Pack-count matching distinguishes German 18er half displays from full 36-pack boxes, treats 36x Boosters as contents of one box, and rejects box multipacks such as 2xBoosterbox and Box x 2. Seller selection menus are excluded from comparables.
+
+
+## Japanese short labels
+
+The app shows Japanese cards and sealed products as JP, including language badges, product confirmation, price-reference labels and collection exports. Language selectors show Japanese (JP) or 日本語 (JP). Existing collection records, JSON backups, native catalogue identifiers and price requests keep the ISO Japanese language code JA/ja, so changing the displayed shorthand does not split saved identities or alter price matching.

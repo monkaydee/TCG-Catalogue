@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.data.remote
 
+import com.monkaydee.tcgcatalogue.data.CardLanguage
 import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.db.Game
 import com.monkaydee.tcgcatalogue.ui.AppStrings
@@ -153,7 +154,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                     language = language, currency = "EUR", source = "", referencePrice = row["referencePrice"].dbl(),
                     referenceCurrency = "EUR", referenceSource = "Cardmarket aggregate guide (not language-specific)",
                     aliases = aliases, requiresLanguageConfirmation = true,
-                    availabilityEvidence = if (declared.isNotEmpty()) "Catalogue explicitly names $language" else "Language variant not verified")
+                    availabilityEvidence = if (declared.isNotEmpty()) "Catalogue explicitly names ${CardLanguage.displayCode(language)}" else "Language variant not verified")
             }
         }
     }

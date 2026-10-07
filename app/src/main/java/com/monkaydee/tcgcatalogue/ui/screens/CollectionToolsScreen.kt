@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import com.monkaydee.tcgcatalogue.data.CardLanguage
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -86,7 +87,7 @@ fun CardLedgerPanel(repo: CardRepository, card: OwnedCard, s: AppSettings) {
     TextButton(onClick = { submission = GradingSubmission(cardRowId = card.id, company = card.grader ?: "PSA") }) { Text(stringResource(R.string.tools_grading)) }
     subs.filter { it.cardRowId == card.id }.forEach { sub -> TextButton(onClick = { submission = sub }) { Text(sub.company + " · " + sub.reference + " · " + stringResource(submissionStatus(sub.status))) } }
     Text(stringResource(R.string.tools_evidence), style = MaterialTheme.typography.titleSmall)
-    Text(listOfNotNull(card.language, card.variantLabel, card.condition, card.priceSource,
+    Text(listOfNotNull(CardLanguage.displayCode(card.language), card.variantLabel, card.condition, card.priceSource,
         card.priceUpdatedAt?.let { DateFormat.getDateTimeInstance().format(Date(it)) }).joinToString(" · "))
     if (card.price != null) Text(stringResource(if (System.currentTimeMillis() - (card.priceUpdatedAt ?: 0) > 7 * 86400000L) R.string.tools_stale else R.string.tools_current))
     card.priceNote?.let { Text(it) }

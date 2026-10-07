@@ -31,7 +31,7 @@ object CollectionExport {
                 val owned = lots.filter { it.cardRowId == c.id }
                 val pnl = CostLedger.pnl(c, owned, settings.currency, settings.usdToEur)
                 val entries: List<CostLot?> = owned.ifEmpty { listOf(null) }
-                entries.forEach { l -> out.write(listOf(c.cardId, c.game, c.name, c.setName, c.number, c.variantLabel, c.language, c.condition, c.grader, c.grade, c.certNumber, c.quantity, l?.id, l?.quantity, l?.purchase, l?.grading, l?.shipping, l?.tax, l?.currency, c.manualPrice ?: c.price, c.manualCurrency ?: c.priceCurrency, if (c.manualPrice != null) "manual" else c.priceSource, c.priceUpdatedAt, c.priceNote, c.imageUrl, pnl, settings.currency).joinToString(",") { cell(it) } + "\n") }
+                entries.forEach { l -> out.write(listOf(c.cardId, c.game, c.name, c.setName, c.number, c.variantLabel, CardLanguage.displayCode(c.language), c.condition, c.grader, c.grade, c.certNumber, c.quantity, l?.id, l?.quantity, l?.purchase, l?.grading, l?.shipping, l?.tax, l?.currency, c.manualPrice ?: c.price, c.manualCurrency ?: c.priceCurrency, if (c.manualPrice != null) "manual" else c.priceSource, c.priceUpdatedAt, c.priceNote, c.imageUrl, pnl, settings.currency).joinToString(",") { cell(it) } + "\n") }
             }
         }
     }
@@ -57,7 +57,7 @@ object CollectionExport {
                     val entries = lots.filter { it.cardRowId == card.id }
                     val basis = entries.map { CostLedger.basis(it, settings.currency, settings.usdToEur) }
                     val total = if (entries.sumOf { it.quantity } == card.quantity && basis.all { it != null }) basis.filterNotNull().sum() else null
-                    val lines = listOf("${card.name} · ×${card.quantity}", "${card.setName} · ${card.number} · ${card.language} · ${card.variantLabel}", listOfNotNull(card.condition, card.certNumber).joinToString(" · "),
+                    val lines = listOf("${card.name} · ×${card.quantity}", "${card.setName} · ${card.number} · ${CardLanguage.displayCode(card.language)} · ${card.variantLabel}", listOfNotNull(card.condition, card.certNumber).joinToString(" · "),
                         "${context.getString(R.string.tools_costs)}: ${total?.let { Money.format(it, settings.currency) } ?: unknown}",
                         "${card.priceSource.orEmpty()} · ${Money.unitOrNull(card, settings.currency, settings.usdToEur)?.let { Money.format(it, settings.currency) } ?: unknown} · ${card.priceUpdatedAt?.let { DateFormat.getDateInstance().format(Date(it)) }.orEmpty()}")
                     lines.forEach { canvas.drawText(it.take(80), 110f, y, paint); y += 15f }

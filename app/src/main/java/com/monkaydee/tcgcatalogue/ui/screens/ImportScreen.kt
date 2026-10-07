@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import com.monkaydee.tcgcatalogue.data.CardLanguage
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -547,7 +548,7 @@ private fun RecognitionDetails(item: ImportItem, onDismiss: () -> Unit) {
                     },
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                item.hit?.language?.let { Text("🌐 $it", style = MaterialTheme.typography.bodySmall) }
+                item.hit?.language?.let { Text("🌐 ${CardLanguage.displayCode(it)}", style = MaterialTheme.typography.bodySmall) }
                 item.grade?.label?.let { Text("🏷 $it", style = MaterialTheme.typography.bodySmall) }
                 item.candidates.take(5).forEachIndexed { i, c ->
                     Text("${i + 1}. ${c.name} · ${c.setName} · ${c.number}", style = MaterialTheme.typography.bodySmall)

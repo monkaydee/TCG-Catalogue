@@ -1,5 +1,6 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
+import com.monkaydee.tcgcatalogue.data.CardLanguage
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -168,7 +169,7 @@ private fun SealedRow(item: SealedItem, s: AppSettings, onClick: () -> Unit) {
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(item.name, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text("${item.game.short} · ${item.language} · ${item.groupName}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("${item.game.short} · ${CardLanguage.displayCode(item.language)} · ${item.groupName}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 if (item.priceSource.isNotBlank()) Text(item.priceSource, style = MaterialTheme.typography.labelSmall)
                 item.referencePrice?.let { value -> Text("Aggregate reference: ${Money.format(value, item.referenceCurrency ?: "EUR")} · not language-specific", style = MaterialTheme.typography.labelSmall) }
                 item.priceUpdatedAt?.let { Text("Updated ${java.text.DateFormat.getDateInstance().format(java.util.Date(it))}", style = MaterialTheme.typography.labelSmall) }
@@ -249,7 +250,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 Text(stringResource(R.string.sealed_add), style = MaterialTheme.typography.titleLarge)
                 GameChips(selected = game, onSelect = { if (it != null) game = it }, games = Game.entries, nullLabel = null)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf("EN" to "English", "DE" to "Deutsch", "JA" to "日本語").forEach { (code, label) ->
+                    listOf("EN" to "English", "DE" to "Deutsch", "JA" to "日本語 (JP)").forEach { (code, label) ->
                         FilterChip(selected = language == code, onClick = { language = code }, label = { Text(label) })
                     }
                 }
@@ -312,16 +313,16 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                         )
                     }
                 }
-                Text("Printed language: ${p.language}", style = MaterialTheme.typography.labelLarge)
+                Text("Printed language: ${CardLanguage.displayCode(p.language)}", style = MaterialTheme.typography.labelLarge)
                 if (quoting) { CircularProgressIndicator(Modifier.size(24.dp)); Text("Fetching matching-language listings…", style = MaterialTheme.typography.bodySmall) }
                 if (p.source.isNotBlank()) Text(p.source, style = MaterialTheme.typography.bodySmall)
                 p.quoteReason?.let { Text(stringResource(if (it == "not_found") R.string.sealed_no_matching_price else R.string.sealed_price_unavailable), style = MaterialTheme.typography.bodySmall) }
                 p.availabilityEvidence?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
-                p.referencePrice?.let { Text("Cardmarket aggregate reference: ${Money.format(it, p.referenceCurrency ?: "EUR")} · not a price for ${p.language} specifically", style = MaterialTheme.typography.bodySmall) }
+                p.referencePrice?.let { Text("Cardmarket aggregate reference: ${Money.format(it, p.referenceCurrency ?: "EUR")} · not a price for ${CardLanguage.displayCode(p.language)} specifically", style = MaterialTheme.typography.bodySmall) }
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 if (p.requiresLanguageConfirmation) Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = confirmedLanguage, onCheckedChange = { confirmedLanguage = it })
-                    Text("I verified this exact sealed product exists in ${p.language} and matches my item", style = MaterialTheme.typography.bodySmall)
+                    Text("I verified this exact sealed product exists in ${CardLanguage.displayCode(p.language)} and matches my item", style = MaterialTheme.typography.bodySmall)
                 }
                 QuantityStepper(qty, { qty = it })
                 OutlinedTextField(
