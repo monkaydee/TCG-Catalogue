@@ -1,0 +1,8 @@
+<resources>
+    <string name="sealed_printed_language_hint">เลือกภาษาที่พิมพ์บนสินค้า ราคาจะโหลดขณะเลือกดูและระบุว่าเป็นราคาเสนอขาย</string>
+    <string name="sealed_one_piece_no_german">การ์ด One Piece ไม่มีฉบับภาษาเยอรมัน สินค้าที่ขายในเยอรมนีพิมพ์ด้วยภาษาอื่น โปรดเลือกภาษาอังกฤษหรือญี่ปุ่น</string>
+    <string name="sealed_checking_price">กำลังตรวจสอบ…</string>
+    <string name="sealed_no_matching_price">ไม่พบราคาที่ตรงกัน</string>
+    <string name="sealed_price_unavailable">ไม่สามารถดูราคาได้</string>
+    <string name="sealed_asking_reference">ราคาเสนอขายอ้างอิง</string>
+</resources>

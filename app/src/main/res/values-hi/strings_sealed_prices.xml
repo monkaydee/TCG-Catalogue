@@ -1,0 +1,8 @@
+<resources>
+    <string name="sealed_printed_language_hint">उत्पाद पर छपी भाषा चुनें। ब्राउज़ करते समय कीमतें लोड होती हैं; विक्रेता की माँगी गई कीमतें चिन्हित हैं।</string>
+    <string name="sealed_one_piece_no_german">One Piece कार्ड का जर्मन संस्करण नहीं है। जर्मनी में बिकने वाले उत्पाद दूसरी भाषा में छपे हैं; अंग्रेज़ी या जापानी चुनें।</string>
+    <string name="sealed_checking_price">जाँच जारी…</string>
+    <string name="sealed_no_matching_price">मेल खाती कीमत नहीं</string>
+    <string name="sealed_price_unavailable">कीमत उपलब्ध नहीं</string>
+    <string name="sealed_asking_reference">विक्रेता की माँगी कीमत</string>
+</resources>

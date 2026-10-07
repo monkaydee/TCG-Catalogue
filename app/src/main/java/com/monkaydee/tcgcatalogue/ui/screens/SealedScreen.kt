@@ -43,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,6 +70,11 @@ import com.monkaydee.tcgcatalogue.ui.components.GameChips
 import com.monkaydee.tcgcatalogue.ui.components.QuantityStepper
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.sync.withPermit
 
 /**
  * Sealed products (booster boxes, packs, decks, ETBs …) with their TCGplayer market value, which
@@ -152,6 +158,7 @@ fun SealedScreen(repo: CardRepository, onBack: () -> Unit) {
 
 @Composable
 private fun SealedRow(item: SealedItem, s: AppSettings, onClick: () -> Unit) {
+    val unitPrice = item.price?.takeIf { it.isFinite() && it > 0 }
     Card(Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
@@ -166,7 +173,7 @@ private fun SealedRow(item: SealedItem, s: AppSettings, onClick: () -> Unit) {
                 item.referencePrice?.let { value -> Text("Aggregate reference: ${Money.format(value, item.referenceCurrency ?: "EUR")} · not language-specific", style = MaterialTheme.typography.labelSmall) }
                 item.priceUpdatedAt?.let { Text("Updated ${java.text.DateFormat.getDateInstance().format(java.util.Date(it))}", style = MaterialTheme.typography.labelSmall) }
                 item.purchasePrice?.let { paid ->
-                    val now = item.price ?: return@let
+                    val now = unitPrice ?: return@let
                     val diff = (Money.convert(now, item.priceCurrency, s.currency, s.usdToEur) - Money.convert(paid, item.purchaseCurrency ?: item.priceCurrency, s.currency, s.usdToEur)) * item.quantity
                     Text(
                         stringResource(R.string.sealed_gain, (if (diff >= 0) "+" else "") + Money.format(diff, s.currency)),
@@ -177,9 +184,9 @@ private fun SealedRow(item: SealedItem, s: AppSettings, onClick: () -> Unit) {
             }
             Spacer(Modifier.width(8.dp))
             Column(horizontalAlignment = Alignment.End) {
-                Text(Money.format(Money.sealedValue(item, s.currency, s.usdToEur), s.currency), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(unitPrice?.let { Money.format(Money.sealedValue(item, s.currency, s.usdToEur), s.currency) } ?: "—", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text(
-                    item.price?.let { "${item.quantity} × ${Money.format(Money.convert(it, item.priceCurrency, s.currency, s.usdToEur), s.currency)}" }
+                    unitPrice?.let { "${item.quantity} × ${Money.format(Money.convert(it, item.priceCurrency, s.currency, s.usdToEur), s.currency)}" }
                         ?: stringResource(R.string.sealed_no_price),
                     style = MaterialTheme.typography.labelSmall,
                 )
@@ -204,6 +211,24 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
     var picked by remember { mutableStateOf<SealedProduct?>(null) }
     var qty by remember { mutableIntStateOf(1) }
     var paid by remember { mutableStateOf("") }
+    // Only composed search rows fetch prices; scrolling never starts an 80-item burst.
+    // Results survive query edits within this language so revisiting a row reuses its quote.
+    val previews = remember(game, language, s.currency) { mutableStateMapOf<Long, SealedProduct>() }
+    val previewLocks = remember(game, language, s.currency) { mutableMapOf<Long, Mutex>() }
+    val previewLimit = remember { Semaphore(2) }
+
+    suspend fun pricePreview(product: SealedProduct): SealedProduct {
+        if (product.price != null) return product
+        return previewLocks.getOrPut(product.productId) { Mutex() }.withLock {
+            previews[product.productId] ?: previewLimit.withPermit {
+                val quote = try { repo.sealedQuote(product) }
+                catch (cancel: CancellationException) { throw cancel }
+                catch (_: Exception) { product.copy(quoteReason = "unavailable") }
+                previews[product.productId] = quote
+                quote
+            }
+        }
+    }
 
     LaunchedEffect(game, query, language) {
         val g = game ?: return@LaunchedEffect
@@ -228,7 +253,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                         FilterChip(selected = language == code, onClick = { language = code }, label = { Text(label) })
                     }
                 }
-                Text("Printed product language, not seller location. Regional catalogue entries require availability confirmation. Aggregate reference prices are kept out of your portfolio value.", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(if (game == Game.ONE_PIECE && language == "DE") R.string.sealed_one_piece_no_german else R.string.sealed_printed_language_hint), style = MaterialTheme.typography.bodySmall)
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 OutlinedTextField(
                     query, { query = it },
@@ -242,10 +267,20 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 }
                 LazyColumn(Modifier.fillMaxWidth().aspectRatio(0.8f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(results, key = { it.productId }) { r ->
+                        val priced = previews[r.productId] ?: r
+                        LaunchedEffect(r.game, r.productId, r.language, s.currency) {
+                            if (r.price == null && !previews.containsKey(r.productId)) {
+                                pricePreview(r)
+                            }
+                        }
                         Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable {
-                            picked = r; confirmedLanguage = !r.requiresLanguageConfirmation; error = null; quoting = true
+                            picked = priced; confirmedLanguage = !priced.requiresLanguageConfirmation; error = null; quoting = priced.price == null && priced.quoteReason == null
                             scope.launch {
-                                try { val quote = repo.sealedQuote(r); if (picked?.productId == r.productId && picked?.language == r.language) picked = quote }
+                                try {
+                                    val quote = pricePreview(priced)
+                                    if (picked?.productId == r.productId && picked?.language == r.language) picked = quote
+                                }
+                                catch (cancel: CancellationException) { throw cancel }
                                 catch (_: Exception) { error = "Language-specific price unavailable; you can still add the product without a valuation." }
                                 finally { quoting = false }
                             }
@@ -256,7 +291,11 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                                 Text(r.name, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                 Text(r.groupName, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
-                            Text(r.price?.let { Money.format(Money.convert(it, r.currency, s.currency, s.usdToEur), s.currency) } ?: "–", style = MaterialTheme.typography.labelLarge)
+                            Column(horizontalAlignment = Alignment.End, modifier = Modifier.width(100.dp)) {
+                                Text(priced.price?.let { Money.format(Money.convert(it, priced.currency, s.currency, s.usdToEur), s.currency) }
+                                    ?: stringResource(if (priced.quoteReason == null) R.string.sealed_checking_price else if (priced.quoteReason == "not_found") R.string.sealed_no_matching_price else R.string.sealed_price_unavailable), style = MaterialTheme.typography.labelLarge)
+                                if (priced.priceScope == "language-specific-asking" && priced.price != null) Text(stringResource(R.string.sealed_asking_reference), style = MaterialTheme.typography.labelSmall)
+                            }
                         }
                     }
                 }
@@ -276,6 +315,7 @@ private fun AddSealedSheet(repo: CardRepository, s: AppSettings, onDismiss: () -
                 Text("Printed language: ${p.language}", style = MaterialTheme.typography.labelLarge)
                 if (quoting) { CircularProgressIndicator(Modifier.size(24.dp)); Text("Fetching matching-language listings…", style = MaterialTheme.typography.bodySmall) }
                 if (p.source.isNotBlank()) Text(p.source, style = MaterialTheme.typography.bodySmall)
+                p.quoteReason?.let { Text(stringResource(if (it == "not_found") R.string.sealed_no_matching_price else R.string.sealed_price_unavailable), style = MaterialTheme.typography.bodySmall) }
                 p.availabilityEvidence?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
                 p.referencePrice?.let { Text("Cardmarket aggregate reference: ${Money.format(it, p.referenceCurrency ?: "EUR")} · not a price for ${p.language} specifically", style = MaterialTheme.typography.bodySmall) }
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error) }

@@ -1,7 +1,7 @@
 import { comparableSummary, phraseIn } from "./comparables";
 import { Cache } from "./cache";
 import { Budgets } from "./budget";
-import { accessToken, languageMatches, marketplace } from "./providers/ebay";
+import { accessToken, languageAspectFilter, languageMatches, marketplace } from "./providers/ebay";
 import { fetchJson, obj, str, price } from "./util";
 import type { Env } from "./types";
 
@@ -46,16 +46,24 @@ export function sealedContentsMatch(title:string, card:SealedRequest):boolean {
 
 function normalized(t: string): string { return t.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
 /** Require a sealed unit, exact language, same product family and identifiable set. */
-export function sealedTitleMatches(title: string, card: SealedRequest): boolean {
-  if (!languageMatches(title, card.language)) return false;
+export function sealedTitleMatches(title: string, card: SealedRequest, verifiedLanguage?: string): boolean {
+  if (!languageMatches(title, card.language, verifiedLanguage)) return false;
   if (/\b(empty|opened|unsealed|lot|half|partial|loose|reseal(?:ed)?|proxy|custom|replica|break|random|mystery|loose cards|code card|no packs)\b/i.test(title)) return false;
-  if (/shrink(?:wrap)? (?:removed|missing)|no shrink|シュリンクなし|開封済|ohne folie|halb(?:es|er|e)? display|ge[oö]ffnet/i.test(title)) return false;
+  if (/shrink(?:wrap)? (?:removed|missing)|no shrink|not sealed|nicht versiegelt|シュリンクなし|開封済|ohne folie|halb(?:es|er|e)? display|ge[oö]ffnet/i.test(title)) return false;
   if (!/sealed|unopened|ovp|versiegelt|unge[oö]ffnet|未開封|シュリンク/i.test(title)) return false;
   const game = card.game === "pokemon" ? /pok[eé]mon|ポケモン|ポケカ/i : /one\s*piece|ワンピース/i;
   if (!game.test(title)) return false;
   const kind=sealedType(card.name);
   if (["unknown","unknown-box"].includes(kind) || sealedType(title) !== kind) return false;
   if (!sealedContentsMatch(title,card)) return false;
+  // Special packaging must not fall through a set-only alias to ordinary packs.
+  for (const variant of [/pre[- ]?release/i, /sleeved/i, /double[- ]?pack/i])
+    if (variant.test(title) !== variant.test(card.name)) return false;
+  if (card.game === "one_piece") {
+    const code = (card.aliases ?? []).find(a=>/^(?:OP|PRB|EB)\d{2}$/i.test(a)) ?? Object.entries(OP_CODES).find(([name])=>normalized(card.name).includes(name))?.[1];
+    const codes = [...title.matchAll(/\b(?:op|prb|eb)[- ]?\d{2}\b/gi)].map(m=>m[0].replace(/[- ]/g,"").toUpperCase());
+    if (code && codes.some(c=>c!==code.toUpperCase())) return false;
+  }
   const first = /\b(?:1st|first|erste)\s*(?:ed(?:ition)?|auflage)\b/i;
   if (first.test(title) !== first.test(card.name)) return false;
   if (/\bshadowless\b/i.test(title) !== /\bshadowless\b/i.test(card.name)) return false;
@@ -83,22 +91,52 @@ export function sealedTitleMatches(title: string, card: SealedRequest): boolean 
   }
   return false;
 }
-export function parseSealedListings(json: unknown, card: SealedRequest): SealedPrice | null {
+export function parseSealedListings(json: unknown, card: SealedRequest, verifiedIds: ReadonlySet<string> = new Set()): SealedPrice | null {
   const values: number[] = []; const seen = new Set<string>();
   const { currency } = marketplace(card.language,card.market);
   const rows = obj(json).itemSummaries;
   for (const row of Array.isArray(rows) ? rows : []) {
     const item = obj(row), title = str(item.title) ?? "", id = str(item.itemId) ?? title;
     const p = obj(item.price), value = price(Number(p.value));
-    if (seen.has(id) || value === null || p.currency !== currency || !sealedTitleMatches(title, card)) continue;
+    if (seen.has(id) || value === null || p.currency !== currency || !sealedTitleMatches(title, card, verifiedIds.has(id) ? card.language : undefined)) continue;
     seen.add(id); values.push(value);
   }
   const summary=comparableSummary(values,3);
   if (!summary) return null;
   return { ...summary, currency, source:"eBay sealed listings (asking, shipping excluded)", fetchedAt:new Date().toISOString() };
 }
+
+/** Broad identity query: language and sealed state are verified on the returned items. */
+export function sealedSearchParams(card: SealedRequest, useCode = false): URLSearchParams {
+  const name = card.name.replace(/\([^)]*\)/g, "").trim();
+  const localized = card.language === "DE" ? card.aliases?.find(a=>!/^\w*\d+\w*$/.test(a) && !/[\u3040-\u30ff\u4e00-\u9fff]/.test(a) && !normalized(name).includes(normalized(a))) : undefined;
+  const code = useCode ? card.aliases?.find(a=>/^(?:OP|PRB|EB|SV|SM|S|M)\d+[a-z]*$/i.test(a)) ?? Object.entries(OP_CODES).find(([n])=>normalized(name).includes(n))?.[1] : undefined;
+  const identity = code ? (/^(OP|PRB|EB)(\d+)$/i.test(code) ? `(${code},${code.replace(/(\D+)(\d+)/,"$1-$2")})` : code) : localized ?? name;
+  const family = localized || code ? ({"booster-box":"(box,display)",pack:"(pack,booster)",case:"case",etb:"(trainer,etb)",bundle:"bundle",deck:"deck",tin:"tin"} as Record<string,string>)[sealedType(name)] ?? "" : "";
+  return new URLSearchParams({q:[card.game === "pokemon" ? "Pokemon" : "One Piece",identity,family].filter(Boolean).join(" "),filter:"buyingOptions:{FIXED_PRICE}",limit:"100",fieldgroups:"MATCHING_ITEMS,ASPECT_REFINEMENTS"});
+}
+
+async function searchSealedListings(card: SealedRequest, auth: string, budgets: Budgets, useCode: boolean): Promise<SealedPrice | null> {
+  const params = sealedSearchParams(card,useCode);
+  const search = async () => {
+    if (!(await budgets.reserve("ebay",1))) throw new Error("budget_exhausted");
+    return fetchJson("ebay",`https://api.ebay.com/buy/browse/v1/item_summary/search?${params}`,{headers:{Authorization:`Bearer ${await accessToken(auth)}`,"X-EBAY-C-MARKETPLACE-ID":marketplace(card.language,card.market).site}});
+  };
+  const initial = await search();
+  const category = str(obj(obj(initial).refinement).dominantCategoryId);
+  const filter = category ? languageAspectFilter(initial,card.language,category) : undefined;
+  let filtered: unknown = null;
+  if (filter) {
+    params.set("aspect_filter",filter);
+    // Already title-confirmed matches remain useful if the facet service fails.
+    try { filtered = await search(); } catch { if (!parseSealedListings(initial,card)) throw new Error("language_search_unavailable"); }
+  }
+  const items = (data:unknown) => Array.isArray(obj(data).itemSummaries) ? obj(data).itemSummaries as unknown[] : [];
+  const verified = new Set(items(filtered).map(i=>str(obj(i).itemId)).filter((id):id is string=>!!id));
+  return parseSealedListings({itemSummaries:[...items(filtered),...items(initial)]},card,verified);
+}
 export async function sealedPrice(req: Request, env: Env): Promise<Response> {
-  const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { "content-type": "application/json" } });
+  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:5}), { status, headers: { "content-type": "application/json" } });
   if (Number(req.headers.get("content-length") ?? 0) > 4000) return json({error:"body_too_large"},413);
   let o: Record<string, unknown>;
   try { o = obj(await req.json()); } catch { return json({error:"invalid_json"},400); }
@@ -107,21 +145,22 @@ export async function sealedPrice(req: Request, env: Env): Promise<Response> {
   if (!["pokemon","one_piece"].includes(game ?? "") || !["EN","DE","JA"].includes(language ?? "") || !name || name.length > 200 || !productId || !/^-?\d{1,16}$/.test(productId)) return json({error:"invalid_product"},400);
   const aliases = Array.isArray(o.aliases) ? o.aliases.filter((v): v is string => typeof v === "string" && v.length <= 100).slice(0, 12) : [];
   const card = { game, name, language, productId, aliases, market:o.market === "DE" || o.market === "US" ? o.market : undefined } as SealedRequest;
-  const key = `sealed:v4:${game}:${productId}:${language}:${card.market ?? "default"}:${name}`;
+  const key = `sealed:v5:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
   const cache = new Cache(env.DB), now = Date.now();
   const entry = (await cache.getMany<SealedPrice | null>([key])).get(key);
   if (entry && entry.expiresAt > now) return json({price:entry.value,reason:entry.value ? null : "not_found"});
   const auth = env.EBAY_CLIENT_ID && env.EBAY_CLIENT_SECRET ? `${env.EBAY_CLIENT_ID}:${env.EBAY_CLIENT_SECRET}` : null;
   if (!auth) return json({price:entry?.value ? {...entry.value,stale:true} : null,reason:"provider_not_configured"});
   const budgets = await new Budgets(env.DB,env).load();
-  if (!(await budgets.reserve("ebay",1))) return json({price:entry?.value ? {...entry.value,stale:true} : null,reason:"budget_exhausted"});
+  if (!budgets.remaining("ebay")) return json({price:entry?.value ? {...entry.value,stale:true} : null,reason:"budget_exhausted"});
   try {
-    const languageWord = {EN:"English",DE:"Deutsch",JA:"Japanese"}[card.language];
-    const localized = card.language === "DE" ? aliases.find(a => !/^[A-Z]+[- ]?\d+[A-Za-z]*$/.test(a) && !/[\u3040-\u30ff\u4e00-\u9fff]/.test(a) && !normalized(name).includes(normalized(a))) : undefined;
-    const q = [card.game === "pokemon" ? "Pokemon" : "One Piece", localized ?? name.replace(/\([^)]*\)/g,""), languageWord, card.language === "DE" ? "OVP" : "sealed"].join(" ");
-    const params = new URLSearchParams({q,filter:"buyingOptions:{FIXED_PRICE}",limit:"100"});
-    const data = await fetchJson("ebay",`https://api.ebay.com/buy/browse/v1/item_summary/search?${params}`,{headers:{Authorization:`Bearer ${await accessToken(auth)}`,"X-EBAY-C-MARKETPLACE-ID":marketplace(card.language,card.market).site}});
-    const result = parseSealedListings(data,card);
+    let result = await searchSealedListings(card,auth,budgets,false);
+    if (!result) {
+      // At most four Browse calls. A failed fallback must not cache a false negative.
+      const other: SealedRequest = {...card,market:marketplace(card.language,card.market).currency === "EUR" ? "US" : "DE"};
+      result = await searchSealedListings(other,auth,budgets,true);
+      if (result) result = {...result,source:result.source+` · ${marketplace(other.language,other.market).site} international reference`};
+    }
     await cache.putMany([{key,value:result,source:result?.source ?? null,fetchedAt:now,ttlMs:result ? 86_400_000 : 3_600_000}]);
     return json({price:result,reason:result ? null : "not_found"});
   } catch { return json({price:entry?.value ? {...entry.value,stale:true} : null,reason:"unavailable"}); }

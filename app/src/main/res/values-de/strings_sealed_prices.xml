@@ -1,0 +1,8 @@
+<resources>
+    <string name="sealed_printed_language_hint">Wähle die auf dem Produkt gedruckte Sprache. Preise laden beim Durchsehen; Angebotspreise sind gekennzeichnet.</string>
+    <string name="sealed_one_piece_no_german">One Piece hat keine deutsche Kartenausgabe. In Deutschland verkaufte Produkte haben eine andere Drucksprache; wähle Englisch oder Japanisch.</string>
+    <string name="sealed_checking_price">Wird geprüft…</string>
+    <string name="sealed_no_matching_price">Kein passender Preis</string>
+    <string name="sealed_price_unavailable">Preis nicht verfügbar</string>
+    <string name="sealed_asking_reference">Angebotspreis</string>
+</resources>

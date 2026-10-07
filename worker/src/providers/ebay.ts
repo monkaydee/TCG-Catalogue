@@ -249,16 +249,16 @@ async function search(card: CardRequest, key: string, extra: string, graded = fa
 }
 
 /** Only a server-returned Language facet can establish language missing from a title. */
-export function languageAspectFilter(json: unknown, language = "EN"): string | undefined {
+export function languageAspectFilter(json: unknown, language = "EN", categoryId = SINGLES): string | undefined {
   const refinement = obj(obj(json).refinement);
-  if (str(refinement.dominantCategoryId) !== SINGLES) return;
+  if (!/^\d{1,9}$/.test(categoryId) || str(refinement.dominantCategoryId) !== categoryId) return;
   for (const aspect of Array.isArray(refinement.aspectDistributions) ? refinement.aspectDistributions : []) {
     const a = obj(aspect), name = str(a.localizedAspectName);
     if (!name || !/^(language|sprache|langue|lingua|idioma|taal)$/i.test(name)) continue;
     for (const value of Array.isArray(a.aspectValueDistributions) ? a.aspectValueDistributions : []) {
       const v = obj(value), label = str(v.localizedAspectValue);
       if (label && languageMatches(label,language) && !/[{}:,|]/.test(label))
-        return `categoryId:${SINGLES},${name}:{${label}}`;
+        return `categoryId:${categoryId},${name}:{${label}}`;
     }
   }
 }

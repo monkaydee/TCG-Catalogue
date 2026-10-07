@@ -74,11 +74,20 @@ def main():
         ("Terastal Festival ex Booster Box","JA","-1",["SV8a","テラスタルフェスex"],"DE","POKEMON"),
         ("Surging Sparks Booster Box","DE","-784949",["Stürmische Funken"],"DE","POKEMON"),
         ("Romance Dawn Booster Box","JA","-2",["OP01","ロマンスドーン"],"DE","ONE_PIECE"),
+        ("Two Legends Booster Box (Non-English)","JA","-766868",["OP08","Two Legends","二つの伝説"],"DE","ONE_PIECE"),
     ]:
-        answer=call("/v1/sealed/price",{"game":game,"productId":product_id,"name":name,"language":language,"aliases":aliases,"market":market})
+        for attempt in range(9):
+            answer=call("/v1/sealed/price",{"game":game,"productId":product_id,"name":name,"language":language,"aliases":aliases,"market":market})
+            if answer.get("sealedMatchingRevision")==5:
+                break
+            if attempt==8:
+                raise AssertionError("Updated sealed matching did not propagate")
+            time.sleep(5)
         quote=answer.get("price")
         if quote:
-            assert quote["listings"]>=3 and quote["currency"]==("EUR" if market=="DE" else "USD")
+            assert quote["listings"]>=3 and quote["currency"] in ["EUR","USD"]
+            if quote["currency"]!=("EUR" if market=="DE" else "USD"):
+                assert "international reference" in quote["source"]
             assert quote["low"]<=quote["amount"]<=quote["high"]
         sealed.append({"name":name,"language":language,"market":market,**answer})
     # Inspect graded-provider access directly: HTTP/schema/counts only, never credentials.
@@ -99,6 +108,9 @@ def main():
             provider_probe["probeFailed"]=True
     report={"status":status,"cards":rows,"sealed":sealed,"gradedProviderProbe":provider_probe}
     Path("price-verification.json").write_text(json.dumps(report,indent=2))
+    for item in sealed:
+        if item["name"] in ["Surging Sparks Booster Box", "Two Legends Booster Box (Non-English)"]:
+            assert item.get("price"), "No exact-language sealed quote for regression fixture: "+json.dumps(item)
     assert any(row.get("graded") for row in rows), "No graded quotes returned across the entire live fixture set; see price-verification.json"
     print("Live price API: schema, source, currency and language separation checks passed.")
     print("Graded provider access:",json.dumps(provider_probe))

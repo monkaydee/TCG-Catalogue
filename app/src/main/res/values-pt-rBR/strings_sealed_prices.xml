@@ -1,0 +1,8 @@
+<resources>
+    <string name="sealed_printed_language_hint">Escolha o idioma impresso no produto. Os preços carregam durante a consulta; os preços pedidos são identificados.</string>
+    <string name="sealed_one_piece_no_german">One Piece não tem edição de cartas em alemão. Os produtos vendidos na Alemanha usam outro idioma; escolha inglês ou japonês.</string>
+    <string name="sealed_checking_price">Verificando…</string>
+    <string name="sealed_no_matching_price">Sem preço correspondente</string>
+    <string name="sealed_price_unavailable">Preço indisponível</string>
+    <string name="sealed_asking_reference">Preço pedido</string>
+</resources>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="sealed_printed_language_hint">請選擇產品的印刷語言。瀏覽時會載入價格，並標示賣家要價。</string>
+    <string name="sealed_one_piece_no_german">航海王卡牌沒有德語版。在德國銷售的產品使用其他印刷語言；請選擇英語或日語。</string>
+    <string name="sealed_checking_price">正在查詢…</string>
+    <string name="sealed_no_matching_price">無符合價格</string>
+    <string name="sealed_price_unavailable">價格暫不可用</string>
+    <string name="sealed_asking_reference">賣家要價參考</string>
+</resources>

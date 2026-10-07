@@ -154,18 +154,21 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
     }
 
     data class SealedQuote(val amount: Double, val currency: String, val source: String, val fetchedAt: Long?, val stale: Boolean, val listings: Int?)
-    suspend fun sealed(product: SealedProduct): SealedQuote? {
+    data class SealedResult(val quote: SealedQuote?, val reason: String?)
+    suspend fun sealed(product: SealedProduct): SealedResult {
         val body = buildJsonObject {
             put("game", product.game.name); put("productId", product.productId.toString())
             put("name", product.name); put("language", product.language)
             product.market?.let { put("market", it) }
             putJsonArray("aliases") { product.aliases.forEach { add(it) } }
         }
-        val result = post("/v1/sealed/price", body.toString().toRequestBody(JSON)) ?: return null
-        val p = result["price"] ?: return null
-        val amount = p["amount"].dbl()?.takeIf { it.isFinite() && it > 0 } ?: return null
-        return SealedQuote(amount, p["currency"].str() ?: return null, p["source"].str().orEmpty(),
-            p["fetchedAt"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }, p["stale"].str() == "true", p["listings"].int())
+        val result = post("/v1/sealed/price", body.toString().toRequestBody(JSON)) ?: return SealedResult(null, "unavailable")
+        val p = result["price"]
+        val amount = p?.get("amount").dbl()?.takeIf { it.isFinite() && it > 0 }
+        val currency = p?.get("currency").str()?.takeIf { it in setOf("USD", "EUR") }
+        if (amount == null || currency == null) return SealedResult(null, result["reason"].str() ?: "not_found")
+        return SealedResult(SealedQuote(amount, currency, p["source"].str().orEmpty(),
+            p["fetchedAt"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() }, p["stale"].str() == "true", p["listings"].int()), result["reason"].str())
     }
 
     /** PSA's record for a cert number, or null when PSA doesn't know it. */

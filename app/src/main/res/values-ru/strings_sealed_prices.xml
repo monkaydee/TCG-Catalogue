@@ -1,0 +1,8 @@
+<resources>
+    <string name="sealed_printed_language_hint">Выберите язык печати продукта. Цены загружаются при просмотре; цены объявлений отмечены.</string>
+    <string name="sealed_one_piece_no_german">У One Piece нет немецкого издания карт. Продукты, продаваемые в Германии, напечатаны на другом языке; выберите английский или японский.</string>
+    <string name="sealed_checking_price">Проверка…</string>
+    <string name="sealed_no_matching_price">Нет подходящей цены</string>
+    <string name="sealed_price_unavailable">Цена недоступна</string>
+    <string name="sealed_asking_reference">Цена объявления</string>
+</resources>

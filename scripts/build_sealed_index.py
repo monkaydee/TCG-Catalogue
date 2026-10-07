@@ -59,6 +59,21 @@ def fetch(url):
 def key(s):
     return re.sub(r"[^a-z0-9]", "", s.lower().replace("é", "e"))
 
+def candidate_languages(game, name, aliases):
+    # Candidate availability is separate from proof of a listing's printed language.
+    # Bandai lists EN/JA/FR/ZH/KO, not DE: never clone generic One Piece rows into DE.
+    explicit = [(code, pattern) for code, pattern in [
+        ("JA", r"\bJapanese\b|\bJapan\b"), ("DE", r"\bGerman\b|\bDeutsch\b"),
+        ("ZH", r"\bChinese\b"), ("KO", r"\bKorean\b"), ("FR", r"\bFrench\b"),
+        ("EN", r"\bEnglish\b")]
+        if re.search(pattern, name, re.I) and not (code == "EN" and "non-english" in name.lower())]
+    if explicit:
+        return [code for code, _ in explicit]
+    if game == "ONE_PIECE":
+        return ["JA"] if "non-english" in name.lower() else ["EN"]
+    native_set = any(re.fullmatch(r"(?:SV|SM|S|M)\d+[A-Za-z]*", a) for a in aliases)
+    return ["JA"] if native_set else ["EN", "DE"]
+
 def build(game, products, guides, localized=None):
     prices = {p["idProduct"]: p for p in guides}
     rows = []
@@ -82,8 +97,9 @@ def build(game, products, guides, localized=None):
         if not isinstance(reference, (int, float)) or reference <= 0:
             reference = None
         rows.append({"productId": -p["idProduct"], "cardmarketId": p["idProduct"], "name": name,
-                     "groupName": category, "languages": ["JA"] if re.search(r"\bJapanese\b|\bJapan\b", name, re.I) else ["DE"] if re.search(r"\bGerman\b|\bDeutsch\b", name, re.I) else [], "aliases": sorted(set(aliases)), "referencePrice": reference})
-    return {"schemaVersion": 2, "game": game, "updated": datetime.now(timezone.utc).isoformat(),
+                     "groupName": category, "languages": ["JA"] if re.search(r"\bJapanese\b|\bJapan\b", name, re.I) else ["DE"] if re.search(r"\bGerman\b|\bDeutsch\b", name, re.I) else [],
+                     "candidateLanguages": candidate_languages(game, name, aliases), "aliases": sorted(set(aliases)), "referencePrice": reference})
+    return {"schemaVersion": 3, "game": game, "updated": datetime.now(timezone.utc).isoformat(),
             "priceScope": "aggregate-reference-not-language-specific", "items": rows}
 
 def main(out):

@@ -1,8 +1,22 @@
 import unittest
-from build_sealed_index import build
+from build_sealed_index import build, candidate_languages
 from build_card_index import sealed_item, japanese_name_aliases
 
 class SealedIndexTest(unittest.TestCase):
+    def test_one_piece_is_not_cloned_into_german_and_non_english_is_only_a_candidate(self):
+        products=[{"idProduct":753001,"name":"Two Legends Booster Box","categoryName":"One Piece Booster Boxes"},
+                  {"idProduct":766868,"name":"Two Legends Booster Box (Non-English)","categoryName":"One Piece Booster Boxes"}]
+        rows=build("ONE_PIECE",products,[])["items"]
+        self.assertEqual(["EN"],rows[0]["candidateLanguages"])
+        self.assertEqual(["JA"],rows[1]["candidateLanguages"])
+        self.assertEqual([],rows[1]["languages"])
+        self.assertTrue(all("DE" not in row["candidateLanguages"] for row in rows))
+
+    def test_pokemon_native_sets_and_explicit_other_languages_are_kept_apart(self):
+        self.assertEqual(["JA"],candidate_languages("POKEMON","Terastal Festival ex Booster Box",["SV8a"]))
+        self.assertEqual(["ZH"],candidate_languages("POKEMON","Terastal Festival ex Chinese Gift Box",["SV8a"]))
+        self.assertEqual(["EN","DE"],candidate_languages("POKEMON","Surging Sparks Booster Box",["Stürmische Funken"]))
+        self.assertEqual(["EN"],candidate_languages("POKEMON","151 English Booster Bundle",[]))
     def test_regional_reference_never_claims_a_printed_language(self):
         products=[{"idProduct":10,"name":"Terastal Festival ex Booster Box","categoryName":"Pokémon Display"},
                   {"idProduct":11,"name":"Pokemon Coin","categoryName":"Pokémon Coins"}]

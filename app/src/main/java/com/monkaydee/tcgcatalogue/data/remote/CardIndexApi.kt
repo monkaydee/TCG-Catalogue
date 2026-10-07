@@ -115,7 +115,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                 val a = row.arr() ?: return@mapNotNull null
                 val id = a.getOrNull(0).str()?.toLongOrNull() ?: return@mapNotNull null
                 val gid = a.getOrNull(2).str().orEmpty()
-                SealedProduct(game, id, a.getOrNull(1).str().orEmpty(), groups[gid].orEmpty(), a.getOrNull(3).dbl(),
+                SealedProduct(game, id, a.getOrNull(1).str().orEmpty(), groups[gid].orEmpty(), a.getOrNull(3).dbl()?.takeIf { it.isFinite() && it > 0 },
                     language = a.getOrNull(4).str() ?: "EN", source = a.getOrNull(5).str() ?: "TCGplayer price",
                     aliases = a.getOrNull(6).arr().orEmpty().mapNotNull { it.str() },
                     fetchedAt = root["updated"].str()?.let { runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull() })
@@ -144,12 +144,15 @@ class CardIndexApi(private val http: Http, private val dir: File) {
             val root = http.json.parseToJsonElement(file.readText())
             root["items"].arr().orEmpty().mapNotNull { row ->
                 val declared = row["languages"].arr().orEmpty().mapNotNull { it.str() }
-                if (declared.isNotEmpty() && language !in declared) return@mapNotNull null
+                val name = row["name"].str().orEmpty()
+                val aliases = row["aliases"].arr().orEmpty().mapNotNull { it.str() }
+                val candidates = row["candidateLanguages"].arr()?.mapNotNull { it.str() }
+                if (language !in (candidates ?: regionalCandidateLanguages(game, name, aliases, declared))) return@mapNotNull null
                 val id = row["productId"].str()?.toLongOrNull() ?: return@mapNotNull null
-                SealedProduct(game, id, row["name"].str().orEmpty(), row["groupName"].str().orEmpty(), null,
+                SealedProduct(game, id, name, row["groupName"].str().orEmpty(), null,
                     language = language, currency = "EUR", source = "", referencePrice = row["referencePrice"].dbl(),
                     referenceCurrency = "EUR", referenceSource = "Cardmarket aggregate guide (not language-specific)",
-                    aliases = row["aliases"].arr().orEmpty().mapNotNull { it.str() }, requiresLanguageConfirmation = true,
+                    aliases = aliases, requiresLanguageConfirmation = true,
                     availabilityEvidence = if (declared.isNotEmpty()) "Catalogue explicitly names $language" else "Language variant not verified")
             }
         }
@@ -157,10 +160,11 @@ class CardIndexApi(private val http: Http, private val dir: File) {
 
     suspend fun searchSealed(game: Game, query: String, language: String = "EN", limit: Int = 80): List<SealedProduct> {
         val words = query.lowercase().split(' ').filter { it.isNotBlank() }
+        val native = if (language == "EN" || language == "JA") sealed(game).filter { it.language == language } else emptyList()
         val regional = try { regionalSealed(game, language) }
         catch (cancel: kotlinx.coroutines.CancellationException) { throw cancel }
-        catch (failure: Exception) { if (language == "EN") emptyList() else throw failure }
-        val catalogue = (if (language == "EN" || language == "JA") sealed(game).filter { it.language == language } else emptyList()) + regional
+        catch (failure: Exception) { if (language == "EN" || native.isNotEmpty()) emptyList() else throw failure }
+        val catalogue = native + regional
         return catalogue.filter { p -> words.all { w -> p.name.lowercase().contains(w) || p.groupName.lowercase().contains(w) || p.aliases.any { it.lowercase().contains(w) } } }
             .distinctBy { it.productId }.take(limit)
     }
@@ -242,6 +246,20 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     }
 
     companion object {
+        /** Also filter yesterday's schema-2 file immediately after an app upgrade. */
+        internal fun regionalCandidateLanguages(game: Game, name: String, aliases: List<String>, declared: List<String>): List<String> {
+            if (declared.isNotEmpty()) return declared
+            val explicit = listOf("JA" to "japanese|japan", "DE" to "german|deutsch", "ZH" to "chinese", "KO" to "korean", "FR" to "french")
+                .filter { (_, words) -> Regex("\\b($words)\\b", RegexOption.IGNORE_CASE).containsMatchIn(name) }.map { it.first }
+            if (explicit.isNotEmpty()) return explicit
+            if (!name.contains("non-english", ignoreCase = true) && Regex("\\benglish\\b", RegexOption.IGNORE_CASE).containsMatchIn(name)) return listOf("EN")
+            if (game == Game.ONE_PIECE) {
+                val nonEnglish = name.contains("non-english", ignoreCase = true)
+                return if (nonEnglish) listOf("JA") else listOf("EN")
+            }
+            return if (aliases.any { Regex("(?:SV|SM|S|M)\\d+[A-Za-z]*").matches(it) }) listOf("JA") else listOf("EN", "DE")
+        }
+
         const val BASE = "https://raw.githubusercontent.com/monkaydee/TCG-Catalogue/data"
         private const val DAY = 24 * 60 * 60 * 1000L
     }

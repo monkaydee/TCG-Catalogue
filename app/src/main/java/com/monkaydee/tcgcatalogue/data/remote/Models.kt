@@ -88,6 +88,7 @@ data class SealedProduct(
     val imageUrl: String? = if (productId > 0) "https://tcgplayer-cdn.tcgplayer.com/product/${productId}_in_400x400.jpg" else null,
     val aliases: List<String> = emptyList(), val requiresLanguageConfirmation: Boolean = false,
     val fetchedAt: Long? = null, val market: String? = null, val availabilityEvidence: String? = null,
+    val quoteReason: String? = null,
 )
 
 /** One card of a set, for the set checklist. [cardId] matches [com.monkaydee.tcgcatalogue.data.db.OwnedCard.cardId]. */
