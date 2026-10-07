@@ -1,10 +1,9 @@
-Redesign the home-screen widget and make Japanese printing corrections visible on the card screen.
+Speed up pre-grading and add an interactive slab reveal with saved reports.
 
-- Choose from three widget layouts: Focus, Dashboard, and Collector. Each placed widget has independent layout, transparency, and text-color settings.
-- Use a true transparent background or a polished dark panel. Customize text with swatches, sliders, or a hex color. Live previews use the same renderer and bundled Inter font as the launcher widget.
-- Adapt widgets to small, square, and wide sizes without truncating the collection value. Keep price coverage visible and suppress misleading gains when prices are missing.
-- Configure a new widget when adding it, tap the customize icon on an existing widget, or change defaults under Settings → Customize widget. Retain custom settings across launcher widget restoration.
-- For older Japanese Pokémon entries that still have an English set/number, show native Japanese printings and their price references directly on the card detail screen. Select the number printed on your card and Save to replace the identity and update its price.
-- Move Japanese printing choices to the top of Add/Edit, with photos and product references instead of a hidden dropdown. Preserve costs, quantity, manual values, and slab information through confirmation.
+- Capture/import front and back with automatic outline, photo-quality and centering checks. Clear photos advance automatically; centering guides remain optional. Remove manual corner, edge and surface review gates, and avoid generating large inspection files in this fast flow.
+- Use the requested centering-only fallback when surface cannot be assessed reliably. Failed photos and missing measurements abstain; skipped backs are explicitly front-only and capped at 9. Scores are experimental centering heuristics, not validated PSA grade predictions or professional certificates.
+- Present the actual card photo in a PSA-style pre-grade display with a 1.6-second rotation. The grade stays behind shaking paper; a synchronized right-arrow/pull hint appears after a short pause. Swipe right to reveal, then tap Nice! for 9+ or meeh! for 8 or less.
+- Show a cleaner result with the score, concise reasons and measured centering. Export CSV through Android’s document picker or Save a private report with durable photo copies. Reopen saved reports using the history icon in Pre-grade.
+- Keep hidden grades out of accessibility semantics and provide a screen-reader reveal action. Export explicit scope, UTC dates and spreadsheet-safe text.
 
-CardNavo name, signing key, and the 0.1.<build-number> release convention remain unchanged. Native printing confirmation is required for ambiguous identities; unavailable quotes remain unavailable.
+CardNavo name, signing key and 0.1.<build-number> release convention remain unchanged. No validated AI surface-grading model is available; this release implements the requested centering-only fallback.

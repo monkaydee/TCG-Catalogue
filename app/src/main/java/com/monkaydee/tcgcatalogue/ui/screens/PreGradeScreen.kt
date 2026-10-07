@@ -46,6 +46,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.History
+import com.monkaydee.tcgcatalogue.grade.AutomaticPreGrade
+import com.monkaydee.tcgcatalogue.grade.PreGradeReport
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import com.monkaydee.tcgcatalogue.ui.components.AppButton
@@ -126,12 +129,11 @@ private fun guideFractions(viewW: Float, viewH: Float): FloatArray {
     return floatArrayOf(left / viewW, top / viewH, (left + w) / viewW, (top + h) / viewH)
 }
 
-internal enum class Step { FRONT, BACK, RESULT }
+internal enum class Step { FRONT, BACK, REVEAL, RESULT }
 
 /**
- * Pre-grading (Standard): photos of the front and the back; centering, corners and edges are
- * measured on the phone and turned into a likely grade range. Surface (scratches, dents) is not
- * checked here.
+ * Automatic two-photo flow with optional centering adjustments. Until reliable surface assessment
+ * is available, the experimental score uses centering only.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,275 +148,172 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(initialStep) }
-    var game by remember { mutableStateOf<Game?>(initialGame) }
+    var game by remember { mutableStateOf(initialGame) }
     var front by remember { mutableStateOf(initialFront) }
     var back by remember { mutableStateOf(initialBack) }
     var camera by remember { mutableStateOf(false) }
-    var surfaceTarget by remember { mutableStateOf<Step?>(null) }
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var editingCentering by remember { mutableStateOf<Step?>(null) }
-    var adjusting by remember { mutableStateOf(false) }
-
-    fun accept(outcome: PreGrader.Outcome) {
+    var history by remember { mutableStateOf(false) }
+    val result = remember(front, back) { AutomaticPreGrade.assess(front, back) }
+    val label = title ?: stringResource(R.string.pre_quick_card)
+    val report = remember(front, back, game, label) {
+        result?.let { PreGradeReport.create(label, game, it, front!!, back) }
+    }
+    fun finish() { step = if (AutomaticPreGrade.assess(front, back) != null) Step.REVEAL else Step.RESULT }
+    fun accept(outcome: PreGrader.Outcome, target: Step) {
         busy = false
         when (outcome) {
             PreGrader.Outcome.NoCard -> error = context.getString(R.string.grade_no_card)
             is PreGrader.Outcome.Ok -> {
                 error = null
-                if (step == Step.FRONT) front = outcome.side else back = outcome.side
+                // The detector found the real outline; there is no manual confirmation gate.
+                val side = outcome.side.copy(outlineConfirmed = true)
+                if (target == Step.FRONT) front = side else back = side
+                if (side.problems.isEmpty() && side.centering != null) {
+                    if (target == Step.FRONT) step = Step.BACK else finish()
+                }
             }
         }
     }
-
     fun analyse(photo: Bitmap, guide: FloatArray?) {
-        busy = true
-        camera = false
-        scope.launch(Dispatchers.Main.immediate) {
+        val target = step
+        busy = true; camera = false
+        scope.launch {
             val outcome = withContext(Dispatchers.Default) {
                 runCatching {
-                    val dir = File(context.cacheDir, "pregrade").apply { mkdirs() }
-                    dir.listFiles()?.filter { System.currentTimeMillis() - it.lastModified() > 24 * 60 * 60 * 1000L }?.forEach { it.delete() }
-                    val source = File.createTempFile("source-", ".png", dir)
-                    val longest = maxOf(photo.width, photo.height)
-                    val bounded = if (longest > 4000) Bitmap.createScaledBitmap(photo, photo.width * 4000 / longest, photo.height * 4000 / longest, true) else photo
-                    source.outputStream().use { check(bounded.compress(Bitmap.CompressFormat.PNG, 100, it)) }
-                    val result = PreGrader.analyse(bounded, guide, source)
-                    if (result is PreGrader.Outcome.Ok && result.side.photo !== bounded) bounded.recycle()
-                    if (bounded !== photo) photo.recycle()
-                    if (result == PreGrader.Outcome.NoCard) { source.delete(); if (!bounded.isRecycled) bounded.recycle() }
-                    result
+                    // Fast flow needs the rectified card, not large inspection files or source re-encoding.
+                    val outcome = PreGrader.analyse(photo, guide)
+                    if (outcome !is PreGrader.Outcome.Ok || outcome.side.photo !== photo) photo.recycle()
+                    outcome
                 }.getOrDefault(PreGrader.Outcome.NoCard)
             }
-            accept(outcome)
+            accept(outcome, target)
         }
     }
-
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             busy = true
-            scope.launch(Dispatchers.Main.immediate) {
+            scope.launch {
                 val photo = withContext(Dispatchers.IO) { runCatching { PhotoRecognizer.loadSmall(context, uri, maxSide = 4000) }.getOrNull() }
                 if (photo == null) { busy = false; error = context.getString(R.string.import_could_not_open_photo) } else analyse(photo, null)
             }
         }
     }
     var granted by remember { mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) }
-    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it; if (it) camera = true }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = appBarColors(),
-                title = {
-                    Column {
-                        Text(stringResource(if (editingCentering != null) R.string.pre_center_screen else if (adjusting) R.string.pre_outline_screen else R.string.grade_title))
-                        if (editingCentering != null || adjusting) Text(stringResource(R.string.design_stage, 2, 4,
-                            stringResource(R.string.design_alignment)), style = MaterialTheme.typography.labelSmall)
-                        else title?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = { if (editingCentering != null) editingCentering = null else if (adjusting) adjusting = false else if (camera) { camera = false; surfaceTarget = null } else onBack() }) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.card_back)) }
-                },
-            )
-        },
-    ) { padding ->
+    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        granted = it
+        if (it) camera = true else error = context.getString(R.string.grade_camera_failed)
+    }
+    fun goBack() {
+        if (busy) return
+        when {
+            editingCentering != null -> editingCentering = null
+            camera -> camera = false
+            history -> history = false
+            else -> onBack()
+        }
+    }
+    androidx.activity.compose.BackHandler { goBack() }
+    Scaffold(topBar = {
+        TopAppBar(colors = appBarColors(), title = {
+            Text(stringResource(when {
+                editingCentering != null -> R.string.pre_center_screen
+                history -> R.string.pre_quick_history
+                else -> R.string.grade_title
+            }))
+        }, navigationIcon = {
+            IconButton(onClick = ::goBack, enabled = !busy) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.card_back)) }
+        }, actions = {
+            if (!camera && editingCentering == null && step != Step.REVEAL) IconButton(onClick = { history = !history }, enabled = !busy) {
+                Icon(Icons.Outlined.History, stringResource(R.string.pre_quick_history))
+            }
+        })
+    }) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
             when {
+                history -> SavedPreGrades()
                 camera -> GradeCamera(
-                    label = if (surfaceTarget != null) "Surface view: move the light across the card" else stringResource(if (step == Step.FRONT) R.string.grade_step_front else R.string.grade_step_back),
-                    allowAuto = surfaceTarget == null,
-                    onPhoto = { photo, guide ->
-                        val target = surfaceTarget
-                        if (target == null) analyse(photo, guide) else {
-                            camera = false; busy = true
-                            scope.launch(Dispatchers.Main.immediate) {
-                                val path = withContext(Dispatchers.IO) { runCatching {
-                                    val dir = File(context.cacheDir, "pregrade").apply { mkdirs() }
-                                    val file = File.createTempFile("surface-", ".png", dir)
-                                    try { file.outputStream().use { check(photo.compress(Bitmap.CompressFormat.PNG, 100, it)) }; file.absolutePath } finally { photo.recycle() }
-                                }.getOrNull() }
-                                if (path != null) {
-                                    fun update(side: PreGrader.Side?) = side?.copy(surfacePhotos = (side.surfacePhotos + path).takeLast(4), surfaceFinding = SurfaceFinding.NOT_REVIEWED)
-                                    if (target == Step.FRONT) front = update(front) else back = update(back)
-                                } else error = "Surface capture failed. Please retake."
-                                surfaceTarget = null; busy = false
-                            }
-                        }
-                    },
-                    onError = { camera = false; surfaceTarget = null; error = context.getString(R.string.grade_camera_failed) },
+                    label = stringResource(if (step == Step.FRONT) R.string.grade_step_front else R.string.grade_step_back),
+                    onPhoto = ::analyse,
+                    onError = { camera = false; error = context.getString(R.string.grade_camera_failed) },
                 )
                 editingCentering != null -> {
                     val target = editingCentering!!
                     val side = (if (target == Step.FRONT) front else back)!!
                     Column(Modifier.fillMaxSize().padding(12.dp)) {
                         Text(stringResource(if (target == Step.FRONT) R.string.grade_front else R.string.grade_back), style = MaterialTheme.typography.titleMedium)
-                        Text(stringResource(R.string.center_step_two), style = MaterialTheme.typography.bodySmall)
-                        ManualCenteringPanel(side, fullscreen = true, onCancel = { editingCentering = null }, onSkip = {
-                            val fixed = side.copy(centering = null, manualCentering = false, centeringSkipped = true)
-                            if (target == Step.FRONT) front = fixed else back = fixed
-                            editingCentering = null
-                        }, onApply = { c ->
+                        ManualCenteringPanel(side, fullscreen = true, onCancel = { editingCentering = null }, onSkip = { editingCentering = null }, onApply = { c ->
                             val unchanged = side.centering?.samePlacement(c) == true
-                            val fixed = side.copy(centering = c, manualCentering = side.manualCentering || !unchanged, centeringSkipped = false)
+                            val fixed = side.copy(centering = c, outlineConfirmed = true, manualCentering = side.manualCentering || !unchanged, centeringSkipped = false)
+                            val wasMissing = AutomaticPreGrade.assess(front, back) == null
                             if (target == Step.FRONT) front = fixed else back = fixed
                             editingCentering = null
+                            if (step == Step.RESULT && wasMissing) finish()
                         })
                     }
                 }
-                adjusting && (if (step == Step.FRONT) front else back)?.let { it.photo != null && it.quad != null } == true -> {
-                    val side = (if (step == Step.FRONT) front else back)!!
-                    Box(Modifier.fillMaxSize().padding(16.dp)) {
-                        AdjustOutline(
-                            photo = side.photo!!,
-                            start = side.quad!!,
-                            fullscreen = true,
-                            applyLabel = stringResource(R.string.center_outline_next),
-                            onCancel = { adjusting = false },
-                            onApply = { quad ->
-                                val target = step
-                                adjusting = false
-                                busy = true
-                                scope.launch(Dispatchers.Main.immediate) {
-                                    val fixed = withContext(Dispatchers.Default) { runCatching { PreGrader.adjust(side, quad) }.getOrNull() }
-                                    busy = false
-                                    if (fixed != null) {
-                                        val confirmed = fixed.copy(outlineConfirmed = true)
-                                        if (target == Step.FRONT) front = confirmed else back = confirmed
-                                        editingCentering = target
-                                    } else error = context.getString(R.string.grade_no_card)
-                                }
-                            },
-                        )
-                    }
-                }
-                step == Step.RESULT -> GradeResult(front, back, game, onGame = { game = it },
-                    onEdit = { target -> editingCentering = target },
-                    onRetake = { target -> if (target == Step.FRONT) front = null else back = null; step = target },
-                    onFinding = { target, name, finding ->
-                        if (target == Step.FRONT) front = front?.let { it.copy(wearFindings = it.wearFindings + (name to finding)) }
-                        else back = back?.let { it.copy(wearFindings = it.wearFindings + (name to finding)) }
-                    },
-                    onSurface = { target, side -> if (target == Step.FRONT) front = side else back = side },
-                    onSurfaceCamera = { target -> surfaceTarget = target; if (granted) camera = true else permission.launch(Manifest.permission.CAMERA) },
-                    onRedo = { front = null; back = null; step = Step.FRONT })
-                else -> {
-                    val side = if (step == Step.FRONT) front else back
-                    CaptureStep(
-                        onAdjust = { adjusting = true },
-                        game = game, onGame = { game = it },
-                        onEditCentering = { editingCentering = step },
-                        onConfirm = {
-                            if (step == Step.FRONT) front = front?.copy(outlineConfirmed = true) else back = back?.copy(outlineConfirmed = true)
-                            editingCentering = step
-                        },
-                        step = step,
-                        side = side,
-                        busy = busy,
-                        error = error,
-                        onCamera = { surfaceTarget = null; if (granted) camera = true else permission.launch(Manifest.permission.CAMERA) },
-                        onGallery = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-                        onRetake = { if (step == Step.FRONT) front = null else back = null },
-                        onNext = {
-                            error = null
-                            val current = if (step == Step.FRONT) front else back
-                            if (current != null && current.centering == null && !current.centeringSkipped) editingCentering = step
-                            else step = if (step == Step.FRONT) Step.BACK else Step.RESULT
-                        },
-                        onSkip = if (step == Step.BACK) ({ back = null; step = Step.RESULT }) else null,
-                    )
-                }
+                step == Step.REVEAL && result != null -> PreGradeReveal(front!!.card, label, result, { step = Step.RESULT })
+                step == Step.RESULT || step == Step.REVEAL -> AutomaticGradeResult(front, back, game, title,
+                    onEdit = { editingCentering = it },
+                    onRetake = { target -> if (target == Step.FRONT) front = null else back = null; error = null; step = target },
+                    onRedo = { front = null; back = null; error = null; step = Step.FRONT }, sessionReport = report)
+                else -> QuickCaptureStep(step, if (step == Step.FRONT) front else back, busy, error, game,
+                    onGame = { game = it },
+                    onCamera = { if (granted) camera = true else permission.launch(Manifest.permission.CAMERA) },
+                    onGallery = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                    onEdit = { editingCentering = step },
+                    onRetake = { if (step == Step.FRONT) front = null else back = null },
+                    onNext = { if (step == Step.FRONT) step = Step.BACK else finish() },
+                    onSkip = if (step == Step.BACK) ({ back = null; finish() }) else null)
             }
         }
     }
 }
 
 @Composable
-private fun CaptureStep(
-    step: Step,
-    side: PreGrader.Side?,
-    busy: Boolean,
-    error: String?,
-    onCamera: () -> Unit,
-    onGallery: () -> Unit,
-    onRetake: () -> Unit,
-    onNext: () -> Unit,
-    onSkip: (() -> Unit)?,
-    onAdjust: () -> Unit,
-    onConfirm: () -> Unit,
-    game: Game?, onGame: (Game) -> Unit, onEditCentering: () -> Unit,
-) {
-    Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            stringResource(if (step == Step.FRONT) R.string.grade_front else R.string.grade_back),
-            style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
-        )
-        InspectionStages(if (side == null) 0 else 1)
+private fun QuickCaptureStep(step: Step, side: PreGrader.Side?, busy: Boolean, error: String?, game: Game?,
+                             onGame: (Game) -> Unit, onCamera: () -> Unit, onGallery: () -> Unit,
+                             onEdit: () -> Unit, onRetake: () -> Unit, onNext: () -> Unit, onSkip: (() -> Unit)?) {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(stringResource(if (step == Step.FRONT) R.string.pre_quick_front else R.string.pre_quick_back),
+            style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+        LinearProgressIndicator(progress = { if (step == Step.FRONT) .33f else .66f }, modifier = Modifier.fillMaxWidth())
+        Text(stringResource(R.string.pre_quick_intro), style = MaterialTheme.typography.bodyMedium)
         when {
             busy -> {
-                Spacer(Modifier.height(40.dp))
-                CircularProgressIndicator()
-                Text(stringResource(R.string.grade_analysing), style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(36.dp)); CircularProgressIndicator()
+                Text(stringResource(R.string.pre_quick_analyzing))
             }
             side != null -> {
-                if (side.outlineConfirmed) {
-                    AppButton(stringResource(R.string.pre_open_centering), onEditCentering, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
-                    Text(stringResource(if (side.centering == null) R.string.pre_center_missing else R.string.pre_center_ready))
-                } else {
-                    AppButton(stringResource(R.string.center_confirm_next), onConfirm, Modifier.fillMaxWidth())
-                    if (side.photo != null) AppButton(stringResource(R.string.pre_outline_adjust), onAdjust, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
+                Image(side.card.asImageBitmap(), null, Modifier.width(180.dp).aspectRatio(.716f))
+                if (side.problems.isEmpty()) {
+                    Text(stringResource(if (side.centering != null) R.string.pre_quick_ready else R.string.pre_quick_missing))
+                    AppButton(stringResource(R.string.pre_quick_adjust), onEdit, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
                 }
-                side.photo?.let { original ->
-                    Box(Modifier.fillMaxWidth().aspectRatio(original.width.toFloat() / original.height)) {
-                        Image(original.asImageBitmap(), stringResource(R.string.tools_confirm_outline), Modifier.fillMaxSize())
-                        Canvas(Modifier.fillMaxSize()) {
-                            val sx = size.width / original.width; val sy = size.height / original.height
-                            side.quad?.corners?.let { corners ->
-                                for (i in corners.indices) {
-                                    val a = corners[i]; val b = corners[(i + 1) % corners.size]
-                                    drawLine(Color(0xFF00E676), Offset(a.x.toFloat() * sx, a.y.toFloat() * sy), Offset(b.x.toFloat() * sx, b.y.toFloat() * sy), strokeWidth = 3.dp.toPx())
-                                }
-                            }
-                        }
-                    }
-                }
-                FlatCard(side, Modifier.fillMaxWidth(0.8f))
-                side.problems.forEach { p ->
-                    Text(
-                        stringResource(
-                            when (p) {
-                                PhotoCheck.Problem.BLURRY -> R.string.grade_problem_blurry
-                                PhotoCheck.Problem.GLARE -> R.string.grade_problem_glare
-                                PhotoCheck.Problem.TOO_SMALL -> R.string.grade_problem_small
-                            },
-                        ),
-                        color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center,
-                    )
-                }
-                Text(stringResource(R.string.grade_check_outline), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
-                if (side.photo != null && side.outlineConfirmed) TextButton(onClick = onAdjust) { Text(stringResource(R.string.pre_outline_adjust)) }
-                Text(stringResource(R.string.tools_outline_hint))
-
+                side.problems.forEach { p -> Text(stringResource(when (p) {
+                    PhotoCheck.Problem.BLURRY -> R.string.grade_problem_blurry
+                    PhotoCheck.Problem.GLARE -> R.string.grade_problem_glare
+                    PhotoCheck.Problem.TOO_SMALL -> R.string.grade_problem_small
+                }), color = MaterialTheme.colorScheme.error) }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     AppButton(stringResource(R.string.grade_retake), onRetake, Modifier.weight(1f), style = ActionStyle.SECONDARY)
-                    AppButton(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.grade_show_result),
-                        onNext, Modifier.weight(1f), enabled = side.outlineConfirmed)
+                    AppButton(stringResource(if (step == Step.FRONT) R.string.grade_next_back else R.string.pre_quick_reveal),
+                        onNext, Modifier.weight(1f), enabled = side.problems.isEmpty() && side.centering != null)
                 }
             }
             else -> {
-                GameChips(game, { it?.let(onGame) }, nullLabel = null)
-                error?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
+                if (step == Step.FRONT) GameChips(game, { it?.let(onGame) }, nullLabel = null)
+                error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 AppButton(stringResource(R.string.grade_take_photo), onCamera, Modifier.fillMaxWidth(), Icons.Outlined.CameraAlt)
                 AppButton(stringResource(R.string.grade_choose_photo), onGallery, Modifier.fillMaxWidth(), Icons.Outlined.PhotoLibrary, style = ActionStyle.SECONDARY)
                 Tips()
-                onSkip?.let { TextButton(onClick = it) { Text(stringResource(R.string.grade_skip_back)) } }
             }
         }
+        if (!busy) onSkip?.let { TextButton(it) { Text(stringResource(R.string.grade_skip_back)) } }
+        Text(stringResource(R.string.pre_quick_surface), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 

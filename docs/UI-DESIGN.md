@@ -18,7 +18,7 @@ Collection navigation prioritises scanning. Binder controls fit within the scree
 
 Sealed search uses game and language selectors, product thumbnails, compact price rows and clearly labelled listing evidence. Japanese is displayed as JP; internal provider language identifiers remain unchanged. Unsupported German One Piece is disabled, and switching from German Pokémon selects English. Product photos are retained when supplied; absent photos have a neutral placeholder.
 
-Pre-grading shows capture, alignment, inspection and result stages. Photo actions are prominent; tips, measurements and surface evidence can expand. The existing evidence limits, non-professional disclaimer and grade eligibility rules remain in force.
+Pre-grading uses front photo, back photo and a short slab reveal, followed by a concise result page. Automatic capture removes manual region/surface checklists. Centering remains adjustable; missing measurements and poor photos abstain. The result clearly labels the centering-only fallback, retains the non-professional disclaimer, and provides CSV export, Save and a saved-history action.
 
 ## Font provenance
 

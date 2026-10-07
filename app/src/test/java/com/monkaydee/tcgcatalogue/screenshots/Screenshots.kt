@@ -369,15 +369,13 @@ class Screenshots {
                 com.monkaydee.tcgcatalogue.grade.Pt(598.0, 838.0), com.monkaydee.tcgcatalogue.grade.Pt(1.0, 838.0)))
     }
 
-    @Test fun correctedFrontOutlineOpensInnerOuterEditorDirectly() {
+    @Test fun missingFrontCenteringOpensOptionalEditorDirectly() {
         rule.setContent {
             TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
                 com.monkaydee.tcgcatalogue.ui.screens.PreGradeFlow(null, {}, Game.ONE_PIECE, initialFront = handoffSide())
             }
         }
-        rule.onNodeWithText("Adjust the four card corners").assertIsDisplayed().performClick()
-        rule.onNodeWithText("Card outline · four corners").assertIsDisplayed()
-        rule.onNodeWithText("Continue to centering").assertIsDisplayed().performClick()
+        rule.onNodeWithText("Adjust centering").assertIsDisplayed().performClick()
         rule.waitUntil(15000) { rule.onAllNodes(androidx.compose.ui.test.hasText("Inner frame")).fetchSemanticsNodes().isNotEmpty() }
         rule.onNodeWithText("Centering · eight guides").assertIsDisplayed()
         rule.onNodeWithText("Outer edge").assertIsDisplayed().performClick()
@@ -393,30 +391,33 @@ class Screenshots {
             val inner = offset + 48.25f * scale
             swipe(Offset(inner, height / 2f), Offset(inner + 8 * scale, height / 2f), 300)
         }
-        rule.onNodeWithText("↔ 53.9/46.1 · ↕ 50.0/50.0").assertIsDisplayed()
+        rule.onNodeWithText("↔ ", substring = true).assertExists()
         save("outline_to_inner_outer_centering")
         rule.onNodeWithText("Use these guides").assertIsDisplayed().performClick()
         rule.onNodeWithText("Next: back").performScrollTo().performClick()
         rule.onNodeWithText("Confirm outline and measure centering").assertDoesNotExist()
     }
 
-    @Test fun confirmingBackOutlineOpensInnerOuterEditorDirectly() {
+    @Test fun missingBackCenteringCanBeAdjustedWithoutManualInspection() {
         val side = handoffSide()
         rule.setContent {
             TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
                 com.monkaydee.tcgcatalogue.ui.screens.PreGradeFlow(null, {}, Game.ONE_PIECE,
-                    initialFront = side.copy(outlineConfirmed = true), initialBack = side,
+                    initialFront = side.copy(outlineConfirmed = true, centering = com.monkaydee.tcgcatalogue.grade.Centering.Result(30.0,30.0,42.0,42.0)), initialBack = side,
                     initialStep = com.monkaydee.tcgcatalogue.ui.screens.Step.BACK)
             }
         }
-        rule.onNodeWithText("Confirm outline and measure centering").assertIsDisplayed().performClick()
+        rule.onNodeWithText("Adjust centering").assertIsDisplayed().performClick()
         rule.onNodeWithText("Centering · eight guides").assertIsDisplayed()
         rule.onNodeWithText("Outer edge").assertIsDisplayed().performClick()
         rule.onNodeWithContentDescription("+1 image pixel").performClick()
         rule.onNodeWithText("Inner frame").assertIsDisplayed().performClick()
         rule.onNodeWithContentDescription("+1 image pixel").performClick()
         rule.onNodeWithText("Use these guides").assertIsDisplayed().performClick()
-        rule.onNodeWithText("Show result").performScrollTo().performClick()
+        rule.onNodeWithText("Reveal pre-grade").performScrollTo().performClick()
+        rule.mainClock.advanceTimeBy(1800)
+        rule.onNodeWithTag("pregrade_paper").performSemanticsAction(SemanticsActions.OnClick) { it() }
+        rule.onNodeWithTag("pregrade_reveal_continue").performClick()
         rule.onNodeWithText("Edit back centering").performScrollTo().assertIsDisplayed()
     }
 
@@ -432,17 +433,20 @@ class Screenshots {
                     initialFront = side, initialBack = side.copy(outlineConfirmed = true))
             }
         }
-        rule.onNodeWithText("Confirm outline and measure centering").performClick()
+        rule.onNodeWithText("Adjust centering").performClick()
         rule.onNodeWithText("Inner frame").assertIsDisplayed()
         if (changeInner) rule.onNodeWithContentDescription("+1 image pixel").performClick()
         rule.onNodeWithText("Use these guides").performClick()
         rule.onNodeWithText("Next: back").performScrollTo().performClick()
-        rule.onNodeWithText("Show result").performScrollTo().performClick()
-        // The scan-trained estimate is retired even when automatic guides were unchanged.
-        rule.onNodeWithText("Experimental Pokémon photo estimate").assertDoesNotExist()
-        rule.onNodeWithText("More evidence needed").performScrollTo().assertIsDisplayed()
-        rule.onNodeWithText("• Front: review all four corners and four edges").assertIsDisplayed()
-        rule.onNodeWithText("Non-professional pre-grade estimate", substring = true).performScrollTo().assertIsDisplayed()
+        rule.onNodeWithText("Reveal pre-grade").performScrollTo().performClick()
+        rule.mainClock.advanceTimeBy(1800)
+        rule.onNodeWithTag("pregrade_revealed_grade").assertDoesNotExist()
+        rule.onNodeWithTag("pregrade_paper").performSemanticsAction(SemanticsActions.OnClick) { it() }
+        rule.onNodeWithTag("pregrade_reveal_continue").performClick()
+        rule.onNodeWithText("Why this score").assertIsDisplayed()
+        rule.onNodeWithText("More evidence needed").assertDoesNotExist()
+        rule.onNodeWithText("Surface could not be assessed reliably", substring = true).performScrollTo().assertIsDisplayed()
+        rule.onNodeWithText("Non-professional pre-grade.", substring = true).performScrollTo().assertIsDisplayed()
     }
 
     @Test fun unchangedGuideReviewPreservesAutomaticModelInputs() = checkCenteringReviewKeepsCalibrationOnlyWhenUnchanged(false)

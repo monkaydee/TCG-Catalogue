@@ -77,7 +77,11 @@ object PreGrader {
         // refined guide can settle on the guide itself), so it is only the fallback.
         // With the camera guide, the card is what lies in the box; a gallery photo is searched whole.
         // Without an outline in the box, ask for a retake rather than measure something else.
-        val quad = (if (hint != null) CardRectifier.findQuadIn(p, hint) else CardRectifier.findQuad(p)) ?: return Outcome.NoCard
+        val quad = (if (hint != null) CardRectifier.findQuadIn(p, hint) else CardRectifier.findQuad(p))
+        if (quad == null) {
+            if (work !== photo) work.recycle()
+            return Outcome.NoCard
+        }
         return Outcome.Ok(measure(work, p, quad, scale, sourceFile = sourceFile))
     }
 

@@ -122,7 +122,7 @@ class DesignScreenshots {
         }
         rule.onNodeWithText("Take photo").assertIsDisplayed()
         rule.onNodeWithText("Choose a photo").assertIsDisplayed()
-        rule.onNodeWithText("Step 1 of 4 · Capture").assertIsDisplayed()
+        rule.onNodeWithText("1 · Front photo").assertIsDisplayed()
         save("design_pregrade_capture")
     }
 

@@ -2,37 +2,37 @@
 
 ## Current user workflow
 
-1. Capture/import front and back; confirm the detected physical outline. Detection uses a reduced
-   image, while a lossless source copy is retained in the private session cache (up to 4,000 pixels
-   on the longest side for bounded memory). Camera still resolution targets 4,000 × 3,000.
-2. Perspective correction precedes centering. Printed-frame auto-alignment fits independent border
-   lines and abstains if they disagree. This is a suggested rotation, not guaranteed perfect
-   geometry: verify the cut and all eight inner/outer guides, especially on skewed printed frames.
-3. Inspect four corners and four edges on each side. Detail comes from a separate rectification
-   with up to 2,200 source pixels across the card, never AI upscaling. Edge inspection offers the
-   entire edge and four segments with surrounding context. Magenta flags mark colour differences,
-   not confirmed defects. Zoom adds no source detail.
-4. Corner contour comparison checks silhouette asymmetry only when borders/background support it.
-   Artwork, foil, low contrast, normal cutting variation and the rectification can confound it.
-5. Add at least two low-angle lighting photos for each side and record surface observations.
-   Opposite raking-light directions may reveal dents, scratches, creases and print lines. This
-   workflow is manual surface evidence, not automatic depth recovery or authentication.
-6. The experimental estimate requires clear confirmed photos, completed region observations,
-   centering or an explicit borderless skip, and multi-angle surface observations. It shows a
-   broad heuristic range with a non-professional disclaimer. Recorded damage lowers/broadens the
-   range. Missing evidence is listed explicitly. Manual centering does not by itself block this
-   separate estimate. Sharing exports the observed measurements/findings and disclaimer as text.
+1. Capture/import front and back. Whole-card detection, rectification, photo-quality checks and
+   centering measurement run automatically. Clear measurable captures advance directly to the
+   next photo and reveal; no outline confirmation or region/surface observation checklist is required.
+   The fast flow avoids source-photo re-encoding and large inspection-file generation.
+2. Centering is adjustable with the existing eight-guide editor. Failed photos require a retake;
+   missing centering requires an optional guide adjustment or retake. Skipping the back produces
+   an explicitly front-only estimate capped at 9, rather than assuming reverse centering.
+3. No validated surface-grading model is available. As requested, the fallback uses centering only:
+   corners, edges, surface and authenticity do not determine the score. Automatic corner/edge
+   screening continues without manual input, but does not certify physical damage or a clean surface.
+4. The reveal displays the actual rectified photo in a PSA-style **pre-grade display** with a
+   1.6-second entrance, a slightly shaking paper cover and a synchronized right-arrow/pull hint
+   after 2.2 seconds. Swipe the paper right; a screen-reader action also reveals it. “Nice!” (9+)
+   or “meeh!” (8 or less) opens the result. The hidden grade is absent from accessibility semantics.
+5. The result shows an experimental ordinal centering score, a conservative heuristic range,
+   measured ratios and a short explanation. Only PSA's published 10-centering thresholds (front
+   55/45, back 75/25) are official references; the remaining ordinal bands are our own heuristic.
+   They are **not** validated PSA grade predictions, probability estimates or certificates.
+6. Save writes an atomic private report and durable cropped photo copies. Open saved reports with
+   the history icon in Pre-grade. CSV export uses Android's document picker, UTC dates, stable decimal
+   formatting, quoted/formula-escaped user text and explicit assessment scope/disclaimer.
 
-All session photos and observations stay on the device. Cache cleanup removes old session files;
-there is no automatic photo upload or verified-grade learning claim.
+Photos and reports stay on the device. There is no upload, cloud inference, verified-grade learning
+claim or automatic save. Saved reports are separate from the temporary inspection/photo cache.
 
 ## Capture quality
 
 CameraX uses preview/image analysis and quality-mode still capture. The guide uses phone tilt,
 image-to-image motion, sharpness, exposure and whole-card detection before automatic capture.
 Tap-to-focus, optional exposure lock, a two-second timer and best-of-three still selection are
-available. Surface lighting views use manual capture because raking angles intentionally depart
-from the level-phone geometry. Burst selection uses a sharpness heuristic; real-device validation
+available. Burst selection uses a sharpness heuristic; real-device validation
 is still required. A stable level reading alone no longer triggers capture.
 
 White pixel share alone cannot distinguish printed white from reflections. The photo rejection

@@ -46,11 +46,11 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   No free source of graded sales can be read by an app, so graded copies show the raw price until
   you set **your own value**. The card page has links that open eBay sold listings, PriceCharting,
   Cardmarket and TCGplayer for that exact card and grade in your browser, so you can look it up.
-- **Pre-grading** (Pokémon-calibrated, works on any card with a border): photograph the front and
-  back (camera icon with the ruler on the home screen, or *Pre-grade* on a raw card's page). The app
-  finds and straightens the card, measures centering against the PSA, BGS and CGC limits, rates the
-  wear of each corner and edge, and shows a likely PSA range. Everything runs on the phone; no photo
-  is uploaded. It's an estimate: surface scratches and dents are not checked.
+- **Pre-grading**: take front and back photos; the app automatically finds, straightens and checks
+  the card. Centering adjustments are optional. A short rotating slab and swipe-away paper reveal
+  an experimental centering score, followed by an explanation, CSV export and private saved reports.
+  Surface cannot be assessed reliably, so the fallback uses centering only. This is not a professional
+  grade or a validated PSA prediction. Everything runs on the phone; no photo is uploaded.
 - **Import photos**: took pictures while you were out? Pick them from the gallery (Scan →
   *From photos*, or the photo icon on the Collection screen), or share them to CardNavo (formerly TCG Catalogue)
   from any app. Each photo is read on the phone, tried in all four orientations, and can contain

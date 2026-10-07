@@ -1,6 +1,7 @@
 # Phone validation and release limits
 
-The current range is experimental. Automated geometry/quality/flow tests do not establish
+The current centering-only score and range are experimental. Automated geometry/quality/flow
+tests do not establish
 professional grade accuracy, physical surface-defect detection or real camera reliability.
 No labelled phone dataset or connected physical phones are available in the build workspace.
 
@@ -13,7 +14,8 @@ certificate numbers private. Do not put them in release artifacts.
 
 Run `python scripts/pregrade/validate_phone_dataset.py private-manifest.jsonl`. Rows require
 `certificate`, `split`, `grade`, `game`, `language`, `device`, `certificateVerified`. Record the
-app's `low`/`high` range; `predicted` may be null. It is not valid to invent a midpoint prediction.
+app's `low`/`high` range; `predicted` may be null. The centering-only ordinal score must not be
+treated as a validated whole-card prediction; separate that scope from whole-card range evaluation.
 The evaluator rejects cross-split physical cards and conflicting labels, weights repeat captures,
 reports range coverage AND width, and breaks results down by game/language/device.
 
@@ -30,10 +32,11 @@ and the report independently reviewed. The evaluator never automatically approve
 - Tap focus, supported/unsupported AE lock, best-of-three selection, timer cancellation.
 - Stable/blurred/moving frames, dim/bright light, white ink and foil reflections.
 - Capture crop/rotation maps to the preview guides; no clipping of actual card corners.
-- Source-resolution zoom, four edge segments, multiple surface views, removed-view reset.
+- Optional eight-guide centering adjustment, missing measurement recovery, rightward paper swipe.
+- Reveal timing, pull hint, 9+ / 8-or-less action, TalkBack reveal, CSV and durable saved reports.
 - German/Japanese text wrapping, enlarged fonts, screen readers and button reachability.
-- Memory usage across repeated front/back/surface captures, including gallery imports.
+- Memory usage across repeated front/back captures, including gallery imports.
 
-The JVM suite covers motion/quality gating and manual evidence requirements; the emulator smoke
+The JVM suite covers motion/quality gating, centering-only fallback, reveal interactions and report persistence; the emulator smoke
 job checks Android lifecycle/camera binding where virtual hardware is available. Physical camera
 optics, glare and focus still require the device matrix above, with real cards.
