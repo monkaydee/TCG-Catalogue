@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="pre_quick_intro">Front, back, reveal. Photos are checked automatically; centering adjustments are optional.</string>
+    <string name="pre_quick_intro">Front, back, reveal. Confirm the four card corners after each photo; grading checks run automatically.</string>
     <string name="pre_quick_front">1 · Front photo</string>
     <string name="pre_quick_back">2 · Back photo</string>
     <string name="pre_quick_analyzing">Finding the card and analyzing your photo…</string>

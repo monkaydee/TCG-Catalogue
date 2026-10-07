@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +45,7 @@ import com.monkaydee.tcgcatalogue.grade.Quad
  */
 @Composable
 fun AdjustOutline(photo: Bitmap, start: Quad, onCancel: () -> Unit, fullscreen: Boolean = false, applyLabel: String? = null, onApply: (Quad) -> Unit) {
-    var corners by remember(start) { mutableStateOf(start.corners) }
+    var corners by remember(photo, start) { mutableStateOf(start.corners) }
     var dragging by remember { mutableIntStateOf(-1) }
     val accent = MaterialTheme.colorScheme.primary
     Column(Modifier.then(if (fullscreen) Modifier.fillMaxSize() else Modifier), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -57,7 +58,7 @@ fun AdjustOutline(photo: Bitmap, start: Quad, onCancel: () -> Unit, fullscreen: 
             val image = remember(photo) { photo.asImageBitmap() }
             Image(image, null, Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
             Canvas(
-                Modifier.fillMaxSize().pointerInput(k, ox, oy) {
+                Modifier.fillMaxSize().testTag("outline_photo_canvas").pointerInput(photo, start, k, ox, oy) {
                     detectDragGestures(
                         onDragStart = { at ->
                             val near = corners.withIndex().minByOrNull { (_, c) -> (Offset(ox + c.x.toFloat() * k, oy + c.y.toFloat() * k) - at).getDistance() }
@@ -65,13 +66,13 @@ fun AdjustOutline(photo: Bitmap, start: Quad, onCancel: () -> Unit, fullscreen: 
                         },
                         onDragEnd = { dragging = -1 },
                         onDragCancel = { dragging = -1 },
-                    ) { change, amount ->
+                    ) { change, _ ->
                         val i = dragging
                         if (i >= 0) {
                             change.consume()
-                            val c = corners[i]
-                            val x = (c.x + amount.x / k).coerceIn(0.0, photo.width - 1.0)
-                            val y = (c.y + amount.y / k).coerceIn(0.0, photo.height - 1.0)
+                            // Absolute photo coordinates retain the movement used to cross touch slop.
+                            val x = ((change.position.x - ox) / k).toDouble().coerceIn(0.0, photo.width - 1.0)
+                            val y = ((change.position.y - oy) / k).toDouble().coerceIn(0.0, photo.height - 1.0)
                             corners = corners.toMutableList().also { it[i] = Pt(x, y) }
                         }
                     }

@@ -31,7 +31,7 @@ Backup format 3 carries lots and submissions; earlier backups still import. Repl
 ledger mutations and sales use Room transactions. Backup merges match language and slab identity.
 Unfinished review photos remain local across app restarts; addition receipts are stored atomically
 with collection additions so a resumed multi-card photo cannot add an already confirmed hit again.
-Pre-grading now uses automatic front/back photos with optional centering guides, a swipe-to-reveal
+Pre-grading uses front/back photos with physical corner confirmation and optional centering guides, a swipe-to-reveal
 slab presentation, CSV export and private saved reports. Until reliable surface assessment is
 available, all games use an explicitly experimental centering-only score. Failed photos or missing
 measurements do not produce a score. Saved report photos survive temporary cache cleanup.

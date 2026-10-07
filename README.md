@@ -46,8 +46,8 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   No free source of graded sales can be read by an app, so graded copies show the raw price until
   you set **your own value**. The card page has links that open eBay sold listings, PriceCharting,
   Cardmarket and TCGplayer for that exact card and grade in your browser, so you can look it up.
-- **Pre-grading**: take front and back photos; the app automatically finds, straightens and checks
-  the card. Centering adjustments are optional. A short rotating slab and swipe-away paper reveal
+- **Pre-grading**: take front and back photos and confirm the four physical corners on the original
+  photo. The app then straightens and checks the selected full card; centering adjustments are optional. A short rotating slab and swipe-away paper reveal
   an experimental centering score, followed by an explanation, CSV export and private saved reports.
   Surface cannot be assessed reliably, so the fallback uses centering only. This is not a professional
   grade or a validated PSA prediction. Everything runs on the phone; no photo is uploaded.

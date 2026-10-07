@@ -32,6 +32,7 @@ and the report independently reviewed. The evaluator never automatically approve
 - Tap focus, supported/unsupported AE lock, best-of-three selection, timer cancellation.
 - Stable/blurred/moving frames, dim/bright light, white ink and foil reflections.
 - Capture crop/rotation maps to the preview guides; no clipping of actual card corners.
+- Original-photo four-corner selection, failed detection recovery, full-card borders after confirmation.
 - Optional eight-guide centering adjustment, missing measurement recovery, rightward paper swipe.
 - Reveal timing, pull hint, 9+ / 8-or-less action, TalkBack reveal, CSV and durable saved reports.
 - German/Japanese text wrapping, enlarged fonts, screen readers and button reachability.

@@ -144,7 +144,7 @@ fun PreGradeScreen(title: String?, onBack: () -> Unit, initialGame: Game? = null
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game? = null,
-    initialFront: PreGrader.Side? = null, initialBack: PreGrader.Side? = null, initialStep: Step = Step.FRONT) {
+    initialFront: PreGrader.Side? = null, initialBack: PreGrader.Side? = null, initialStep: Step = Step.FRONT, initialOutline: PreGrader.Outline? = null) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(initialStep) }
@@ -156,40 +156,57 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
     var error by remember { mutableStateOf<String?>(null) }
     var editingCentering by remember { mutableStateOf<Step?>(null) }
     var history by remember { mutableStateOf(false) }
+    var outlineDraft by remember { mutableStateOf(initialOutline?.let { initialStep to it }) }
     val result = remember(front, back) { AutomaticPreGrade.assess(front, back) }
     val label = title ?: stringResource(R.string.pre_quick_card)
     val report = remember(front, back, game, label) {
         result?.let { PreGradeReport.create(label, game, it, front!!, back) }
     }
     fun finish() { step = if (AutomaticPreGrade.assess(front, back) != null) Step.REVEAL else Step.RESULT }
-    fun accept(outcome: PreGrader.Outcome, target: Step) {
-        busy = false
-        when (outcome) {
-            PreGrader.Outcome.NoCard -> error = context.getString(R.string.grade_no_card)
-            is PreGrader.Outcome.Ok -> {
-                error = null
-                // The detector found the real outline; there is no manual confirmation gate.
-                val side = outcome.side.copy(outlineConfirmed = true)
-                if (target == Step.FRONT) front = side else back = side
-                if (side.problems.isEmpty() && side.centering != null) {
-                    if (target == Step.FRONT) step = Step.BACK else finish()
-                }
-            }
+    fun openOutline(target: Step) {
+        val side = if (target == Step.FRONT) front else back
+        if (side?.photo != null && side.quad != null) {
+            error = null
+            outlineDraft = target to PreGrader.Outline(side.photo, side.quad, side.photoWidth)
         }
+    }
+    fun cancelOutline() {
+        val photo = outlineDraft?.second?.photo
+        outlineDraft = null; error = null
+        // Existing sides keep their original photo for subsequent corrections.
+        if (photo != null && photo !== front?.photo && photo !== back?.photo) photo.recycle()
     }
     fun analyse(photo: Bitmap, guide: FloatArray?) {
         val target = step
-        busy = true; camera = false
+        busy = true; camera = false; error = null
         scope.launch {
-            val outcome = withContext(Dispatchers.Default) {
-                runCatching {
-                    // Fast flow needs the rectified card, not large inspection files or source re-encoding.
-                    val outcome = PreGrader.analyse(photo, guide)
-                    if (outcome !is PreGrader.Outcome.Ok || outcome.side.photo !== photo) photo.recycle()
-                    outcome
-                }.getOrDefault(PreGrader.Outcome.NoCard)
+            val draft = withContext(Dispatchers.Default) {
+                runCatching { PreGrader.prepareOutline(photo, guide) }.getOrNull()
             }
-            accept(outcome, target)
+            busy = false
+            if (draft == null) {
+                photo.recycle(); error = context.getString(R.string.grade_no_card)
+            } else {
+                if (draft.photo !== photo) photo.recycle()
+                // Review the original photo before any card crop or grade is accepted.
+                outlineDraft = target to draft
+            }
+        }
+    }
+    fun confirmOutline(quad: com.monkaydee.tcgcatalogue.grade.Quad) {
+        if (busy) return
+        val (target, draft) = outlineDraft ?: return
+        busy = true; error = null
+        scope.launch {
+            val fixed = withContext(Dispatchers.Default) { runCatching { PreGrader.fromOutline(draft, quad) }.getOrNull() }
+            busy = false
+            if (fixed == null) error = context.getString(R.string.pre_outline_invalid) else {
+                outlineDraft = null
+                if (target == Step.FRONT) front = fixed else back = fixed
+                if (fixed.problems.isEmpty() && fixed.centering != null) {
+                    if (step != Step.RESULT) { if (target == Step.FRONT) step = Step.BACK else finish() }
+                } else step = target
+            }
         }
     }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -209,6 +226,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
     fun goBack() {
         if (busy) return
         when {
+            outlineDraft != null -> cancelOutline()
             editingCentering != null -> editingCentering = null
             camera -> camera = false
             history -> history = false
@@ -219,6 +237,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
     Scaffold(topBar = {
         TopAppBar(colors = appBarColors(), title = {
             Text(stringResource(when {
+                outlineDraft != null -> R.string.pre_outline_screen
                 editingCentering != null -> R.string.pre_center_screen
                 history -> R.string.pre_quick_history
                 else -> R.string.grade_title
@@ -226,7 +245,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
         }, navigationIcon = {
             IconButton(onClick = ::goBack, enabled = !busy) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.card_back)) }
         }, actions = {
-            if (!camera && editingCentering == null && step != Step.REVEAL) IconButton(onClick = { history = !history }, enabled = !busy) {
+            if (!camera && outlineDraft == null && editingCentering == null && step != Step.REVEAL) IconButton(onClick = { history = !history }, enabled = !busy) {
                 Icon(Icons.Outlined.History, stringResource(R.string.pre_quick_history))
             }
         })
@@ -239,6 +258,22 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                     onPhoto = ::analyse,
                     onError = { camera = false; error = context.getString(R.string.grade_camera_failed) },
                 )
+                busy -> Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator()
+                    Text(stringResource(R.string.pre_quick_analyzing))
+                }
+                outlineDraft != null -> {
+                    val (target, draft) = outlineDraft!!
+                    Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(if (target == Step.FRONT) R.string.grade_front else R.string.grade_back), style = MaterialTheme.typography.titleMedium)
+                        if (!draft.detected) Text(stringResource(R.string.pre_outline_seed), style = MaterialTheme.typography.bodySmall)
+                        error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                        Box(Modifier.weight(1f)) {
+                            AdjustOutline(draft.photo, draft.quad, ::cancelOutline, fullscreen = true,
+                                applyLabel = stringResource(R.string.pre_outline_use), onApply = ::confirmOutline)
+                        }
+                    }
+                }
                 editingCentering != null -> {
                     val target = editingCentering!!
                     val side = (if (target == Step.FRONT) front else back)!!
@@ -256,14 +291,15 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
                 }
                 step == Step.REVEAL && result != null -> PreGradeReveal(front!!.card, label, result, { step = Step.RESULT })
                 step == Step.RESULT || step == Step.REVEAL -> AutomaticGradeResult(front, back, game, title,
-                    onEdit = { editingCentering = it },
+                    onEdit = { editingCentering = it }, onOutline = ::openOutline,
                     onRetake = { target -> if (target == Step.FRONT) front = null else back = null; error = null; step = target },
                     onRedo = { front = null; back = null; error = null; step = Step.FRONT }, sessionReport = report)
                 else -> QuickCaptureStep(step, if (step == Step.FRONT) front else back, busy, error, game,
                     onGame = { game = it },
                     onCamera = { if (granted) camera = true else permission.launch(Manifest.permission.CAMERA) },
                     onGallery = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-                    onEdit = { editingCentering = step },
+                    onEdit = { editingCentering = step }, onOutline = { openOutline(step) },
+                    onFrontOutline = if (step == Step.BACK && front?.photo != null && front?.quad != null) ({ openOutline(Step.FRONT) }) else null,
                     onRetake = { if (step == Step.FRONT) front = null else back = null },
                     onNext = { if (step == Step.FRONT) step = Step.BACK else finish() },
                     onSkip = if (step == Step.BACK) ({ back = null; finish() }) else null)
@@ -275,7 +311,7 @@ internal fun PreGradeFlow(title: String?, onBack: () -> Unit, initialGame: Game?
 @Composable
 private fun QuickCaptureStep(step: Step, side: PreGrader.Side?, busy: Boolean, error: String?, game: Game?,
                              onGame: (Game) -> Unit, onCamera: () -> Unit, onGallery: () -> Unit,
-                             onEdit: () -> Unit, onRetake: () -> Unit, onNext: () -> Unit, onSkip: (() -> Unit)?) {
+                             onEdit: () -> Unit, onOutline: () -> Unit, onFrontOutline: (() -> Unit)?, onRetake: () -> Unit, onNext: () -> Unit, onSkip: (() -> Unit)?) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(stringResource(if (step == Step.FRONT) R.string.pre_quick_front else R.string.pre_quick_back),
@@ -289,6 +325,7 @@ private fun QuickCaptureStep(step: Step, side: PreGrader.Side?, busy: Boolean, e
             }
             side != null -> {
                 Image(side.card.asImageBitmap(), null, Modifier.width(180.dp).aspectRatio(.716f))
+                if (side.photo != null && side.quad != null) AppButton(stringResource(R.string.pre_outline_adjust), onOutline, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
                 if (side.problems.isEmpty()) {
                     Text(stringResource(if (side.centering != null) R.string.pre_quick_ready else R.string.pre_quick_missing))
                     AppButton(stringResource(R.string.pre_quick_adjust), onEdit, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
@@ -312,6 +349,7 @@ private fun QuickCaptureStep(step: Step, side: PreGrader.Side?, busy: Boolean, e
                 Tips()
             }
         }
+        if (!busy) onFrontOutline?.let { TextButton(it) { Text(stringResource(R.string.pre_outline_front)) } }
         if (!busy) onSkip?.let { TextButton(it) { Text(stringResource(R.string.grade_skip_back)) } }
         Text(stringResource(R.string.pre_quick_surface), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }

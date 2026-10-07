@@ -37,7 +37,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun AutomaticGradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Game?, title: String?,
                                   onRedo: () -> Unit, onEdit: (Step) -> Unit, onRetake: (Step) -> Unit,
-                                  sessionReport: PreGradeReport? = null) {
+                                  sessionReport: PreGradeReport? = null, onOutline: ((Step) -> Unit)? = null) {
     val result = remember(front, back) { AutomaticPreGrade.assess(front, back) }
     val label = title ?: stringResource(R.string.pre_quick_card)
     val report = remember(front, back, result, label, game) {
@@ -45,12 +45,14 @@ internal fun AutomaticGradeResult(front: PreGrader.Side?, back: PreGrader.Side?,
     }
     if (report != null) {
         PreGradeReportPage(sessionReport ?: report, photo = front!!.card, backPhoto = back?.card,
-            onEdit = onEdit, onRedo = onRedo)
+            onEdit = onEdit, onRedo = onRedo, onOutline = onOutline)
     } else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text(stringResource(R.string.pre_quick_missing), style = MaterialTheme.typography.headlineSmall)
         Text(stringResource(R.string.pre_quick_missing_hint), style = MaterialTheme.typography.bodyMedium)
         for ((target, side) in listOf(Step.FRONT to front, Step.BACK to back)) {
+            if (side?.photo != null && side.quad != null && onOutline != null) AppButton(stringResource(if (target == Step.FRONT) R.string.pre_outline_front else R.string.pre_outline_back),
+                { onOutline(target) }, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
             if (side != null && side.problems.isEmpty()) AppButton(stringResource(if (target == Step.FRONT) R.string.pre_edit_front else R.string.pre_edit_back),
                 { onEdit(target) }, Modifier.fillMaxWidth(), style = ActionStyle.SECONDARY)
             AppButton(stringResource(if (target == Step.FRONT) R.string.pre_retake_front else R.string.pre_retake_back),
@@ -62,7 +64,7 @@ internal fun AutomaticGradeResult(front: PreGrader.Side?, back: PreGrader.Side?,
 @Composable
 internal fun PreGradeReportPage(report: PreGradeReport, photo: Bitmap? = null, backPhoto: Bitmap? = null,
                                 alreadySaved: Boolean = false, imagePath: String? = null,
-                                onEdit: ((Step) -> Unit)? = null, onRedo: (() -> Unit)? = null) {
+                                onEdit: ((Step) -> Unit)? = null, onRedo: (() -> Unit)? = null, onOutline: ((Step) -> Unit)? = null) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = remember { PreGradeReportStore(context) }
@@ -124,6 +126,10 @@ internal fun PreGradeReportPage(report: PreGradeReport, photo: Bitmap? = null, b
                     if (onEdit != null) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         TextButton({ onEdit(Step.FRONT) }) { Text(stringResource(R.string.pre_edit_front)) }
                         if (report.back != null) TextButton({ onEdit(Step.BACK) }) { Text(stringResource(R.string.pre_edit_back)) }
+                    }
+                    if (onOutline != null) {
+                        TextButton({ onOutline(Step.FRONT) }) { Text(stringResource(R.string.pre_outline_front)) }
+                        if (report.back != null) TextButton({ onOutline(Step.BACK) }) { Text(stringResource(R.string.pre_outline_back)) }
                     }
                 }
             }

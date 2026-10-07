@@ -62,46 +62,68 @@ object PreGrader {
      * Analyses [photo] (upright). [guide] is where the card should be, as fractions of the photo
      * (left, top, right, bottom), e.g. the camera's card guide; null searches the whole photo.
      */
-    fun analyse(photo: Bitmap, guide: FloatArray? = null, sourceFile: File? = null): Outcome {
+    data class Outline(val photo: Bitmap, val quad: Quad, val photoWidth: Int = photo.width, val detected: Boolean = true)
+
+    /** Full uncropped working photo; a fallback outline is only an editor seed, never grading evidence. */
+    fun prepareOutline(photo: Bitmap, guide: FloatArray? = null): Outline {
+        require(photo.width > 1 && photo.height > 1)
         val scale = minOf(1.0, WORK_SIDE.toDouble() / max(photo.width, photo.height))
         val work = if (scale < 1) Bitmap.createScaledBitmap(photo, (photo.width * scale).roundToInt(), (photo.height * scale).roundToInt(), true) else photo
-        val pixels = IntArray(work.width * work.height).also { work.getPixels(it, 0, work.width, 0, 0, work.width, work.height) }
-        val p = Pixels(work.width, work.height, pixels)
-        val hint = guide?.let { g ->
-            Quad(
-                Pt(g[0] * p.width.toDouble(), g[1] * p.height.toDouble()), Pt(g[2] * p.width.toDouble(), g[1] * p.height.toDouble()),
-                Pt(g[2] * p.width.toDouble(), g[3] * p.height.toDouble()), Pt(g[0] * p.width.toDouble(), g[3] * p.height.toDouble()),
-            )
+        val p = pixels(work)
+        val hint = guide?.takeIf { it.size == 4 && it.all { v -> v.isFinite() && v in 0f..1f } && it[0] < it[2] && it[1] < it[3] }?.let { g ->
+            fun point(x: Float, y: Float) = Pt((x * (p.width - 1)).toDouble(), (y * (p.height - 1)).toDouble())
+            Quad(point(g[0], g[1]), point(g[2], g[1]), point(g[2], g[3]), point(g[0], g[3]))
         }
-        // The card's own straight edges first: the guide is only roughly where the card lies (and a
-        // refined guide can settle on the guide itself), so it is only the fallback.
-        // With the camera guide, the card is what lies in the box; a gallery photo is searched whole.
-        // Without an outline in the box, ask for a retake rather than measure something else.
-        val quad = (if (hint != null) CardRectifier.findQuadIn(p, hint) else CardRectifier.findQuad(p))
-        if (quad == null) {
-            if (work !== photo) work.recycle()
+        val quad = if (hint != null) CardRectifier.findQuadIn(p, hint) else CardRectifier.findQuad(p)
+        val height = minOf((p.height - 1) * .8, (p.width - 1) * .8 / .716)
+        val width = height * .716
+        val x = (p.width - 1 - width) / 2; val y = (p.height - 1 - height) / 2
+        val seed = hint ?: Quad(Pt(x, y), Pt(x + width, y), Pt(x + width, y + height), Pt(x, y + height))
+        return Outline(work, quad ?: seed, photo.width, quad != null)
+    }
+
+    fun analyse(photo: Bitmap, guide: FloatArray? = null, sourceFile: File? = null): Outcome {
+        val outline = prepareOutline(photo, guide)
+        if (!outline.detected) {
+            if (outline.photo !== photo) outline.photo.recycle()
             return Outcome.NoCard
         }
-        return Outcome.Ok(measure(work, p, quad, scale, sourceFile = sourceFile))
+        return Outcome.Ok(measure(outline.photo, pixels(outline.photo), outline.quad,
+            outline.photo.width.toDouble() / outline.photoWidth, outline.photoWidth, sourceFile))
     }
 
-    /**
-     * [side] measured again with corners placed by hand ([quad], in [Side.photo] pixels). Each
-     * side is first snapped onto the card's edge nearby, as a finger is not pixel-exact.
-     */
+    /** Respect the confirmed physical corners exactly: do not snap to artwork or trim the cut again. */
+    fun fromOutline(outline: Outline, quad: Quad = outline.quad): Side {
+        validateOutline(outline.photo, quad)
+        return measure(outline.photo, pixels(outline.photo), quad, outline.photo.width.toDouble() / outline.photoWidth,
+            outline.photoWidth, preserveOutline = true).copy(outlineConfirmed = true)
+    }
+
     fun adjust(side: Side, quad: Quad): Side {
         val photo = side.photo ?: return side
-        require(quad.corners.all { it.x.isFinite() && it.y.isFinite() && it.x >= 0 && it.y >= 0 && it.x < photo.width && it.y < photo.height })
-        val p = Pixels(photo.width, photo.height, IntArray(photo.width * photo.height).also { photo.getPixels(it, 0, photo.width, 0, 0, photo.width, photo.height) })
-        val scale = side.photo.width.toDouble() / side.photoWidth
-        return measure(photo, p, CardRectifier.snap(p, quad), scale, side.photoWidth, side.sourceFile?.let(::File))
+        validateOutline(photo, quad)
+        return measure(photo, pixels(photo), quad, photo.width.toDouble() / side.photoWidth, side.photoWidth,
+            side.sourceFile?.let(::File), preserveOutline = true).copy(outlineConfirmed = true)
     }
 
-    private fun measure(work: Bitmap, p: Pixels, quad: Quad, scale: Double, photoWidth: Int = (work.width / scale).roundToInt(), sourceFile: File? = null): Side {
+    private fun pixels(photo: Bitmap) = Pixels(photo.width, photo.height,
+        IntArray(photo.width * photo.height).also { photo.getPixels(it, 0, photo.width, 0, 0, photo.width, photo.height) })
+
+    private fun validateOutline(photo: Bitmap, quad: Quad) {
+        require(quad.corners.all { it.x.isFinite() && it.y.isFinite() && it.x >= 0 && it.y >= 0 && it.x < photo.width && it.y < photo.height })
+        // Clockwise, convex, non-overlapping corners; reject crossed or collapsed selections.
+        val points = quad.corners
+        require(points.indices.all { i ->
+            val a = points[i]; val b = points[(i + 1) % 4]; val c = points[(i + 2) % 4]
+            (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x) > 1.0
+        })
+    }
+
+    private fun measure(work: Bitmap, p: Pixels, quad: Quad, scale: Double, photoWidth: Int = (work.width / scale).roundToInt(), sourceFile: File? = null, preserveOutline: Boolean = false): Side {
         val upright = upright(quad)
         val raw = CardRectifier.warp(p, upright)
-        val trim = "LRTB".map { Centering.cut(raw, it) }
-        val flat = trimmed(raw)
+        val trim = if (preserveOutline) List(4) { 0 } else "LRTB".map { Centering.cut(raw, it) }
+        val flat = if (preserveOutline) raw else trimmed(raw)
         val c = upright.corners
         val widthInPhoto = (hypot(c[1].x - c[0].x, c[1].y - c[0].y) + hypot(c[2].x - c[3].x, c[2].y - c[3].y)) / 2 / scale
         val bitmap = Bitmap.createBitmap(flat.argb, flat.width, flat.height, Bitmap.Config.ARGB_8888)

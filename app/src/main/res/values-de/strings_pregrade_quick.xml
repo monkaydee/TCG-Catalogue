@@ -1,5 +1,5 @@
 <resources>
-    <string name="pre_quick_intro">Vorderseite, Rückseite, Ergebnis. Fotos werden automatisch geprüft; die Zentrierung kannst du bei Bedarf anpassen.</string>
+    <string name="pre_quick_intro">Vorderseite, Rückseite, Ergebnis. Bestätige nach jedem Foto die vier Karten-Ecken; die Bewertungsprüfungen laufen automatisch.</string>
     <string name="pre_quick_front">1 · Foto der Vorderseite</string>
     <string name="pre_quick_back">2 · Foto der Rückseite</string>
     <string name="pre_quick_analyzing">Karte wird erkannt und Foto analysiert…</string>

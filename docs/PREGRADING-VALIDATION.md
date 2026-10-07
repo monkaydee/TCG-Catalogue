@@ -2,13 +2,18 @@
 
 ## Current user workflow
 
-1. Capture/import front and back. Whole-card detection, rectification, photo-quality checks and
-   centering measurement run automatically. Clear measurable captures advance directly to the
-   next photo and reveal; no outline confirmation or region/surface observation checklist is required.
-   The fast flow avoids source-photo re-encoding and large inspection-file generation.
-2. Centering is adjustable with the existing eight-guide editor. Failed photos require a retake;
-   missing centering requires an optional guide adjustment or retake. Skipping the back produces
-   an explicitly front-only estimate capped at 9, rather than assuming reverse centering.
+1. Capture/import front and back. The uncropped working photo opens with four draggable corners
+   before the card is cropped. Accept the detected physical outline or correct it; when detection
+   fails, a suggested rectangle is only a starting point for manual placement, never grade evidence.
+   Perspective correction uses the confirmed corners exactly, without snapping to nearby artwork
+   or automatically trimming the card again. Crossed, overlapping and out-of-image corners are rejected.
+2. Photo-quality checks and centering measurement run automatically after confirming the outline.
+   Clear measurable photos advance to the next side and reveal. The original working photo remains
+   available through corner-adjustment actions in photo review and the live result. Centering guides
+   remain optional; region/surface observation checklists stay removed. Failed photos require a retake
+   or outline correction, and missing centering requires guide adjustment or retake. Skipping the back
+   produces an explicitly front-only estimate capped at 9. Working photos retain the full field of view
+   at up to 2,400 pixels on the longest side, preserving original source scale for quality checks.
 3. No validated surface-grading model is available. As requested, the fallback uses centering only:
    corners, edges, surface and authenticity do not determine the score. Automatic corner/edge
    screening continues without manual input, but does not certify physical damage or a clean surface.
