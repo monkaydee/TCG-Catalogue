@@ -24,7 +24,7 @@ it("falls back across markets while retaining Japanese identity and charging eac
   expect(result.price.amount).toBe(60);
   expect(result.price.currency).toBe("USD");
   expect(result.price.source).toContain("EBAY_US international reference");
-  expect(result.sealedMatchingRevision).toBe(5);
+  expect(result.sealedMatchingRevision).toBe(6);
   expect(searches.map(s=>s.market)).toEqual(["EBAY_DE","EBAY_US"]);
   expect(searches[1].url.searchParams.get("q")).toContain("OP-08");
   expect(reserved).toBe(2);
@@ -88,6 +88,15 @@ describe("exact-language sealed prices", () => {
     for (const title of ["Pokemon Stürmische Funken Build & Battle Box Deutsch OVP", "Pokemon Stürmische Funken Booster Bundle Deutsch OVP", "Pokemon Stürmische Funken Booster Box Deutsch OVP 18 Boosters"])
       expect(sealedTitleMatches(title,p)).toBe(false);
     expect(sealedTitleMatches("Pokemon Stürmische Funken Booster Box Deutsch OVP 36 Boosters",p)).toBe(true);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken Booster Box Deutsch OVP 36x Boosters",p)).toBe(true);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken Booster Box Deutsch OVP 36xBoosters",p)).toBe(true);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken 2xBoosterbox Deutsch OVP",p)).toBe(false);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken 36er Display Deutsch OVP",p)).toBe(true);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken 18er Display Deutsch OVP",p)).toBe(false);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken Display (18er) Deutsch OVP",p)).toBe(false);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken Booster Box Deutsch OVP Auswahl",p)).toBe(false);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken Booster Box Deutsch OVP 18x Boosters",p)).toBe(false);
+    expect(sealedTitleMatches("Pokemon Stürmische Funken Booster Box x 2 Deutsch OVP",p)).toBe(false);
     const jp151:SealedRequest={...product,name:"Pokemon Card 151 Booster Box",aliases:["SV2a"]};
     expect(sealedTitleMatches("Pokemon Card 151 Japanese Booster Box sealed 20 Packs",jp151)).toBe(true);
     expect(sealedTitleMatches("Pokemon Card 151 Japanese Booster Box sealed 10 Packs",jp151)).toBe(false);

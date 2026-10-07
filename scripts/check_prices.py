@@ -78,7 +78,7 @@ def main():
     ]:
         for attempt in range(9):
             answer=call("/v1/sealed/price",{"game":game,"productId":product_id,"name":name,"language":language,"aliases":aliases,"market":market})
-            if answer.get("sealedMatchingRevision")==5:
+            if answer.get("sealedMatchingRevision")==6:
                 break
             if attempt==8:
                 raise AssertionError("Updated sealed matching did not propagate")

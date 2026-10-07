@@ -30,10 +30,20 @@ export function sealedType(name: string): string {
   return "unknown";
 }
 export function sealedContentsMatch(title:string, card:SealedRequest):boolean {
-  const units=(s:string)=>[...s.matchAll(/\b(\d+)\s*(?:x|box(?:es|en)?|displays?)\b/gi)].map(m=>Number(m[1])).filter(n=>n>1);
+  const units=(s:string)=>[
+    ...[...s.matchAll(/\b(\d+)\s*(x|box(?:es|en)?\b|displays?\b)/gi)]
+      // "36x boosters" counts packs inside one box, not 36 boxes.
+      .filter(m=>m[2].toLowerCase()!=="x" || !/^\s*(?:packs?|boosters?)\b(?![- ]?(?:box|display|bundle))/i.test(s.slice(m.index!+m[0].length)))
+      .map(m=>Number(m[1])),
+    ...[...s.matchAll(/\b(?:box|display)\s*x\s*(\d+)\b/gi)].map(m=>Number(m[1])),
+  ].filter(n=>n>1);
   const expected=units(card.name), actual=units(title);
   if (actual.some(n=>!expected.includes(n)) || expected.some(n=>!actual.includes(n))) return false;
-  const contents=(s:string)=>[...s.matchAll(/\b(\d+)\s*(?:packs?|boosters?)\b(?![- ]?(?:box|display|bundle))/gi)].map(m=>Number(m[1]));
+  const contents=(s:string)=>[
+    ...[...s.matchAll(/\b(\d+)[- ]*(?:x\s*)?(?:packs?|boosters?)\b(?![- ]?(?:box|display|bundle))/gi)].map(m=>Number(m[1])),
+    ...[...s.matchAll(/\b(\d+)er[- ]+(?:booster[- ]?)?display\b/gi)].map(m=>Number(m[1])),
+    ...[...s.matchAll(/\bdisplay\s*\(?\s*(\d+)er\b/gi)].map(m=>Number(m[1])),
+  ];
   const requested=contents(card.name), observed=contents(title);
   if (requested.length) return observed.length > 0 && requested.every(n=>observed.includes(n)) && observed.every(n=>requested.includes(n));
   // Standard full booster boxes; a half-display or pack bundle must never share its quote.
@@ -48,7 +58,7 @@ function normalized(t: string): string { return t.normalize("NFKD").replace(/[\u
 /** Require a sealed unit, exact language, same product family and identifiable set. */
 export function sealedTitleMatches(title: string, card: SealedRequest, verifiedLanguage?: string): boolean {
   if (!languageMatches(title, card.language, verifiedLanguage)) return false;
-  if (/\b(empty|opened|unsealed|lot|half|partial|loose|reseal(?:ed)?|proxy|custom|replica|break|random|mystery|loose cards|code card|no packs)\b/i.test(title)) return false;
+  if (/\b(empty|opened|unsealed|lot|half|partial|loose|reseal(?:ed)?|proxy|custom|replica|break|random|mystery|choose|pick|auswahl|w[aä]hlen|loose cards|code card|no packs)\b/i.test(title)) return false;
   if (/shrink(?:wrap)? (?:removed|missing)|no shrink|not sealed|nicht versiegelt|シュリンクなし|開封済|ohne folie|halb(?:es|er|e)? display|ge[oö]ffnet/i.test(title)) return false;
   if (!/sealed|unopened|ovp|versiegelt|unge[oö]ffnet|未開封|シュリンク/i.test(title)) return false;
   const game = card.game === "pokemon" ? /pok[eé]mon|ポケモン|ポケカ/i : /one\s*piece|ワンピース/i;
@@ -136,7 +146,7 @@ async function searchSealedListings(card: SealedRequest, auth: string, budgets: 
   return parseSealedListings({itemSummaries:[...items(filtered),...items(initial)]},card,verified);
 }
 export async function sealedPrice(req: Request, env: Env): Promise<Response> {
-  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:5}), { status, headers: { "content-type": "application/json" } });
+  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:6}), { status, headers: { "content-type": "application/json" } });
   if (Number(req.headers.get("content-length") ?? 0) > 4000) return json({error:"body_too_large"},413);
   let o: Record<string, unknown>;
   try { o = obj(await req.json()); } catch { return json({error:"invalid_json"},400); }
@@ -145,7 +155,7 @@ export async function sealedPrice(req: Request, env: Env): Promise<Response> {
   if (!["pokemon","one_piece"].includes(game ?? "") || !["EN","DE","JA"].includes(language ?? "") || !name || name.length > 200 || !productId || !/^-?\d{1,16}$/.test(productId)) return json({error:"invalid_product"},400);
   const aliases = Array.isArray(o.aliases) ? o.aliases.filter((v): v is string => typeof v === "string" && v.length <= 100).slice(0, 12) : [];
   const card = { game, name, language, productId, aliases, market:o.market === "DE" || o.market === "US" ? o.market : undefined } as SealedRequest;
-  const key = `sealed:v5:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
+  const key = `sealed:v6:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
   const cache = new Cache(env.DB), now = Date.now();
   const entry = (await cache.getMany<SealedPrice | null>([key])).get(key);
   if (entry && entry.expiresAt > now) return json({price:entry.value,reason:entry.value ? null : "not_found"});
