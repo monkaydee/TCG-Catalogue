@@ -45,6 +45,9 @@ fun CollectionToolsScreen(repo: CardRepository, onCard: (Long) -> Unit, onReview
         }
         message?.let { Text(it) }
         OutlinedButton(onClick = onReview) { Text(stringResource(R.string.tools_review)) }
+        var lot by remember { mutableStateOf(false) }
+        OutlinedButton(onClick = { lot = true }) { Text(stringResource(R.string.lot_title)) }
+        if (lot) com.monkaydee.tcgcatalogue.ui.components.LotCalculator(emptyList(), s.currency) { lot = false }
         Text(stringResource(R.string.tools_evidence), style = MaterialTheme.typography.titleMedium)
         val repair = cards.filter { it.game == Game.POKEMON && CardLanguage.displayCode(it.language) == "JP" && !it.cardId.startsWith("ja:") }
         val missing = cards.filter { it.manualPrice == null && (it.price == null || !it.price.isFinite() || it.price <= 0) }

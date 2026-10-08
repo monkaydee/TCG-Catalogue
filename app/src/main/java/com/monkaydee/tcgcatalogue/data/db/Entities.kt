@@ -84,6 +84,8 @@ data class OwnedCard(
     val alertAbove: Double? = null,
     val alertBelow: Double? = null,
     val alertCurrency: String? = null,
+    /** The user's own notes about this copy (where it was bought, flaws, for whom it is…). */
+    @ColumnInfo(defaultValue = "") val notes: String = "",
 ) {
     val graded: Boolean get() = grader != null
 }

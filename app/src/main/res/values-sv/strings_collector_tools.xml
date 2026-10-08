@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Visa priser i</string>
+    <string name="settings_display_same">Samma som samlingen (%1$s)</string>
+    <string name="settings_display_offline">Växelkurserna kunde inte laddas. Försök igen när du är online.</string>
+    <string name="settings_display_hint">Omräknat med ECB:s referenskurser, bara för visning. Det du anger och sparade värden förblir i EUR eller USD.</string>
+    <string name="card_notes">Anteckningar</string>
+    <string name="card_notes_hint">Var du köpte det, defekter, till vem …</string>
+    <string name="worth_grading_title">Lönar det sig att gradera?</string>
+    <string name="worth_grading_cost">Graderingskostnad per kort i %1$s (avgift + frakt)</string>
+    <string name="worth_grading_no_raw">Kortets ograderade värde är okänt, så vinsten kan inte räknas ut.</string>
+    <string name="worth_grading_from">%1$s: lönar sig från betyg %2$s</string>
+    <string name="worth_grading_never">%1$s: lönar sig inte vid något listat betyg</string>
+    <string name="worth_grading_note">Jämfört med exemplarets ograderade värde, %1$s. Graderade priser är marknads- eller annonspriser; betyget är inte garanterat.</string>
+    <string name="completion_title">Kostnad för att komplettera</string>
+    <string name="completion_total">%1$s för %2$d kort</string>
+    <string name="completion_unknown">%1$d kort utan känt pris (räknas inte)</string>
+    <string name="completion_progress">Laddade priser: %1$d av %2$d</string>
+    <string name="completion_hint">Billigaste tryck av varje saknat kort till marknadspris</string>
+    <string name="completion_calculate">Beräkna</string>
+    <string name="lot_title">Partikalkylator</string>
+    <string name="lot_remove">Ta bort</string>
+    <string name="lot_add_value">Lägg till värde (%1$s)</string>
+    <string name="lot_add">Lägg till</string>
+    <string name="lot_market">Marknadsvärde: %1$s (%2$d poster)</string>
+    <string name="lot_unknown">%1$d poster utan pris (räknas inte)</string>
+    <string name="lot_percent">Bud på %1$d %% av marknaden</string>
+    <string name="lot_offer">Partipris: %1$s</string>
+    <string name="bulk_add_to_binder">Lägg i pärm</string>
+    <string name="bulk_trade">Markera för byte</string>
+    <string name="bulk_trade_done">%1$d kort markerade för byte</string>
+    <string name="bulk_delete">Ta bort</string>
+    <string name="bulk_delete_confirm">Ta bort %1$d kort från samlingen?</string>
+    <string name="bulk_select_all">Markera alla (%1$d)</string>
+    <string name="bulk_no_binders">Du har inga egna pärmar än. Skapa en under Öppna pärm.</string>
+    <string name="bulk_added_to_binder">%1$d kort lades till i %2$s</string>
+</resources>

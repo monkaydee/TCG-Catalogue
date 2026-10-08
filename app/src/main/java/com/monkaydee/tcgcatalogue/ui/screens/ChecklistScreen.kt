@@ -75,6 +75,7 @@ import com.monkaydee.tcgcatalogue.R
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.CardRepository
 import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.data.Money
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.ChecklistEntry
 import com.monkaydee.tcgcatalogue.data.remote.Variant
@@ -197,6 +198,8 @@ fun ChecklistScreen(repo: CardRepository, game: Game, setId: String, onBack: () 
                                 progress = { ownedEntries.size.toFloat() / list.size },
                                 modifier = Modifier.fillMaxWidth(),
                             )
+                            val missing = list.filter { it.cardId !in owned }
+                            if (missing.isNotEmpty()) CompletionCost(repo, game, missing)
                             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 FilterChip(quickAdd, { quickAdd = !quickAdd }, { Text(stringResource(R.string.checklist_quick_add)) })
                                 ChecklistFilter.entries.forEach { f ->
@@ -455,5 +458,43 @@ private fun MissingCardSheet(
                 }
             }
         }
+    }
+}
+
+/**
+ * "Cost to complete": loads the price of every missing card on request (the cheapest printing at
+ * market price) and adds them up; cards without a known price are counted, never taken as free.
+ */
+@Composable
+private fun CompletionCost(repo: CardRepository, game: Game, missing: List<ChecklistEntry>) {
+    val settings by repo.settings.flow.collectAsState(initial = null)
+    val s = settings ?: return
+    val prices = remember(game, s.currency) { androidx.compose.runtime.mutableStateMapOf<String, Double?>() }
+    var running by remember(game) { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val done = missing.count { it.cardId in prices }
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(Modifier.weight(1f)) {
+            Text(stringResource(R.string.completion_title), style = MaterialTheme.typography.labelLarge)
+            if (done > 0) {
+                val cost = com.monkaydee.tcgcatalogue.data.SetCompletion.cost(missing.filter { it.cardId in prices }.map { prices[it.cardId] })
+                Text(stringResource(R.string.completion_total, Money.format(cost.total, s.currency), cost.priced), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                if (cost.unknown > 0) Text(stringResource(R.string.completion_unknown, cost.unknown), style = MaterialTheme.typography.labelSmall)
+                if (done < missing.size) Text(stringResource(R.string.completion_progress, done, missing.size), style = MaterialTheme.typography.labelSmall)
+            } else Text(stringResource(R.string.completion_hint), style = MaterialTheme.typography.labelSmall)
+        }
+        if (running) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+        else if (done < missing.size) TextButton(onClick = {
+            running = true
+            scope.launch {
+                val gate = kotlinx.coroutines.sync.Semaphore(4)
+                kotlinx.coroutines.coroutineScope {
+                    missing.filter { it.cardId !in prices }.forEach { e ->
+                        launch { gate.acquire(); try { prices[e.cardId] = repo.cheapestPrice(game, e.cardId, s.currency, s.usdToEur) } finally { gate.release() } }
+                    }
+                }
+                running = false
+            }
+        }) { Text(stringResource(R.string.completion_calculate)) }
     }
 }

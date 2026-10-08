@@ -6,6 +6,28 @@ import java.util.Currency
 import java.util.Locale
 
 object Money {
+    /** Currencies prices can be shown in (ECB reference rates); collection amounts stay in EUR or USD. */
+    val DISPLAY = listOf("GBP", "CHF", "SEK", "NOK", "DKK", "PLN", "CZK", "HUF", "RON", "TRY", "JPY", "KRW", "CNY", "HKD",
+        "SGD", "THB", "IDR", "PHP", "MYR", "INR", "AUD", "NZD", "CAD", "MXN", "BRL", "ZAR", "ILS")
+
+    @Volatile private var display: String? = null
+    @Volatile private var rates: Map<String, Double> = emptyMap()
+
+    /** Shows every formatted amount in [currency] (null: as stored) using [eurRates] (units per 1 EUR). */
+    fun show(currency: String?, eurRates: Map<String, Double>, usdToEur: Double) {
+        rates = eurRates + ("EUR" to 1.0) + (if (usdToEur > 0) mapOf("USD" to 1 / usdToEur) else emptyMap())
+        display = currency?.takeIf { it in rates }
+    }
+
+    /** [amount] in [currency] converted to the display currency, or null when no display currency or rate applies. */
+    fun displayed(amount: Double, currency: String): Pair<Double, String>? {
+        val target = display ?: return null
+        if (target == currency) return null
+        val perEurFrom = rates[currency] ?: return null
+        val perEurTo = rates[target] ?: return null
+        return Pair(amount / perEurFrom * perEurTo, target)
+    }
+
     fun convert(amount: Double, from: String, to: String, usdToEur: Double): Double = when {
         from == to -> amount
         from == "USD" && to == "EUR" -> amount * usdToEur
@@ -50,8 +72,9 @@ object Money {
         (item.price?.let { convert(it, item.priceCurrency, currency, usdToEur) } ?: 0.0) * item.quantity
 
     fun format(amount: Double, currency: String): String {
+        val (value, shown) = displayed(amount, currency) ?: (amount to currency)
         val f = NumberFormat.getCurrencyInstance(Locale.getDefault())
-        f.currency = Currency.getInstance(currency)
-        return f.format(amount)
+        f.currency = Currency.getInstance(shown)
+        return f.format(value)
     }
 }

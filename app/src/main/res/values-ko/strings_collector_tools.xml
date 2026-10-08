@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">가격 표시 통화</string>
+    <string name="settings_display_same">컬렉션과 동일 (%1$s)</string>
+    <string name="settings_display_offline">환율을 불러오지 못했습니다. 온라인 상태에서 다시 시도하세요.</string>
+    <string name="settings_display_hint">표시용으로만 ECB 기준 환율로 환산합니다. 입력한 금액과 저장된 값은 EUR 또는 USD로 유지됩니다.</string>
+    <string name="card_notes">메모</string>
+    <string name="card_notes_hint">구입처, 흠집, 누구를 위한 것인지 …</string>
+    <string name="worth_grading_title">그레이딩할 가치가 있나요?</string>
+    <string name="worth_grading_cost">카드당 그레이딩 비용 (%1$s, 수수료 + 배송)</string>
+    <string name="worth_grading_no_raw">이 카드의 미등급 가격을 몰라 이익을 계산할 수 없습니다.</string>
+    <string name="worth_grading_from">%1$s: 등급 %2$s부터 이익</string>
+    <string name="worth_grading_never">%1$s: 표시된 어떤 등급에서도 이익 없음</string>
+    <string name="worth_grading_note">이 카드의 미등급 가격 %1$s와 비교했습니다. 등급 카드 가격은 시세 또는 판매 등록가이며, 받을 등급은 보장되지 않습니다.</string>
+    <string name="completion_title">완성 비용</string>
+    <string name="completion_total">카드 %2$d장에 %1$s</string>
+    <string name="completion_unknown">가격을 모르는 카드 %1$d장 (제외)</string>
+    <string name="completion_progress">불러온 가격: %1$d / %2$d</string>
+    <string name="completion_hint">빠진 카드마다 가장 싼 버전을 시세로</string>
+    <string name="completion_calculate">계산</string>
+    <string name="lot_title">로트 계산기</string>
+    <string name="lot_remove">제거</string>
+    <string name="lot_add_value">금액 추가 (%1$s)</string>
+    <string name="lot_add">추가</string>
+    <string name="lot_market">시세 합계: %1$s (%2$d개)</string>
+    <string name="lot_unknown">가격 없는 항목 %1$d개 (제외)</string>
+    <string name="lot_percent">시세의 %1$d %%로 제안</string>
+    <string name="lot_offer">로트 가격: %1$s</string>
+    <string name="bulk_add_to_binder">바인더에 추가</string>
+    <string name="bulk_trade">교환용으로 표시</string>
+    <string name="bulk_trade_done">카드 %1$d장을 교환용으로 표시했습니다</string>
+    <string name="bulk_delete">삭제</string>
+    <string name="bulk_delete_confirm">컬렉션에서 카드 %1$d장을 삭제할까요?</string>
+    <string name="bulk_select_all">모두 선택 (%1$d)</string>
+    <string name="bulk_no_binders">아직 내 바인더가 없습니다. 바인더 열기에서 만드세요.</string>
+    <string name="bulk_added_to_binder">%2$s에 카드 %1$d장을 추가했습니다</string>
+</resources>

@@ -101,6 +101,21 @@ Requested by the owner before the next Codex review.
 Competitor gap research (8 Oct): [docs/COMPETITOR-GAPS-2026-10-08.md](docs/COMPETITOR-GAPS-2026-10-08.md). Recommended next: "Worth grading?",
 cost to complete a set, CSV import from other apps, slab cert barcode scan, more currencies + bulk multi-select.
 
+## Collector tools, batch A (8 October 2026, Claude) — from docs/COMPETITOR-GAPS-2026-10-08.md
+
+- **Show prices in** 27 more currencies (Settings → Prices): `Money.format` converts at ECB reference rates (Frankfurter,
+  refreshed with prices) for display only; stored amounts, inputs, ledger and backups stay EUR/USD. No rate → shown as stored.
+- **Worth grading?** (card page → Graded prices, raw cards): graded quote − raw value − user's grading cost (setting,
+  default 30), per quoted grade, and the lowest paying grade per company. Exact quotes only; no grade prediction.
+- **Cost to complete** (set checklist): on request, cheapest market printing of each missing card, summed; cards without
+  a price counted apart (`SetCompletion`).
+- **Notes** per card (card page; `OwnedCard.notes`, schema 12 auto-migration; in backups).
+- **Selecting many cards** in Open collection (long-press): add to an own binder (after its last pocket), mark for trade,
+  lot value, delete (with confirmation).
+- **Lot calculator** (collection selection or Collection tools): known market value, items without price counted, offer
+  at 30–120 % of market (`LotValue`).
+- Tests: `CollectorToolsTest`, notes/add-to-binder case in `LedgerBackupRegressionTest`. Local: 234 tests, 0 failures.
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

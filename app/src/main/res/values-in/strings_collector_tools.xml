@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Tampilkan harga dalam</string>
+    <string name="settings_display_same">Sama dengan koleksi (%1$s)</string>
+    <string name="settings_display_offline">Kurs tidak dapat dimuat. Coba lagi saat online.</string>
+    <string name="settings_display_hint">Dikonversi dengan kurs referensi ECB hanya untuk tampilan. Jumlah yang Anda masukkan dan nilai tersimpan tetap dalam EUR atau USD.</string>
+    <string name="card_notes">Catatan</string>
+    <string name="card_notes_hint">Tempat beli, cacat, untuk siapa …</string>
+    <string name="worth_grading_title">Layak di-grade?</string>
+    <string name="worth_grading_cost">Biaya grading per kartu dalam %1$s (biaya + pengiriman)</string>
+    <string name="worth_grading_no_raw">Nilai raw kartu ini tidak diketahui, jadi keuntungan tidak dapat dihitung.</string>
+    <string name="worth_grading_from">%1$s: menguntungkan mulai nilai %2$s</string>
+    <string name="worth_grading_never">%1$s: tidak menguntungkan di nilai mana pun yang tercantum</string>
+    <string name="worth_grading_note">Dibandingkan dengan nilai raw salinan ini, %1$s. Harga graded adalah harga pasar atau penawaran; nilai yang didapat tidak dijamin.</string>
+    <string name="completion_title">Biaya melengkapi</string>
+    <string name="completion_total">%1$s untuk %2$d kartu</string>
+    <string name="completion_unknown">%1$d kartu tanpa harga diketahui (tidak dihitung)</string>
+    <string name="completion_progress">Harga dimuat: %1$d dari %2$d</string>
+    <string name="completion_hint">Cetakan termurah tiap kartu yang hilang dengan harga pasar</string>
+    <string name="completion_calculate">Hitung</string>
+    <string name="lot_title">Kalkulator lot</string>
+    <string name="lot_remove">Hapus</string>
+    <string name="lot_add_value">Tambah nilai (%1$s)</string>
+    <string name="lot_add">Tambah</string>
+    <string name="lot_market">Nilai pasar: %1$s (%2$d item)</string>
+    <string name="lot_unknown">%1$d item tanpa harga (tidak dihitung)</string>
+    <string name="lot_percent">Tawaran %1$d %% dari pasar</string>
+    <string name="lot_offer">Harga lot: %1$s</string>
+    <string name="bulk_add_to_binder">Tambah ke binder</string>
+    <string name="bulk_trade">Tandai untuk tukar</string>
+    <string name="bulk_trade_done">%1$d kartu ditandai untuk tukar</string>
+    <string name="bulk_delete">Hapus</string>
+    <string name="bulk_delete_confirm">Hapus %1$d kartu dari koleksi Anda?</string>
+    <string name="bulk_select_all">Pilih semua (%1$d)</string>
+    <string name="bulk_no_binders">Anda belum punya binder sendiri. Buat di Buka binder.</string>
+    <string name="bulk_added_to_binder">%1$d kartu ditambahkan ke %2$s</string>
+</resources>

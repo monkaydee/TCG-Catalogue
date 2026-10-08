@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Preise anzeigen in</string>
+    <string name="settings_display_same">Wie Sammlung (%1$s)</string>
+    <string name="settings_display_offline">Wechselkurse konnten nicht geladen werden. Versuche es online erneut.</string>
+    <string name="settings_display_hint">Mit EZB-Referenzkursen nur zur Anzeige umgerechnet. Eingaben und gespeicherte Werte bleiben in EUR oder USD.</string>
+    <string name="card_notes">Notizen</string>
+    <string name="card_notes_hint">Wo gekauft, Mängel, für wen …</string>
+    <string name="worth_grading_title">Lohnt sich Grading?</string>
+    <string name="worth_grading_cost">Grading-Kosten pro Karte in %1$s (Gebühr + Versand)</string>
+    <string name="worth_grading_no_raw">Der Rohwert dieser Karte ist unbekannt, daher lässt sich der Gewinn nicht berechnen.</string>
+    <string name="worth_grading_from">%1$s: lohnt sich ab Note %2$s</string>
+    <string name="worth_grading_never">%1$s: lohnt sich bei keiner gelisteten Note</string>
+    <string name="worth_grading_note">Verglichen mit dem Rohwert dieses Exemplars von %1$s. Graded-Preise sind Markt- oder Angebotspreise; die erreichte Note ist nicht garantiert.</string>
+    <string name="completion_title">Kosten bis zur Vollständigkeit</string>
+    <string name="completion_total">%1$s für %2$d Karten</string>
+    <string name="completion_unknown">%1$d Karten ohne bekannten Preis (nicht mitgezählt)</string>
+    <string name="completion_progress">Preise geladen: %1$d von %2$d</string>
+    <string name="completion_hint">Günstigste Druckvariante jeder fehlenden Karte zum Marktpreis</string>
+    <string name="completion_calculate">Berechnen</string>
+    <string name="lot_title">Lot-Rechner</string>
+    <string name="lot_remove">Entfernen</string>
+    <string name="lot_add_value">Wert hinzufügen (%1$s)</string>
+    <string name="lot_add">Hinzufügen</string>
+    <string name="lot_market">Marktwert: %1$s (%2$d Posten)</string>
+    <string name="lot_unknown">%1$d Posten ohne Preis (nicht mitgezählt)</string>
+    <string name="lot_percent">Angebot bei %1$d %% vom Markt</string>
+    <string name="lot_offer">Lot-Preis: %1$s</string>
+    <string name="bulk_add_to_binder">Zu Ordner hinzufügen</string>
+    <string name="bulk_trade">Zum Tausch markieren</string>
+    <string name="bulk_trade_done">%1$d Karten zum Tausch markiert</string>
+    <string name="bulk_delete">Löschen</string>
+    <string name="bulk_delete_confirm">%1$d Karten aus deiner Sammlung löschen?</string>
+    <string name="bulk_select_all">Alle auswählen (%1$d)</string>
+    <string name="bulk_no_binders">Du hast noch keine eigenen Ordner. Lege einen unter Ordner öffnen an.</string>
+    <string name="bulk_added_to_binder">%1$d Karten zu %2$s hinzugefügt</string>
+</resources>

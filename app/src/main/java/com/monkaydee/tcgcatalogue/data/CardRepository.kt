@@ -892,6 +892,7 @@ class CardRepository(
      */
     suspend fun refreshPrices(onProgress: (done: Int, total: Int) -> Unit = { _, _ -> }): Int = coroutineScope {
         fx.runCatching { usdToEur() }.getOrNull()?.let { settings.setUsdToEur(it) }
+        if (settings.current().displayCurrency != null) refreshDisplayRates()
         val s = settings.current()
         val owned = db.cards().getAll()
         val groups = owned.groupBy { it.game to it.cardId }
@@ -1157,6 +1158,15 @@ class CardRepository(
         runCatching { snapshot() }
     }
 
+    /** Fetches the ECB rates used to show prices in another currency; false when offline. */
+    suspend fun refreshDisplayRates(): Boolean =
+        fx.runCatching { eurRates() }.getOrNull()?.takeIf { it.isNotEmpty() }?.let { settings.setFxRates(it); true } ?: false
+
+    /** Saves the notes of a card (at most 2000 characters). */
+    suspend fun setNotes(card: OwnedCard, notes: String) {
+        db.cards().get(card.id)?.let { db.cards().update(it.copy(notes = notes.trim().take(2000))) }
+    }
+
     // ---- Binders ----
 
     suspend fun createBinder(name: String, cover: String): Long =
@@ -1193,6 +1203,12 @@ class CardRepository(
         }
         db.binders().put(added)
         added.map { it.slot }
+    }
+
+    /** Adds [rows] to binder [id] after its last pocket, leaving the cards already in it as they are. Returns the pockets filled. */
+    suspend fun addToBinder(id: Long, rows: List<Long>, spread: Boolean): List<Int> = db.withTransaction {
+        val present = db.binders().rows(id).toSet()
+        setBinderCards(id, (present + rows).toCollection(LinkedHashSet()), spread)
     }
 
     /** Puts one copy of [row] into the empty pocket [slot]; false when it is taken or every copy is already in the binder. */
@@ -1357,6 +1373,10 @@ class CardRepository(
 
     /** The full card behind a checklist entry, to add it or put it on the wishlist. */
     suspend fun checklistCard(game: Game, entry: ChecklistEntry): CardCandidate? = runCatching { fetch(game, entry.cardId) }.getOrNull()
+
+    /** Cheapest market price of one copy of a card in [currency], over its printings; null when none is known. */
+    suspend fun cheapestPrice(game: Game, cardId: String, currency: String, usdToEur: Double): Double? =
+        runCatching { fetch(game, cardId) }.getOrNull()?.let { SetCompletion.cheapest(it, currency, usdToEur) }
 
     // ---- Sealed products ----
 

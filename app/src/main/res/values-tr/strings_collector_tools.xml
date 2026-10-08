@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Fiyatları şu birimde göster</string>
+    <string name="settings_display_same">Koleksiyonla aynı (%1$s)</string>
+    <string name="settings_display_offline">Döviz kurları yüklenemedi. Çevrimiçiyken tekrar deneyin.</string>
+    <string name="settings_display_hint">Yalnızca gösterim için ECB referans kurlarıyla çevrilir. Girdiğiniz tutarlar ve kayıtlı değerler EUR veya USD olarak kalır.</string>
+    <string name="card_notes">Notlar</string>
+    <string name="card_notes_hint">Nereden aldın, kusurlar, kimin için …</string>
+    <string name="worth_grading_title">Grading’e değer mi?</string>
+    <string name="worth_grading_cost">Kart başına grading maliyeti, %1$s (ücret + kargo)</string>
+    <string name="worth_grading_no_raw">Bu kartın ham değeri bilinmiyor, bu yüzden kazanç hesaplanamıyor.</string>
+    <string name="worth_grading_from">%1$s: %2$s notundan itibaren karlı</string>
+    <string name="worth_grading_never">%1$s: listelenen hiçbir notta karlı değil</string>
+    <string name="worth_grading_note">Bu kopyanın ham değeriyle (%1$s) karşılaştırıldı. Grading fiyatları piyasa ya da ilan fiyatlarıdır; alınacak not garanti değildir.</string>
+    <string name="completion_title">Tamamlama maliyeti</string>
+    <string name="completion_total">%2$d kart için %1$s</string>
+    <string name="completion_unknown">Fiyatı bilinmeyen %1$d kart (sayılmadı)</string>
+    <string name="completion_progress">Yüklenen fiyatlar: %1$d / %2$d</string>
+    <string name="completion_hint">Her eksik kartın en ucuz baskısı, piyasa fiyatıyla</string>
+    <string name="completion_calculate">Hesapla</string>
+    <string name="lot_title">Lot hesaplayıcı</string>
+    <string name="lot_remove">Kaldır</string>
+    <string name="lot_add_value">Değer ekle (%1$s)</string>
+    <string name="lot_add">Ekle</string>
+    <string name="lot_market">Piyasa değeri: %1$s (%2$d kalem)</string>
+    <string name="lot_unknown">Fiyatsız %1$d kalem (sayılmadı)</string>
+    <string name="lot_percent">Piyasanın %%%1$d’i teklif</string>
+    <string name="lot_offer">Lot fiyatı: %1$s</string>
+    <string name="bulk_add_to_binder">Klasöre ekle</string>
+    <string name="bulk_trade">Takas için işaretle</string>
+    <string name="bulk_trade_done">%1$d kart takas için işaretlendi</string>
+    <string name="bulk_delete">Sil</string>
+    <string name="bulk_delete_confirm">%1$d kart koleksiyondan silinsin mi?</string>
+    <string name="bulk_select_all">Tümünü seç (%1$d)</string>
+    <string name="bulk_no_binders">Henüz kendi klasörün yok. Klasörü aç bölümünden oluştur.</string>
+    <string name="bulk_added_to_binder">%1$d kart %2$s klasörüne eklendi</string>
+</resources>

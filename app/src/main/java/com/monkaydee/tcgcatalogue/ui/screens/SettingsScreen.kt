@@ -70,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.monkaydee.tcgcatalogue.BuildConfig
 import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.data.Money
 import com.monkaydee.tcgcatalogue.data.AppSettings
 import com.monkaydee.tcgcatalogue.data.Area
 import com.monkaydee.tcgcatalogue.data.Backup
@@ -279,6 +280,19 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                     listOf("EUR", "USD").forEach { c -> FilterChip(s.currency == c, { scope.launch { repo.settings.setCurrency(c) } }, { Text(c) }) }
                 }
                 Hint(stringResource(R.string.settings_fx_rate, s.usdToEur))
+                Label(stringResource(R.string.settings_display_currency))
+                com.monkaydee.tcgcatalogue.ui.components.AppSelector(
+                    stringResource(R.string.settings_display_currency), s.displayCurrency,
+                    listOf(com.monkaydee.tcgcatalogue.ui.components.SelectorOption<String?>(null, stringResource(R.string.settings_display_same, s.currency))) +
+                        Money.DISPLAY.map { c -> com.monkaydee.tcgcatalogue.ui.components.SelectorOption<String?>(c, "$c · ${java.util.Currency.getInstance(c).getDisplayName(java.util.Locale.getDefault())}") },
+                    { c ->
+                        scope.launch {
+                            if (c != null && c !in s.fxRates && !repo.refreshDisplayRates())
+                                Toast.makeText(context, context.getString(R.string.settings_display_offline), Toast.LENGTH_LONG).show()
+                            repo.settings.setDisplayCurrency(c)
+                        }
+                    }, Modifier.fillMaxWidth())
+                Hint(stringResource(R.string.settings_display_hint))
                 Label(stringResource(R.string.settings_price_source))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(PriceSource.CARDMARKET, PriceSource.TCGPLAYER).forEach { p ->

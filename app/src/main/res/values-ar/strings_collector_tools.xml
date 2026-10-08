@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">عرض الأسعار بـ</string>
+    <string name="settings_display_same">مثل المجموعة (%1$s)</string>
+    <string name="settings_display_offline">تعذّر تحميل أسعار الصرف. حاول مرة أخرى عند الاتصال.</string>
+    <string name="settings_display_hint">تحويل بأسعار البنك المركزي الأوروبي المرجعية للعرض فقط. المبالغ التي تدخلها والقيم المحفوظة تبقى باليورو أو الدولار.</string>
+    <string name="card_notes">ملاحظات</string>
+    <string name="card_notes_hint">مكان الشراء، العيوب، لمن هي …</string>
+    <string name="worth_grading_title">هل يستحق التقييم؟</string>
+    <string name="worth_grading_cost">تكلفة التقييم لكل بطاقة بـ %1$s (رسوم + شحن)</string>
+    <string name="worth_grading_no_raw">قيمة هذه البطاقة غير المقيّمة غير معروفة، لذا لا يمكن حساب الربح.</string>
+    <string name="worth_grading_from">%1$s: مربح من الدرجة %2$s</string>
+    <string name="worth_grading_never">%1$s: غير مربح بأي درجة مدرجة</string>
+    <string name="worth_grading_note">مقارنةً بقيمة هذه النسخة غير المقيّمة %1$s. أسعار البطاقات المقيّمة أسعار سوق أو عروض؛ الدرجة غير مضمونة.</string>
+    <string name="completion_title">تكلفة الإكمال</string>
+    <string name="completion_total">%1$s مقابل %2$d بطاقة</string>
+    <string name="completion_unknown">%1$d بطاقة بلا سعر معروف (غير محسوبة)</string>
+    <string name="completion_progress">الأسعار المحمّلة: %1$d من %2$d</string>
+    <string name="completion_hint">أرخص طبعة لكل بطاقة ناقصة بسعر السوق</string>
+    <string name="completion_calculate">احسب</string>
+    <string name="lot_title">حاسبة الدفعة</string>
+    <string name="lot_remove">إزالة</string>
+    <string name="lot_add_value">إضافة قيمة (%1$s)</string>
+    <string name="lot_add">إضافة</string>
+    <string name="lot_market">قيمة السوق: %1$s (%2$d عنصر)</string>
+    <string name="lot_unknown">%1$d عنصر بلا سعر (غير محسوب)</string>
+    <string name="lot_percent">عرض بنسبة %1$d %% من السوق</string>
+    <string name="lot_offer">سعر الدفعة: %1$s</string>
+    <string name="bulk_add_to_binder">إضافة إلى مجلد</string>
+    <string name="bulk_trade">تعليم للتبادل</string>
+    <string name="bulk_trade_done">تم تعليم %1$d بطاقة للتبادل</string>
+    <string name="bulk_delete">حذف</string>
+    <string name="bulk_delete_confirm">حذف %1$d بطاقة من مجموعتك؟</string>
+    <string name="bulk_select_all">تحديد الكل (%1$d)</string>
+    <string name="bulk_no_binders">لا توجد لديك مجلدات خاصة بعد. أنشئ واحدًا من فتح المجلد.</string>
+    <string name="bulk_added_to_binder">تمت إضافة %1$d بطاقة إلى %2$s</string>
+</resources>

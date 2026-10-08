@@ -173,6 +173,24 @@ class LedgerBackupRegressionTest {
         }
     }
 
+    @Test fun notesAreSavedTrimmedAndTravelInBackups() = runBlocking {
+        Fixture().use { f ->
+            val row = f.db.cards().insert(card())
+            f.repo.setNotes(f.db.cards().get(row)!!, "  Bought at the Hamburg fair, light edge wear  ")
+            assertEquals("Bought at the Hamburg fair, light edge wear", f.db.cards().get(row)!!.notes)
+            val backup = f.repo.exportBackup()
+            f.repo.importBackup(backup)
+            assertEquals("Bought at the Hamburg fair, light edge wear", f.db.cards().getAll().single().notes)
+            // adding to a binder keeps the pockets already there
+            val binder = f.repo.createBinder("B", "midnight")
+            val other = f.db.cards().insert(card().copy(cardId = "base1-2", name = "Blastoise", number = "2/102"))
+            val first = f.db.cards().getAll().first { it.cardId == "base1-4" }.id
+            f.repo.setBinderCards(binder, setOf(first), spread = true)
+            assertEquals(listOf(1), f.repo.addToBinder(binder, listOf(other, first), spread = true))
+            assertEquals(listOf(first, other), f.db.binders().slots(binder).map { it.cardRowId })
+        }
+    }
+
     @Test fun deletingACardRemovesItsSubmissions() = runBlocking {
         Fixture().use { f ->
             val row = f.db.cards().insert(card())

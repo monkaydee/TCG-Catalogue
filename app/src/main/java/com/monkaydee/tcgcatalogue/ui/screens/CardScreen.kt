@@ -46,6 +46,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -302,6 +303,7 @@ private fun CardDetail(
         ExpandablePanel(stringResource(R.string.design_details)) {
             CardLedgerPanel(repo, c, s)
         }
+        CardNotes(c, repo)
         Text(stringResource(R.string.card_quantity), style = MaterialTheme.typography.labelLarge, modifier = Modifier.fillMaxWidth())
         QuantityStepper(c.quantity, { q -> scope.launch { repo.update(c.copy(quantity = q)) } })
         if (c.game == Game.ONE_PIECE && s.pokemonSource == PriceSource.CARDMARKET) {
@@ -463,6 +465,7 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
             if (prices.orEmpty().any { (it.listings ?: 0) > 0 }) {
                 Text(stringResource(R.string.graded_asking_reference), style = MaterialTheme.typography.bodySmall)
             }
+            if (!c.graded && !prices.isNullOrEmpty()) WorthGrading(c, s, repo, prices!!)
             val certNumber = c.certNumber?.filter(Char::isDigit)?.takeIf { it.isNotEmpty() && c.grader == "PSA" }
             if (certNumber != null) {
                 HorizontalDivider()
@@ -512,4 +515,66 @@ private fun PriceLinks(c: OwnedCard, s: AppSettings) {
             }
         }
     }
+}
+
+/** The user's own notes about this copy, saved when they tap Save. */
+@Composable
+private fun CardNotes(c: OwnedCard, repo: CardRepository) {
+    var text by remember(c.id, c.notes) { mutableStateOf(c.notes) }
+    val scope = rememberCoroutineScope()
+    ExpandablePanel(stringResource(R.string.card_notes) + if (c.notes.isNotBlank()) " ✎" else "") {
+        androidx.compose.material3.OutlinedTextField(
+            text, { text = it.take(2000) }, Modifier.fillMaxWidth(), minLines = 3,
+            placeholder = { Text(stringResource(R.string.card_notes_hint)) },
+        )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = { scope.launch { repo.setNotes(c, text) } }, enabled = text.trim() != c.notes) { Text(stringResource(R.string.binder_save)) }
+        }
+    }
+}
+
+/**
+ * "Worth grading?": for each quoted grade, the graded price minus this copy's raw value and the
+ * user's grading cost. Uses only exact quotes; which grade the card would get is not predicted.
+ */
+@Composable
+private fun WorthGrading(c: OwnedCard, s: AppSettings, repo: CardRepository, prices: List<com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.Graded>) {
+    val scope = rememberCoroutineScope()
+    var costText by remember(s.gradingCost) { mutableStateOf(s.gradingCost.toBigDecimal().stripTrailingZeros().toPlainString()) }
+    val cost = costText.replace(',', '.').toDoubleOrNull()?.takeIf { it >= 0 } ?: s.gradingCost
+    val raw = Money.unitOrNull(c, s.currency, s.usdToEur)
+    val quotes = prices.filter { it.currency == "USD" || it.currency == "EUR" }.map { g ->
+        com.monkaydee.tcgcatalogue.data.GradingValue.Outcome(g.grader, g.grade, g.qualifier, Money.convert(g.price, g.currency, s.currency, s.usdToEur), 0.0)
+    }
+    val outcomes = com.monkaydee.tcgcatalogue.data.GradingValue.outcomes(raw, cost, quotes)
+    HorizontalDivider()
+    Text(stringResource(R.string.worth_grading_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+    androidx.compose.material3.OutlinedTextField(
+        costText, { v -> costText = v.filter { it.isDigit() || it == '.' || it == ',' }.take(8) },
+        label = { Text(stringResource(R.string.worth_grading_cost, s.currency)) }, singleLine = true,
+        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal),
+        modifier = Modifier.fillMaxWidth().onFocusChanged { f ->
+            if (!f.isFocused) costText.replace(',', '.').toDoubleOrNull()?.takeIf { it >= 0 && it != s.gradingCost }?.let { v -> scope.launch { repo.settings.setGradingCost(v) } }
+        },
+    )
+    if (raw == null) {
+        Text(stringResource(R.string.worth_grading_no_raw), style = MaterialTheme.typography.bodySmall)
+        return
+    }
+    outcomes.forEach { o ->
+        Row(Modifier.fillMaxWidth()) {
+            Text(listOfNotNull(o.grader, o.grade, o.qualifier).joinToString(" ") + " · " + Money.format(o.graded, s.currency),
+                style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
+            Text((if (o.gain >= 0) "+" else "−") + Money.format(kotlin.math.abs(o.gain), s.currency),
+                style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold,
+                color = if (o.gain >= 0) com.monkaydee.tcgcatalogue.ui.theme.Gain else com.monkaydee.tcgcatalogue.ui.theme.Loss)
+        }
+    }
+    com.monkaydee.tcgcatalogue.data.GradingValue.breakEven(outcomes).forEach { (grader, grade) ->
+        Text(
+            if (grade != null) stringResource(R.string.worth_grading_from, grader, grade) else stringResource(R.string.worth_grading_never, grader),
+            style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium,
+        )
+    }
+    Text(stringResource(R.string.worth_grading_note, Money.format(raw, s.currency)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
 }

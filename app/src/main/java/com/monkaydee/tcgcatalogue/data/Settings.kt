@@ -16,6 +16,7 @@ import com.monkaydee.tcgcatalogue.data.remote.PriceSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 data class AppSettings(
     /** "EUR" or "USD" */
@@ -23,6 +24,12 @@ data class AppSettings(
     /** Which market to price Pokémon and Magic cards from; the other games only have TCGplayer prices. */
     val pokemonSource: PriceSource = PriceSource.CARDMARKET,
     val usdToEur: Double = 0.9,
+    /** Show prices in another currency (null: in [currency]); converted for display only. */
+    val displayCurrency: String? = null,
+    /** Units per 1 EUR of the display currencies, from the last refresh. */
+    val fxRates: Map<String, Double> = emptyMap(),
+    /** What grading one card costs you (fee + shipping), in [currency], for "Worth grading?". */
+    val gradingCost: Double = 30.0,
     val lastPriceRefresh: Long = 0,
     /** Add a confidently recognised card straight away and keep scanning. */
     val quickAdd: Boolean = false,
@@ -97,6 +104,9 @@ class SettingsStore(private val context: Context) {
         val currency = stringPreferencesKey("currency")
         val pokemonSource = stringPreferencesKey("pokemon_source")
         val usdToEur = doublePreferencesKey("usd_to_eur")
+        val displayCurrency = stringPreferencesKey("display_currency")
+        val fxRates = stringPreferencesKey("fx_rates")
+        val gradingCost = doublePreferencesKey("grading_cost")
         val lastRefresh = longPreferencesKey("last_refresh")
         val quickAdd = booleanPreferencesKey("quick_add")
         val collectCases = booleanPreferencesKey("collect_cases")
@@ -126,6 +136,9 @@ class SettingsStore(private val context: Context) {
             currency = p[Keys.currency] ?: d.currency,
             pokemonSource = p[Keys.pokemonSource]?.let { runCatching { PriceSource.valueOf(it) }.getOrNull() } ?: d.pokemonSource,
             usdToEur = p[Keys.usdToEur] ?: d.usdToEur,
+            displayCurrency = p[Keys.displayCurrency]?.takeIf { it in Money.DISPLAY },
+            fxRates = p[Keys.fxRates]?.split(';')?.mapNotNull { e -> e.split('=').takeIf { it.size == 2 }?.let { (k, v) -> v.toDoubleOrNull()?.let { k to it } } }?.toMap() ?: emptyMap(),
+            gradingCost = p[Keys.gradingCost] ?: d.gradingCost,
             lastPriceRefresh = p[Keys.lastRefresh] ?: d.lastPriceRefresh,
             quickAdd = p[Keys.quickAdd] ?: d.quickAdd,
             collectCases = p[Keys.collectCases] ?: d.collectCases,
@@ -150,11 +163,14 @@ class SettingsStore(private val context: Context) {
             serverUrl = p[Keys.serverUrl] ?: d.serverUrl,
             serverKey = p[Keys.serverKey] ?: d.serverKey,
         )
-    }
+    }.onEach { Money.show(it.displayCurrency, it.fxRates, it.usdToEur) }
 
     suspend fun current(): AppSettings = flow.first()
 
     suspend fun setCurrency(v: String) = context.dataStore.edit { it[Keys.currency] = v }
+    suspend fun setDisplayCurrency(v: String?) = context.dataStore.edit { if (v == null) it.remove(Keys.displayCurrency) else it[Keys.displayCurrency] = v }
+    suspend fun setFxRates(rates: Map<String, Double>) = context.dataStore.edit { it[Keys.fxRates] = rates.entries.joinToString(";") { (k, v) -> "$k=$v" } }
+    suspend fun setGradingCost(v: Double) = context.dataStore.edit { it[Keys.gradingCost] = v }
     suspend fun setPokemonSource(v: PriceSource) = context.dataStore.edit { it[Keys.pokemonSource] = v.name }
     suspend fun setUsdToEur(v: Double) = context.dataStore.edit { it[Keys.usdToEur] = v }
     suspend fun setLastRefresh(v: Long) = context.dataStore.edit { it[Keys.lastRefresh] = v }

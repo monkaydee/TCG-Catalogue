@@ -1,6 +1,18 @@
 package com.monkaydee.tcgcatalogue.ui.screens
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import android.widget.Toast
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Calculate
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.SwapHoriz
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,8 +64,10 @@ import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import com.monkaydee.tcgcatalogue.ui.components.SelectorOption
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 
+private enum class BulkDialog { BINDER, LOT, DELETE }
+
 /** Every card of the collection as a scrollable list: picture, name, slab and price, in a chosen order. */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List<Long>, Long) -> Unit) {
     val settings by repo.settings.flow.collectAsState(initial = null)
@@ -61,12 +75,34 @@ fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List
     val setList by repo.sets.collectAsState(initial = emptyList())
     var game by rememberSaveable { mutableStateOf<Game?>(null) }
     var sort by rememberSaveable { mutableStateOf(CollectionSort.VALUE_DESC) }
+    // Long-press starts selecting; then taps add or remove cards and the bar acts on all of them.
+    var selected by remember { mutableStateOf(emptySet<Long>()) }
+    var dialog by remember { mutableStateOf<BulkDialog?>(null) }
+    val binders by repo.binders.collectAsState(initial = emptyList())
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    androidx.activity.compose.BackHandler(selected.isNotEmpty()) { selected = emptySet() }
     Scaffold(
         topBar = {
-            TopAppBar(
+            if (selected.isEmpty()) TopAppBar(
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.collection_title)) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.binder_back)) } },
+            ) else TopAppBar(
+                colors = appBarColors(),
+                title = { Text(stringResource(R.string.binder_selected, selected.size)) },
+                navigationIcon = { IconButton(onClick = { selected = emptySet() }) { Icon(Icons.Outlined.Close, stringResource(android.R.string.cancel)) } },
+                actions = {
+                    IconButton(onClick = { dialog = BulkDialog.BINDER }) { Icon(Icons.AutoMirrored.Outlined.MenuBook, stringResource(R.string.bulk_add_to_binder)) }
+                    IconButton(onClick = { dialog = BulkDialog.LOT }) { Icon(Icons.Outlined.Calculate, stringResource(R.string.lot_title)) }
+                    IconButton(onClick = {
+                        val chosen = all.orEmpty().filter { it.id in selected }
+                        scope.launch { chosen.forEach { repo.setForTrade(it, true) } }
+                        Toast.makeText(context, context.getString(R.string.bulk_trade_done, chosen.size), Toast.LENGTH_SHORT).show()
+                        selected = emptySet()
+                    }) { Icon(Icons.Outlined.SwapHoriz, stringResource(R.string.bulk_trade)) }
+                    IconButton(onClick = { dialog = BulkDialog.DELETE }) { Icon(Icons.Outlined.Delete, stringResource(R.string.bulk_delete)) }
+                },
             )
         },
     ) { padding ->
@@ -97,14 +133,61 @@ fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List
             if (coverage.missingCopies > 0) {
                 Text(stringResource(R.string.price_coverage_missing, coverage.missingCopies), style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(horizontal = 16.dp))
             }
+            if (selected.isNotEmpty()) {
+                TextButton(onClick = { selected = shown.map { it.id }.toSet() }, modifier = Modifier.padding(horizontal = 8.dp)) { Text(stringResource(R.string.bulk_select_all, shown.size)) }
+            }
+            when (dialog) {
+                BulkDialog.LOT -> com.monkaydee.tcgcatalogue.ui.components.LotCalculator(
+                    shown.filter { it.id in selected }.flatMap { c -> List(c.quantity) { c.name to Money.unitOrNull(c, s.currency, s.usdToEur) } }, s.currency,
+                ) { dialog = null }
+                BulkDialog.BINDER -> AlertDialog(
+                    onDismissRequest = { dialog = null },
+                    title = { Text(stringResource(R.string.bulk_add_to_binder)) },
+                    text = {
+                        Column {
+                            if (binders.isEmpty()) Text(stringResource(R.string.bulk_no_binders))
+                            binders.forEach { b ->
+                                TextButton(onClick = {
+                                    val rows = shown.filter { it.id in selected }.map { it.id }
+                                    dialog = null; selected = emptySet()
+                                    scope.launch {
+                                        repo.addToBinder(b.id, rows, s.binderSpread)
+                                        Toast.makeText(context, context.getString(R.string.bulk_added_to_binder, rows.size, b.name), Toast.LENGTH_SHORT).show()
+                                    }
+                                }) { Text(b.name) }
+                            }
+                        }
+                    },
+                    confirmButton = { TextButton(onClick = { dialog = null }) { Text(stringResource(android.R.string.cancel)) } },
+                )
+                BulkDialog.DELETE -> AlertDialog(
+                    onDismissRequest = { dialog = null },
+                    title = { Text(stringResource(R.string.bulk_delete)) },
+                    text = { Text(stringResource(R.string.bulk_delete_confirm, selected.size)) },
+                    confirmButton = { TextButton(onClick = {
+                        val chosen = cards.filter { it.id in selected }
+                        dialog = null; selected = emptySet()
+                        scope.launch { chosen.forEach { repo.delete(it) } }
+                    }) { Text(stringResource(R.string.bulk_delete)) } },
+                    dismissButton = { TextButton(onClick = { dialog = null }) { Text(stringResource(android.R.string.cancel)) } },
+                )
+                null -> {}
+            }
             if (shown.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(stringResource(R.string.collection_empty)) }
                 return@Column
             }
             LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
                 items(shown, key = { it.id }) { c ->
+                    val on = c.id in selected
                     Row(
-                        Modifier.fillMaxWidth().clickable { onOpenCard(order, c.id) }.padding(horizontal = 16.dp, vertical = 8.dp),
+                        Modifier.fillMaxWidth()
+                            .combinedClickable(
+                                onClick = { if (selected.isEmpty()) onOpenCard(order, c.id) else selected = if (on) selected - c.id else selected + c.id },
+                                onLongClick = { selected = if (on) selected - c.id else selected + c.id },
+                            )
+                            .background(if (on) MaterialTheme.colorScheme.primary.copy(alpha = 0.14f) else androidx.compose.ui.graphics.Color.Transparent)
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
