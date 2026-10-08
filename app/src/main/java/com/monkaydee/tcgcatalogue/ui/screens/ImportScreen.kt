@@ -1,0 +1,561 @@
+package com.monkaydee.tcgcatalogue.ui.screens
+
+import com.monkaydee.tcgcatalogue.data.CardLanguage
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.remember
+import android.content.Context
+import com.monkaydee.tcgcatalogue.ui.components.appBarColors
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.AddPhotoAlternate
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Close
+import com.monkaydee.tcgcatalogue.ui.components.StandardButton as Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import com.monkaydee.tcgcatalogue.ui.components.StandardTonalButton as FilledTonalButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import com.monkaydee.tcgcatalogue.ui.components.StandardOutlinedButton as OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import com.monkaydee.tcgcatalogue.R
+import com.monkaydee.tcgcatalogue.data.AppSettings
+import com.monkaydee.tcgcatalogue.data.CardRepository
+import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
+import com.monkaydee.tcgcatalogue.data.remote.CardmarketApi
+import com.monkaydee.tcgcatalogue.data.remote.Variant
+import com.monkaydee.tcgcatalogue.data.db.Game
+import com.monkaydee.tcgcatalogue.scan.CardTextParser
+import com.monkaydee.tcgcatalogue.scan.GradeInfo
+import com.monkaydee.tcgcatalogue.ui.components.GameChips
+import com.monkaydee.tcgcatalogue.ui.components.display
+import com.monkaydee.tcgcatalogue.scan.PhotoRecognizer
+import com.monkaydee.tcgcatalogue.scan.PictureSearch
+import com.monkaydee.tcgcatalogue.scan.ScanHit
+import com.monkaydee.tcgcatalogue.scan.SharedPhotos
+import com.monkaydee.tcgcatalogue.scan.VisualMatcher
+import com.monkaydee.tcgcatalogue.ui.AppStrings
+import com.monkaydee.tcgcatalogue.ui.components.AddCardSheet
+import com.monkaydee.tcgcatalogue.ui.components.CardImage
+import com.monkaydee.tcgcatalogue.ui.components.GradedSlab
+import com.monkaydee.tcgcatalogue.ui.theme.Gain
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+
+enum class ImportStatus { READING, LOOKING_UP, REVIEW, ADDED, NOT_FOUND, NO_NUMBER, ERROR }
+
+/** One card found in an imported photo (or the photo itself while it is being read). */
+data class ImportItem(
+    val key: Long,
+    val photo: Uri,
+    val hit: ScanHit? = null,
+    val grade: GradeInfo? = null,
+    /** The card cut out of the photo, for telling alt arts apart. */
+    val picture: android.graphics.Bitmap? = null,
+    val status: ImportStatus,
+    val candidates: List<CardCandidate> = emptyList(),
+    val note: String? = null,
+    /** Everything read on the card (name, numbers, rules), to check and to search by. */
+    val texts: List<String> = emptyList(),
+    /** True when the matches come from the picture alone. */
+    val byPicture: Boolean = false,
+    /** True when the number and the name agree on one card: safe to add without looking. */
+    val sure: Boolean = false,
+)
+
+data class ImportState(
+    val items: List<ImportItem> = emptyList(),
+    /** null = recognise any enabled game */
+    val filter: Game? = null,
+    val reviewing: Long? = null,
+)
+
+class ImportViewModel(private val repo: CardRepository, private val context: Context) : ViewModel() {
+    val state = MutableStateFlow(ImportState())
+    private val queue = Channel<Uri>(Channel.UNLIMITED)
+    private var nextKey = 0L
+    private val dir = File(context.filesDir, "pending-imports").apply { mkdirs() }
+    private val identifier = com.monkaydee.tcgcatalogue.scan.PhotoIdentifier(context, repo)
+
+    init {
+        // Photos are read one at a time to keep memory use low.
+        viewModelScope.launch {
+            repo.prepareIndexes()
+            dir.listFiles()?.filter { it.isFile }?.sortedBy { it.lastModified() }?.forEach { file ->
+                val photo = Uri.fromFile(file)
+                state.update { it.copy(items = it.items + ImportItem(nextKey++, photo, status = ImportStatus.READING)) }
+                process(photo)
+            }
+            for (uri in queue) process(uri)
+        }
+    }
+
+    fun setFilter(f: Game?) = state.update { it.copy(filter = f) }
+
+    fun addPhotos(uris: List<Uri>) {
+        viewModelScope.launch {
+            for (uri in uris) {
+                // Keep a private copy: access to photos shared from other apps can be revoked later.
+                val local = withContext(Dispatchers.IO) {
+                    runCatching {
+                        val file = File(dir, "photo-${System.nanoTime()}")
+                        context.contentResolver.openInputStream(uri)!!.use { input -> file.outputStream().use { input.copyTo(it) } }
+                        Uri.fromFile(file)
+                    }.getOrNull()
+                }
+                val key = nextKey++
+                if (local == null) { state.update { it.copy(items = it.items + ImportItem(key, uri, status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_could_not_open_photo))) }; continue }
+                state.update { it.copy(items = it.items + ImportItem(key, local, status = ImportStatus.READING)) }
+                queue.send(local)
+            }
+        }
+    }
+
+    private suspend fun process(photo: Uri) {
+        val placeholder = state.value.items.firstOrNull { it.photo == photo && it.status == ImportStatus.READING } ?: return
+        val result = runCatching { identifier.read(photo, state.value.filter) }
+        if (result.isFailure) {
+            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_could_not_open_photo))))
+            return
+        }
+        val found = result.getOrThrow()
+        if (found.hits.isEmpty()) {
+            if (repo.reviewed(token(photo, null))) { remove(placeholder); return }
+            // No number could be read: look the card up by its picture straight away.
+            replace(placeholder.key, listOf(placeholder.copy(status = ImportStatus.LOOKING_UP, texts = found.texts)))
+            replace(placeholder.key, listOf(byPicture(placeholder.copy(texts = found.texts, grade = found.grade), found.texts)))
+            return
+        }
+        val remaining = found.hits.filterNot { repo.reviewed(token(photo, it)) }
+        if (remaining.isEmpty()) { remove(placeholder); return }
+        val items = remaining.mapIndexed { i, hit ->
+            ImportItem(if (i == 0) placeholder.key else nextKey++, photo, hit, found.grade, found.picture, ImportStatus.LOOKING_UP, texts = found.texts)
+        }
+        replace(placeholder.key, items)
+        items.forEach { lookUp(it) }
+    }
+
+    private suspend fun lookUp(item: ImportItem) {
+        val hit = item.hit ?: return
+        val result = runCatching { identifier.lookUp(item.photo, hit, item.grade, item.picture, item.texts, state.value.filter) }
+        val found = result.getOrNull()
+        val candidates = found?.candidates.orEmpty()
+        val updated = when {
+            found == null -> item.copy(status = ImportStatus.ERROR, note = AppStrings.get(R.string.import_lookup_failed))
+            candidates.isEmpty() -> item.copy(status = ImportStatus.NOT_FOUND)
+            // found by the picture after the number led nowhere: always for review
+            found.byPicture -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, note = null, byPicture = true)
+            item.grade == null && repo.settings.current().quickAdd && repo.isConfident(candidates) -> {
+                val top = candidates.first()
+                val grade = item.grade?.takeIf { it.grader != null && it.grade != null }
+                runCatching { repo.add(top, top.defaultVariant, 1, repo.settings.current().defaultCondition, grade, language = top.language ?: item.hit?.language ?: "EN", reviewToken = token(item.photo, item.hit)) }
+                    .fold(
+                        onSuccess = { row ->
+                            com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, item.texts, top.cardId, item.picture)
+                            com.monkaydee.tcgcatalogue.data.SharedLearning.markAutomatic(row)
+                            item.copy(status = ImportStatus.ADDED, candidates = candidates, note = "${top.name} · ${top.setName}" + (if (top.variants.size > 1) " · ${top.defaultVariant.label}" else "") + (grade?.let { g -> " · ${g.label}" } ?: ""))
+                        },
+                        onFailure = { item.copy(status = ImportStatus.REVIEW, candidates = candidates) },
+                    )
+            }
+            else -> item.copy(status = ImportStatus.REVIEW, candidates = candidates, sure = item.grade == null && repo.isConfident(candidates))
+        }
+        replace(item.key, listOf(updated))
+    }
+
+    private fun token(photo: Uri, hit: ScanHit?) = photo.path.orEmpty() + "|" + (hit?.key ?: "picture")
+
+    private fun cleanup(photo: Uri) {
+        if (state.value.items.none { it.photo == photo && it.status != ImportStatus.ADDED }) File(photo.path.orEmpty()).takeIf { it.parentFile == dir }?.delete()
+    }
+    private fun replace(key: Long, with: List<ImportItem>) {
+        state.update { s ->
+        val i = s.items.indexOfFirst { it.key == key }
+        if (i < 0) s else s.copy(items = s.items.take(i) + with + s.items.drop(i + 1))
+        }
+        with.filter { it.status == ImportStatus.ADDED }.forEach { cleanup(it.photo) }
+    }
+
+    /** A photo without a readable number: look the card up by its picture alone. */
+    fun findByPicture(item: ImportItem) {
+        replace(item.key, listOf(item.copy(status = ImportStatus.LOOKING_UP, note = null)))
+        viewModelScope.launch { replace(item.key, listOf(byPicture(item, item.texts))) }
+    }
+
+    /**
+     * [item] looked up by its picture: matches are always shown for review (never added on their
+     * own), as a picture can't tell reprints with the same art apart. [texts] is what could be read.
+     */
+    private suspend fun byPicture(item: ImportItem, texts: List<String>): ImportItem {
+        val found = identifier.byPicture(item.photo, texts, state.value.filter, item.hit)
+        return when {
+            found.pictureUnavailable -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_unavailable))
+            found.candidates.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.picture_none))
+            else -> item.copy(status = ImportStatus.REVIEW, candidates = found.candidates, note = null, byPicture = true)
+        }
+    }
+
+    /**
+     * Asks the price server's image recognition (only when the user taps the button: the photo
+     * leaves the phone, and the server has a small daily limit).
+     */
+    fun identifyOnline(item: ImportItem) {
+        replace(item.key, listOf(item.copy(status = ImportStatus.LOOKING_UP, note = null)))
+        viewModelScope.launch {
+            val games = state.value.filter?.let { setOf(it) } ?: repo.settings.current().enabledGames
+            val result = com.monkaydee.tcgcatalogue.data.remote.attempt {
+                val jpeg = withContext(Dispatchers.Default) {
+                    val photo = PhotoRecognizer.loadSmall(context, item.photo, maxSide = 1400)
+                    java.io.ByteArrayOutputStream().also { photo.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, it) }.toByteArray()
+                }
+                repo.identifyOnline(jpeg, games)
+            }
+            val found = result.getOrDefault(emptyList())
+            replace(
+                item.key,
+                listOf(
+                    when {
+                        result.isFailure -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.identify_failed))
+                        found.isEmpty() -> item.copy(status = ImportStatus.NO_NUMBER, note = AppStrings.get(R.string.identify_none))
+                        else -> item.copy(status = ImportStatus.REVIEW, candidates = found, note = null)
+                    },
+                ),
+            )
+        }
+    }
+
+    fun retry(item: ImportItem) {
+        if (item.hit == null) {
+            replace(item.key, listOf(item.copy(status = ImportStatus.READING, note = null)))
+            viewModelScope.launch { queue.send(item.photo) }
+        } else {
+            replace(item.key, listOf(item.copy(status = ImportStatus.LOOKING_UP, note = null)))
+            viewModelScope.launch { lookUp(item) }
+        }
+    }
+
+    fun review(item: ImportItem) = state.update { it.copy(reviewing = item.key) }
+    fun closeReview() = state.update { it.copy(reviewing = null) }
+    fun remove(item: ImportItem) {
+        viewModelScope.launch {
+            repo.discardReview(token(item.photo, item.hit))
+            state.update { s -> s.copy(items = s.items.filterNot { it.key == item.key }) }
+            cleanup(item.photo)
+        }
+    }
+
+    fun add(key: Long, c: CardCandidate, v: Variant, qty: Int, condition: String, grade: GradeInfo?, listing: CardmarketApi.Listing? = null, paid: Double? = null, own: Double? = null, language: String = c.language ?: "EN") {
+        state.update { it.copy(reviewing = null) }
+        viewModelScope.launch {
+            runCatching { repo.add(c, v, qty, condition, grade, listing, paid, own, language, reviewToken = state.value.items.firstOrNull { it.key == key }?.let { token(it.photo, it.hit) }) }.onSuccess { row ->
+                state.value.items.firstOrNull { it.key == key }?.let { item ->
+                    com.monkaydee.tcgcatalogue.data.SharedLearning.enrich(row, item.texts, item.candidates.firstOrNull()?.cardId, item.picture)
+                    // A corrected match is a recognition test case; confirmed ones too when the user collects them.
+                    val corrected = item.candidates.firstOrNull()?.cardId != c.cardId
+                    if (corrected || repo.settings.current().collectCases) {
+                        com.monkaydee.tcgcatalogue.data.GoldenCases.save(context, item.photo, c.cardId, language, grade?.grader, grade?.grade, if (corrected) "correction" else "confirmed")
+                    }
+                    val extra = listOfNotNull(grade?.label, AppStrings.get(R.string.import_quantity, qty).takeIf { qty > 1 })
+                    replace(key, listOf(item.copy(status = ImportStatus.ADDED, note = (listOf("${c.name} · ${c.setName}") + extra).joinToString(" · "))))
+                }
+            }
+        }
+    }
+
+    /** Adds the best match of every card still waiting for review ([sureOnly]: only the sure ones). */
+    fun addAllBest(sureOnly: Boolean = false) {
+        val s = state.value
+        viewModelScope.launch {
+            val condition = repo.settings.current().defaultCondition
+            s.items.filter { it.status == ImportStatus.REVIEW && (!sureOnly || it.sure) }.forEach { item ->
+                val top = item.candidates.first()
+                add(item.key, top, top.defaultVariant, 1, condition, item.grade?.takeIf { it.grader != null && it.grade != null })
+            }
+        }
+    }
+
+    override fun onCleared() {
+        queue.close()
+        // Unfinished private copies survive process death and are removed only on completion/discard.
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ImportScreen(repo: CardRepository, openPicker: Boolean, onBack: () -> Unit, onManual: () -> Unit) {
+    val context = LocalContext.current
+    val vm: ImportViewModel = viewModel { ImportViewModel(repo, context.applicationContext) }
+    val state by vm.state.collectAsState()
+    val settings by repo.settings.flow.collectAsState(initial = AppSettings())
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(maxItems = 30)) { uris ->
+        vm.addPhotos(uris)
+    }
+    val pick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
+    var autoOpened by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (openPicker && !autoOpened) {
+            autoOpened = true
+            pick()
+        }
+    }
+    // Photos shared from other apps (gallery, WhatsApp, ...).
+    LaunchedEffect(Unit) {
+        SharedPhotos.pending.collect { if (it.isNotEmpty()) vm.addPhotos(SharedPhotos.take()) }
+    }
+
+    val counts = state.items.groupingBy { it.status }.eachCount()
+    val toReview = counts[ImportStatus.REVIEW] ?: 0
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = appBarColors(),
+                title = { Text(stringResource(R.string.import_title)) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.import_back)) } },
+                actions = { IconButton(onClick = pick) { Icon(Icons.Outlined.AddPhotoAlternate, stringResource(R.string.import_add_photos)) } },
+            )
+        },
+    ) { padding ->
+        LazyColumn(
+            Modifier.padding(padding).fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            item {
+                GameChips(state.filter, vm::setFilter, Game.entries.filter { it in settings.enabledGames })
+            }
+            if (state.items.isEmpty()) {
+                item {
+                    Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(R.string.import_intro),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Spacer(Modifier.size(16.dp))
+                        Button(onClick = pick) {
+                            Icon(Icons.Outlined.AddPhotoAlternate, null)
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.import_choose_photos))
+                        }
+                    }
+                }
+            } else {
+                item {
+                    Text(
+                        listOfNotNull(
+                            counts[ImportStatus.ADDED]?.let { pluralStringResource(R.plurals.import_count_added, it, it) },
+                            toReview.takeIf { it > 0 }?.let { pluralStringResource(R.plurals.import_count_to_review, it, it) },
+                            ((counts[ImportStatus.READING] ?: 0) + (counts[ImportStatus.LOOKING_UP] ?: 0)).takeIf { it > 0 }?.let { pluralStringResource(R.plurals.import_count_in_progress, it, it) },
+                            ((counts[ImportStatus.NO_NUMBER] ?: 0) + (counts[ImportStatus.NOT_FOUND] ?: 0) + (counts[ImportStatus.ERROR] ?: 0))
+                                .takeIf { it > 0 }?.let { pluralStringResource(R.plurals.import_count_not_recognised, it, it) },
+                        ).joinToString(" · "),
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
+                val sure = state.items.count { it.status == ImportStatus.REVIEW && it.sure }
+                if (sure > 0 && sure < toReview) {
+                    item {
+                        Button(onClick = { vm.addAllBest(sureOnly = true) }, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.import_add_all_sure, sure))
+                        }
+                    }
+                }
+                if (toReview > 1) {
+                    item {
+                        FilledTonalButton(onClick = { vm.addAllBest() }, modifier = Modifier.fillMaxWidth()) {
+                            Text(pluralStringResource(R.plurals.import_add_all_best, toReview, toReview))
+                        }
+                    }
+                }
+                items(state.items, key = { it.key }) { item ->
+                    ImportRow(item, settings, repo, onReview = { vm.review(item) }, onRetry = { vm.retry(item) }, onRemove = { vm.remove(item) }, onManual = onManual, onPicture = { vm.findByPicture(item) }, onIdentify = { vm.identifyOnline(item) })
+                }
+            }
+        }
+    }
+
+    val reviewing = state.items.firstOrNull { it.key == state.reviewing }
+    if (reviewing != null) {
+        AddCardSheet(
+            reviewing.candidates,
+            settings,
+            repo,
+            initialGrade = reviewing.grade,
+            onAdd = { r -> vm.add(reviewing.key, r.card, r.variant, r.quantity, r.condition, r.grade, r.listing, r.purchasePrice, r.manualValue, r.language) },
+            onDismiss = vm::closeReview,
+        )
+    }
+}
+
+private fun ScanHit.label() = describeHit(this)
+
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+private fun ImportRow(item: ImportItem, settings: AppSettings, repo: CardRepository, onReview: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onManual: () -> Unit, onPicture: () -> Unit = {}, onIdentify: () -> Unit = {}) {
+    val top = item.candidates.firstOrNull()
+    var details by remember { mutableStateOf(false) }
+    if (details) RecognitionDetails(item) { details = false }
+    Card(
+        Modifier.fillMaxWidth().combinedClickable(
+            onClick = { if (item.status == ImportStatus.REVIEW) onReview() },
+            onLongClick = { details = true },
+        ),
+    ) {
+        Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            AsyncImage(
+                model = item.photo,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.width(52.dp).aspectRatio(63f / 88f).clip(RoundedCornerShape(4.dp)),
+            )
+            if (top != null) {
+                Spacer(Modifier.width(6.dp))
+                val g = item.grade?.takeIf { it.grader != null && it.grade != null }
+                if (g != null) {
+                    GradedSlab(top.defaultVariant.imageUrl ?: top.imageUrl, g.grader, g.grade, g.qualifier, top.name, top.number, g.cert, Modifier.width(60.dp), thumb = true)
+                } else {
+                    CardImage(top.defaultVariant.imageUrl ?: top.imageUrl, Modifier.width(52.dp), thumb = true)
+                }
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                when (item.status) {
+                    ImportStatus.READING -> Text(stringResource(R.string.import_reading_photo), style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.LOOKING_UP -> Text(stringResource(R.string.import_looking_up, item.hit?.label().toString()), style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.REVIEW -> {
+                        Text(top!!.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        item.grade?.let { Text(it.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary) }
+                        Text("${top.setName} · ${top.number}", style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        if (top.variants.size > 1) Text(top.defaultVariant.label, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        // how sure the match is: number and name agree, or only the picture
+                        when {
+                            item.sure -> Text(stringResource(R.string.import_sure_match), style = MaterialTheme.typography.labelSmall, color = Gain, fontWeight = FontWeight.Bold)
+                            item.byPicture -> Text(stringResource(R.string.import_by_picture_check), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary)
+                        }
+                        if (top.printingCheck) {
+                            Text(stringResource(R.string.import_check_printing), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+                        }
+                        Text(
+                            if (item.candidates.size > 1) pluralStringResource(R.plurals.import_possible_matches, item.candidates.size, item.candidates.size) else stringResource(R.string.import_tap_to_add, repo.rawPrice(top, top.defaultVariant, settings).display(settings)),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                    ImportStatus.ADDED -> {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Outlined.CheckCircle, null, tint = Gain, modifier = Modifier.size(16.dp))
+                            Spacer(Modifier.width(4.dp))
+                            Text(stringResource(R.string.import_added), style = MaterialTheme.typography.titleSmall, color = Gain, fontWeight = FontWeight.Bold)
+                        }
+                        item.note?.let { Text(it, style = MaterialTheme.typography.bodySmall, maxLines = 2) }
+                    }
+                    ImportStatus.NOT_FOUND -> Text(stringResource(R.string.import_no_card_found, item.hit?.label().toString()), style = MaterialTheme.typography.bodyMedium)
+                    ImportStatus.NO_NUMBER -> {
+                        Text(stringResource(R.string.import_no_number), style = MaterialTheme.typography.bodyMedium)
+                        item.note?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    }
+                    ImportStatus.ERROR -> Text(item.note ?: stringResource(R.string.import_something_wrong), style = MaterialTheme.typography.bodyMedium)
+                }
+                when (item.status) {
+                    ImportStatus.NO_NUMBER, ImportStatus.NOT_FOUND -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (item.status == ImportStatus.NO_NUMBER) OutlinedButton(onClick = onPicture) { Text(stringResource(R.string.picture_find)) }
+                            if (settings.hasServer) OutlinedButton(onClick = onIdentify) { Text(stringResource(R.string.identify_online)) }
+                            OutlinedButton(onClick = onManual) { Text(stringResource(R.string.import_type_it_in)) }
+                        }
+                        if (settings.hasServer) Text(stringResource(R.string.identify_hint), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    ImportStatus.ERROR -> OutlinedButton(onClick = onRetry) { Text(stringResource(R.string.import_retry)) }
+                    else -> Unit
+                }
+            }
+            when (item.status) {
+                ImportStatus.READING, ImportStatus.LOOKING_UP -> CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
+                ImportStatus.ADDED -> Unit
+                else -> IconButton(onClick = onRemove) { Icon(Icons.Outlined.Close, stringResource(R.string.import_dismiss)) }
+            }
+        }
+    }
+}
+
+/** Long-press on an imported photo: what was read on the card and how the matches were found. */
+@Composable
+private fun RecognitionDetails(item: ImportItem, onDismiss: () -> Unit) {
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.ok)) } },
+        title = { Text(stringResource(R.string.import_details_title)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    when {
+                        item.byPicture || item.hit == null -> stringResource(R.string.import_details_by_picture)
+                        else -> stringResource(R.string.import_details_by_number, item.hit.label())
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                item.hit?.language?.let { Text("🌐 ${CardLanguage.displayCode(it)}", style = MaterialTheme.typography.bodySmall) }
+                item.grade?.label?.let { Text("🏷 $it", style = MaterialTheme.typography.bodySmall) }
+                item.candidates.take(5).forEachIndexed { i, c ->
+                    Text("${i + 1}. ${c.name} · ${c.setName} · ${c.number}", style = MaterialTheme.typography.bodySmall)
+                }
+                Text(stringResource(R.string.import_details_read), style = MaterialTheme.typography.labelLarge)
+                Text(item.texts.take(25).joinToString(" | ").ifBlank { "–" }, style = MaterialTheme.typography.bodySmall)
+            }
+        },
+    )
+}

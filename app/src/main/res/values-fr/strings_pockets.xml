@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Chaque exemplaire dans sa pochette</string>
+    <string name="binder_move_hint">Touchez une pochette pour y déplacer la carte</string>
+    <string name="binder_remove">Retirer du classeur</string>
+    <string name="binder_pick_for_pocket">Choisir une carte pour cette pochette</string>
+    <string name="binder_all_placed">Tous les exemplaires sont déjà dans ce classeur</string>
+</resources>

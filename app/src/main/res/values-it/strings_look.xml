@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_skip">Salta</string>
+    <string name="onboarding_next">Avanti</string>
+    <string name="onboarding_get_started">Inizia</string>
+    <string name="onboarding_scan_title">Scansiona le tue carte</string>
+    <string name="onboarding_scan_text">Inquadra una carta con la fotocamera o importa foto dalla galleria. Nome e numero vengono letti per te.</string>
+    <string name="onboarding_binder_title">La tua collezione in un raccoglitore</string>
+    <string name="onboarding_binder_text">Sfoglia le tue carte pagina per pagina in un raccoglitore virtuale, proprio come quello vero.</string>
+    <string name="onboarding_prices_title">Prezzi e valore</string>
+    <string name="onboarding_prices_text">Scopri quanto vale ogni carta e segui il valore dell\'intera collezione nel tempo.</string>
+    <string name="onboarding_page_of">Pagina %1$d di %2$d</string>
+</resources>

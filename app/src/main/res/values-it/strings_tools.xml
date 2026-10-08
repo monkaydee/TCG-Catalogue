@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Strumenti di raccolta</string>
+  <string name="tools_costs">Registro dei costi</string>
+  <string name="tools_grading">Carte inviate per la valutazione</string>
+  <string name="tools_shipping">Spedizione per copia</string>
+  <string name="tools_tax">Tassa per copia</string>
+  <string name="tools_grading_cost">Costo di classificazione per copia</string>
+  <string name="tools_pnl">PnL non realizzato</string>
+  <string name="tools_unknown">Prezzo o costo sconosciuto</string>
+  <string name="tools_blank">Lascia vuoto il campo relativo ai costi sconosciuti. Inserisci 0 senza alcun costo.</string>
+  <string name="tools_reference">Riferimento per la presentazione</string>
+  <string name="tools_notes">Note</string>
+  <string name="tools_export">Esportazione assicurativa</string>
+  <string name="tools_review">In attesa di revisione delle foto</string>
+  <string name="tools_evidence">Prova del prezzo</string>
+  <string name="tools_stale">Prezzo di mercato obsoleto</string>
+  <string name="tools_current">Prezzo di mercato attuale</string>
+  <string name="tools_fees">Commissioni di vendita</string>
+  <string name="tools_learning">Aiutaci a migliorare il riconoscimento</string>
+  <string name="tools_photos">Condividi i ritagli di carte approvati</string>
+  <string name="tools_send">Invia rapporti in sospeso</string>
+  <string name="tools_delete">Elimina i report condivisi</string>
+  <string name="tools_consent">Facoltativo. I rapporti testuali includono i dettagli della carta e la tua correzione. Le foto richiedono un\'anteprima e un\'approvazione separate. I report vengono conservati per 90 giorni.</string>
+  <string name="tools_preview">Approva il ritaglio della carta</string>
+  <string name="tools_preparing">Preparazione</string>
+  <string name="tools_shipped">Spedito</string>
+  <string name="tools_received">Ricevuto</string>
+  <string name="tools_grading_status">Valutazione delle carte in corso</string>
+  <string name="tools_returned">Restituito</string>
+  <string name="tools_cancelled">Annullato</string>
+  <string name="tools_complete">Completo</string>
+  <string name="tools_price_challenge">Segnala prezzo errato</string>
+  <string name="tools_confirm_outline">Conferma l\'intero contorno della carta</string>
+  <string name="tools_outline_hint">Controlla che tutti e quattro gli angoli siano gli angoli esterni della carta prima di confermare.</string>
+  <string name="tools_duplicate_cert">Questo certificato di valutazione è già nella tua collezione.</string>
+</resources>

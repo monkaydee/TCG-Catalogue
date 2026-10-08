@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Home-screen widget -->
+    <string name="widget_name">पोर्टफोलियो</string>
+    <string name="widget_description">आपके कलेक्शन की कुल वैल्यू और पिछले 30 दिनों में उसमें हुआ बदलाव।</string>
+    <string name="widget_title">कलेक्शन की वैल्यू</string>
+    <string name="widget_cards">%1$d कार्ड</string>
+    <string name="widget_updated">अपडेट किया गया %1$s</string>
+    <string name="widget_change_30d">30 दिनों में %1$s</string>
+    <string name="widget_no_history">अभी 30 दिनों की हिस्ट्री नहीं है</string>
+    <string name="widget_preview_change" formatted="false">30 दिनों में +€48.20 (+4.1%)</string>
+    <string name="widget_preview_cards">312 कार्ड</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">पेज शेयर करें</string>
+    <string name="share_chooser_title">बाइंडर पेज शेयर करें</string>
+    <string name="share_failed">पेज शेयर नहीं हो सका: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">क्लाउड बैकअप</string>
+    <string name="cloud_hint">अपने कलेक्शन की एक कॉपी Google Drive, Dropbox, OneDrive या इस फ़ोन के किसी दूसरे स्टोरेज ऐप की फ़ाइल में रखें। ऐप से बाहर निकलते समय यह सेव होती है, और ऐप खोलने पर दूसरे फ़ोन की नई कॉपी का विकल्प मिलता है।</string>
+    <string name="cloud_choose_new">नई फ़ाइल</string>
+    <string name="cloud_choose_existing">मौजूदा फ़ाइल इस्तेमाल करें</string>
+    <string name="cloud_file">फ़ाइल: %1$s</string>
+    <string name="cloud_last_saved">आखिरी बार सेव: %1$s</string>
+    <string name="cloud_never_saved">अभी सेव नहीं हुआ</string>
+    <string name="cloud_backup_now">अभी बैकअप लें</string>
+    <string name="cloud_stop">बंद करें</string>
+    <string name="cloud_saved">बैकअप सेव हो गया</string>
+    <string name="cloud_unchanged">पिछले बैकअप के बाद कुछ नहीं बदला</string>
+    <string name="cloud_stopped">क्लाउड बैकअप बंद हो गया</string>
+    <string name="cloud_error">क्लाउड बैकअप में समस्या: %1$s</string>
+    <string name="cloud_error_permission">फ़ाइल का एक्सेस रद्द कर दिया गया। फ़ाइल फिर से चुनें।</string>
+    <string name="cloud_error_not_backup">यह फ़ाइल CardNavo का बैकअप नहीं है, इसलिए इसे छुआ नहीं गया।</string>
+    <string name="cloud_error_blocked">दूसरे फ़ोन का नया कलेक्शन इंतज़ार कर रहा है। पहले इसे लोड करें, मर्ज करें या अनदेखा करें।</string>
+    <string name="cloud_error_unknown">अज्ञात एरर</string>
+    <string name="cloud_pending_title">दूसरे फ़ोन से नया कलेक्शन</string>
+    <string name="cloud_pending_text">बैकअप फ़ाइल में %1$d कार्ड वाला कलेक्शन है, जो %2$s को सेव हुआ था।</string>
+    <string name="cloud_load">लोड करें (बदलें)</string>
+    <string name="cloud_merge">मर्ज करें</string>
+    <string name="cloud_ignore">अनदेखा करें</string>
+    <string name="cloud_loaded">बैकअप फ़ाइल से कलेक्शन लोड हो गया</string>
+    <string name="cloud_merged">कलेक्शन मर्ज हो गए</string>
+    <string name="cloud_load_confirm_title">अपना कलेक्शन बदलें?</string>
+    <string name="cloud_load_confirm_text">इस फ़ोन का सारा डेटा बैकअप फ़ाइल के कलेक्शन से बदल दिया जाएगा।</string>
+    <string name="cloud_load_confirm_button">बदलें</string>
+</resources>

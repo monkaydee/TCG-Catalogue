@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">جمع حالات اختبار التعرّف</string>
+    <string name="settings_collect_cases_hint">احتفظ على هذا الهاتف بالصور المستوردة المؤكدة (مع البطاقة الصحيحة) لتحسين التعرّف. التصحيحات تُحفظ دائمًا. لا يُرسل شيء حتى تقوم بالتصدير.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="zero">تصدير %d حالات اختبار</item>
+        <item quantity="one">تصدير %d حالة اختبار</item>
+        <item quantity="two">تصدير %d حالات اختبار</item>
+        <item quantity="few">تصدير %d حالات اختبار</item>
+        <item quantity="many">تصدير %d حالات اختبار</item>
+        <item quantity="other">تصدير %d حالات اختبار</item>
+    </plurals>
+    <string name="settings_clear_cases">حذف الحالات</string>
+    <string name="import_details_title">كيف تم التعرّف</string>
+    <string name="import_details_by_picture">عُثر عليها من الصورة</string>
+    <string name="import_details_by_number">عُثر عليها من الرقم %1$s</string>
+    <string name="import_details_read">المقروء على البطاقة:</string>
+</resources>

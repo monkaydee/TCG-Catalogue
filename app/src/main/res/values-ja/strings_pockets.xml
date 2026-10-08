@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">1枚ずつ別のポケットに</string>
+    <string name="binder_move_hint">ポケットをタップしてカードを移動</string>
+    <string name="binder_remove">バインダーから外す</string>
+    <string name="binder_pick_for_pocket">このポケットに入れるカードを選択</string>
+    <string name="binder_all_placed">すべての枚数がすでにこのバインダーにあります</string>
+</resources>

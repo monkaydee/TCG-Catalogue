@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Contorno de la tarjeta · cuatro esquinas</string>
+  <string name="pre_center_screen">Centrado · ocho guías</string>
+  <string name="pre_open_centering">Medir los bordes interiores y exteriores</string>
+  <string name="pre_outline_continue">Confirmar el esquema de toda la tarjeta</string>
+  <string name="pre_outline_adjust">Ajusta las cuatro esquinas de la tarjeta.</string>
+  <string name="pre_choose_game">juego de cartas</string>
+  <string name="pre_center_missing">Colocar guías exterior e interior de este lado para completar su medida de centrado.</string>
+  <string name="pre_center_ready">Centrado medido. Puede ajustar las ocho guías.</string>
+  <string name="pre_edit_front">Editar centrado frontal</string>
+  <string name="pre_edit_back">Editar centrado posterior</string>
+  <string name="pre_potential_title">Potencial de centrado</string>
+  <string name="pre_potential_10">Dentro de los límites de centrado de PSA 10</string>
+  <string name="pre_potential_borderline">Centrado límite de PSA 10</string>
+  <string name="pre_potential_below">Fuera de los límites de centrado del PSA 10</string>
+  <string name="pre_potential_incomplete">Complete ambos lados para potencial de centrado.</string>
+  <string name="pre_potential_scope">Centrándose únicamente en todos los juegos de cartas. Utiliza límites de PSA frontal 55/45 y posterior 75/25. Límite significa que un ajuste de guía de un píxel de imagen podría cambiar el resultado. Las esquinas, los bordes, la superficie y la autenticidad pueden reducir la nota final.</string>
+  <string name="pre_model_scope">Una predicción de calificación general no se valida para este juego ni para estas mediciones. El potencial de centrado arriba permanece disponible una vez que se miden ambos lados.</string>
+  <string name="pre_experimental_model">Estimación de fotografías experimentales de Pokémon</string>
+  <string name="pre_quality_blocked">Vuelva a tomar este lado: su contorno o la calidad de la fotografía no son adecuados para una evaluación de desgaste.</string>
+  <string name="pre_no_wear_detected">no se detecta desgaste visible</string>
+  <string name="pre_skip_frame">Ningún marco impreso comparable</string>
+  <string name="pre_retake_front">Vuelva a tomar la foto frontal</string>
+  <string name="pre_retake_back">Volver a tomar la foto</string>
+</resources>

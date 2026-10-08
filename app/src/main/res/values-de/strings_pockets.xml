@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Jede Kopie in eigene Tasche</string>
+    <string name="binder_move_hint">Tippe auf eine Tasche, um die Karte dorthin zu legen</string>
+    <string name="binder_remove">Aus Ordner entfernen</string>
+    <string name="binder_pick_for_pocket">Karte für diese Tasche wählen</string>
+    <string name="binder_all_placed">Alle Exemplare sind schon in diesem Ordner</string>
+</resources>

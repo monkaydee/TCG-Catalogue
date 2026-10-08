@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">卡片輪廓·四個角</string>
+  <string name="pre_center_screen">定心 · 八個導軌</string>
+  <string name="pre_open_centering">測量內邊界和外邊界</string>
+  <string name="pre_outline_continue">確認全卡輪廓</string>
+  <string name="pre_outline_adjust">調整卡片的四個角</string>
+  <string name="pre_choose_game">卡牌遊戲</string>
+  <string name="pre_center_missing">將外部和內部導軌放置在這一側以完成其對中測量。</string>
+  <string name="pre_center_ready">已測量居中。您可以調整所有八個參考線。</string>
+  <string name="pre_edit_front">編輯前居中</string>
+  <string name="pre_edit_back">編輯後居中</string>
+  <string name="pre_potential_title">集中潛力</string>
+  <string name="pre_potential_10">在 PSA 10 居中限制內</string>
+  <string name="pre_potential_borderline">邊緣 PSA 10 居中</string>
+  <string name="pre_potential_below">超出 PSA 10 居中限制</string>
+  <string name="pre_potential_incomplete">完成兩側以集中潛力</string>
+  <string name="pre_potential_scope">僅居中，跨紙牌遊戲。使用 PSA 前 55/45 和後 75/25 限制。邊界意味著單一影像像素引導調整可能會改變結果。角落、邊緣、表面和真實性都會降低最終的等級。</string>
+  <string name="pre_model_scope">此遊戲或這些測量的總體成績預測尚未得到驗證。一旦兩側都被測量，上方的居中電位仍然可用。</string>
+  <string name="pre_experimental_model">實驗性神奇寶貝照片估計</string>
+  <string name="pre_quality_blocked">重新拍攝這一面：其輪廓或照片品質不適合磨損評估。</string>
+  <string name="pre_no_wear_detected">未檢測到明顯磨損</string>
+  <string name="pre_skip_frame">沒有可比較的印刷框架</string>
+  <string name="pre_retake_front">重新拍攝正面照片</string>
+  <string name="pre_retake_back">重新拍回照片</string>
+</resources>

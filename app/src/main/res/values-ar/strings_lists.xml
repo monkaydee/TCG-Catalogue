@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wishlist, trade list, sold cards, set checklist, price alerts and price history. Translations follow later. -->
+<resources>
+    <!-- Common -->
+    <string name="lists_back">رجوع</string>
+    <string name="lists_cancel">إلغاء</string>
+    <string name="lists_save">حفظ</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">مسح</string>
+    <string name="lists_remove">إزالة</string>
+    <string name="lists_retry">إعادة المحاولة</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">القوائم</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">المبلغ (%1$s)</string>
+    <string name="lists_amount_invalid">أدخل مبلغًا، مثل 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">قائمة التحقق</string>
+    <string name="checklist_open">عرض قائمة التحقق</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="zero">%1$d من %2$d بطاقة مملوكة</item>
+        <item quantity="one">%1$d من %2$d بطاقة مملوكة</item>
+        <item quantity="two">%1$d من %2$d بطاقة مملوكة</item>
+        <item quantity="few">%1$d من %2$d بطاقات مملوكة</item>
+        <item quantity="many">%1$d من %2$d بطاقة مملوكة</item>
+        <item quantity="other">%1$d من %2$d بطاقة مملوكة</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">الكل · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">المملوكة · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">الناقصة · %1$d</string>
+    <string name="checklist_loading">جارٍ تحميل بطاقات هذه المجموعة…</string>
+    <string name="checklist_empty_title">لا توجد قائمة تحقق لهذه المجموعة</string>
+    <string name="checklist_empty_text">تعذّر تحميل قائمة البطاقات. تحقق من اتصالك، أو ربما لم تُدرج هذه المجموعة بعد.</string>
+    <string name="checklist_none_owned">لا تملك أي بطاقة من هذه المجموعة بعد.</string>
+    <string name="checklist_none_missing">اكتملت! تملك كل بطاقات هذه المجموعة.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">ناقصة</string>
+    <string name="checklist_on_wishlist">في قائمة أمنياتك</string>
+    <string name="checklist_add_collection">إضافة إلى المجموعة</string>
+    <string name="checklist_add_wishlist">إضافة إلى قائمة الأمنيات</string>
+    <string name="checklist_card_loading">جارٍ تحميل البطاقة…</string>
+    <string name="checklist_card_failed">تعذّر تحميل هذه البطاقة — تحقق من اتصالك</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">تمت إضافة %1$s إلى مجموعتك</string>
+    <string name="checklist_printing">الطبعة</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">قائمة الأمنيات</string>
+    <string name="wish_add">إضافة إلى قائمة الأمنيات</string>
+    <string name="wish_remove">إزالة من قائمة الأمنيات</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">تمت إضافة %1$s إلى قائمة أمنياتك</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">تمت إزالة %1$s من قائمة أمنياتك</string>
+    <string name="wish_add_failed">تعذّرت إضافة البطاقة — تحقق من اتصالك</string>
+    <string name="wish_total">التكلفة الإجمالية</string>
+    <plurals name="wish_count">
+        <item quantity="zero">%1$d بطاقة</item>
+        <item quantity="one">%1$d بطاقة</item>
+        <item quantity="two">%1$d بطاقتان</item>
+        <item quantity="few">%1$d بطاقات</item>
+        <item quantity="many">%1$d بطاقة</item>
+        <item quantity="other">%1$d بطاقة</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="zero">%1$d عند هدفك أو أقل</item>
+        <item quantity="one">%1$d عند هدفك أو أقل</item>
+        <item quantity="two">%1$d عند هدفك أو أقل</item>
+        <item quantity="few">%1$d عند هدفك أو أقل</item>
+        <item quantity="many">%1$d عند هدفك أو أقل</item>
+        <item quantity="other">%1$d عند هدفك أو أقل</item>
+    </plurals>
+    <string name="wish_empty_title">قائمة أمنياتك فارغة</string>
+    <string name="wish_empty_text">أضف بطاقات من البحث أو من البطاقات الناقصة في قائمة تحقق مجموعة.</string>
+    <string name="wish_no_price">لا يوجد سعر</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">الهدف %1$s</string>
+    <string name="wish_no_target">لا يوجد سعر مستهدف</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">عند هدفك</string>
+    <string name="wish_set_target">تحديد السعر المستهدف</string>
+    <string name="wish_target_title">السعر المستهدف</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">ستتلقى إشعارًا عندما ينخفض السعر إلى هذا المبلغ أو أقل. الآن: %1$s</string>
+    <string name="wish_target_text_no_price">ستتلقى إشعارًا عندما ينخفض السعر إلى هذا المبلغ أو أقل.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">قائمة التبادل</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">للتبادل</string>
+    <string name="trade_share">مشاركة القائمة</string>
+    <string name="trade_remove">إزالة من قائمة التبادل</string>
+    <string name="trade_total">قيمة التبادل</string>
+    <string name="trade_empty_title">لا شيء للتبادل بعد</string>
+    <string name="trade_empty_text">افتح بطاقة في مجموعتك واضغط «للتبادل» لإضافتها هنا.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="zero">قائمة التبادل الخاصة بي (%1$d بطاقة)</item>
+        <item quantity="one">قائمة التبادل الخاصة بي (%1$d بطاقة)</item>
+        <item quantity="two">قائمة التبادل الخاصة بي (%1$d بطاقتان)</item>
+        <item quantity="few">قائمة التبادل الخاصة بي (%1$d بطاقات)</item>
+        <item quantity="many">قائمة التبادل الخاصة بي (%1$d بطاقة)</item>
+        <item quantity="other">قائمة التبادل الخاصة بي (%1$d بطاقة)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">القيمة الإجمالية: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">تمت المشاركة من %1$s</string>
+    <string name="trade_share_subject">قائمة التبادل الخاصة بي</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">بيع</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">بيع %1$s</string>
+    <string name="sold_quantity">النسخ المباعة</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">من %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">السعر لكل نسخة (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">الإجمالي %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">الربح %1$s</string>
+    <string name="sold_confirm">بيع</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">تم بيع %1$d× %2$s</string>
+    <string name="sold_title">المباع</string>
+    <string name="sold_realised">الربح المحقق</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">المبيعات %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="zero">%1$d عملية بيع بلا سعر شراء غير محتسبة</item>
+        <item quantity="one">%1$d عملية بيع بلا سعر شراء غير محتسبة</item>
+        <item quantity="two">%1$d عمليتا بيع بلا سعر شراء غير محتسبتين</item>
+        <item quantity="few">%1$d عمليات بيع بلا سعر شراء غير محتسبة</item>
+        <item quantity="many">%1$d عملية بيع بلا سعر شراء غير محتسبة</item>
+        <item quantity="other">%1$d عملية بيع بلا سعر شراء غير محتسبة</item>
+    </plurals>
+    <string name="sold_empty_title">لا توجد مبيعات بعد</string>
+    <string name="sold_empty_text">افتح بطاقة في مجموعتك واضغط «بيع» لتسجيل عملية بيع هنا.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">تم بيع %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">دُفع %1$s لكل نسخة</string>
+    <string name="sold_paid_unknown">سعر الشراء غير معروف</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">بيعت في %1$s</string>
+    <string name="sold_delete">حذف السجل</string>
+    <string name="sold_delete_title">حذف عملية البيع هذه؟</string>
+    <string name="sold_delete_text">ستُزال من قائمة المباع ومن الربح المحقق. لن تعود البطاقة إلى مجموعتك.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">تنبيه</string>
+    <string name="alert_ui_title">تنبيه السعر</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">تلقَّ إشعارًا عندما تتجاوز قيمة النسخة الواحدة أحد هذين المبلغين. الآن: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">أبلغني فوق (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">أبلغني تحت (%1$s)</string>
+    <string name="alert_ui_order">يجب أن يكون «فوق» أعلى من «تحت»</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">فوق %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">تحت %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">سجل الأسعار</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">الأعلى %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">الأدنى %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">تعديل</string>
+    <string name="lists_card_remove">إزالة</string>
+</resources>

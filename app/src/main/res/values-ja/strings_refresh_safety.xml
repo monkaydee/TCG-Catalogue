@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">最新の検索では一致する価格がありませんでした。以前の価格を保持しています</string>
+</resources>

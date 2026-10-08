@@ -1,0 +1,22 @@
+{
+  "PSACert": {
+    "CertNumber": "48658983",
+    "SpecID": 1234567,
+    "SpecNumber": "9.1.ABC",
+    "LabelType": "LighthouseLabel",
+    "ReverseBarCode": false,
+    "Year": "2000",
+    "Brand": "POKEMON ROCKET",
+    "Category": "TCG CARDS",
+    "CardNumber": "8",
+    "Subject": "DARK GYARADOS-HOLO",
+    "Variety": "",
+    "IsPSADNA": false,
+    "IsDualCert": false,
+    "GradeDescription": "MINT",
+    "CardGrade": "MINT 9",
+    "TotalPopulation": 1520,
+    "TotalPopulationWithQualifier": 1532,
+    "PopulationHigher": 210
+  }
+}

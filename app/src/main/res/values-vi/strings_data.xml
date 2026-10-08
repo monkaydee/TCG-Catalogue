@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Tên trên thẻ vừa quét không khớp với thẻ này — có thể số thẻ bị đọc sai. Hãy kiểm tra lại, hoặc hủy và nhập thủ công.</string>
+    <string name="data_graded">Đã grade</string>
+    <string name="data_graded_grade">Đã grade %1$s</string>
+    <string name="data_graded_choose_grader">chọn công ty grade</string>
+    <string name="data_graded_choose_grade">chọn điểm grade</string>
+    <string name="data_graded_no_source">chưa có nguồn giá thẻ đã grade — hãy đặt giá trị riêng, hoặc xem các liên kết giá trong trang thẻ</string>
+    <string name="data_variant_normal">Thường</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Tiêu chuẩn</string>
+    <string name="data_variant_numbered">Biến thể %1$d</string>
+    <string name="data_overview_prices">Giá</string>
+    <string name="data_overview_no_card_data">không tải được dữ liệu thẻ — hãy kiểm tra kết nối</string>
+    <string name="data_overview_no_cardmarket">không có giá Cardmarket cho thẻ này</string>
+    <string name="data_overview_no_tcgplayer">không có giá TCGplayer cho thẻ này</string>
+    <string name="data_overview_by_condition">TCGplayer theo tình trạng (giao dịch)</string>
+    <string name="data_overview_no_condition_sales">chưa có giao dịch theo tình trạng</string>
+    <string name="price_label_trend">Xu hướng</string>
+    <string name="price_label_lowest_offer">Giá chào thấp nhất</string>
+    <string name="price_label_average_sold">Giá bán trung bình</string>
+    <string name="price_label_avg1">Trung bình 1 ngày</string>
+    <string name="price_label_avg7">Trung bình 7 ngày</string>
+    <string name="price_label_avg30">Trung bình 30 ngày</string>
+    <string name="price_label_market">Thị trường</string>
+    <string name="price_label_lowest_listing">Niêm yết thấp nhất</string>
+    <string name="price_label_mid">Trung vị</string>
+    <string name="price_label_highest_listing">Niêm yết cao nhất</string>
+    <string name="price_label_direct_low">Direct thấp nhất</string>
+    <string name="price_note_raw_no_graded_source">Đang hiển thị giá Raw — chưa có nguồn giá thẻ đã grade — hãy đặt giá trị riêng, hoặc xem các liên kết giá trong trang thẻ</string>
+    <string name="price_note_markets_disagree">Mục trên %1$s không khớp với thẻ này (chênh nhau %2$d lần); dùng %3$s</string>
+    <string name="price_note_capped">%1$s được định giá như %2$s (dữ liệu giao dịch của nó cao hơn)</string>
+    <string name="price_note_tcgplayer_sales">Giá %1$s từ giao dịch trên TCGplayer</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% giá NM (giao dịch TCGplayer)</string>
+    <string name="price_note_estimated_share">%1$s ước tính bằng %2$d%% giá NM (không có dữ liệu giao dịch)</string>
+    <string name="data_http_error">HTTP %1$d cho %2$s</string>
+    <string name="data_service_unavailable">Dịch vụ dữ liệu thẻ (%1$s) hiện không phản hồi. Vui lòng thử lại sau một phút.</string>
+</resources>

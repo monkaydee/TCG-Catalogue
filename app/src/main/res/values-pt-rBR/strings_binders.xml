@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Abrir coleção</string>
+    <string name="binders_title">Fichários</string>
+    <string name="binders_all">Todas as cartas</string>
+    <string name="binders_new">Novo fichário</string>
+    <string name="binders_card_count">Cartas: %1$d</string>
+    <string name="binder_open_hint">Deslize ou toque para abrir</string>
+    <string name="binder_add_cards">Adicionar cartas</string>
+    <string name="binder_choose_cards">Cartas neste fichário</string>
+    <string name="binder_edit">Editar fichário</string>
+    <string name="binder_delete">Excluir fichário</string>
+    <string name="binder_delete_confirm">Excluir “%1$s”? As cartas continuam na sua coleção.</string>
+    <string name="binder_name">Nome</string>
+    <string name="binder_cover_design">Design da capa</string>
+    <string name="binder_cover_upload">Usar imagem própria</string>
+    <string name="binder_cover_remove">Remover imagem</string>
+    <string name="binder_save">Salvar</string>
+    <string name="binder_empty_custom">Este fichário está vazio. Adicione cartas da sua coleção.</string>
+    <string name="binder_search">Buscar cartas</string>
+    <string name="binder_new_name">Meu fichário</string>
+    <string name="binder_selected">Selecionadas: %1$d</string>
+    <string name="collection_title">Coleção</string>
+    <string name="collection_sort_recent">Adicionadas recentemente</string>
+    <string name="collection_sort_grade">Nota</string>
+    <string name="collection_sort_set">Coleção (set)</string>
+    <string name="collection_empty">Nenhuma carta ainda.</string>
+    <string name="collection_summary">Cartas: %1$d · %2$s</string>
+    <string name="cover_midnight">Meia-noite</string>
+    <string name="cover_crimson">Carmesim</string>
+    <string name="cover_forest">Floresta</string>
+    <string name="cover_ocean">Oceano</string>
+    <string name="cover_galaxy">Galáxia</string>
+    <string name="cover_sunset">Pôr do sol</string>
+    <string name="cover_gold">Folha dourada</string>
+    <string name="cover_carbon">Carbono</string>
+</resources>

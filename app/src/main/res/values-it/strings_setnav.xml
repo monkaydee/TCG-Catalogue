@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_previous">Espansione precedente</string>
+    <string name="set_next">Espansione successiva</string>
+    <string name="import_add_all_sure">Aggiungi tutte quelle sicure (%1$d)</string>
+    <string name="import_sure_match">Corrispondenza sicura</string>
+    <string name="import_by_picture_check">Trovata dall’immagine – controlla</string>
+</resources>

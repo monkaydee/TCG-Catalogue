@@ -1,0 +1,81 @@
+name: Build APK
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+
+      - name: Price and learning server tests
+        working-directory: worker
+        run: npm ci && npm test && npm run typecheck
+
+      - name: Sealed catalogue regression checks
+        run: python -m unittest discover -s scripts -p 'test_*.py'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Robolectric downloads an Android runtime for the screenshot tests; keep it between runs.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-4.14.1-sdk34
+
+      - name: Unit and screenshot tests
+        run: ./gradlew --no-daemon testDebugUnitTest
+
+      # The screens rendered by the screenshot tests, to review visual changes as images.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: app/build/screenshots/*.png
+          if-no-files-found: ignore
+
+      # The price server's address and app key (docs/CLOUDFLARE.md); empty when not set up.
+      - name: Build APK
+        run: ./gradlew --no-daemon assembleRelease lintRelease
+        env:
+          PRICE_SERVER_URL: ${{ secrets.PRICE_SERVER_URL }}
+          PRICE_SERVER_KEY: ${{ secrets.APP_KEY }}
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/release/app-release.apk cardnavo-${{ github.run_number }}.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardnavo-apk
+          path: cardnavo-*.apk
+
+      # Every push publishes a GitHub Release with the APK attached, so it can be
+      # downloaded straight from the phone. Builds from branches other than main
+      # are marked as pre-releases.
+      - name: Publish release
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.${{ github.run_number }}
+          name: CardNavo 0.1.${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          prerelease: ${{ github.ref != 'refs/heads/main' }}
+          files: cardnavo-*.apk
+          body_path: RELEASE-NOTES.md

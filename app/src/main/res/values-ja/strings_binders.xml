@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">コレクションを開く</string>
+    <string name="binders_title">バインダー</string>
+    <string name="binders_all">すべてのカード</string>
+    <string name="binders_new">新しいバインダー</string>
+    <string name="binders_card_count">カード: %1$d</string>
+    <string name="binder_open_hint">スワイプまたはタップで開く</string>
+    <string name="binder_add_cards">カードを追加</string>
+    <string name="binder_choose_cards">このバインダーのカード</string>
+    <string name="binder_edit">バインダーを編集</string>
+    <string name="binder_delete">バインダーを削除</string>
+    <string name="binder_delete_confirm">「%1$s」を削除しますか？カードはコレクションに残ります。</string>
+    <string name="binder_name">名前</string>
+    <string name="binder_cover_design">表紙デザイン</string>
+    <string name="binder_cover_upload">自分の画像を使う</string>
+    <string name="binder_cover_remove">画像を削除</string>
+    <string name="binder_save">保存</string>
+    <string name="binder_empty_custom">このバインダーは空です。コレクションからカードを追加してください。</string>
+    <string name="binder_search">カードを検索</string>
+    <string name="binder_new_name">マイバインダー</string>
+    <string name="binder_selected">選択中: %1$d</string>
+    <string name="collection_title">コレクション</string>
+    <string name="collection_sort_recent">最近追加</string>
+    <string name="collection_sort_grade">グレード</string>
+    <string name="collection_sort_set">セット</string>
+    <string name="collection_empty">まだカードがありません。</string>
+    <string name="collection_summary">カード: %1$d · %2$s</string>
+    <string name="cover_midnight">ミッドナイト</string>
+    <string name="cover_crimson">クリムゾン</string>
+    <string name="cover_forest">フォレスト</string>
+    <string name="cover_ocean">オーシャン</string>
+    <string name="cover_galaxy">ギャラクシー</string>
+    <string name="cover_sunset">サンセット</string>
+    <string name="cover_gold">ゴールドフォイル</string>
+    <string name="cover_carbon">カーボン</string>
+</resources>

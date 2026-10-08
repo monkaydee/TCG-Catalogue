@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_ok">OK</string>
+    <string name="ui_cancel">キャンセル</string>
+
+    <string name="settings_title">設定</string>
+    <string name="settings_backup_saved">バックアップを保存しました</string>
+    <string name="settings_backup_failed">バックアップに失敗しました：%1$s</string>
+    <string name="settings_restored">コレクションを復元しました</string>
+    <string name="settings_import_failed">インポートに失敗しました：%1$s</string>
+    <string name="settings_prices_title">価格</string>
+    <string name="settings_currency">表示通貨</string>
+    <string name="settings_fx_rate">1 USD = %1$.4f EUR（ECBレート、価格と同時に更新）</string>
+    <string name="settings_price_source">価格ソース（Pokémon・Magic・One Piece）</string>
+    <string name="settings_price_source_hint">ヨーロッパの価格にはCardmarketのトレンド価格、アメリカの価格にはTCGplayerの相場価格を使用します。One Pieceでは、手持ちのカードに合ったCardmarketの商品（セットやV.1/V.2…）を選択します。その他のゲームはTCGplayerの価格のみです。2つのマーケットの価格が3倍以上離れている場合は、一方が誤ったカードに紐付いているため、もう一方の価格を使用します（カードに注記が表示されます）。鑑定品には自分の評価額を使用し、カードページから最近の取引を確認できます。</string>
+    <string name="settings_refresh_hint">価格は1日1回自動で更新され、その際に評価額の履歴も記録されます。</string>
+    <string name="settings_refresh_now">今すぐ価格を更新</string>
+    <string name="settings_scanning_title">スキャン</string>
+    <string name="settings_games">ゲーム</string>
+    <string name="settings_games_hint">スキャナーはこれらのゲームのカードを探します。Dragon Ball、Union Arena、Weiss Schwarz、Narutoはカードリスト（最大数MB、毎日更新）をダウンロードします。</string>
+    <string name="settings_quick_add">スキャン中のクイック追加</string>
+    <string name="settings_quick_add_hint">確実に認識されたカードを確認なしで追加するので、カードの束をすばやくスキャンできます。</string>
+    <string name="settings_default_condition">デフォルトの状態</string>
+    <string name="settings_display_title">表示</string>
+    <string name="settings_full_screen">全画面表示</string>
+    <string name="settings_full_screen_hint">ステータスバーとナビゲーションバーを非表示にします。画面の上端または下端からスワイプすると表示されます。</string>
+    <string name="settings_backup_title">バックアップ</string>
+    <string name="settings_backup_hint">コレクションはこのスマートフォンにのみ保存されます。アンインストールや機種変更の前にバックアップをエクスポートしてください。</string>
+    <string name="settings_export">エクスポート</string>
+    <string name="settings_import">インポート（上書き）</string>
+    <string name="settings_about_title">アプリについて</string>
+    <string name="settings_about">バージョン %1$s\nPokémonのデータと価格：TCGdex（tcgdex.dev）\nOne Pieceのデータと価格：OPTCG API（optcgapi.com）\nMagicのデータと価格：Scryfall（scryfall.com）\nDragon Ball、Union Arena、Weiss Schwarz、Naruto：TCGCSV経由のTCGplayer（tcgcsv.com）\n為替レート：Frankfurter（ECB）\n文字認識はGoogle ML Kitにより端末上で行われます。</string>
+
+    <string name="appearance_title">外観</string>
+    <string name="appearance_mode">テーマ</string>
+    <string name="appearance_mode_system">システム</string>
+    <string name="appearance_mode_light">ライト</string>
+    <string name="appearance_mode_dark">ダーク</string>
+    <string name="appearance_palette">カラー</string>
+    <string name="appearance_palette_hint_dynamic">「壁紙」では端末の壁紙の色を使用します。</string>
+    <string name="appearance_palette_hint">カラーテーマを選ぶか、下で好きな色を設定してください。</string>
+    <string name="appearance_areas">カスタムカラー</string>
+    <string name="appearance_area_theme">テーマ</string>
+    <string name="appearance_area_custom">カスタム</string>
+    <string name="appearance_reset_colors">テーマの色にリセット</string>
+    <string name="appearance_images">背景画像</string>
+    <string name="appearance_image_home">コレクション</string>
+    <string name="appearance_image_binder">バインダー</string>
+    <string name="appearance_image_choose">選択</string>
+    <string name="appearance_image_remove">削除</string>
+    <string name="appearance_image_dim">画像を暗くする（文字を読みやすく）</string>
+    <string name="appearance_image_failed">その画像を開けませんでした</string>
+    <string name="palette_dynamic">壁紙</string>
+    <string name="palette_indigo">インディゴ</string>
+    <string name="palette_ocean">オーシャン</string>
+    <string name="palette_teal">ティール</string>
+    <string name="palette_forest">フォレスト</string>
+    <string name="palette_gold">ゴールド</string>
+    <string name="palette_sunset">サンセット</string>
+    <string name="palette_rose">ローズ</string>
+    <string name="palette_grape">グレープ</string>
+    <string name="palette_graphite">グラファイト</string>
+    <string name="palette_custom">カスタム</string>
+    <string name="area_accent">アクセント</string>
+    <string name="area_background">背景</string>
+    <string name="area_cards">パネル</string>
+    <string name="area_top_bar">上部バー</string>
+    <string name="area_bottom_bar">下部バー</string>
+    <string name="area_binder_page">バインダーのページ</string>
+    <string name="color_hue">色相</string>
+    <string name="color_saturation">彩度</string>
+    <string name="color_brightness">明度</string>
+    <string name="color_hex">カラーコード</string>
+    <string name="color_theme_default">テーマの色</string>
+
+    <string name="language_title">言語</string>
+    <string name="language_system">端末の言語</string>
+    <string name="language_hint">ここで言語を選択しない限り、アプリは端末の言語に従います。</string>
+    <string name="language_change">変更</string>
+
+    <string name="nav_collection">コレクション</string>
+    <string name="nav_scan">スキャン</string>
+    <string name="nav_settings">設定</string>
+
+    <string name="home_binder">バインダー</string>
+    <string name="home_import_photos">写真を取り込む</string>
+    <string name="home_search">カードを検索</string>
+    <string name="home_refresh">価格を更新</string>
+    <string name="home_portfolio_value">コレクション総額</string>
+    <string name="home_game_value">%1$sの評価額</string>
+    <string name="home_change">%1$s（%2$+.1f%%）· %3$s</string>
+    <string name="home_counts">%1$s · %2$s</string>
+    <plurals name="home_cards">
+        <item quantity="other">%d枚</item>
+    </plurals>
+    <plurals name="home_unique">
+        <item quantity="other">%d種類</item>
+    </plurals>
+    <string name="home_open_binder">バインダーを開く</string>
+    <string name="home_chart_empty">評価額のグラフは、毎日の価格更新とともに表示されていきます。</string>
+    <string name="home_range_1m">1か月</string>
+    <string name="home_range_3m">3か月</string>
+    <string name="home_range_1y">1年</string>
+    <string name="home_range_all">全期間</string>
+    <string name="home_prices_updated">価格更新：%1$s</string>
+    <string name="home_all_games">すべて</string>
+    <string name="home_most_valuable">高額カード</string>
+    <string name="home_sets">セット（%1$d）</string>
+    <string name="home_sort_value">価格</string>
+    <string name="home_sort_name">名前</string>
+    <string name="home_sort_recent">最近</string>
+    <string name="home_set_progress">%1$s · %2$d/%3$d種類</string>
+    <string name="home_set_owned">%1$s · %2$d種類</string>
+    <plurals name="home_copies">
+        <item quantity="other">%d枚</item>
+    </plurals>
+    <string name="home_empty_title">コレクションは空です</string>
+    <string name="home_empty_text">Pokémon、One Piece、Magic、Dragon Ball、Union Arena、Weiss Schwarz、Narutoのカードをスキャンしましょう。カードに印刷された番号（例：025/165、OP05-060、FB01-139）を読み取り、カードとその相場価格を検索します。鑑定品のケースも認識できます。</string>
+    <string name="home_scan_card">カードをスキャン</string>
+
+    <string name="binder_title">バインダー</string>
+    <string name="binder_back">戻る</string>
+    <string name="binder_sort_value_desc">価格 · 高い順</string>
+    <string name="binder_sort_value_asc">価格 · 安い順</string>
+    <string name="binder_sort_name_asc">名前 · A–Z</string>
+    <string name="binder_sort_name_desc">名前 · Z–A</string>
+    <string name="binder_sort_set">セット順</string>
+    <string name="binder_order_number">カード番号</string>
+    <string name="binder_in_set">セット内：%1$s</string>
+    <string name="binder_animation">ページめくりアニメーション</string>
+    <string name="binder_empty">まだカードがありません。スキャンしてバインダーを埋めましょう。</string>
+    <string name="binder_previous">前のページ</string>
+    <string name="binder_next">次のページ</string>
+    <string name="binder_page">%1$d / %2$dページ · %3$s</string>
+</resources>

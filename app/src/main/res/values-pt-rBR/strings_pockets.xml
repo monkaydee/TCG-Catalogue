@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Cada cópia em seu próprio bolso</string>
+    <string name="binder_move_hint">Toque em um bolso para mover a carta para lá</string>
+    <string name="binder_remove">Remover do fichário</string>
+    <string name="binder_pick_for_pocket">Escolha uma carta para este bolso</string>
+    <string name="binder_all_placed">Todas as cópias já estão neste fichário</string>
+</resources>

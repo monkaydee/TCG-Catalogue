@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Price alerts</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Now %1$s — above your alert at %2$s</string>
+    <string name="alert_below">Now %1$s — below your alert at %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">On your wishlist: now %1$s — at or below your target of %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Stack mode</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — check it later in the strip below</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d card to check — tap it</item>
+        <item quantity="other">%d cards to check — tap them</item>
+    </plurals>
+    <string name="stack_tap_to_review">Tap to check</string>
+    <string name="stack_undo">Undo</string>
+    <string name="stack_discard">Discard</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Sealed products</string>
+    <string name="sealed_add">Add sealed product</string>
+    <string name="sealed_value">Sealed value</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <string name="sealed_empty">Track unopened booster boxes, packs, decks and boxes here. Their market value counts towards your portfolio.</string>
+    <string name="sealed_remove_hint">Saving with 0 removes the product.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s since purchase</string>
+    <string name="sealed_no_price">no price</string>
+    <string name="sealed_search_hint">Product name or set, e.g. “151 booster box”</string>
+    <string name="sealed_no_results">No sealed products found</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Sorry, the app crashed</string>
+    <string name="crash_text">A technical report was kept (app and Android version, phone model and the error — none of your cards). You can send it to help fix the problem.</string>
+    <string name="crash_report_github">Report on GitHub</string>
+    <string name="crash_share">Share</string>
+    <string name="crash_dismiss">Not now</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">A newer collection from another phone</string>
+    <string name="home_cloud_newer_text">Your cloud backup was updated on another phone. Tap to load or merge it in Settings.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Find by picture</string>
+    <string name="picture_preparing">Preparing picture search — a one-time download of about 20 MB…</string>
+    <string name="picture_searching">Looking for the card by its picture…</string>
+    <string name="picture_none">No card found by its picture — try typing it in.</string>
+    <string name="picture_unavailable">Picture search isn\'t available right now — check your connection.</string>
+    <string name="picture_check">Found by its picture — please check it\'s the right card.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Facoltativo: condividere identificativi delle carte e un’impronta OCR, senza foto né testo OCR leggibile. Conservazione: 90 giorni.</string>
+    <string name="learning_photos_paused">La condivisione delle foto è sospesa finché i controlli sui contenuti e sull’identità non saranno validati. La scansione locale funziona.</string>
+    <string name="price_health_summary">%1$d carte senza prezzo di mercato · %2$d identità giapponesi da correggere</string>
+</resources>

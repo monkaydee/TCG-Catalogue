@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Cảnh báo giá</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Hiện %1$s — cao hơn mức cảnh báo %2$s của bạn</string>
+    <string name="alert_below">Hiện %1$s — thấp hơn mức cảnh báo %2$s của bạn</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">Trong danh sách mong muốn: hiện %1$s — bằng hoặc thấp hơn mục tiêu %2$s của bạn</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Chế độ xếp chồng</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — kiểm tra sau ở thanh bên dưới</string>
+    <plurals name="stack_to_review">
+        <item quantity="other">%d thẻ cần kiểm tra — chạm để xem</item>
+    </plurals>
+    <string name="stack_tap_to_review">Chạm để kiểm tra</string>
+    <string name="stack_undo">Hoàn tác</string>
+    <string name="stack_discard">Bỏ</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Sản phẩm niêm phong</string>
+    <string name="sealed_add">Thêm sản phẩm niêm phong</string>
+    <string name="sealed_value">Giá trị niêm phong</string>
+    <plurals name="sealed_count">
+        <item quantity="other">%d mục</item>
+    </plurals>
+    <string name="sealed_empty">Theo dõi hộp booster, gói, bộ bài và hộp chưa mở tại đây. Giá trị thị trường của chúng được tính vào danh mục đầu tư của bạn.</string>
+    <string name="sealed_remove_hint">Lưu với số 0 sẽ xóa sản phẩm.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s kể từ khi mua</string>
+    <string name="sealed_no_price">chưa có giá</string>
+    <string name="sealed_search_hint">Tên sản phẩm hoặc bộ, ví dụ “151 booster box”</string>
+    <string name="sealed_no_results">Không tìm thấy sản phẩm niêm phong</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Rất tiếc, ứng dụng đã bị lỗi</string>
+    <string name="crash_text">Một báo cáo kỹ thuật đã được lưu lại (phiên bản ứng dụng và Android, mẫu điện thoại và lỗi — không có thẻ nào của bạn). Bạn có thể gửi báo cáo để giúp khắc phục sự cố.</string>
+    <string name="crash_report_github">Báo cáo trên GitHub</string>
+    <string name="crash_share">Chia sẻ</string>
+    <string name="crash_dismiss">Để sau</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">Có bộ sưu tập mới hơn từ điện thoại khác</string>
+    <string name="home_cloud_newer_text">Bản sao lưu đám mây của bạn đã được cập nhật trên điện thoại khác. Chạm để tải hoặc gộp trong Cài đặt.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Tìm bằng hình ảnh</string>
+    <string name="picture_preparing">Đang chuẩn bị tìm kiếm bằng hình ảnh — tải xuống một lần khoảng 20 MB…</string>
+    <string name="picture_searching">Đang tìm thẻ bằng hình ảnh…</string>
+    <string name="picture_none">Không tìm thấy thẻ nào bằng hình ảnh — hãy thử nhập tay.</string>
+    <string name="picture_unavailable">Hiện chưa thể tìm bằng hình ảnh — hãy kiểm tra kết nối.</string>
+    <string name="picture_check">Đã tìm thấy bằng hình ảnh — vui lòng kiểm tra xem có đúng thẻ không.</string>
+</resources>

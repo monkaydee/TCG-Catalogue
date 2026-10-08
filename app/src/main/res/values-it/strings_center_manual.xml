@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Regolare le guide di centraggio</string>
+  <string name="center_hint">Ogni lato ha due guide: bordo esterno della carta e cornice stampata interna. Trascina entrambi per misurare il loro divario. Il ciano contrassegna le guide esterne; il verde contrassegna le guide interne. Il giallo è la guida selezionata. Utilizza la stessa cornice stampata su ogni lato.</string>
+  <string name="center_left">A sinistra</string>
+  <string name="center_right">Giusto</string>
+  <string name="center_top">In alto</string>
+  <string name="center_bottom">In basso</string>
+  <string name="center_detail">Dettaglio della guida selezionata</string>
+  <string name="center_outer">Bordo esterno</string>
+  <string name="center_inner">Telaio interno</string>
+  <string name="center_minus_pixel">−1 pixel dell\'immagine</string>
+  <string name="center_plus_pixel">+1 pixel dell\'immagine</string>
+  <string name="center_cancel">Annulla</string>
+  <string name="center_apply">Usa queste guide</string>
+</resources>

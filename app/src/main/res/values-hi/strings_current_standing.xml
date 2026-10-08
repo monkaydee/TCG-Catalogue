@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">वैकल्पिक: कार्ड पहचान और OCR फ़िंगरप्रिंट साझा करें, फ़ोटो या पढ़ने योग्य OCR पाठ नहीं। रिपोर्ट 90 दिन रखी जाती हैं।</string>
+    <string name="learning_photos_paused">सामग्री और कार्ड पहचान जाँच मान्य होने तक फ़ोटो साझाकरण रुका है। स्थानीय स्कैनिंग चालू है।</string>
+    <string name="price_health_summary">%1$d कार्ड का बाज़ार मूल्य नहीं · %2$d जापानी पहचान सुधारें</string>
+</resources>

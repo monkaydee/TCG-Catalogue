@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Adjust corners</string>
+    <string name="grade_adjust_hint">Drag the four dots onto the card’s corners. The magnifier helps to place them exactly.</string>
+    <string name="grade_adjust_apply">Apply</string>
+</resources>

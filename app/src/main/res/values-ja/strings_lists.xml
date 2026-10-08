@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wishlist, trade list, sold cards, set checklist, price alerts and price history. Translations follow later. -->
+<resources>
+    <!-- Common -->
+    <string name="lists_back">戻る</string>
+    <string name="lists_cancel">キャンセル</string>
+    <string name="lists_save">保存</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">クリア</string>
+    <string name="lists_remove">削除</string>
+    <string name="lists_retry">再試行</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">リスト</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">金額（%1$s）</string>
+    <string name="lists_amount_invalid">金額を入力してください（例：12.50）</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">チェックリスト</string>
+    <string name="checklist_open">チェックリストを表示</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="other">%2$d枚中%1$d枚を所持</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">すべて · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">所持 · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">未所持 · %1$d</string>
+    <string name="checklist_loading">このセットのカードを読み込み中…</string>
+    <string name="checklist_empty_title">このセットのチェックリストはありません</string>
+    <string name="checklist_empty_text">カードリストを読み込めませんでした。接続を確認してください。このセットがまだ登録されていない可能性もあります。</string>
+    <string name="checklist_none_owned">このセットのカードはまだ持っていません。</string>
+    <string name="checklist_none_missing">コンプリート！このセットのカードをすべて所持しています。</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">未所持</string>
+    <string name="checklist_on_wishlist">ウィッシュリストに登録済み</string>
+    <string name="checklist_add_collection">コレクションに追加</string>
+    <string name="checklist_add_wishlist">ウィッシュリストに追加</string>
+    <string name="checklist_card_loading">カードを読み込み中…</string>
+    <string name="checklist_card_failed">このカードを読み込めませんでした。接続を確認してください</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s をコレクションに追加しました</string>
+    <string name="checklist_printing">収録版</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">ウィッシュリスト</string>
+    <string name="wish_add">ウィッシュリストに追加</string>
+    <string name="wish_remove">ウィッシュリストから削除</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s をウィッシュリストに追加しました</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s をウィッシュリストから削除しました</string>
+    <string name="wish_add_failed">カードを追加できませんでした。接続を確認してください</string>
+    <string name="wish_total">合計金額</string>
+    <plurals name="wish_count">
+        <item quantity="other">%1$d枚</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="other">%1$d枚が目標価格以下</item>
+    </plurals>
+    <string name="wish_empty_title">ウィッシュリストは空です</string>
+    <string name="wish_empty_text">検索やセットのチェックリストの未所持カードから追加できます。</string>
+    <string name="wish_no_price">価格なし</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">目標 %1$s</string>
+    <string name="wish_no_target">目標価格なし</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">目標価格に到達</string>
+    <string name="wish_set_target">目標価格を設定</string>
+    <string name="wish_target_title">目標価格</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">価格がこの金額以下になると通知します。現在：%1$s</string>
+    <string name="wish_target_text_no_price">価格がこの金額以下になると通知します。</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">トレードリスト</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">トレード可</string>
+    <string name="trade_share">リストを共有</string>
+    <string name="trade_remove">トレードリストから外す</string>
+    <string name="trade_total">トレード評価額</string>
+    <string name="trade_empty_title">トレード用のカードはまだありません</string>
+    <string name="trade_empty_text">コレクション内のカードを開き、「トレード可」をタップするとここに追加されます。</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="other">マイトレードリスト（%1$d枚）</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">合計評価額：%1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">%1$s から共有</string>
+    <string name="trade_share_subject">マイトレードリスト</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">売却</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">%1$s を売却</string>
+    <string name="sold_quantity">売却枚数</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">所持 %1$d枚中</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">1枚あたりの価格（%1$s）</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">合計 %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">損益 %1$s</string>
+    <string name="sold_confirm">売却</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">%2$s を%1$d枚売却しました</string>
+    <string name="sold_title">売却済み</string>
+    <string name="sold_realised">確定利益</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">売上 %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="other">購入価格のない売却%1$d件は集計されません</item>
+    </plurals>
+    <string name="sold_empty_title">売却履歴はまだありません</string>
+    <string name="sold_empty_text">コレクション内のカードを開き、「売却」をタップするとここに記録されます。</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">%1$d枚 × %2$s で売却</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">購入価格 1枚 %1$s</string>
+    <string name="sold_paid_unknown">購入価格不明</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">売却日 %1$s</string>
+    <string name="sold_delete">記録を削除</string>
+    <string name="sold_delete_title">この売却記録を削除しますか？</string>
+    <string name="sold_delete_text">売却済みリストと確定利益から削除されます。カードはコレクションに戻りません。</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">アラート</string>
+    <string name="alert_ui_title">価格アラート</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">1枚あたりの評価額がこれらの金額を超えたときに通知します。現在：%1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">この金額を上回ったら通知（%1$s）</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">この金額を下回ったら通知（%1$s）</string>
+    <string name="alert_ui_order">「上回る」は「下回る」より高く設定してください</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">%1$s 超</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">%1$s 未満</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">価格推移</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">最高 %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">最安 %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">編集</string>
+    <string name="lists_card_remove">削除</string>
+</resources>

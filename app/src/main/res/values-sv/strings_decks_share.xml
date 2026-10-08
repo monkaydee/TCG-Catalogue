@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA-population</string>
+    <string name="pop_show">Visa population</string>
+    <string name="pop_none">Lägg till en PSA-slab av kortet med certifikatnummer för att se populationen.</string>
+    <string name="pop_total">Graderade av PSA: %1$d</string>
+    <string name="pop_gem_rate">Gem rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Lekar</string>
+    <string name="decks_new">Ny lek</string>
+    <string name="decks_empty">Inga lekar än. Skapa en och klistra in en leklista eller lägg till kort från samlingen.</string>
+    <string name="deck_cards">Kort: %1$d</string>
+    <string name="deck_value">Lekens värde: %1$s</string>
+    <string name="deck_missing">Saknas: %1$d · kostnad: %2$s</string>
+    <string name="deck_missing_none">Du äger alla kort i leken.</string>
+    <string name="deck_owned">äger %1$d / %2$d</string>
+    <string name="deck_import">Klistra in leklista</string>
+    <string name="deck_import_hint">Ett kort per rad, t.ex. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Lägg till från samlingen</string>
+    <string name="deck_share">Dela lista</string>
+    <string name="deck_delete">Ta bort lek</string>
+    <string name="deck_delete_confirm">Ta bort ”%1$s”? Samlingen ändras inte.</string>
+    <string name="deck_rule_total">%1$s-lekar har %2$d kort; den här har %3$d.</string>
+    <string name="deck_rule_min">%1$s-lekar behöver minst %2$d kort; den här har %3$d.</string>
+    <string name="deck_rule_copies">Fler än %1$d exemplar: %2$s</string>
+    <string name="deck_rules_note">Kontrollerar bara antal kort och exemplar; inte förbjudna kort eller format.</string>
+    <string name="deck_not_found">Hittades inte: %1$s</string>
+    <string name="share_cards">Dela som sida</string>
+    <string name="share_cards_text">Skickar korten (%1$d) som en webbsida via delningsmenyn. Appen laddar inte upp något.</string>
+    <string name="share_with_prices">Med priser</string>
+    <string name="share_without_prices">Utan priser</string>
+</resources>

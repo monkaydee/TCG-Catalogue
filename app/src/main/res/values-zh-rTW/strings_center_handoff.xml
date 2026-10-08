@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">繼續居中</string>
+  <string name="center_confirm_next">確認輪廓並測量居中</string>
+  <string name="center_step_two">步驟 2：外導軌與內導軌</string>
+</resources>

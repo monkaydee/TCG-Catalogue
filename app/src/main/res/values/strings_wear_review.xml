@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="wear_top_left">Top-left corner</string>
+    <string name="wear_top_right">Top-right corner</string>
+    <string name="wear_bottom_right">Bottom-right corner</string>
+    <string name="wear_bottom_left">Bottom-left corner</string>
+    <string name="wear_top">Top edge</string>
+    <string name="wear_right">Right edge</string>
+    <string name="wear_bottom">Bottom edge</string>
+    <string name="wear_left">Left edge</string>
+    <string name="wear_evidence_count">Automatic check: %1$d of 8 regions have usable colour evidence</string>
+    <string name="wear_review_count">Manual review: %1$d of 8 regions</string>
+    <string name="wear_inspect_regions">Inspect all four corners and four edges</string>
+    <string name="wear_hide_regions">Hide region details</string>
+    <string name="wear_screening_scope">Each region is checked separately for colour anomalies and whitening. Print, foil and cut alignment can resemble damage. Open a region to inspect the photo and record what you see.</string>
+    <string name="wear_not_assessed">Not assessed — insufficient usable evidence</string>
+    <string name="wear_inconclusive">Automatic check is inconclusive</string>
+    <string name="wear_possible_damage">Automatic check: possible wear — inspect this region</string>
+    <string name="wear_auto_none">Automatic check: no colour anomaly flagged</string>
+    <string name="wear_your_observation">Your observation: %1$s</string>
+    <string name="wear_white_border">White borders can hide whitening; colour checks cannot confirm their condition.</string>
+    <string name="wear_textured_border">Variable artwork or foil limits the colour comparison.</string>
+    <string name="wear_flagged_pixels">Flagged region pixels: %1$.1f%% · brighter anomalies: %2$.1f%%</string>
+    <string name="wear_zoom_hint">Pinch to zoom and drag to inspect. Magnification adds no photo detail; retake blurry photos.</string>
+    <string name="wear_record_observation">Your observation for this region</string>
+    <string name="wear_not_reviewed">Not reviewed</string>
+    <string name="wear_observed_clear">No visible damage in this photo</string>
+    <string name="wear_whitening">Whitening / scuffing visible</string>
+    <string name="wear_chip">Chip / tear visible</string>
+    <string name="wear_bend">Bend / dent visible</string>
+    <string name="wear_observation_scope">Your observations are kept for this photo session and used for the experimental range. They do not certify condition or override poor photo quality. Recorded damage broadens or lowers the estimated range.</string>
+    <string name="wear_done">Done</string>
+    <string name="wear_damage_blocks_grade">Visible damage was recorded. The overall model estimate is withheld because manual findings are not calibrated model inputs. Centering results do not account for this damage.</string>
+    <string name="wear_incomplete_blocks_grade">Corners and edges need closer inspection. Missing or inconclusive evidence prevents an overall model estimate; centering alone does not establish a grade.</string>
+</resources>

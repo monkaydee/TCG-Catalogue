@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Zarys karty · cztery rogi</string>
+  <string name="pre_center_screen">Centrowanie · osiem prowadnic</string>
+  <string name="pre_open_centering">Zmierz granice wewnętrzne i zewnętrzne</string>
+  <string name="pre_outline_continue">Potwierdź zarys całej karty</string>
+  <string name="pre_outline_adjust">Dopasuj cztery rogi kart</string>
+  <string name="pre_choose_game">Gra karciana</string>
+  <string name="pre_center_missing">Umieść prowadnice zewnętrzne i wewnętrzne po tej stronie, aby zakończyć pomiar centrowania.</string>
+  <string name="pre_center_ready">Centrowanie zmierzone. Można dostosować wszystkie osiem prowadnic.</string>
+  <string name="pre_edit_front">Edytuj centrowanie przodu</string>
+  <string name="pre_edit_back">Edytuj centrowanie tyłu</string>
+  <string name="pre_potential_title">Potencjał centrowania</string>
+  <string name="pre_potential_10">W granicach centrowania PSA 10</string>
+  <string name="pre_potential_borderline">Centrowanie graniczne PSA 10</string>
+  <string name="pre_potential_below">Poza granicami centrowania PSA 10</string>
+  <string name="pre_potential_incomplete">Wypełnij obie strony, aby uzyskać potencjał centrowania</string>
+  <string name="pre_potential_scope">Tylko centrowanie w grach karcianych. Używa przednich limitów PSA 55/45 i tylnych 75/25. Linia graniczna oznacza, że ​​dostosowanie linii pomocniczej jednego obrazu do piksela może zmienić wynik. Narożniki, krawędzie, powierzchnia i autentyczność mogą obniżyć ocenę końcową.</string>
+  <string name="pre_model_scope">Ogólna prognoza oceny nie jest sprawdzana w przypadku tej gry ani tych pomiarów. Powyższy potencjał centrowania pozostaje dostępny po zmierzeniu obu stron.</string>
+  <string name="pre_experimental_model">Eksperymentalne oszacowanie zdjęć Pokémonów</string>
+  <string name="pre_quality_blocked">Powtórz tę stronę: jej zarys lub jakość fotograficzna nie nadają się do oceny zużycia.</string>
+  <string name="pre_no_wear_detected">nie wykryto widocznego zużycia</string>
+  <string name="pre_skip_frame">Brak porównywalnej drukowanej ramki</string>
+  <string name="pre_retake_front">Powtórz zdjęcie z przodu</string>
+  <string name="pre_retake_back">Powtórz zdjęcie</string>
+</resources>

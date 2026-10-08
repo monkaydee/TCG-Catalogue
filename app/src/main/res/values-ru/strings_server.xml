@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">недавних продаж %1$s не найдено — укажите свою оценку или проверьте ссылки на цены</string>
+    <string name="data_graded_server_error">сервер цен сейчас недоступен</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="one">%1$d продажа</item>
+        <item quantity="few">%1$d продажи</item>
+        <item quantity="many">%1$d продаж</item>
+        <item quantity="other">%1$d продажи</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Цены карт с грейдом</string>
+    <string name="graded_none">Продаж карт с грейдом для этой карты не найдено.</string>
+    <string name="graded_failed">Сервер цен сейчас недоступен.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">ваш грейд</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Проверить сертификат в PSA</string>
+    <string name="cert_unknown">В PSA нет карты с таким номером сертификата.</string>
+    <string name="cert_failed">PSA сейчас недоступен. Повторите попытку позже.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">Грейд PSA: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Популяция: %1$d с таким грейдом, %2$d выше</string>
+    <string name="cert_mismatch">Грейд в записи PSA отличается от сохранённого для этой карты.</string>
+    <string name="links_psa_cert">Сертификат PSA</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Распознать онлайн</string>
+    <string name="identify_hint">Отправляет это фото на сервер цен приложения для распознавания изображения (Ximilar). Фото не сохраняется.</string>
+    <string name="identify_searching">Распознаём онлайн…</string>
+    <string name="identify_none">Онлайн тоже не распознана. Попробуйте более чёткое фото или введите карту вручную.</string>
+    <string name="identify_failed">Онлайн-распознавание сейчас недоступно (достигнут дневной лимит или нет соединения).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Сервер цен</string>
+    <string name="settings_server_summary">Собственный бесплатный сервер приложения для цен карт с грейдом, проверки сертификатов PSA и онлайн-распознавания. В сборках с GitHub он уже встроен; чтобы настроить свой, см. docs/CLOUDFLARE.md.</string>
+    <string name="settings_server_url">Адрес сервера (https://…)</string>
+    <string name="settings_server_key">Ключ приложения</string>
+    <string name="settings_server_save">Сохранить</string>
+    <string name="settings_server_reset">Использовать встроенный</string>
+    <string name="settings_server_test">Проверить</string>
+    <string name="settings_server_ok">Подключено к серверу цен.</string>
+    <string name="settings_server_bad">Сервер цен не ответил. Проверьте адрес и ключ приложения.</string>
+    <string name="settings_server_off">Сервер цен не настроен: цены карт с грейдом используют вашу собственную оценку.</string>
+</resources>

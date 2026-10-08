@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">แจ้งเตือนราคา</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">ตอนนี้ %1$s — สูงกว่าราคาที่คุณตั้งแจ้งเตือนไว้ที่ %2$s</string>
+    <string name="alert_below">ตอนนี้ %1$s — ต่ำกว่าราคาที่คุณตั้งแจ้งเตือนไว้ที่ %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">ในรายการที่อยากได้: ตอนนี้ %1$s — เท่ากับหรือต่ำกว่าเป้าหมาย %2$s ของคุณ</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">โหมดสแตก</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — ตรวจสอบภายหลังในแถบด้านล่าง</string>
+    <plurals name="stack_to_review">
+        <item quantity="other">มี %d การ์ดที่ต้องตรวจสอบ — แตะเลย</item>
+    </plurals>
+    <string name="stack_tap_to_review">แตะเพื่อตรวจสอบ</string>
+    <string name="stack_undo">เลิกทำ</string>
+    <string name="stack_discard">ทิ้ง</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">สินค้าซีล</string>
+    <string name="sealed_add">เพิ่มสินค้าซีล</string>
+    <string name="sealed_value">มูลค่าสินค้าซีล</string>
+    <plurals name="sealed_count">
+        <item quantity="other">%d รายการ</item>
+    </plurals>
+    <string name="sealed_empty">ติดตามกล่องบูสเตอร์ ซอง เด็ค และกล่องที่ยังไม่ได้เปิดได้ที่นี่ มูลค่าตลาดของสินค้าเหล่านี้จะรวมอยู่ในพอร์ตของคุณ</string>
+    <string name="sealed_remove_hint">การบันทึกด้วย 0 จะลบสินค้านี้</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s นับจากที่ซื้อ</string>
+    <string name="sealed_no_price">ไม่มีราคา</string>
+    <string name="sealed_search_hint">ชื่อสินค้าหรือชื่อเซ็ต เช่น “151 booster box”</string>
+    <string name="sealed_no_results">ไม่พบสินค้าซีล</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">ขออภัย แอปขัดข้อง</string>
+    <string name="crash_text">ระบบเก็บรายงานทางเทคนิคไว้แล้ว (เวอร์ชันแอปและ Android รุ่นโทรศัพท์ และข้อผิดพลาด — ไม่มีข้อมูลการ์ดของคุณ) คุณสามารถส่งรายงานนี้เพื่อช่วยแก้ไขปัญหาได้</string>
+    <string name="crash_report_github">รายงานบน GitHub</string>
+    <string name="crash_share">แชร์</string>
+    <string name="crash_dismiss">ไว้ทีหลัง</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">มีคอลเลกชันที่ใหม่กว่าจากโทรศัพท์เครื่องอื่น</string>
+    <string name="home_cloud_newer_text">ข้อมูลสำรองบนคลาวด์ของคุณถูกอัปเดตจากโทรศัพท์เครื่องอื่น แตะเพื่อโหลดหรือรวมข้อมูลในการตั้งค่า</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">ค้นหาด้วยรูปภาพ</string>
+    <string name="picture_preparing">กำลังเตรียมการค้นหาด้วยรูปภาพ — ดาวน์โหลดครั้งเดียวประมาณ 20 MB…</string>
+    <string name="picture_searching">กำลังค้นหาการ์ดจากรูปภาพ…</string>
+    <string name="picture_none">ไม่พบการ์ดจากรูปภาพ — ลองพิมพ์ค้นหาเอง</string>
+    <string name="picture_unavailable">ขณะนี้ยังใช้การค้นหาด้วยรูปภาพไม่ได้ — ตรวจสอบการเชื่อมต่อของคุณ</string>
+    <string name="picture_check">พบจากรูปภาพ — โปรดตรวจสอบว่าเป็นการ์ดที่ถูกต้อง</string>
+</resources>

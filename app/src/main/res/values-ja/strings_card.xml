@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">カードデータを読み込めませんでした。接続を確認してください</string>
+    <string name="card_pager_position">%1$d / %2$d · スワイプで切り替え</string>
+    <string name="card_back">戻る</string>
+    <string name="card_edit">カードを編集</string>
+    <string name="card_remove_from_collection">コレクションから削除</string>
+    <string name="card_save">保存</string>
+    <string name="card_remove_title">カードを削除しますか？</string>
+    <plurals name="card_remove_message">
+        <item quantity="other">%2$sを%1$d枚すべてコレクションから削除します。</item>
+    </plurals>
+    <string name="card_remove">削除</string>
+    <string name="card_cancel">キャンセル</string>
+    <string name="card_cardmarket_label">Cardmarket：%1$s</string>
+    <string name="card_unit_price_on_source">1枚 %1$s（%3$sで%2$s）</string>
+    <string name="card_unit_price_on_market">1枚 %1$s（相場 %2$s）</string>
+    <string name="card_price_updated">%1$sに更新</string>
+    <string name="card_no_market_price">相場価格がありません</string>
+    <string name="card_own_value">自分の評価額：1枚 %1$s</string>
+    <string name="card_own_value_with_market">自分の評価額：1枚 %1$s · 相場 %2$s</string>
+    <string name="card_bought_for_with_percent">購入価格 1枚 %1$s · %2$s（%3$+.0f%%）</string>
+    <string name="card_bought_for">購入価格 1枚 %1$s · %2$s</string>
+    <string name="card_cert">鑑定番号 %1$s</string>
+    <string name="card_graded_hint">鑑定品には自分の評価額を使用します。下のリンクで最近の取引価格を確認してください。</string>
+    <string name="card_raw_hint">この状態の未鑑定品の相場価格です。</string>
+    <string name="card_quantity">枚数</string>
+    <string name="card_cardmarket_listing">Cardmarketの商品</string>
+    <string name="card_condition">状態</string>
+    <string name="card_all_prices">すべての価格</string>
+    <string name="card_show">表示</string>
+    <string name="card_refresh">更新</string>
+    <string name="card_check_prices">オンラインで価格を確認</string>
+
+    <string name="set_back">戻る</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="other">%1$d/%2$d種類（%3$d%%）</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="other">%d種類</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="other">%d枚</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">価格順</string>
+    <string name="set_sort_number">番号順</string>
+    <string name="set_no_price">価格なし</string>
+
+    <string name="common_auto">自動</string>
+    <string name="common_less">減らす</string>
+    <string name="common_more">増やす</string>
+
+    <string name="links_ebay_sold">eBay落札</string>
+</resources>

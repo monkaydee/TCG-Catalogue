@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">價格顯示幣別</string>
+    <string name="settings_display_same">與收藏相同（%1$s）</string>
+    <string name="settings_display_offline">無法載入匯率。請連線後再試。</string>
+    <string name="settings_display_hint">僅供顯示，按歐洲央行參考匯率換算。你輸入的金額和儲存的數值仍為 EUR 或 USD。</string>
+    <string name="card_notes">備註</string>
+    <string name="card_notes_hint">在哪裡買的、瑕疵、給誰的……</string>
+    <string name="worth_grading_title">值得鑑定嗎？</string>
+    <string name="worth_grading_cost">每張卡的鑑定費用（%1$s，費用 + 運費）</string>
+    <string name="worth_grading_no_raw">此卡未鑑定價格未知，無法計算收益。</string>
+    <string name="worth_grading_from">%1$s：從 %2$s 分起划算</string>
+    <string name="worth_grading_never">%1$s：所列分數都不划算</string>
+    <string name="worth_grading_note">與這張卡的未鑑定價格 %1$s 比較。鑑定價格為市場價或刊登價，獲得的分數沒有保證。</string>
+    <string name="completion_title">補齊成本</string>
+    <string name="completion_total">%2$d 張卡共 %1$s</string>
+    <string name="completion_unknown">%1$d 張卡價格未知（未計入）</string>
+    <string name="completion_progress">已載入價格：%1$d / %2$d</string>
+    <string name="completion_hint">每張缺少的卡取最便宜版本的市場價</string>
+    <string name="completion_calculate">計算</string>
+    <string name="lot_title">批量計算器</string>
+    <string name="lot_remove">移除</string>
+    <string name="lot_add_value">新增金額（%1$s）</string>
+    <string name="lot_add">新增</string>
+    <string name="lot_market">市場價值：%1$s（%2$d 項）</string>
+    <string name="lot_unknown">%1$d 項無價格（未計入）</string>
+    <string name="lot_percent">按市場價 %1$d %% 出價</string>
+    <string name="lot_offer">批量價格：%1$s</string>
+    <string name="bulk_add_to_binder">加入卡冊</string>
+    <string name="bulk_trade">標記為交換</string>
+    <string name="bulk_trade_done">已將 %1$d 張卡標記為交換</string>
+    <string name="bulk_delete">刪除</string>
+    <string name="bulk_delete_confirm">從收藏中刪除 %1$d 張卡？</string>
+    <string name="bulk_select_all">全選（%1$d）</string>
+    <string name="bulk_no_binders">你還沒有自己的卡冊。請在「開啟卡冊」中建立。</string>
+    <string name="bulk_added_to_binder">已將 %1$d 張卡加入 %2$s</string>
+</resources>

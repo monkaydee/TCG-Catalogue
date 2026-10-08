@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Fortsätt till centrering</string>
+  <string name="center_confirm_next">Bekräfta kontur och mät centrering</string>
+  <string name="center_step_two">Steg 2: yttre och inre styrningar</string>
+</resources>

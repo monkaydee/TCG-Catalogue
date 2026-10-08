@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
+    English only for now; the translations follow in values-xx/strings_share.xml.
+-->
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">المحفظة</string>
+    <string name="widget_description">القيمة الإجمالية لمجموعتك وكيف تغيّرت خلال آخر 30 يومًا.</string>
+    <string name="widget_title">قيمة المجموعة</string>
+    <string name="widget_cards">%1$d بطاقة</string>
+    <string name="widget_updated">آخر تحديث: %1$s</string>
+    <string name="widget_change_30d">%1$s خلال 30 يومًا</string>
+    <string name="widget_no_history">لا يوجد سجل لـ 30 يومًا بعد</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) خلال 30 يومًا</string>
+    <string name="widget_preview_cards">312 بطاقة</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">مشاركة الصفحة</string>
+    <string name="share_chooser_title">مشاركة صفحة الألبوم</string>
+    <string name="share_failed">تعذّرت مشاركة الصفحة: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">النسخ الاحتياطي السحابي</string>
+    <string name="cloud_hint">احتفظ بنسخة من مجموعتك في ملف على Google Drive أو Dropbox أو OneDrive أو أي تطبيق تخزين آخر على هذا الهاتف. تُحفظ عند مغادرة التطبيق، وتُعرض نسخة أحدث من هاتف آخر عند فتحه.</string>
+    <string name="cloud_choose_new">ملف جديد</string>
+    <string name="cloud_choose_existing">استخدام ملف موجود</string>
+    <string name="cloud_file">الملف: %1$s</string>
+    <string name="cloud_last_saved">آخر حفظ: %1$s</string>
+    <string name="cloud_never_saved">لم يُحفظ بعد</string>
+    <string name="cloud_backup_now">انسخ احتياطيًا الآن</string>
+    <string name="cloud_stop">إيقاف</string>
+    <string name="cloud_saved">تم حفظ النسخة الاحتياطية</string>
+    <string name="cloud_unchanged">لم يتغير شيء منذ آخر نسخة احتياطية</string>
+    <string name="cloud_stopped">تم إيقاف النسخ الاحتياطي السحابي</string>
+    <string name="cloud_error">مشكلة في النسخ الاحتياطي السحابي: %1$s</string>
+    <string name="cloud_error_permission">تم إلغاء الوصول إلى الملف. اختر الملف مرة أخرى.</string>
+    <string name="cloud_error_not_backup">الملف ليس نسخة احتياطية من CardNavo، لذا لم يتم المساس به.</string>
+    <string name="cloud_error_blocked">توجد مجموعة أحدث من هاتف آخر بانتظارك. حمّلها أو ادمجها أو تجاهلها أولًا.</string>
+    <string name="cloud_error_unknown">خطأ غير معروف</string>
+    <string name="cloud_pending_title">مجموعة أحدث من هاتف آخر</string>
+    <string name="cloud_pending_text">يحتوي ملف النسخة الاحتياطية على مجموعة من %1$d بطاقة، حُفظت %2$s.</string>
+    <string name="cloud_load">تحميلها (استبدال)</string>
+    <string name="cloud_merge">دمج</string>
+    <string name="cloud_ignore">تجاهل</string>
+    <string name="cloud_loaded">تم تحميل المجموعة من ملف النسخة الاحتياطية</string>
+    <string name="cloud_merged">تم دمج المجموعات</string>
+    <string name="cloud_load_confirm_title">استبدال مجموعتك؟</string>
+    <string name="cloud_load_confirm_text">سيتم استبدال كل ما على هذا الهاتف بالمجموعة الموجودة في ملف النسخة الاحتياطية.</string>
+    <string name="cloud_load_confirm_button">استبدال</string>
+</resources>

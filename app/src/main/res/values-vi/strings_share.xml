@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Home-screen widget -->
+    <string name="widget_name">Danh mục</string>
+    <string name="widget_description">Tổng giá trị bộ sưu tập của bạn và mức thay đổi trong 30 ngày qua.</string>
+    <string name="widget_title">Giá trị bộ sưu tập</string>
+    <string name="widget_cards">%1$d thẻ</string>
+    <string name="widget_updated">Cập nhật %1$s</string>
+    <string name="widget_change_30d">%1$s trong 30 ngày</string>
+    <string name="widget_no_history">Chưa có lịch sử 30 ngày</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) trong 30 ngày</string>
+    <string name="widget_preview_cards">312 thẻ</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Chia sẻ trang</string>
+    <string name="share_chooser_title">Chia sẻ trang album</string>
+    <string name="share_failed">Không thể chia sẻ trang: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Sao lưu đám mây</string>
+    <string name="cloud_hint">Lưu một bản sao bộ sưu tập của bạn trong tệp trên Google Drive, Dropbox, OneDrive hoặc ứng dụng lưu trữ khác trên điện thoại này. Bản sao được lưu khi bạn thoát ứng dụng, và khi mở ứng dụng sẽ có gợi ý dùng bản mới hơn từ điện thoại khác.</string>
+    <string name="cloud_choose_new">Tệp mới</string>
+    <string name="cloud_choose_existing">Dùng tệp có sẵn</string>
+    <string name="cloud_file">Tệp: %1$s</string>
+    <string name="cloud_last_saved">Lưu lần cuối: %1$s</string>
+    <string name="cloud_never_saved">Chưa lưu</string>
+    <string name="cloud_backup_now">Sao lưu ngay</string>
+    <string name="cloud_stop">Dừng</string>
+    <string name="cloud_saved">Đã lưu bản sao lưu</string>
+    <string name="cloud_unchanged">Không có thay đổi nào kể từ lần sao lưu trước</string>
+    <string name="cloud_stopped">Đã dừng sao lưu đám mây</string>
+    <string name="cloud_error">Sự cố sao lưu đám mây: %1$s</string>
+    <string name="cloud_error_permission">Quyền truy cập tệp đã bị thu hồi. Hãy chọn lại tệp.</string>
+    <string name="cloud_error_not_backup">Tệp này không phải bản sao lưu của CardNavo nên đã được giữ nguyên.</string>
+    <string name="cloud_error_blocked">Đang có bộ sưu tập mới hơn từ điện thoại khác. Hãy tải, gộp hoặc bỏ qua trước.</string>
+    <string name="cloud_error_unknown">lỗi không xác định</string>
+    <string name="cloud_pending_title">Bộ sưu tập mới hơn từ điện thoại khác</string>
+    <string name="cloud_pending_text">Tệp sao lưu chứa bộ sưu tập có %1$d thẻ, lưu lúc %2$s.</string>
+    <string name="cloud_load">Tải (thay thế)</string>
+    <string name="cloud_merge">Gộp</string>
+    <string name="cloud_ignore">Bỏ qua</string>
+    <string name="cloud_loaded">Đã tải bộ sưu tập từ tệp sao lưu</string>
+    <string name="cloud_merged">Đã gộp các bộ sưu tập</string>
+    <string name="cloud_load_confirm_title">Thay thế bộ sưu tập của bạn?</string>
+    <string name="cloud_load_confirm_text">Mọi thứ trên điện thoại này sẽ được thay bằng bộ sưu tập trong tệp sao lưu.</string>
+    <string name="cloud_load_confirm_button">Thay thế</string>
+</resources>

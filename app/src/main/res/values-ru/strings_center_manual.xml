@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Отрегулируйте центрирующие направляющие</string>
+  <string name="center_hint">Каждая сторона имеет две направляющие: внешний край карты и внутренняя печатная рамка. Перетащите оба, чтобы измерить их разрыв. Голубой обозначает внешние направляющие; зеленым отмечены внутренние направляющие. Желтый – выбранный гид. Используйте одну и ту же печатную рамку со всех сторон.</string>
+  <string name="center_left">Левый</string>
+  <string name="center_right">Правильно</string>
+  <string name="center_top">Топ</string>
+  <string name="center_bottom">Внизу</string>
+  <string name="center_detail">Выбранная деталь руководства</string>
+  <string name="center_outer">Внешний край</string>
+  <string name="center_inner">Внутренняя рамка</string>
+  <string name="center_minus_pixel">−1 пиксель изображения</string>
+  <string name="center_plus_pixel">+1 пиксель изображения</string>
+  <string name="center_cancel">Отмена</string>
+  <string name="center_apply">Используйте эти руководства</string>
+</resources>

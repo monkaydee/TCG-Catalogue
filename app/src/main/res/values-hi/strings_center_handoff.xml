@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">केन्द्रित करना जारी रखें</string>
+  <string name="center_confirm_next">रूपरेखा की पुष्टि करें और केन्द्रीकरण को मापें</string>
+  <string name="center_step_two">चरण 2: बाहरी और आंतरिक गाइड</string>
+</resources>

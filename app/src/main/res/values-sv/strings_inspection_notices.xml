@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Icke-professionell fotogranskning. Experimentella intervall bygger på dina observationer av hörn, kanter och yta, inte validerade sannolikheter för betyg. Ett professionellt betyg kan skilja sig. Dolda fel, ändringar och äkthetsproblem utesluts inte.</string>
+    <string name="center_manual_notice">Manuell centreringsmätning. Hjälplinjer och perspektiv påverkar förhållandet. Experimentella uppskattningar kräver också granskning av hörn, kanter och yta med ljus från flera vinklar.</string>
+    <string name="wear_observation_scope">Dina observationer sparas för denna fotosession och används i det experimentella intervallet. De intygar inte skicket och kompenserar inte för dåliga foton. Registrerade skador breddar eller sänker intervallet.</string>
+</resources>

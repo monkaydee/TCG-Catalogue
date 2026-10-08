@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ===== Add / edit card sheet (AddCardSheet) ===== -->
+
+    <!-- Shown instead of an amount when a card has no known market price -->
+    <string name="add_no_price">no price</string>
+    <!-- Grading company chip: a company that is not in the list -->
+    <string name="add_grader_other">Other</string>
+    <!-- Confirm button of the sheet when adding a card to the collection -->
+    <string name="add_confirm">Add</string>
+    <!-- %1$s = the reason, e.g. "no sales found" (add_no_sales_found) or a message from the price service -->
+    <string name="add_graded_missing">No graded price found (%1$s). Enter your own value below; no raw price is used.</string>
+    <!-- Reason inside the brackets of add_graded_missing -->
+    <string name="add_no_sales_found">no sales found</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d possible match — tap the right one</item>
+        <item quantity="other">%d possible matches — tap the right one</item>
+    </plurals>
+    <!-- Price source line for a graded card: the price of the ungraded card is shown instead -->
+    <string name="add_raw_price">raw price</string>
+    <!-- Price source line for a graded card while its sales are being looked up -->
+    <string name="add_looking_up_sales">looking up sales…</string>
+    <!-- Price details of an ungraded card. %1$s = printing (e.g. Holo), %2$s = condition code (e.g. NM), %3$s = price source (e.g. Cardmarket) -->
+    <string name="add_price_details">per copy · %1$s · %2$s · %3$s</string>
+    <!-- "Printing" = a card's print version, such as normal, holo, reverse holo or alt art -->
+    <string name="add_printing_check">Printing — please check: the scan couldn\'t tell it apart from another printing</string>
+    <!-- "Printing" = a card's print version, such as normal, holo, reverse holo or alt art -->
+    <string name="add_printing_recognised">Printing — recognised from the scan</string>
+    <!-- Heading: a card's print version, such as normal, holo, reverse holo or alt art -->
+    <string name="add_printing">Printing</string>
+    <!-- "Print" = the exact edition of a card (original, reprint, alt art, …) as listed on Cardmarket -->
+    <string name="add_cardmarket_listing">Cardmarket listing (pick the exact print you own)</string>
+    <!-- Toggle: an ungraded card, not in a grading company's slab -->
+    <string name="add_raw">Raw</string>
+    <!-- Toggle: a card graded by a grading company (PSA, BGS, …) and sealed in its slab -->
+    <string name="add_graded">Graded</string>
+    <string name="add_grading_company">Grading company</string>
+    <!-- Heading of the grade picker (10, 9.5, 9, …) of a graded card -->
+    <string name="add_grade">Grade</string>
+    <!-- Certification number printed on a grading company's slab label -->
+    <string name="add_cert_number">Cert number (optional)</string>
+    <!-- Heading of the condition picker (NM, LP, …) of an ungraded card -->
+    <string name="add_condition">Condition</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="add_purchase_price">Purchase price per copy (%1$s, optional)</string>
+    <!-- The user's own value of the card. %1$s = currency code, e.g. EUR -->
+    <string name="add_my_value">My value per copy (%1$s, optional — overrides the market price)</string>
+    <string name="add_wrong_card">Wrong card? Search for the right one</string>
+    <string name="add_cancel">Cancel</string>
+
+    <!-- ===== Import photos (ImportScreen) ===== -->
+
+    <string name="import_could_not_open_photo">Could not open the photo</string>
+    <string name="import_lookup_failed">Lookup failed — check your connection</string>
+    <!-- Number of copies added, e.g. "×2" -->
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Import photos</string>
+    <string name="import_back">Back</string>
+    <string name="import_add_photos">Add photos</string>
+    <!-- Shown before any photo is imported. CardNavo is the app\'s name. Keep the line breaks (\n) and bullets. -->
+    <string name="import_intro">Took photos of cards while you were out? Import them here and they\'re recognised just like a live scan.\n\n• One card per photo works best; binder pages work if the numbers are sharp\n• Make sure the number at the bottom of the card is readable\n• You can also share photos to CardNavo from your gallery or a chat app</string>
+    <string name="import_choose_photos">Choose photos</string>
+    <!-- Progress summary parts, shown joined with " · ", e.g. "3 added · 2 to review" -->
+    <plurals name="import_count_added">
+        <item quantity="one">%d added</item>
+        <item quantity="other">%d added</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">%d to review</item>
+        <item quantity="other">%d to review</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">%d in progress</item>
+        <item quantity="other">%d in progress</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">%d not recognised</item>
+        <item quantity="other">%d not recognised</item>
+    </plurals>
+    <!-- Button: adds the most likely card for every photo still waiting for review -->
+    <plurals name="import_add_all_best">
+        <item quantity="one">Add best match for %d card</item>
+        <item quantity="other">Add best match for all %d cards</item>
+    </plurals>
+    <string name="import_reading_photo">Reading photo…</string>
+    <!-- %1$s = the card number read from the photo, e.g. 025/165 -->
+    <string name="import_looking_up">Looking up %1$s…</string>
+    <!-- "Printing" = a card's print version, such as holo or alt art -->
+    <string name="import_check_printing">Check the printing — it couldn\'t be told apart from another one</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d possible match · tap to choose</item>
+        <item quantity="other">%d possible matches · tap to choose</item>
+    </plurals>
+    <!-- %1$s = the card\'s price -->
+    <string name="import_tap_to_add">%1$s · tap to add</string>
+    <!-- Status of a photo whose card was added to the collection -->
+    <string name="import_added">Added</string>
+    <!-- %1$s = the card number read from the photo, e.g. 025/165 -->
+    <string name="import_no_card_found">No card found for %1$s</string>
+    <string name="import_no_number">No card number found in this photo</string>
+    <string name="import_something_wrong">Something went wrong</string>
+    <!-- Button: enter the card by hand instead -->
+    <string name="import_type_it_in">Type it in</string>
+    <string name="import_retry">Retry</string>
+    <!-- Removes a photo from the import list -->
+    <string name="import_dismiss">Dismiss</string>
+
+    <!-- ===== Camera scanner (ScanScreen) ===== -->
+
+    <string name="scan_lookup_failed">Lookup failed — check your connection</string>
+    <!-- %1$s = the card number read by the camera, e.g. 025/165 -->
+    <string name="scan_no_card_found">No card found for %1$s</string>
+    <!-- Card added automatically (quick add). %1$s = card name, %2$s = card number -->
+    <string name="scan_added_auto">Added %1$s (%2$s)</string>
+    <!-- Graded card added automatically (quick add). %1$s = card name, %2$s = card number, %3$s = grade, e.g. PSA 10 -->
+    <string name="scan_added_auto_graded">Added %1$s (%2$s) · %3$s</string>
+    <!-- %1$s = card name, %2$d = number of copies -->
+    <string name="scan_added_qty">Added %1$s ×%2$d</string>
+    <!-- %1$s = error message -->
+    <string name="scan_could_not_save">Could not save: %1$s</string>
+    <string name="scan_camera_rationale">The camera is used to read the card number. Images never leave your phone.</string>
+    <string name="scan_allow_camera">Allow camera</string>
+    <string name="scan_import_instead">Import photos instead</string>
+    <!-- Flashlight button -->
+    <string name="scan_torch">Torch</string>
+    <!-- "Quick add" = scanned cards are added to the collection automatically, without confirming each one -->
+    <string name="scan_quick_add_on">Quick add ON — cards are added automatically</string>
+    <!-- "Quick add" = scanned cards are added to the collection automatically, without confirming each one -->
+    <string name="scan_quick_add_off">Quick add OFF — confirm each card</string>
+    <!-- %1$s = the card number being read, e.g. 025/165 -->
+    <string name="scan_reading">Reading %1$s…</string>
+    <string name="scan_hint">Fill the frame with the card. Keep the number at the bottom sharp and well lit — tap the screen to focus.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">%d added this session</item>
+        <item quantity="other">%d added this session</item>
+    </plurals>
+    <string name="scan_from_photos">From photos</string>
+    <!-- Button: enter the card by hand instead -->
+    <string name="scan_type_it_in">Type it in</string>
+
+    <!-- ===== Search / add a card by hand (SearchScreen) ===== -->
+
+    <!-- %1$s = the card number searched for, e.g. 025/165 -->
+    <string name="search_no_card">No card %1$s</string>
+    <!-- %1$s = the search text -->
+    <string name="search_nothing_found">Nothing found for \"%1$s\"</string>
+    <!-- %1$s = error message -->
+    <string name="search_failed">Search failed: %1$s</string>
+    <string name="search_could_not_load">Could not load card</string>
+    <!-- %1$s = card name, %2$d = number of copies -->
+    <string name="search_added_qty">Added %1$s ×%2$d</string>
+    <!-- %1$s = error message -->
+    <string name="search_could_not_save">Could not save: %1$s</string>
+    <!-- Search field hints per game. Keep the example names and codes as they are. -->
+    <string name="search_hint_pokemon">Name or number (e.g. Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Card code (e.g. OP05-060)</string>
+    <string name="search_hint_magic">Name or set + number (e.g. Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Code or name (e.g. FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Code or name (e.g. BT1-031)</string>
+    <string name="search_hint_union_arena">Code or name (e.g. UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Code or name (e.g. HOL/W91-001)</string>
+    <string name="search_hint_naruto">Code or name</string>
+    <!-- Title when replacing a card in the collection that was recognised wrongly -->
+    <string name="search_title_replace">Find the right card</string>
+    <string name="search_title_add">Add a card</string>
+    <string name="search_back">Back</string>
+    <string name="search_search">Search</string>
+    <!-- Confirm button: the chosen card replaces the wrongly recognised one in the collection -->
+    <string name="search_replace">Replace</string>
+</resources>

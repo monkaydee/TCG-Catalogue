@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">다른 작업</string>
+    <string name="design_game">게임</string>
+    <string name="design_select">선택</string>
+    <string name="design_sort">정렬</string>
+    <string name="design_layout">보기</string>
+    <string name="design_language">언어</string>
+    <string name="design_capture">촬영</string>
+    <string name="design_alignment">정렬 조정</string>
+    <string name="design_inspection">검사</string>
+    <string name="design_result">결과</string>
+    <string name="design_stage">%2$d단계 중 %1$d단계 · %3$s</string>
+    <string name="design_expanded">펼쳐짐</string>
+    <string name="design_collapsed">접힘</string>
+    <string name="design_evidence">가격 근거</string>
+    <string name="design_details">카드 세부 정보</string>
+    <string name="design_slab_hint">가격은 기록된 감정 회사, 등급 및 인쇄 언어에 해당합니다. 미감정 카드의 참고 가격은 별도로 표시됩니다.</string>
+</resources>

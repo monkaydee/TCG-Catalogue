@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_language">Ngôn ngữ</string>
+    <string name="price_note_english_price">Chưa có giá cho ngôn ngữ này — hiển thị giá bản tiếng Anh</string>
+</resources>

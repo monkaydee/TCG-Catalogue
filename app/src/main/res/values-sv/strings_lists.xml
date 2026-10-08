@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common -->
+    <string name="lists_back">Tillbaka</string>
+    <string name="lists_cancel">Avbryt</string>
+    <string name="lists_save">Spara</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">Rensa</string>
+    <string name="lists_remove">Ta bort</string>
+    <string name="lists_retry">Försök igen</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">Listor</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">Belopp (%1$s)</string>
+    <string name="lists_amount_invalid">Ange ett belopp, t.ex. 12,50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">Checklista</string>
+    <string name="checklist_open">Visa checklista</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="one">%1$d av %2$d kort ägs</item>
+        <item quantity="other">%1$d av %2$d kort ägs</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">Alla · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">Ägs · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">Saknas · %1$d</string>
+    <string name="checklist_loading">Läser in korten i det här setet…</string>
+    <string name="checklist_empty_title">Ingen checklista för det här setet</string>
+    <string name="checklist_empty_text">Kortlistan kunde inte läsas in. Kontrollera din anslutning, eller så finns det här setet inte med ännu.</string>
+    <string name="checklist_none_owned">Du äger inget kort i det här setet ännu.</string>
+    <string name="checklist_none_missing">Komplett! Du äger alla kort i det här setet.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">Saknas</string>
+    <string name="checklist_on_wishlist">På din önskelista</string>
+    <string name="checklist_add_collection">Lägg till i samlingen</string>
+    <string name="checklist_add_wishlist">Lägg till på önskelistan</string>
+    <string name="checklist_card_loading">Läser in kort…</string>
+    <string name="checklist_card_failed">Kortet kunde inte läsas in — kontrollera din anslutning</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s lades till i din samling</string>
+    <string name="checklist_printing">Tryckning</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">Önskelista</string>
+    <string name="wish_add">Lägg till på önskelistan</string>
+    <string name="wish_remove">Ta bort från önskelistan</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s lades till på din önskelista</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s togs bort från din önskelista</string>
+    <string name="wish_add_failed">Kortet kunde inte läggas till — kontrollera din anslutning</string>
+    <string name="wish_total">Total kostnad</string>
+    <plurals name="wish_count">
+        <item quantity="one">%1$d kort</item>
+        <item quantity="other">%1$d kort</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="one">%1$d på eller under ditt målpris</item>
+        <item quantity="other">%1$d på eller under ditt målpris</item>
+    </plurals>
+    <string name="wish_empty_title">Din önskelista är tom</string>
+    <string name="wish_empty_text">Lägg till kort från sökningen eller från de saknade korten i en set-checklista.</string>
+    <string name="wish_no_price">Inget pris</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">Mål %1$s</string>
+    <string name="wish_no_target">Inget målpris</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">På ditt målpris</string>
+    <string name="wish_set_target">Ange målpris</string>
+    <string name="wish_target_title">Målpris</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">Du får en avisering när priset sjunker till det här beloppet eller lägre. Nu: %1$s</string>
+    <string name="wish_target_text_no_price">Du får en avisering när priset sjunker till det här beloppet eller lägre.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">Byteslista</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">Till byte</string>
+    <string name="trade_share">Dela lista</string>
+    <string name="trade_remove">Ta bort från byteslistan</string>
+    <string name="trade_total">Bytesvärde</string>
+    <string name="trade_empty_title">Inget till byte ännu</string>
+    <string name="trade_empty_text">Öppna ett kort i din samling och tryck på ”Till byte” för att lägga till det här.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="one">Min byteslista (%1$d kort)</item>
+        <item quantity="other">Min byteslista (%1$d kort)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">Totalt värde: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">Delat från %1$s</string>
+    <string name="trade_share_subject">Min byteslista</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">Sälj</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">Sälj %1$s</string>
+    <string name="sold_quantity">Sålda ex.</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">av %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">Pris per ex. (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">Totalt %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">Vinst %1$s</string>
+    <string name="sold_confirm">Sälj</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">Sålde %1$d× %2$s</string>
+    <string name="sold_title">Sålda</string>
+    <string name="sold_realised">Realiserad vinst</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">Försäljning %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="one">%1$d försäljning utan inköpspris räknas inte med</item>
+        <item quantity="other">%1$d försäljningar utan inköpspris räknas inte med</item>
+    </plurals>
+    <string name="sold_empty_title">Inga försäljningar ännu</string>
+    <string name="sold_empty_text">Öppna ett kort i din samling och tryck på ”Sälj” för att registrera en försäljning här.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">Sålde %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">Betalade %1$s per styck</string>
+    <string name="sold_paid_unknown">Inköpspris okänt</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">Såld den %1$s</string>
+    <string name="sold_delete">Ta bort post</string>
+    <string name="sold_delete_title">Ta bort den här försäljningen?</string>
+    <string name="sold_delete_text">Den tas bort från listan över sålda kort och från den realiserade vinsten. Kortet kommer inte tillbaka till din samling.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">Larm</string>
+    <string name="alert_ui_title">Prislarm</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">Få en avisering när värdet per ex. passerar något av dessa belopp. Nu: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">Avisera över (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">Avisera under (%1$s)</string>
+    <string name="alert_ui_order">”Över” måste vara högre än ”under”</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">Över %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">Under %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">Prishistorik</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">Högsta %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">Lägsta %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">Redigera</string>
+    <string name="lists_card_remove">Ta bort</string>
+</resources>

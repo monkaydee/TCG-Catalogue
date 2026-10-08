@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Открыть коллекцию</string>
+    <string name="binders_title">Альбомы</string>
+    <string name="binders_all">Все карты</string>
+    <string name="binders_new">Новый альбом</string>
+    <string name="binders_card_count">Карт: %1$d</string>
+    <string name="binder_open_hint">Проведите или нажмите, чтобы открыть</string>
+    <string name="binder_add_cards">Добавить карты</string>
+    <string name="binder_choose_cards">Карты в этом альбоме</string>
+    <string name="binder_edit">Изменить альбом</string>
+    <string name="binder_delete">Удалить альбом</string>
+    <string name="binder_delete_confirm">Удалить «%1$s»? Карты останутся в коллекции.</string>
+    <string name="binder_name">Название</string>
+    <string name="binder_cover_design">Дизайн обложки</string>
+    <string name="binder_cover_upload">Своё изображение</string>
+    <string name="binder_cover_remove">Убрать изображение</string>
+    <string name="binder_save">Сохранить</string>
+    <string name="binder_empty_custom">Альбом пуст. Добавьте карты из коллекции.</string>
+    <string name="binder_search">Поиск карт</string>
+    <string name="binder_new_name">Мой альбом</string>
+    <string name="binder_selected">Выбрано: %1$d</string>
+    <string name="collection_title">Коллекция</string>
+    <string name="collection_sort_recent">Недавно добавленные</string>
+    <string name="collection_sort_grade">Грейд</string>
+    <string name="collection_sort_set">Сет</string>
+    <string name="collection_empty">Карт пока нет.</string>
+    <string name="collection_summary">Карт: %1$d · %2$s</string>
+    <string name="cover_midnight">Полночь</string>
+    <string name="cover_crimson">Багрянец</string>
+    <string name="cover_forest">Лес</string>
+    <string name="cover_ocean">Океан</string>
+    <string name="cover_galaxy">Галактика</string>
+    <string name="cover_sunset">Закат</string>
+    <string name="cover_gold">Золотая фольга</string>
+    <string name="cover_carbon">Карбон</string>
+</resources>

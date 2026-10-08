@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Góc trên bên trái</string>
+  <string name="wear_top_right">Góc trên bên phải</string>
+  <string name="wear_bottom_right">Góc dưới bên phải</string>
+  <string name="wear_bottom_left">Góc dưới bên trái</string>
+  <string name="wear_top">Cạnh trên</string>
+  <string name="wear_right">Cạnh phải</string>
+  <string name="wear_bottom">Cạnh dưới</string>
+  <string name="wear_left">Cạnh trái</string>
+  <string name="wear_evidence_count">Tự động kiểm tra: %1$d trong số 8 vùng có bằng chứng màu sắc có thể sử dụng được</string>
+  <string name="wear_review_count">Xem xét thủ công: %1$d trong số 8 vùng</string>
+  <string name="wear_inspect_regions">Kiểm tra tất cả bốn góc và bốn cạnh</string>
+  <string name="wear_hide_regions">Ẩn chi tiết khu vực</string>
+  <string name="wear_screening_scope">Mỗi vùng được kiểm tra riêng biệt về sự bất thường về màu sắc và độ trắng. Căn chỉnh in, giấy bạc và cắt có thể giống như hư hỏng. Mở một vùng để kiểm tra ảnh và ghi lại những gì bạn nhìn thấy.</string>
+  <string name="wear_not_assessed">Không được đánh giá - không đủ bằng chứng hữu ích</string>
+  <string name="wear_inconclusive">Kiểm tra tự động là không kết luận</string>
+  <string name="wear_possible_damage">Kiểm tra tự động: có thể bị mòn — kiểm tra khu vực này</string>
+  <string name="wear_auto_none">Kiểm tra tự động: không có dấu hiệu bất thường về màu sắc</string>
+  <string name="wear_your_observation">Quan sát của bạn: %1$s</string>
+  <string name="wear_white_border">Đường viền trắng có thể che giấu sự trắng sáng; kiểm tra màu sắc không thể xác nhận tình trạng của chúng.</string>
+  <string name="wear_textured_border">Tác phẩm nghệ thuật hoặc giấy bạc có thể thay đổi sẽ hạn chế sự so sánh màu sắc.</string>
+  <string name="wear_flagged_pixels">Pixel vùng được gắn cờ: %1$.1f%% · dị thường sáng hơn: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Chụm để thu phóng và kéo để kiểm tra. Độ phóng đại không thêm chi tiết ảnh; chụp lại những bức ảnh bị mờ.</string>
+  <string name="wear_record_observation">Quan sát của bạn về khu vực này</string>
+  <string name="wear_not_reviewed">Chưa được xem xét</string>
+  <string name="wear_observed_clear">Không có thiệt hại rõ ràng trong bức ảnh này</string>
+  <string name="wear_whitening">Có thể nhìn thấy vết trắng/trầy xước</string>
+  <string name="wear_chip">Có thể nhìn thấy chip / vết rách</string>
+  <string name="wear_bend">Có thể nhìn thấy uốn cong / vết lõm</string>
+  <string name="wear_done">Xong</string>
+  <string name="wear_damage_blocks_grade">Thiệt hại có thể nhìn thấy đã được ghi lại. Ước tính mô hình tổng thể bị giữ lại vì các phát hiện thủ công không phải là đầu vào mô hình được hiệu chỉnh. Kết quả định tâm không tính đến hư hỏng này.</string>
+  <string name="wear_incomplete_blocks_grade">Các góc và cạnh cần được kiểm tra kỹ hơn. Bằng chứng thiếu hoặc không thuyết phục sẽ cản trở ước tính mô hình tổng thể; tập trung một mình không thiết lập một lớp.</string>
+</resources>

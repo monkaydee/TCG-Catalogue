@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Другие действия</string>
+    <string name="design_game">Игра</string>
+    <string name="design_select">Выбрать</string>
+    <string name="design_sort">Сортировка</string>
+    <string name="design_layout">Вид</string>
+    <string name="design_language">Язык</string>
+    <string name="design_capture">Фото</string>
+    <string name="design_alignment">Выравнивание</string>
+    <string name="design_inspection">Осмотр</string>
+    <string name="design_result">Результат</string>
+    <string name="design_stage">Шаг %1$d из %2$d · %3$s</string>
+    <string name="design_expanded">Развернуто</string>
+    <string name="design_collapsed">Свернуто</string>
+    <string name="design_evidence">Источники цены</string>
+    <string name="design_details">Данные карты</string>
+    <string name="design_slab_hint">Цены соответствуют записанной компании, оценке и языку печати. Цены карт без оценки показаны отдельно.</string>
+</resources>

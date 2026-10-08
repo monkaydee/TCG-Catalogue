@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Інші дії</string>
+    <string name="design_game">Гра</string>
+    <string name="design_select">Вибрати</string>
+    <string name="design_sort">Сортування</string>
+    <string name="design_layout">Вигляд</string>
+    <string name="design_language">Мова</string>
+    <string name="design_capture">Фото</string>
+    <string name="design_alignment">Вирівнювання</string>
+    <string name="design_inspection">Огляд</string>
+    <string name="design_result">Результат</string>
+    <string name="design_stage">Крок %1$d із %2$d · %3$s</string>
+    <string name="design_expanded">Розгорнуто</string>
+    <string name="design_collapsed">Згорнуто</string>
+    <string name="design_evidence">Джерела ціни</string>
+    <string name="design_details">Дані картки</string>
+    <string name="design_slab_hint">Ціни відповідають записаній компанії, оцінці та мові друку. Ціни карток без оцінки показані окремо.</string>
+</resources>

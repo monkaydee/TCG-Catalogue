@@ -1,0 +1,7 @@
+<resources>
+    <string name="pre_outline_use">Diesen Umriss verwenden</string>
+    <string name="pre_outline_seed">Die ganze Karte wurde nicht automatisch erkannt. Setze die vier Punkte auf ihre tatsächlichen Ecken.</string>
+    <string name="pre_outline_invalid">Die Ecken müssen ein vollständiges Viereck bilden. Verschiebe gekreuzte oder überlappende Ecken.</string>
+    <string name="pre_outline_front">Ecken vorne anpassen</string>
+    <string name="pre_outline_back">Ecken hinten anpassen</string>
+</resources>

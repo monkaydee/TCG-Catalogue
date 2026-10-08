@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Ajustar guias de centralização</string>
+  <string name="center_hint">Cada lado possui duas guias: borda externa do cartão e moldura interna impressa. Arraste ambos para medir a diferença. Ciano marca guias externas; verde marca as guias internas. Amarelo é o guia selecionado. Use a mesma moldura impressa em todos os lados.</string>
+  <string name="center_left">Esquerda</string>
+  <string name="center_right">Certo</string>
+  <string name="center_top">Superior</string>
+  <string name="center_bottom">Inferior</string>
+  <string name="center_detail">Detalhe do guia selecionado</string>
+  <string name="center_outer">Borda externa</string>
+  <string name="center_inner">Moldura interna</string>
+  <string name="center_minus_pixel">−1 pixel de imagem</string>
+  <string name="center_plus_pixel">+1 pixel de imagem</string>
+  <string name="center_cancel">Cancelar</string>
+  <string name="center_apply">Use estes guias</string>
+</resources>

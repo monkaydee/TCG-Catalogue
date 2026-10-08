@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">センタリングを続ける</string>
+  <string name="center_confirm_next">輪郭の確認と芯出しの測定</string>
+  <string name="center_step_two">ステップ 2: 外側ガイドと内側ガイド</string>
+</resources>

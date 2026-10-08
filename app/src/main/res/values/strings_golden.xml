@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Collect recognition test cases</string>
+    <string name="settings_collect_cases_hint">Keep confirmed photo imports (with the right card) on this phone to improve recognition. Corrected matches are always kept. Nothing is sent until you export.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">Export %d test case</item>
+        <item quantity="other">Export %d test cases</item>
+    </plurals>
+    <string name="settings_clear_cases">Delete cases</string>
+    <string name="import_details_title">How it was recognised</string>
+    <string name="import_details_by_picture">Found by its picture</string>
+    <string name="import_details_by_number">Found by the number %1$s</string>
+    <string name="import_details_read">Read on the card:</string>
+</resources>

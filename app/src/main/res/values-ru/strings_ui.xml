@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_ok">OK</string>
+    <string name="ui_cancel">Отмена</string>
+
+    <string name="settings_title">Настройки</string>
+    <string name="settings_backup_saved">Резервная копия сохранена</string>
+    <string name="settings_backup_failed">Ошибка резервного копирования: %1$s</string>
+    <string name="settings_restored">Коллекция восстановлена</string>
+    <string name="settings_import_failed">Ошибка импорта: %1$s</string>
+    <string name="settings_prices_title">Цены</string>
+    <string name="settings_currency">Валюта отображения</string>
+    <string name="settings_fx_rate">1 USD = %1$.4f EUR (курс ECB, обновляется вместе с ценами)</string>
+    <string name="settings_price_source">Источник цен (Pokémon, Magic и One Piece)</string>
+    <string name="settings_price_source_hint">Трендовая цена Cardmarket — для европейских цен, рыночная цена TCGplayer — для цен США. Для One Piece вы выбираете точный товар на Cardmarket (сет и V.1/V.2…) для своей копии. Для остальных игр есть только цены TCGplayer. Если цены двух площадок расходятся более чем в 3 раза, одна из них привязана не к той карте, и приложение использует другую (на карте появится пометка). Для карт с грейдом используется своя оценка; на странице карты есть ссылки на недавние продажи.</string>
+    <string name="settings_refresh_hint">Цены обновляются автоматически раз в день — заодно записывается история стоимости.</string>
+    <string name="settings_refresh_now">Обновить цены сейчас</string>
+    <string name="settings_scanning_title">Сканирование</string>
+    <string name="settings_games">Игры</string>
+    <string name="settings_games_hint">Сканер ищет карты этих игр. Для Dragon Ball, Union Arena, Weiss Schwarz и Naruto загружается список карт (до нескольких МБ, обновляется ежедневно).</string>
+    <string name="settings_quick_add">Быстрое добавление при сканировании</string>
+    <string name="settings_quick_add_hint">Чётко распознанные карты добавляются без подтверждения — можно быстро отсканировать целую стопку.</string>
+    <string name="settings_default_condition">Состояние по умолчанию</string>
+    <string name="settings_display_title">Экран</string>
+    <string name="settings_full_screen">Полноэкранный режим</string>
+    <string name="settings_full_screen_hint">Скрывает строку состояния и панель навигации. Чтобы показать их, проведите от верхнего или нижнего края.</string>
+    <string name="settings_backup_title">Резервная копия</string>
+    <string name="settings_backup_hint">Коллекция хранится только на этом телефоне. Экспортируйте резервную копию перед удалением приложения или сменой телефона.</string>
+    <string name="settings_export">Экспорт</string>
+    <string name="settings_import">Импорт (с заменой)</string>
+    <string name="settings_about_title">О приложении</string>
+    <string name="settings_about">Версия %1$s\nДанные и цены Pokémon: TCGdex (tcgdex.dev)\nДанные и цены One Piece: OPTCG API (optcgapi.com)\nДанные и цены Magic: Scryfall (scryfall.com)\nDragon Ball, Union Arena, Weiss Schwarz, Naruto: TCGplayer через TCGCSV (tcgcsv.com)\nКурсы валют: Frankfurter (ECB)\nРаспознавание текста выполняется на устройстве с помощью Google ML Kit.</string>
+
+    <string name="appearance_title">Оформление</string>
+    <string name="appearance_mode">Тема</string>
+    <string name="appearance_mode_system">Системная</string>
+    <string name="appearance_mode_light">Светлая</string>
+    <string name="appearance_mode_dark">Тёмная</string>
+    <string name="appearance_palette">Цвета</string>
+    <string name="appearance_palette_hint_dynamic">«Обои» — цвета обоев вашего телефона.</string>
+    <string name="appearance_palette_hint">Выберите цветовую тему или задайте свои цвета ниже.</string>
+    <string name="appearance_areas">Свои цвета</string>
+    <string name="appearance_area_theme">Тема</string>
+    <string name="appearance_area_custom">Свой</string>
+    <string name="appearance_reset_colors">Сбросить к цветам темы</string>
+    <string name="appearance_images">Фоновые изображения</string>
+    <string name="appearance_image_home">Коллекция</string>
+    <string name="appearance_image_binder">Альбом</string>
+    <string name="appearance_image_choose">Выбрать</string>
+    <string name="appearance_image_remove">Удалить</string>
+    <string name="appearance_image_dim">Затемнять изображения (для читаемости текста)</string>
+    <string name="appearance_image_failed">Не удалось открыть изображение</string>
+    <string name="palette_dynamic">Обои</string>
+    <string name="palette_indigo">Индиго</string>
+    <string name="palette_ocean">Океан</string>
+    <string name="palette_teal">Бирюза</string>
+    <string name="palette_forest">Лес</string>
+    <string name="palette_gold">Золото</string>
+    <string name="palette_sunset">Закат</string>
+    <string name="palette_rose">Роза</string>
+    <string name="palette_grape">Виноград</string>
+    <string name="palette_graphite">Графит</string>
+    <string name="palette_custom">Своя</string>
+    <string name="area_accent">Акцент</string>
+    <string name="area_background">Фон</string>
+    <string name="area_cards">Панели</string>
+    <string name="area_top_bar">Верхняя панель</string>
+    <string name="area_bottom_bar">Нижняя панель</string>
+    <string name="area_binder_page">Страницы альбома</string>
+    <string name="color_hue">Оттенок</string>
+    <string name="color_saturation">Насыщенность</string>
+    <string name="color_brightness">Яркость</string>
+    <string name="color_hex">HEX-код</string>
+    <string name="color_theme_default">Цвет темы</string>
+
+    <string name="language_title">Язык</string>
+    <string name="language_system">Язык телефона</string>
+    <string name="language_hint">Приложение использует язык телефона, если вы не выберете другой здесь.</string>
+    <string name="language_change">Изменить</string>
+
+    <string name="nav_collection">Коллекция</string>
+    <string name="nav_scan">Скан</string>
+    <string name="nav_settings">Настройки</string>
+
+    <string name="home_binder">Альбом</string>
+    <string name="home_import_photos">Импорт фото</string>
+    <string name="home_search">Поиск карт</string>
+    <string name="home_refresh">Обновить цены</string>
+    <string name="home_portfolio_value">Стоимость коллекции</string>
+    <string name="home_game_value">Стоимость %1$s</string>
+    <string name="home_change">%1$s (%2$+.1f%%) · %3$s</string>
+    <string name="home_counts">%1$s · %2$s</string>
+    <plurals name="home_cards">
+        <item quantity="one">%d карта</item>
+        <item quantity="few">%d карты</item>
+        <item quantity="many">%d карт</item>
+        <item quantity="other">%d карт</item>
+    </plurals>
+    <plurals name="home_unique">
+        <item quantity="one">%d уникальная</item>
+        <item quantity="few">%d уникальные</item>
+        <item quantity="many">%d уникальных</item>
+        <item quantity="other">%d уникальных</item>
+    </plurals>
+    <string name="home_open_binder">Открыть альбом</string>
+    <string name="home_chart_empty">График стоимости заполняется по мере ежедневного обновления цен.</string>
+    <string name="home_range_1m">1М</string>
+    <string name="home_range_3m">3М</string>
+    <string name="home_range_1y">1Г</string>
+    <string name="home_range_all">Всё</string>
+    <string name="home_prices_updated">Цены обновлены %1$s</string>
+    <string name="home_all_games">Все</string>
+    <string name="home_most_valuable">Самые ценные</string>
+    <string name="home_sets">Сеты (%1$d)</string>
+    <string name="home_sort_value">Цена</string>
+    <string name="home_sort_name">Название</string>
+    <string name="home_sort_recent">Недавние</string>
+    <string name="home_set_progress">%1$s · карт: %2$d/%3$d</string>
+    <string name="home_set_owned">%1$s · карт: %2$d</string>
+    <plurals name="home_copies">
+        <item quantity="one">%d копия</item>
+        <item quantity="few">%d копии</item>
+        <item quantity="many">%d копий</item>
+        <item quantity="other">%d копий</item>
+    </plurals>
+    <string name="home_empty_title">Ваша коллекция пуста</string>
+    <string name="home_empty_text">Отсканируйте карту Pokémon, One Piece, Magic, Dragon Ball, Union Arena, Weiss Schwarz или Naruto. Приложение считывает номер, напечатанный на карте (напр. 025/165, OP05-060, FB01-139), и находит карту и её рыночную цену. Карты в слабах с грейдом тоже распознаются.</string>
+    <string name="home_scan_card">Сканировать карту</string>
+
+    <string name="binder_title">Альбом</string>
+    <string name="binder_back">Назад</string>
+    <string name="binder_sort_value_desc">Цена · по убыванию</string>
+    <string name="binder_sort_value_asc">Цена · по возрастанию</string>
+    <string name="binder_sort_name_asc">Название · А–Я</string>
+    <string name="binder_sort_name_desc">Название · Я–А</string>
+    <string name="binder_sort_set">По сету</string>
+    <string name="binder_order_number">Номер карты</string>
+    <string name="binder_in_set">В сете: %1$s</string>
+    <string name="binder_animation">Анимация перелистывания</string>
+    <string name="binder_empty">Карт пока нет — отсканируйте несколько, чтобы заполнить альбом.</string>
+    <string name="binder_previous">Предыдущая страница</string>
+    <string name="binder_next">Следующая страница</string>
+    <string name="binder_page">Страница %1$d из %2$d · %3$s</string>
+</resources>

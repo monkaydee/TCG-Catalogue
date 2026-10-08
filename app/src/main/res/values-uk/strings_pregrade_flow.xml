@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Контур картки · чотири кути</string>
+  <string name="pre_center_screen">Центрування · вісім напрямних</string>
+  <string name="pre_open_centering">Виміряйте внутрішні та зовнішні межі</string>
+  <string name="pre_outline_continue">Підтвердьте контур усієї картки</string>
+  <string name="pre_outline_adjust">Відрегулюйте чотири кути картки</string>
+  <string name="pre_choose_game">Карткова гра</string>
+  <string name="pre_center_missing">Розташуйте зовнішню та внутрішню напрямні на цій стороні, щоб завершити її центрування.</string>
+  <string name="pre_center_ready">Виміряно центрування. Ви можете налаштувати всі вісім напрямних.</string>
+  <string name="pre_edit_front">Редагувати переднє центрування</string>
+  <string name="pre_edit_back">Редагувати зворотне центрування</string>
+  <string name="pre_potential_title">Центруючий потенціал</string>
+  <string name="pre_potential_10">У межах PSA 10 центрування</string>
+  <string name="pre_potential_borderline">Граничне центрування PSA 10</string>
+  <string name="pre_potential_below">Поза межами центрування PSA 10</string>
+  <string name="pre_potential_incomplete">Завершіть обидві сторони для центрування потенціалу</string>
+  <string name="pre_potential_scope">Лише центрування в карткових іграх. Використовує обмеження PSA спереду 55/45 і ззаду 75/25. Межа означає, що коригування направляючої з одного пікселя може змінити результат. Кути, краї, поверхня та автентичність можуть знизити кінцеву оцінку.</string>
+  <string name="pre_model_scope">Прогноз загальної оцінки не підтверджується для цієї гри чи цих вимірювань. Потенціал центрування вище залишається доступним після вимірювання обох сторін.</string>
+  <string name="pre_experimental_model">Експериментальна оцінка фото Pokémon</string>
+  <string name="pre_quality_blocked">Перезробіть цю сторону: її контур або якість фотографії непридатні для оцінки зносу.</string>
+  <string name="pre_no_wear_detected">видимого зносу не виявлено</string>
+  <string name="pre_skip_frame">Немає аналогічної друкованої рамки</string>
+  <string name="pre_retake_front">Перезробіть переднє фото</string>
+  <string name="pre_retake_back">Повторно зробити фото</string>
+</resources>

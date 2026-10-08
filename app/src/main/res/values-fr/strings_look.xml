@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_skip">Passer</string>
+    <string name="onboarding_next">Suivant</string>
+    <string name="onboarding_get_started">Commencer</string>
+    <string name="onboarding_scan_title">Scannez vos cartes</string>
+    <string name="onboarding_scan_text">Pointez l\'appareil photo vers une carte ou importez des photos depuis votre galerie. Le nom et le numéro sont lus pour vous.</string>
+    <string name="onboarding_binder_title">Votre collection dans un classeur</string>
+    <string name="onboarding_binder_text">Parcourez vos cartes page par page dans un classeur virtuel et feuilletez-les comme en vrai.</string>
+    <string name="onboarding_prices_title">Prix et valeur</string>
+    <string name="onboarding_prices_text">Voyez ce que vaut chaque carte et suivez la valeur de toute votre collection au fil du temps.</string>
+    <string name="onboarding_page_of">Page %1$d sur %2$d</string>
+</resources>

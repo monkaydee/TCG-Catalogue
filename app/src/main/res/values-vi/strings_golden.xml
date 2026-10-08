@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Thu thập ca kiểm thử nhận diện</string>
+    <string name="settings_collect_cases_hint">Giữ các ảnh nhập đã xác nhận (với thẻ đúng) trên điện thoại để cải thiện nhận diện. Các chỉnh sửa luôn được giữ. Không gửi gì cho đến khi bạn xuất.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="other">Xuất %d ca kiểm thử</item>
+    </plurals>
+    <string name="settings_clear_cases">Xóa các ca</string>
+    <string name="import_details_title">Cách nhận diện</string>
+    <string name="import_details_by_picture">Tìm theo hình ảnh</string>
+    <string name="import_details_by_number">Tìm theo số %1$s</string>
+    <string name="import_details_read">Đọc được trên thẻ:</string>
+</resources>

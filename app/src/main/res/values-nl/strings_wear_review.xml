@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Linkerbovenhoek</string>
+  <string name="wear_top_right">Rechterbovenhoek</string>
+  <string name="wear_bottom_right">Rechteronderhoek</string>
+  <string name="wear_bottom_left">Linkerbenedenhoek</string>
+  <string name="wear_top">Bovenrand</string>
+  <string name="wear_right">Rechterrand</string>
+  <string name="wear_bottom">Onderrand</string>
+  <string name="wear_left">Linkerrand</string>
+  <string name="wear_evidence_count">Automatische controle: %1$d van 8 regio\'s heeft bruikbaar kleurbewijs</string>
+  <string name="wear_review_count">Handmatige beoordeling: %1$d van 8 regio\'s</string>
+  <string name="wear_inspect_regions">Inspecteer alle vier de hoeken en vier randen</string>
+  <string name="wear_hide_regions">Regiodetails verbergen</string>
+  <string name="wear_screening_scope">Elke regio wordt afzonderlijk gecontroleerd op kleurafwijkingen en verbleking. Print-, folie- en snijuitlijning kunnen op beschadigingen lijken. Open een gebied om de foto te inspecteren en vast te leggen wat u ziet.</string>
+  <string name="wear_not_assessed">Niet beoordeeld – onvoldoende bruikbaar bewijs</string>
+  <string name="wear_inconclusive">Automatische controle is niet doorslaggevend</string>
+  <string name="wear_possible_damage">Automatische controle: mogelijke slijtage – inspecteer dit gebied</string>
+  <string name="wear_auto_none">Automatische controle: er is geen kleurafwijking gemarkeerd</string>
+  <string name="wear_your_observation">Jouw observatie: %1$s</string>
+  <string name="wear_white_border">Witte randen kunnen het bleken verbergen; kleurcontroles kunnen hun toestand niet bevestigen.</string>
+  <string name="wear_textured_border">Variabel artwork of folie beperkt de kleurvergelijking.</string>
+  <string name="wear_flagged_pixels">Pixels van gemarkeerde regio: %1$.1f%% · helderdere afwijkingen: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Knijp om te zoomen en sleep om te inspecteren. Vergroting voegt geen fotodetail toe; maak onscherpe foto\'s opnieuw.</string>
+  <string name="wear_record_observation">Uw observatie voor deze regio</string>
+  <string name="wear_not_reviewed">Niet beoordeeld</string>
+  <string name="wear_observed_clear">Geen zichtbare schade op deze foto</string>
+  <string name="wear_whitening">Verbleking / slijtage zichtbaar</string>
+  <string name="wear_chip">Chip/scheur zichtbaar</string>
+  <string name="wear_bend">Buig/deuk zichtbaar</string>
+  <string name="wear_done">Klaar</string>
+  <string name="wear_damage_blocks_grade">Er werd zichtbare schade geregistreerd. De algehele modelschatting wordt achterwege gelaten omdat handmatige bevindingen geen gekalibreerde modelinvoer zijn. Centreerresultaten houden geen rekening met deze schade.</string>
+  <string name="wear_incomplete_blocks_grade">Hoeken en randen moeten nader worden geïnspecteerd. Ontbrekend of onduidelijk bewijsmateriaal verhindert een algemene modelschatting; centreren alleen levert geen cijfer op.</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Tanıma test örnekleri topla</string>
+    <string name="settings_collect_cases_hint">Tanımayı geliştirmek için onaylanan fotoğraf içe aktarımlarını (doğru kartla) bu telefonda sakla. Düzeltmeler her zaman saklanır. Dışa aktarana kadar hiçbir şey gönderilmez.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">%d test örneğini dışa aktar</item>
+        <item quantity="other">%d test örneğini dışa aktar</item>
+    </plurals>
+    <string name="settings_clear_cases">Örnekleri sil</string>
+    <string name="import_details_title">Nasıl tanındı</string>
+    <string name="import_details_by_picture">Resminden bulundu</string>
+    <string name="import_details_by_number">%1$s numarasından bulundu</string>
+    <string name="import_details_read">Kartta okunan:</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Відкрити колекцію</string>
+    <string name="binders_title">Альбоми</string>
+    <string name="binders_all">Усі карти</string>
+    <string name="binders_new">Новий альбом</string>
+    <string name="binders_card_count">Карт: %1$d</string>
+    <string name="binder_open_hint">Проведіть або торкніться, щоб відкрити</string>
+    <string name="binder_add_cards">Додати карти</string>
+    <string name="binder_choose_cards">Карти в цьому альбомі</string>
+    <string name="binder_edit">Редагувати альбом</string>
+    <string name="binder_delete">Видалити альбом</string>
+    <string name="binder_delete_confirm">Видалити «%1$s»? Карти залишаться в колекції.</string>
+    <string name="binder_name">Назва</string>
+    <string name="binder_cover_design">Дизайн обкладинки</string>
+    <string name="binder_cover_upload">Власне зображення</string>
+    <string name="binder_cover_remove">Прибрати зображення</string>
+    <string name="binder_save">Зберегти</string>
+    <string name="binder_empty_custom">Альбом порожній. Додайте карти з колекції.</string>
+    <string name="binder_search">Пошук карт</string>
+    <string name="binder_new_name">Мій альбом</string>
+    <string name="binder_selected">Вибрано: %1$d</string>
+    <string name="collection_title">Колекція</string>
+    <string name="collection_sort_recent">Нещодавно додані</string>
+    <string name="collection_sort_grade">Грейд</string>
+    <string name="collection_sort_set">Сет</string>
+    <string name="collection_empty">Карт поки немає.</string>
+    <string name="collection_summary">Карт: %1$d · %2$s</string>
+    <string name="cover_midnight">Північ</string>
+    <string name="cover_crimson">Багрянець</string>
+    <string name="cover_forest">Ліс</string>
+    <string name="cover_ocean">Океан</string>
+    <string name="cover_galaxy">Галактика</string>
+    <string name="cover_sunset">Захід сонця</string>
+    <string name="cover_gold">Золота фольга</string>
+    <string name="cover_carbon">Карбон</string>
+</resources>

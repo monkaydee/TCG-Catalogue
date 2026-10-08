@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">Populasi PSA</string>
+    <string name="pop_show">Tampilkan populasi</string>
+    <string name="pop_none">Tambahkan slab PSA kartu ini dengan nomor sertifikatnya untuk melihat populasinya.</string>
+    <string name="pop_total">Di-grade PSA: %1$d</string>
+    <string name="pop_gem_rate">Gem rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Dek</string>
+    <string name="decks_new">Dek baru</string>
+    <string name="decks_empty">Belum ada dek. Buat satu, lalu tempel daftar dek atau tambahkan kartu dari koleksi.</string>
+    <string name="deck_cards">Kartu: %1$d</string>
+    <string name="deck_value">Nilai dek: %1$s</string>
+    <string name="deck_missing">Masih kurang: %1$d · biaya: %2$s</string>
+    <string name="deck_missing_none">Anda memiliki semua kartu dek ini.</string>
+    <string name="deck_owned">dimiliki %1$d / %2$d</string>
+    <string name="deck_import">Tempel daftar dek</string>
+    <string name="deck_import_hint">Satu kartu per baris, mis. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Tambah dari koleksi</string>
+    <string name="deck_share">Bagikan daftar</string>
+    <string name="deck_delete">Hapus dek</string>
+    <string name="deck_delete_confirm">Hapus “%1$s”? Koleksi Anda tidak berubah.</string>
+    <string name="deck_rule_total">Dek %1$s berisi %2$d kartu; dek ini %3$d.</string>
+    <string name="deck_rule_min">Dek %1$s butuh minimal %2$d kartu; dek ini %3$d.</string>
+    <string name="deck_rule_copies">Lebih dari %1$d salinan: %2$s</string>
+    <string name="deck_rules_note">Hanya memeriksa jumlah kartu dan salinan; kartu terlarang dan format tidak diperiksa.</string>
+    <string name="deck_not_found">Tidak ditemukan: %1$s</string>
+    <string name="share_cards">Bagikan sebagai halaman</string>
+    <string name="share_cards_text">Mengirim kartu ini (%1$d) sebagai satu halaman web lewat menu bagikan. Aplikasi tidak mengunggah apa pun.</string>
+    <string name="share_with_prices">Dengan harga</string>
+    <string name="share_without_prices">Tanpa harga</string>
+</resources>

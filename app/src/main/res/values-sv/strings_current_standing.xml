@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Valfritt: dela kortidentifierare och ett OCR-fingeravtryck, inte foton eller läsbar OCR-text. Rapporter sparas i 90 dagar.</string>
+    <string name="learning_photos_paused">Fotodelning är pausad tills innehålls- och kortkontroller har validerats. Lokal skanning fungerar fortfarande.</string>
+    <string name="price_health_summary">%1$d kort utan marknadspris · %2$d japanska kortidentiteter att rätta</string>
+</resources>

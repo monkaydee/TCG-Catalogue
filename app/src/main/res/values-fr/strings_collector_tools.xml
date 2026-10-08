@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Afficher les prix en</string>
+    <string name="settings_display_same">Comme la collection (%1$s)</string>
+    <string name="settings_display_offline">Impossible de charger les taux de change. Réessayez en ligne.</string>
+    <string name="settings_display_hint">Converti avec les taux de référence de la BCE, pour l’affichage seulement. Vos saisies et les valeurs enregistrées restent en EUR ou USD.</string>
+    <string name="card_notes">Notes</string>
+    <string name="card_notes_hint">Où vous l’avez achetée, défauts, pour qui …</string>
+    <string name="worth_grading_title">Faut-il faire noter ?</string>
+    <string name="worth_grading_cost">Coût de notation par carte en %1$s (frais + envoi)</string>
+    <string name="worth_grading_no_raw">La valeur brute de cette carte est inconnue, le gain ne peut pas être calculé.</string>
+    <string name="worth_grading_from">%1$s : rentable à partir de la note %2$s</string>
+    <string name="worth_grading_never">%1$s : rentable pour aucune note listée</string>
+    <string name="worth_grading_note">Comparé à la valeur brute de cet exemplaire, %1$s. Les prix gradés sont des prix de marché ou d’annonces ; la note obtenue n’est pas garantie.</string>
+    <string name="completion_title">Coût pour compléter</string>
+    <string name="completion_total">%1$s pour %2$d cartes</string>
+    <string name="completion_unknown">%1$d cartes sans prix connu (non comptées)</string>
+    <string name="completion_progress">Prix chargés : %1$d sur %2$d</string>
+    <string name="completion_hint">Impression la moins chère de chaque carte manquante au prix du marché</string>
+    <string name="completion_calculate">Calculer</string>
+    <string name="lot_title">Calculateur de lot</string>
+    <string name="lot_remove">Retirer</string>
+    <string name="lot_add_value">Ajouter une valeur (%1$s)</string>
+    <string name="lot_add">Ajouter</string>
+    <string name="lot_market">Valeur du marché : %1$s (%2$d éléments)</string>
+    <string name="lot_unknown">%1$d éléments sans prix (non comptés)</string>
+    <string name="lot_percent">Offre à %1$d %% du marché</string>
+    <string name="lot_offer">Prix du lot : %1$s</string>
+    <string name="bulk_add_to_binder">Ajouter au classeur</string>
+    <string name="bulk_trade">Marquer pour échange</string>
+    <string name="bulk_trade_done">%1$d cartes marquées pour échange</string>
+    <string name="bulk_delete">Supprimer</string>
+    <string name="bulk_delete_confirm">Supprimer %1$d cartes de votre collection ?</string>
+    <string name="bulk_select_all">Tout sélectionner (%1$d)</string>
+    <string name="bulk_no_binders">Vous n’avez pas encore de classeur personnel. Créez-en un dans Ouvrir le classeur.</string>
+    <string name="bulk_added_to_binder">%1$d cartes ajoutées à %2$s</string>
+</resources>

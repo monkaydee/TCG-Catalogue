@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
+    English only for now; the translations follow in values-xx/strings_share.xml.
+-->
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">資產組合</string>
+    <string name="widget_description">顯示你的收藏總價值及近 30 天的變化。</string>
+    <string name="widget_title">收藏價值</string>
+    <string name="widget_cards">%1$d 張</string>
+    <string name="widget_updated">更新於 %1$s</string>
+    <string name="widget_change_30d">30 天 %1$s</string>
+    <string name="widget_no_history">尚無 30 天歷史紀錄</string>
+    <string name="widget_preview_change" formatted="false">30 天 +€48.20 (+4.1%)</string>
+    <string name="widget_preview_cards">312 張</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">分享頁面</string>
+    <string name="share_chooser_title">分享卡冊頁面</string>
+    <string name="share_failed">無法分享頁面：%1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">雲端備份</string>
+    <string name="cloud_hint">將收藏的副本儲存到 Google Drive、Dropbox、OneDrive 或這支手機上任何其他儲存應用程式中的檔案裡。離開應用程式時會自動儲存，開啟時會提示載入另一支手機上較新的副本。</string>
+    <string name="cloud_choose_new">新增檔案</string>
+    <string name="cloud_choose_existing">使用現有檔案</string>
+    <string name="cloud_file">檔案：%1$s</string>
+    <string name="cloud_last_saved">上次儲存：%1$s</string>
+    <string name="cloud_never_saved">尚未儲存</string>
+    <string name="cloud_backup_now">立即備份</string>
+    <string name="cloud_stop">停止</string>
+    <string name="cloud_saved">備份已儲存</string>
+    <string name="cloud_unchanged">自上次備份以來沒有變更</string>
+    <string name="cloud_stopped">雲端備份已停止</string>
+    <string name="cloud_error">雲端備份發生問題：%1$s</string>
+    <string name="cloud_error_permission">檔案存取權已被撤銷，請重新選擇檔案。</string>
+    <string name="cloud_error_not_backup">該檔案不是 CardNavo 備份，因此未做任何變更。</string>
+    <string name="cloud_error_blocked">另一支手機上有較新的收藏待處理。請先載入、合併或忽略它。</string>
+    <string name="cloud_error_unknown">未知錯誤</string>
+    <string name="cloud_pending_title">另一支手機上較新的收藏</string>
+    <string name="cloud_pending_text">備份檔案中的收藏有 %1$d 張卡片，儲存於 %2$s。</string>
+    <string name="cloud_load">載入（取代）</string>
+    <string name="cloud_merge">合併</string>
+    <string name="cloud_ignore">忽略</string>
+    <string name="cloud_loaded">已從備份檔案載入收藏</string>
+    <string name="cloud_merged">收藏已合併</string>
+    <string name="cloud_load_confirm_title">取代你的收藏？</string>
+    <string name="cloud_load_confirm_text">這支手機上的所有內容都將被備份檔案中的收藏取代。</string>
+    <string name="cloud_load_confirm_button">取代</string>
+</resources>

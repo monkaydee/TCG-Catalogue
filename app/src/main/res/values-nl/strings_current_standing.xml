@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Optioneel: kaartcodes en een OCR-vingerafdruk delen, geen foto of leesbare OCR-tekst. Rapporten blijven 90 dagen bewaard.</string>
+    <string name="learning_photos_paused">Foto’s delen is gepauzeerd totdat inhouds- en kaartcontroles zijn gevalideerd. Lokaal scannen blijft werken.</string>
+    <string name="price_health_summary">%1$d kaarten zonder marktprijs · %2$d Japanse kaartidentiteiten herstellen</string>
+</resources>

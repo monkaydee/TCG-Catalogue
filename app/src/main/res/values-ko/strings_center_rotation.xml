@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">재설정</string>
+  <string name="center_rotation_hint">정밀 정렬 ±15°. 이미지를 자유롭게 드래그하거나 비틀거나 슬라이더를 사용하세요. 가이드는 고정되어 있습니다.</string>
+  <string name="center_rotation_done">회전 완료</string>
+  <string name="center_rotation_saved">정렬 회전: %1$.2f°</string>
+</resources>

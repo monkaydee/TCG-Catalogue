@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">हर प्रति अपनी जेब में</string>
+    <string name="binder_move_hint">कार्ड को वहाँ ले जाने के लिए किसी जेब पर टैप करें</string>
+    <string name="binder_remove">बाइंडर से हटाएँ</string>
+    <string name="binder_pick_for_pocket">इस जेब के लिए कार्ड चुनें</string>
+    <string name="binder_all_placed">सभी प्रतियाँ पहले से इस बाइंडर में हैं</string>
+</resources>

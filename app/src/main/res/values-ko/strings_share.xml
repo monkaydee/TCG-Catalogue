@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
+    English only for now; the translations follow in values-xx/strings_share.xml.
+-->
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">포트폴리오</string>
+    <string name="widget_description">컬렉션의 총 가치와 최근 30일간의 변화를 보여 줘요.</string>
+    <string name="widget_title">컬렉션 가치</string>
+    <string name="widget_cards">%1$d장</string>
+    <string name="widget_updated">업데이트: %1$s</string>
+    <string name="widget_change_30d">30일간 %1$s</string>
+    <string name="widget_no_history">아직 30일 기록이 없어요</string>
+    <string name="widget_preview_change" formatted="false">30일간 +€48.20 (+4.1%)</string>
+    <string name="widget_preview_cards">312장</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">페이지 공유</string>
+    <string name="share_chooser_title">바인더 페이지 공유</string>
+    <string name="share_failed">페이지를 공유하지 못했어요: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">클라우드 백업</string>
+    <string name="cloud_hint">컬렉션 사본을 Google Drive, Dropbox, OneDrive 등 이 휴대폰의 저장소 앱에 있는 파일로 보관해요. 앱을 나갈 때 저장되고, 앱을 열면 다른 휴대폰의 더 최신 사본을 불러올지 물어봐요.</string>
+    <string name="cloud_choose_new">새 파일</string>
+    <string name="cloud_choose_existing">기존 파일 사용</string>
+    <string name="cloud_file">파일: %1$s</string>
+    <string name="cloud_last_saved">마지막 저장: %1$s</string>
+    <string name="cloud_never_saved">아직 저장 안 됨</string>
+    <string name="cloud_backup_now">지금 백업</string>
+    <string name="cloud_stop">중지</string>
+    <string name="cloud_saved">백업이 저장되었어요</string>
+    <string name="cloud_unchanged">마지막 백업 이후 변경된 내용이 없어요</string>
+    <string name="cloud_stopped">클라우드 백업을 중지했어요</string>
+    <string name="cloud_error">클라우드 백업 문제: %1$s</string>
+    <string name="cloud_error_permission">파일 접근 권한이 취소되었어요. 파일을 다시 선택하세요.</string>
+    <string name="cloud_error_not_backup">이 파일은 CardNavo 백업이 아니라서 그대로 두었어요.</string>
+    <string name="cloud_error_blocked">다른 휴대폰의 더 최신 컬렉션이 대기 중이에요. 먼저 불러오기, 병합 또는 무시를 선택하세요.</string>
+    <string name="cloud_error_unknown">알 수 없는 오류</string>
+    <string name="cloud_pending_title">다른 휴대폰의 더 최신 컬렉션</string>
+    <string name="cloud_pending_text">백업 파일에 카드 %1$d장이 있는 컬렉션이 있어요 (저장: %2$s).</string>
+    <string name="cloud_load">불러오기 (교체)</string>
+    <string name="cloud_merge">병합</string>
+    <string name="cloud_ignore">무시</string>
+    <string name="cloud_loaded">백업 파일에서 컬렉션을 불러왔어요</string>
+    <string name="cloud_merged">컬렉션을 병합했어요</string>
+    <string name="cloud_load_confirm_title">컬렉션을 교체할까요?</string>
+    <string name="cloud_load_confirm_text">이 휴대폰의 모든 데이터가 백업 파일의 컬렉션으로 교체돼요.</string>
+    <string name="cloud_load_confirm_button">교체</string>
+</resources>

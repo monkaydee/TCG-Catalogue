@@ -1,0 +1,9 @@
+<resources>
+    <string name="sealed_printed_language_hint">Pilih bahasa yang tercetak pada produk. Harga dimuat saat menelusuri; harga penawaran diberi label.</string>
+    <string name="sealed_one_piece_no_german">One Piece tidak memiliki edisi kartu bahasa Jerman. Produk yang dijual di Jerman memakai bahasa cetak lain; pilih Inggris atau Jepang.</string>
+    <string name="sealed_checking_price">Memeriksa…</string>
+    <string name="sealed_no_matching_price">Tidak ada harga yang cocok</string>
+    <string name="sealed_price_unavailable">Harga tidak tersedia</string>
+    <string name="sealed_asking_reference">Harga penawaran</string>
+    <string name="sealed_limited_reference">Referensi terbatas</string>
+</resources>

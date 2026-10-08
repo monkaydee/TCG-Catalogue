@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">掃描到的名稱與這張卡不符，編號可能辨識錯誤。請檢查，或取消後手動輸入。</string>
+    <string name="data_graded">評級卡</string>
+    <string name="data_graded_grade">評級 %1$s</string>
+    <string name="data_graded_choose_grader">請選擇評級公司</string>
+    <string name="data_graded_choose_grade">請選擇評級分數</string>
+    <string name="data_graded_no_source">沒有評級價格來源，請設定自訂價值，或使用卡片頁面的價格連結查詢</string>
+    <string name="data_variant_normal">普通</string>
+    <string name="data_variant_holo">全像閃卡</string>
+    <string name="data_variant_reverse_holo">反閃</string>
+    <string name="data_variant_first_edition">1st Edition 初版</string>
+    <string name="data_variant_foil">閃卡</string>
+    <string name="data_variant_etched_foil">蝕刻閃卡</string>
+    <string name="data_variant_standard">標準</string>
+    <string name="data_variant_numbered">變體 %1$d</string>
+    <string name="data_overview_prices">價格</string>
+    <string name="data_overview_no_card_data">無法載入卡片資料，請檢查網路連線</string>
+    <string name="data_overview_no_cardmarket">這張卡沒有 Cardmarket 價格</string>
+    <string name="data_overview_no_tcgplayer">這張卡沒有 TCGplayer 價格</string>
+    <string name="data_overview_by_condition">TCGplayer 各卡況價格（成交）</string>
+    <string name="data_overview_no_condition_sales">沒有各卡況的成交紀錄</string>
+    <string name="price_label_trend">趨勢價</string>
+    <string name="price_label_lowest_offer">最低報價</string>
+    <string name="price_label_average_sold">平均成交價</string>
+    <string name="price_label_avg1">1 日均價</string>
+    <string name="price_label_avg7">7 日均價</string>
+    <string name="price_label_avg30">30 日均價</string>
+    <string name="price_label_market">市價</string>
+    <string name="price_label_lowest_listing">最低刊登價</string>
+    <string name="price_label_mid">中間價</string>
+    <string name="price_label_highest_listing">最高刊登價</string>
+    <string name="price_label_direct_low">Direct 最低價</string>
+    <string name="price_note_raw_no_graded_source">顯示裸卡價格，沒有評級價格來源，請設定自訂價值，或使用卡片頁面的價格連結查詢</string>
+    <string name="price_note_markets_disagree">%1$s 商品與這張卡不符（價差 %2$d 倍），改用 %3$s</string>
+    <string name="price_note_capped">%1$s 以 %2$s 估值（其成交資料較高）</string>
+    <string name="price_note_tcgplayer_sales">%1$s 價格來自 TCGplayer 成交紀錄</string>
+    <string name="price_note_sales_share">%1$s = NM 價格的 %2$d%%（TCGplayer 成交）</string>
+    <string name="price_note_estimated_share">%1$s 估計為 NM 價格的 %2$d%%（無成交資料）</string>
+    <string name="data_http_error">%2$s 回傳 HTTP %1$d</string>
+    <string name="data_service_unavailable">卡片服務（%1$s）目前沒有回應，請稍後再試。</string>
+</resources>

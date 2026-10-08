@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Prislarm</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Nu %1$s — över ditt larm på %2$s</string>
+    <string name="alert_below">Nu %1$s — under ditt larm på %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">På din önskelista: nu %1$s — på eller under ditt målpris på %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Stapelläge</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — kontrollera det senare i listen nedan</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d kort att kontrollera — tryck på det</item>
+        <item quantity="other">%d kort att kontrollera — tryck på dem</item>
+    </plurals>
+    <string name="stack_tap_to_review">Tryck för att kontrollera</string>
+    <string name="stack_undo">Ångra</string>
+    <string name="stack_discard">Kasta</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Förseglade produkter</string>
+    <string name="sealed_add">Lägg till förseglad produkt</string>
+    <string name="sealed_value">Förseglat värde</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d artikel</item>
+        <item quantity="other">%d artiklar</item>
+    </plurals>
+    <string name="sealed_empty">Håll koll på oöppnade boosterboxar, paket, lekar och askar här. Deras marknadsvärde räknas in i din portfölj.</string>
+    <string name="sealed_remove_hint">Om du sparar med 0 tas produkten bort.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s sedan köpet</string>
+    <string name="sealed_no_price">inget pris</string>
+    <string name="sealed_search_hint">Produktnamn eller set, t.ex. ”151 boosterbox”</string>
+    <string name="sealed_no_results">Inga förseglade produkter hittades</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Tyvärr kraschade appen</string>
+    <string name="crash_text">En teknisk rapport sparades (app- och Android-version, telefonmodell och felet — inga av dina kort). Du kan skicka den för att hjälpa till att åtgärda problemet.</string>
+    <string name="crash_report_github">Rapportera på GitHub</string>
+    <string name="crash_share">Dela</string>
+    <string name="crash_dismiss">Inte nu</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">En nyare samling från en annan telefon</string>
+    <string name="home_cloud_newer_text">Din molnsäkerhetskopia uppdaterades på en annan telefon. Tryck för att läsa in eller slå ihop den i Inställningar.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Sök med bild</string>
+    <string name="picture_preparing">Förbereder bildsökning — en engångsnedladdning på cirka 20 MB…</string>
+    <string name="picture_searching">Letar efter kortet med hjälp av bilden…</string>
+    <string name="picture_none">Inget kort hittades med bilden — försök skriva in det.</string>
+    <string name="picture_unavailable">Bildsökning är inte tillgänglig just nu — kontrollera din anslutning.</string>
+    <string name="picture_check">Hittades med bilden — kontrollera att det är rätt kort.</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Ajuster les guides de centrage</string>
+  <string name="center_hint">Chaque côté comporte deux guides : bord extérieur de la carte et cadre intérieur imprimé. Faites glisser les deux pour mesurer leur écart. Le cyan marque les guides extérieurs ; marques vertes sur les guides intérieurs. Jaune est le guide sélectionné. Utilisez le même cadre imprimé de chaque côté.</string>
+  <string name="center_left">Gauche</string>
+  <string name="center_right">À droite</string>
+  <string name="center_top">Haut</string>
+  <string name="center_bottom">En bas</string>
+  <string name="center_detail">Détail du guide sélectionné</string>
+  <string name="center_outer">Bord extérieur</string>
+  <string name="center_inner">Cadre intérieur</string>
+  <string name="center_minus_pixel">−1 pixel d\'image</string>
+  <string name="center_plus_pixel">+1 pixel d\'image</string>
+  <string name="center_cancel">Annuler</string>
+  <string name="center_apply">Utilisez ces guides</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Kontynuuj centrowanie</string>
+  <string name="center_confirm_next">Potwierdź kontur i zmierz wyśrodkowanie</string>
+  <string name="center_step_two">Krok 2: prowadnice zewnętrzne i wewnętrzne</string>
+</resources>

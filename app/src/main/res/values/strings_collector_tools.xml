@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Show prices in</string>
+    <string name="settings_display_same">Same as collection (%1$s)</string>
+    <string name="settings_display_offline">Exchange rates could not be loaded. Try again when online.</string>
+    <string name="settings_display_hint">Converted with ECB reference rates for display only. Amounts you enter and stored values stay in EUR or USD.</string>
+    <string name="card_notes">Notes</string>
+    <string name="card_notes_hint">Where you bought it, flaws, who it is for …</string>
+    <string name="worth_grading_title">Worth grading?</string>
+    <string name="worth_grading_cost">Grading cost per card in %1$s (fee + shipping)</string>
+    <string name="worth_grading_no_raw">The raw value of this card is unknown, so the gain cannot be worked out.</string>
+    <string name="worth_grading_from">%1$s: pays off from grade %2$s</string>
+    <string name="worth_grading_never">%1$s: does not pay off at any listed grade</string>
+    <string name="worth_grading_note">Compared with this copy’s raw value of %1$s. Graded prices are market or asking prices; the grade a card gets is not guaranteed.</string>
+    <string name="completion_title">Cost to complete</string>
+    <string name="completion_total">%1$s · cards priced: %2$d</string>
+    <string name="completion_unknown">Without a known price (not counted): %1$d</string>
+    <string name="completion_progress">Prices loaded: %1$d of %2$d</string>
+    <string name="completion_hint">Cheapest printing of each missing card at market price</string>
+    <string name="completion_calculate">Calculate</string>
+    <string name="lot_title">Lot calculator</string>
+    <string name="lot_remove">Remove</string>
+    <string name="lot_add_value">Add value (%1$s)</string>
+    <string name="lot_add">Add</string>
+    <string name="lot_market">Market value: %1$s · items: %2$d</string>
+    <string name="lot_unknown">Items without a price (not counted): %1$d</string>
+    <string name="lot_percent">Offer at %1$d %% of market</string>
+    <string name="lot_offer">Lot price: %1$s</string>
+    <string name="bulk_add_to_binder">Add to binder</string>
+    <string name="bulk_trade">Mark for trade</string>
+    <string name="bulk_trade_done">Marked for trade: %1$d</string>
+    <string name="bulk_delete">Delete</string>
+    <string name="bulk_delete_confirm">Delete the selected cards from your collection? (%1$d)</string>
+    <string name="bulk_select_all">Select all (%1$d)</string>
+    <string name="bulk_no_binders">You have no own binders yet. Create one under Open binder.</string>
+    <string name="bulk_added_to_binder">Added to %2$s: %1$d</string>
+</resources>

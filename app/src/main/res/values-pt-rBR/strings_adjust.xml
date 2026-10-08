@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Ajustar cantos</string>
+    <string name="grade_adjust_hint">Arraste os quatro pontos para os cantos da carta. A lupa ajuda a posicioná-los com precisão.</string>
+    <string name="grade_adjust_apply">Aplicar</string>
+</resources>

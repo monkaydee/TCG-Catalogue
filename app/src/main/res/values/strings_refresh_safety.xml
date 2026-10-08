@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">Latest lookup found no matching quote; previous quote retained</string>
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Portfólio</string>
+    <string name="widget_description">O valor total da sua coleção e como ele mudou nos últimos 30 dias.</string>
+    <string name="widget_title">Valor da coleção</string>
+    <string name="widget_cards">%1$d cartas</string>
+    <string name="widget_updated">Atualizado %1$s</string>
+    <string name="widget_change_30d">%1$s em 30 dias</string>
+    <string name="widget_no_history">Ainda sem histórico de 30 dias</string>
+    <string name="widget_preview_change" formatted="false">+€48,20 (+4,1%) em 30 dias</string>
+    <string name="widget_preview_cards">312 cartas</string>
+
+    <string name="share_page">Compartilhar página</string>
+    <string name="share_chooser_title">Compartilhar página do fichário</string>
+    <string name="share_failed">Não foi possível compartilhar a página: %1$s</string>
+
+    <string name="cloud_title">Backup na nuvem</string>
+    <string name="cloud_hint">Mantenha uma cópia da sua coleção em um arquivo no Google Drive, Dropbox, OneDrive ou qualquer outro app de armazenamento neste celular. Ela é salva quando você sai do app, e uma cópia mais recente de outro celular é oferecida quando você o abre.</string>
+    <string name="cloud_choose_new">Novo arquivo</string>
+    <string name="cloud_choose_existing">Usar arquivo existente</string>
+    <string name="cloud_file">Arquivo: %1$s</string>
+    <string name="cloud_last_saved">Último salvamento: %1$s</string>
+    <string name="cloud_never_saved">Ainda não salvo</string>
+    <string name="cloud_backup_now">Fazer backup agora</string>
+    <string name="cloud_stop">Parar</string>
+    <string name="cloud_saved">Backup salvo</string>
+    <string name="cloud_unchanged">Nada mudou desde o último backup</string>
+    <string name="cloud_stopped">Backup na nuvem parado</string>
+    <string name="cloud_error">Problema no backup na nuvem: %1$s</string>
+    <string name="cloud_error_permission">O acesso ao arquivo foi revogado. Escolha o arquivo novamente.</string>
+    <string name="cloud_error_not_backup">O arquivo não é um backup do CardNavo, por isso não foi alterado.</string>
+    <string name="cloud_error_blocked">Uma coleção mais recente de outro celular está aguardando. Carregue, mescle ou ignore primeiro.</string>
+    <string name="cloud_error_unknown">erro desconhecido</string>
+    <string name="cloud_pending_title">Coleção mais recente de outro celular</string>
+    <string name="cloud_pending_text">O arquivo de backup contém uma coleção com %1$d cartas, salva %2$s.</string>
+    <string name="cloud_load">Carregar (substitui)</string>
+    <string name="cloud_merge">Mesclar</string>
+    <string name="cloud_ignore">Ignorar</string>
+    <string name="cloud_loaded">Coleção carregada do arquivo de backup</string>
+    <string name="cloud_merged">Coleções mescladas</string>
+    <string name="cloud_load_confirm_title">Substituir sua coleção?</string>
+    <string name="cloud_load_confirm_text">Tudo neste celular é substituído pela coleção do arquivo de backup.</string>
+    <string name="cloud_load_confirm_button">Substituir</string>
+</resources>

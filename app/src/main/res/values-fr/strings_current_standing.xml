@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Facultatif : partager les identifiants des cartes et une empreinte OCR, sans photo ni texte OCR lisible. Conservation : 90 jours.</string>
+    <string name="learning_photos_paused">Le partage de photos est suspendu jusqu’à validation des contrôles de contenu et d’identité. Le scan local reste disponible.</string>
+    <string name="price_health_summary">%1$d cartes sans prix de marché · %2$d identités japonaises à corriger</string>
+</resources>

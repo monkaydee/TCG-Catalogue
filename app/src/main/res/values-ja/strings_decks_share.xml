@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSAポピュレーション</string>
+    <string name="pop_show">ポピュレーションを表示</string>
+    <string name="pop_none">ポピュレーションを見るには、このカードの証明番号付きPSAスラブを追加してください。</string>
+    <string name="pop_total">PSA鑑定数: %1$d</string>
+    <string name="pop_gem_rate">ジェム率（PSA 10）: %1$s %%</string>
+    <string name="decks_title">デッキ</string>
+    <string name="decks_new">新しいデッキ</string>
+    <string name="decks_empty">まだデッキがありません。作成してデッキリストを貼り付けるか、コレクションからカードを追加してください。</string>
+    <string name="deck_cards">カード: %1$d</string>
+    <string name="deck_value">デッキの価値: %1$s</string>
+    <string name="deck_missing">不足: %1$d・費用: %2$s</string>
+    <string name="deck_missing_none">このデッキのカードをすべて所有しています。</string>
+    <string name="deck_owned">所有 %1$d / %2$d</string>
+    <string name="deck_import">デッキリストを貼り付け</string>
+    <string name="deck_import_hint">1行に1枚（例: 4 Pikachu ex SVI 63）</string>
+    <string name="deck_add_owned">コレクションから追加</string>
+    <string name="deck_share">リストを共有</string>
+    <string name="deck_delete">デッキを削除</string>
+    <string name="deck_delete_confirm">「%1$s」を削除しますか？コレクションは変わりません。</string>
+    <string name="deck_rule_total">%1$sのデッキは%2$d枚です。このデッキは%3$d枚です。</string>
+    <string name="deck_rule_min">%1$sのデッキは%2$d枚以上必要です。このデッキは%3$d枚です。</string>
+    <string name="deck_rule_copies">%1$d枚を超えています: %2$s</string>
+    <string name="deck_rules_note">枚数と同名カードの数だけを確認します。禁止カードやフォーマットは確認しません。</string>
+    <string name="deck_not_found">見つかりません: %1$s</string>
+    <string name="share_cards">ページとして共有</string>
+    <string name="share_cards_text">これらのカード（%1$d）を1つのウェブページとして共有メニューで送ります。アプリは何もアップロードしません。</string>
+    <string name="share_with_prices">価格あり</string>
+    <string name="share_without_prices">価格なし</string>
+</resources>

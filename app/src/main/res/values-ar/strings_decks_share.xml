@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">عدد PSA</string>
+    <string name="pop_show">عرض العدد</string>
+    <string name="pop_none">أضف بطاقة PSA مقيّمة لهذه البطاقة برقم شهادتها لرؤية عددها.</string>
+    <string name="pop_total">مقيّمة من PSA: %1$d</string>
+    <string name="pop_gem_rate">نسبة 10 (PSA 10): %1$s %%</string>
+    <string name="decks_title">المجموعات</string>
+    <string name="decks_new">مجموعة جديدة</string>
+    <string name="decks_empty">لا توجد مجموعات بعد. أنشئ واحدة ثم الصق قائمة أو أضف بطاقات من مجموعتك.</string>
+    <string name="deck_cards">البطاقات: %1$d</string>
+    <string name="deck_value">قيمة المجموعة: %1$s</string>
+    <string name="deck_missing">ناقص: %1$d · التكلفة: %2$s</string>
+    <string name="deck_missing_none">تملك كل بطاقات هذه المجموعة.</string>
+    <string name="deck_owned">تملك %1$d / %2$d</string>
+    <string name="deck_import">لصق قائمة المجموعة</string>
+    <string name="deck_import_hint">بطاقة في كل سطر، مثل 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">إضافة من مجموعتك</string>
+    <string name="deck_share">مشاركة القائمة</string>
+    <string name="deck_delete">حذف المجموعة</string>
+    <string name="deck_delete_confirm">حذف «%1$s»؟ لن تتغير مجموعتك.</string>
+    <string name="deck_rule_total">مجموعات %1$s فيها %2$d بطاقة؛ هذه فيها %3$d.</string>
+    <string name="deck_rule_min">مجموعات %1$s تحتاج %2$d بطاقة على الأقل؛ هذه فيها %3$d.</string>
+    <string name="deck_rule_copies">أكثر من %1$d نسخ: %2$s</string>
+    <string name="deck_rules_note">يتحقق فقط من عدد البطاقات والنسخ؛ لا يتحقق من البطاقات المحظورة أو الصيغ.</string>
+    <string name="deck_not_found">غير موجودة: %1$s</string>
+    <string name="share_cards">مشاركة كصفحة</string>
+    <string name="share_cards_text">يرسل هذه البطاقات (%1$d) كصفحة ويب واحدة عبر قائمة المشاركة. لا يرفع التطبيق أي شيء.</string>
+    <string name="share_with_prices">مع الأسعار</string>
+    <string name="share_without_prices">بدون أسعار</string>
+</resources>

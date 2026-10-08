@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
+    English only for now; the translations follow in values-xx/strings_share.xml.
+-->
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">Portföy</string>
+    <string name="widget_description">Koleksiyonunuzun toplam değeri ve son 30 günde nasıl değiştiği.</string>
+    <string name="widget_title">Koleksiyon değeri</string>
+    <string name="widget_cards">%1$d kart</string>
+    <string name="widget_updated">Güncellendi: %1$s</string>
+    <string name="widget_change_30d">30 günde %1$s</string>
+    <string name="widget_no_history">Henüz 30 günlük geçmiş yok</string>
+    <string name="widget_preview_change" formatted="false">30 günde +€48.20 (+4.1%)</string>
+    <string name="widget_preview_cards">312 kart</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Sayfayı paylaş</string>
+    <string name="share_chooser_title">Binder sayfasını paylaş</string>
+    <string name="share_failed">Sayfa paylaşılamadı: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Bulut yedekleme</string>
+    <string name="cloud_hint">Koleksiyonunuzun bir kopyasını Google Drive, Dropbox, OneDrive veya bu telefondaki başka bir depolama uygulamasındaki bir dosyada saklayın. Uygulamadan çıktığınızda kaydedilir; açtığınızda başka bir telefondan gelen daha yeni bir kopya önerilir.</string>
+    <string name="cloud_choose_new">Yeni dosya</string>
+    <string name="cloud_choose_existing">Mevcut dosyayı kullan</string>
+    <string name="cloud_file">Dosya: %1$s</string>
+    <string name="cloud_last_saved">Son kayıt: %1$s</string>
+    <string name="cloud_never_saved">Henüz kaydedilmedi</string>
+    <string name="cloud_backup_now">Şimdi yedekle</string>
+    <string name="cloud_stop">Durdur</string>
+    <string name="cloud_saved">Yedek kaydedildi</string>
+    <string name="cloud_unchanged">Son yedekten beri değişen bir şey yok</string>
+    <string name="cloud_stopped">Bulut yedekleme durduruldu</string>
+    <string name="cloud_error">Bulut yedekleme sorunu: %1$s</string>
+    <string name="cloud_error_permission">Dosyaya erişim iptal edildi. Dosyayı yeniden seçin.</string>
+    <string name="cloud_error_not_backup">Dosya bir CardNavo yedeği değil, bu yüzden dokunulmadı.</string>
+    <string name="cloud_error_blocked">Başka bir telefondan daha yeni bir koleksiyon bekliyor. Önce yükleyin, birleştirin veya yok sayın.</string>
+    <string name="cloud_error_unknown">bilinmeyen hata</string>
+    <string name="cloud_pending_title">Başka bir telefondan daha yeni koleksiyon</string>
+    <string name="cloud_pending_text">Yedek dosyasında %2$s tarihinde kaydedilmiş, %1$d kartlık bir koleksiyon var.</string>
+    <string name="cloud_load">Yükle (değiştir)</string>
+    <string name="cloud_merge">Birleştir</string>
+    <string name="cloud_ignore">Yok say</string>
+    <string name="cloud_loaded">Koleksiyon yedek dosyasından yüklendi</string>
+    <string name="cloud_merged">Koleksiyonlar birleştirildi</string>
+    <string name="cloud_load_confirm_title">Koleksiyonunuz değiştirilsin mi?</string>
+    <string name="cloud_load_confirm_text">Bu telefondaki her şey yedek dosyasındaki koleksiyonla değiştirilir.</string>
+    <string name="cloud_load_confirm_button">Değiştir</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">सेंटरिंग गाइड समायोजित करें</string>
+  <string name="center_hint">प्रत्येक पक्ष में दो गाइड हैं: बाहरी कार्ड किनारा और आंतरिक मुद्रित फ्रेम। उनके अंतर को मापने के लिए दोनों को खींचें। सियान बाहरी मार्गदर्शकों को चिह्नित करता है; हरा आंतरिक मार्गदर्शकों को चिह्नित करता है। पीला चयनित मार्गदर्शक है. हर तरफ एक ही मुद्रित फ़्रेम का उपयोग करें।</string>
+  <string name="center_left">वाम</string>
+  <string name="center_right">ठीक है</string>
+  <string name="center_top">शीर्ष</string>
+  <string name="center_bottom">तल</string>
+  <string name="center_detail">चयनित गाइड विवरण</string>
+  <string name="center_outer">बाहरी किनारा</string>
+  <string name="center_inner">भीतरी ढाँचा</string>
+  <string name="center_minus_pixel">−1 छवि पिक्सेल</string>
+  <string name="center_plus_pixel">+1 छवि पिक्सेल</string>
+  <string name="center_cancel">रद्द करें</string>
+  <string name="center_apply">इन गाइडों का उपयोग करें</string>
+</resources>

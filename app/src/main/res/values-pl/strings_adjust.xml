@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Dopasuj rogi</string>
+    <string name="grade_adjust_hint">Przeciągnij cztery punkty na rogi karty. Lupa pomaga ustawić je dokładnie.</string>
+    <string name="grade_adjust_apply">Zastosuj</string>
+</resources>

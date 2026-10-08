@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Настроить углы</string>
+    <string name="grade_adjust_hint">Перетащите четыре точки на углы карты. Лупа поможет поставить их точно.</string>
+    <string name="grade_adjust_apply">Применить</string>
+</resources>

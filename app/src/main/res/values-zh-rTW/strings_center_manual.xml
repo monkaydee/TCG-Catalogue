@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">調整居中導軌</string>
+  <string name="center_hint">每面都有兩個導軌：外卡邊緣和內印框架。拖曳兩者來測量它們的間隙。青色標記外導軌；綠色標記內部參考線。黃色是選定的指南。每面都使用相同的印刷框架。</string>
+  <string name="center_left">左</string>
+  <string name="center_right">右</string>
+  <string name="center_top">頂部</string>
+  <string name="center_bottom">底部</string>
+  <string name="center_detail">選定的指南詳細信息</string>
+  <string name="center_outer">外緣</string>
+  <string name="center_inner">內框</string>
+  <string name="center_minus_pixel">−1 影像像素</string>
+  <string name="center_plus_pixel">+1 影像像素</string>
+  <string name="center_cancel">取消</string>
+  <string name="center_apply">使用這些指南</string>
+</resources>

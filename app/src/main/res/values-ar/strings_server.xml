@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">لم يتم العثور على مبيعات حديثة لـ %1$s — حدّد قيمتك الخاصة أو تحقق من روابط الأسعار</string>
+    <string name="data_graded_server_error">تعذّر الوصول إلى خادم الأسعار حاليًا</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="zero">%1$d عملية بيع</item>
+        <item quantity="one">عملية بيع واحدة</item>
+        <item quantity="two">عمليتا بيع</item>
+        <item quantity="few">%1$d عمليات بيع</item>
+        <item quantity="many">%1$d عملية بيع</item>
+        <item quantity="other">%1$d عملية بيع</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">أسعار البطاقات المقيَّمة</string>
+    <string name="graded_none">لم يتم العثور على مبيعات مقيَّمة لهذه البطاقة.</string>
+    <string name="graded_failed">تعذّر الوصول إلى خادم الأسعار حاليًا.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">تقييمك</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">تحقق من الشهادة عبر PSA</string>
+    <string name="cert_unknown">لا توجد بطاقة لدى PSA بهذا الرقم التسلسلي للشهادة.</string>
+    <string name="cert_failed">تعذّر الوصول إلى PSA حاليًا. حاول مرة أخرى لاحقًا.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">تقييم PSA: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">العدد: %1$d بهذا التقييم، %2$d أعلى</string>
+    <string name="cert_mismatch">التقييم في سجل PSA يختلف عن التقييم المحفوظ لهذه البطاقة.</string>
+    <string name="links_psa_cert">شهادة PSA</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">تعرّف عبر الإنترنت</string>
+    <string name="identify_hint">يرسل هذه الصورة إلى خادم الأسعار الخاص بالتطبيق للتعرّف على الصورة (Ximilar). لا يتم تخزين الصورة.</string>
+    <string name="identify_searching">جارٍ التعرّف عبر الإنترنت…</string>
+    <string name="identify_none">لم يتم التعرّف عليها عبر الإنترنت أيضًا. جرّب صورة أوضح أو اكتب البطاقة يدويًا.</string>
+    <string name="identify_failed">التعرّف عبر الإنترنت غير متاح حاليًا (تم بلوغ الحد اليومي أو لا يوجد اتصال).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">خادم الأسعار</string>
+    <string name="settings_server_summary">الخادم المجاني الخاص بالتطبيق لأسعار البطاقات المقيَّمة والتحقق من شهادات PSA والتعرّف عبر الإنترنت. الإصدارات من GitHub تتضمنه مدمجًا؛ راجع docs/CLOUDFLARE.md لإعداد خادمك الخاص.</string>
+    <string name="settings_server_url">عنوان الخادم (https://…)</string>
+    <string name="settings_server_key">مفتاح التطبيق</string>
+    <string name="settings_server_save">حفظ</string>
+    <string name="settings_server_reset">استخدام المدمج</string>
+    <string name="settings_server_test">اختبار</string>
+    <string name="settings_server_ok">تم الاتصال بخادم الأسعار.</string>
+    <string name="settings_server_bad">لم يستجب خادم الأسعار. تحقق من العنوان ومفتاح التطبيق.</string>
+    <string name="settings_server_off">لم يتم إعداد خادم أسعار: تستخدم الأسعار المقيَّمة قيمتك الخاصة.</string>
+</resources>

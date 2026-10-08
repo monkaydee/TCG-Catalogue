@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Каждая копия в своём кармане</string>
+    <string name="binder_move_hint">Нажмите на карман, чтобы переложить карту туда</string>
+    <string name="binder_remove">Убрать из альбома</string>
+    <string name="binder_pick_for_pocket">Выберите карту для этого кармана</string>
+    <string name="binder_all_placed">Все копии уже в этом альбоме</string>
+</resources>

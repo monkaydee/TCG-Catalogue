@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">inget pris</string>
+    <string name="add_grader_other">Annat</string>
+    <string name="add_confirm">Lägg till</string>
+    <string name="add_graded_missing">Inget graderat pris hittades (%1$s). Ange ditt eget värde nedan; ograderat pris används inte.</string>
+    <string name="add_no_sales_found">inga försäljningar hittades</string>
+    <plurals name="add_possible_matches">
+        <item quantity="one">%d möjlig träff — tryck på rätt</item>
+        <item quantity="other">%d möjliga träffar — tryck på rätt</item>
+    </plurals>
+    <string name="add_raw_price">raw-pris</string>
+    <string name="add_looking_up_sales">söker försäljningar…</string>
+    <string name="add_price_details">per exemplar · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">Utgåva — kontrollera: skanningen kunde inte skilja den från en annan utgåva</string>
+    <string name="add_printing_recognised">Utgåva — igenkänd från skanningen</string>
+    <string name="add_printing">Utgåva</string>
+    <string name="add_cardmarket_listing">Cardmarket-annons (välj exakt den utgåva du äger)</string>
+    <string name="add_raw">Raw</string>
+    <string name="add_graded">Graded</string>
+    <string name="add_grading_company">Graderingsföretag</string>
+    <string name="add_grade">Betyg</string>
+    <string name="add_cert_number">Certifikatnummer (valfritt)</string>
+    <string name="add_condition">Skick</string>
+    <string name="add_purchase_price">Inköpspris per exemplar (%1$s, valfritt)</string>
+    <string name="add_my_value">Mitt värde per exemplar (%1$s, valfritt — ersätter marknadspriset)</string>
+    <string name="add_wrong_card">Fel kort? Sök efter rätt</string>
+    <string name="add_cancel">Avbryt</string>
+    <string name="import_could_not_open_photo">Det gick inte att öppna fotot</string>
+    <string name="import_lookup_failed">Sökningen misslyckades — kontrollera anslutningen</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">Importera foton</string>
+    <string name="import_back">Tillbaka</string>
+    <string name="import_add_photos">Lägg till foton</string>
+    <string name="import_intro">Tog du bilder på kort när du var ute? Importera dem här så känns de igen precis som vid en liveskanning.\n\n• Ett kort per foto fungerar bäst; binder-sidor går bra om numren är skarpa\n• Se till att numret längst ned på kortet är läsbart\n• Du kan också dela foton till CardNavo från galleriet eller en chattapp</string>
+    <string name="import_choose_photos">Välj foton</string>
+    <plurals name="import_count_added">
+        <item quantity="one">%d tillagt</item>
+        <item quantity="other">%d tillagda</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="one">%d att granska</item>
+        <item quantity="other">%d att granska</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="one">%d pågår</item>
+        <item quantity="other">%d pågår</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="one">%d inte igenkänt</item>
+        <item quantity="other">%d inte igenkända</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="one">Lägg till bästa träff för %d kort</item>
+        <item quantity="other">Lägg till bästa träff för alla %d kort</item>
+    </plurals>
+    <string name="import_reading_photo">Läser foto…</string>
+    <string name="import_looking_up">Söker %1$s…</string>
+    <string name="import_check_printing">Kontrollera utgåvan — den kunde inte skiljas från en annan</string>
+    <plurals name="import_possible_matches">
+        <item quantity="one">%d möjlig träff · tryck för att välja</item>
+        <item quantity="other">%d möjliga träffar · tryck för att välja</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · tryck för att lägga till</string>
+    <string name="import_added">Tillagt</string>
+    <string name="import_no_card_found">Inget kort hittades för %1$s</string>
+    <string name="import_no_number">Inget kortnummer hittades i det här fotot</string>
+    <string name="import_something_wrong">Något gick fel</string>
+    <string name="import_type_it_in">Skriv in manuellt</string>
+    <string name="import_retry">Försök igen</string>
+    <string name="import_dismiss">Avfärda</string>
+    <string name="scan_lookup_failed">Sökningen misslyckades — kontrollera anslutningen</string>
+    <string name="scan_no_card_found">Inget kort hittades för %1$s</string>
+    <string name="scan_added_auto">La till %1$s (%2$s)</string>
+    <string name="scan_added_auto_graded">La till %1$s (%2$s) · %3$s</string>
+    <string name="scan_added_qty">La till %1$s ×%2$d</string>
+    <string name="scan_could_not_save">Det gick inte att spara: %1$s</string>
+    <string name="scan_camera_rationale">Kameran används för att läsa kortnumret. Bilderna lämnar aldrig din telefon.</string>
+    <string name="scan_allow_camera">Tillåt kamera</string>
+    <string name="scan_import_instead">Importera foton i stället</string>
+    <string name="scan_torch">Ficklampa</string>
+    <string name="scan_quick_add_on">Snabbtillägg PÅ — kort läggs till automatiskt</string>
+    <string name="scan_quick_add_off">Snabbtillägg AV — bekräfta varje kort</string>
+    <string name="scan_reading">Läser %1$s…</string>
+    <string name="scan_hint">Fyll hela ramen med kortet. Håll numret längst ned skarpt och väl belyst — tryck på skärmen för att fokusera.</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="one">%d tillagt denna session</item>
+        <item quantity="other">%d tillagda denna session</item>
+    </plurals>
+    <string name="scan_from_photos">Från foton</string>
+    <string name="scan_type_it_in">Skriv in manuellt</string>
+    <string name="search_no_card">Inget kort %1$s</string>
+    <string name="search_nothing_found">Inga träffar för ”%1$s”</string>
+    <string name="search_failed">Sökningen misslyckades: %1$s</string>
+    <string name="search_could_not_load">Det gick inte att läsa in kortet</string>
+    <string name="search_added_qty">La till %1$s ×%2$d</string>
+    <string name="search_could_not_save">Det gick inte att spara: %1$s</string>
+    <string name="search_hint_pokemon">Namn eller nummer (t.ex. Pikachu, 025/165)</string>
+    <string name="search_hint_one_piece">Kortkod (t.ex. OP05-060)</string>
+    <string name="search_hint_magic">Namn eller set + nummer (t.ex. Sheoldred, DMU 107)</string>
+    <string name="search_hint_dragon_ball_fw">Kod eller namn (t.ex. FB01-139)</string>
+    <string name="search_hint_dragon_ball_super">Kod eller namn (t.ex. BT1-031)</string>
+    <string name="search_hint_union_arena">Kod eller namn (t.ex. UE01BT/BLC-1-001)</string>
+    <string name="search_hint_weiss_schwarz">Kod eller namn (t.ex. HOL/W91-001)</string>
+    <string name="search_hint_naruto">Kod eller namn</string>
+    <string name="search_title_replace">Hitta rätt kort</string>
+    <string name="search_title_add">Lägg till kort</string>
+    <string name="search_back">Tillbaka</string>
+    <string name="search_search">Sök</string>
+    <string name="search_replace">Ersätt</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Ecke oben links</string>
+  <string name="wear_top_right">Obere rechte Ecke</string>
+  <string name="wear_bottom_right">Unten rechts</string>
+  <string name="wear_bottom_left">Unten links</string>
+  <string name="wear_top">Oberkante</string>
+  <string name="wear_right">Rechter Rand</string>
+  <string name="wear_bottom">Unterkante</string>
+  <string name="wear_left">Linker Rand</string>
+  <string name="wear_evidence_count">Automatische Prüfung: %1$d von 8 Regionen verfügen über brauchbare Farbnachweise</string>
+  <string name="wear_review_count">Manuelle Überprüfung: %1$d von 8 Regionen</string>
+  <string name="wear_inspect_regions">Überprüfen Sie alle vier Ecken und Kanten</string>
+  <string name="wear_hide_regions">Regionsdetails ausblenden</string>
+  <string name="wear_screening_scope">Jede Region wird separat auf Farbanomalien und Aufhellungen überprüft. Druck-, Folien- und Schnittausrichtung können wie Beschädigungen aussehen. Öffnen Sie einen Bereich, um das Foto zu untersuchen und aufzuzeichnen, was Sie sehen.</string>
+  <string name="wear_not_assessed">Nicht bewertet – unzureichende verwertbare Beweise</string>
+  <string name="wear_inconclusive">Die automatische Überprüfung ist nicht schlüssig</string>
+  <string name="wear_possible_damage">Automatische Prüfung: Möglicher Verschleiß – überprüfen Sie diesen Bereich</string>
+  <string name="wear_auto_none">Automatische Prüfung: Es wurde keine Farbanomalie festgestellt</string>
+  <string name="wear_your_observation">Ihre Beobachtung: %1$s</string>
+  <string name="wear_white_border">Weiße Ränder können die Aufhellung verbergen; Farbkontrollen können ihren Zustand nicht bestätigen.</string>
+  <string name="wear_textured_border">Variable Motive oder Folien schränken den Farbvergleich ein.</string>
+  <string name="wear_flagged_pixels">Pixel der markierten Region: %1$.1f%% · hellere Anomalien: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Zum Vergrößern zusammenziehen und zum Inspizieren ziehen. Durch die Vergrößerung werden keine Fotodetails hinzugefügt; Unscharfe Fotos erneut aufnehmen.</string>
+  <string name="wear_record_observation">Ihre Beobachtung für diese Region</string>
+  <string name="wear_not_reviewed">Nicht überprüft</string>
+  <string name="wear_observed_clear">Auf diesem Foto ist kein Schaden erkennbar</string>
+  <string name="wear_whitening">Aufhellung/Abrieb sichtbar</string>
+  <string name="wear_chip">Chip / Riss sichtbar</string>
+  <string name="wear_bend">Biegung/Delle sichtbar</string>
+  <string name="wear_done">Fertig</string>
+  <string name="wear_damage_blocks_grade">Es wurden sichtbare Schäden festgestellt. Die Gesamtmodellschätzung wird zurückgehalten, da manuelle Ergebnisse keine kalibrierten Modelleingaben sind. Zentrierergebnisse berücksichtigen diesen Schaden nicht.</string>
+  <string name="wear_incomplete_blocks_grade">Ecken und Kanten bedürfen einer genaueren Betrachtung. Fehlende oder nicht schlüssige Beweise verhindern eine Gesamtmodellschätzung; Die Zentrierung allein ergibt noch keine Note.</string>
+</resources>

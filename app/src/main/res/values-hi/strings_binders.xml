@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">संग्रह खोलें</string>
+    <string name="binders_title">बाइंडर</string>
+    <string name="binders_all">सभी कार्ड</string>
+    <string name="binders_new">नया बाइंडर</string>
+    <string name="binders_card_count">कार्ड: %1$d</string>
+    <string name="binder_open_hint">खोलने के लिए स्वाइप या टैप करें</string>
+    <string name="binder_add_cards">कार्ड जोड़ें</string>
+    <string name="binder_choose_cards">इस बाइंडर के कार्ड</string>
+    <string name="binder_edit">बाइंडर संपादित करें</string>
+    <string name="binder_delete">बाइंडर हटाएँ</string>
+    <string name="binder_delete_confirm">“%1$s” हटाएँ? कार्ड आपके संग्रह में रहेंगे।</string>
+    <string name="binder_name">नाम</string>
+    <string name="binder_cover_design">कवर डिज़ाइन</string>
+    <string name="binder_cover_upload">अपनी तस्वीर लगाएँ</string>
+    <string name="binder_cover_remove">तस्वीर हटाएँ</string>
+    <string name="binder_save">सहेजें</string>
+    <string name="binder_empty_custom">यह बाइंडर खाली है। अपने संग्रह से कार्ड जोड़ें।</string>
+    <string name="binder_search">कार्ड खोजें</string>
+    <string name="binder_new_name">मेरा बाइंडर</string>
+    <string name="binder_selected">चुने गए: %1$d</string>
+    <string name="collection_title">संग्रह</string>
+    <string name="collection_sort_recent">हाल ही में जोड़े गए</string>
+    <string name="collection_sort_grade">ग्रेड</string>
+    <string name="collection_sort_set">सेट</string>
+    <string name="collection_empty">अभी कोई कार्ड नहीं।</string>
+    <string name="collection_summary">कार्ड: %1$d · %2$s</string>
+    <string name="cover_midnight">आधी रात</string>
+    <string name="cover_crimson">किरमिजी</string>
+    <string name="cover_forest">जंगल</string>
+    <string name="cover_ocean">महासागर</string>
+    <string name="cover_galaxy">आकाशगंगा</string>
+    <string name="cover_sunset">सूर्यास्त</string>
+    <string name="cover_gold">सुनहरी पन्नी</string>
+    <string name="cover_carbon">कार्बन</string>
+</resources>

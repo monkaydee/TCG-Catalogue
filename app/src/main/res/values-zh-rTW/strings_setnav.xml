@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_previous">上一個系列</string>
+    <string name="set_next">下一個系列</string>
+    <string name="import_add_all_sure">新增所有確定的 (%1$d)</string>
+    <string name="import_sure_match">確定相符</string>
+    <string name="import_by_picture_check">透過圖片找到 – 請核對</string>
+</resources>

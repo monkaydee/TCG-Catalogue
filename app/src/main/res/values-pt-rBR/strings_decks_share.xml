@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">População PSA</string>
+    <string name="pop_show">Mostrar população</string>
+    <string name="pop_none">Adicione um slab PSA desta carta com o número do certificado para ver a população.</string>
+    <string name="pop_total">Graduadas pela PSA: %1$d</string>
+    <string name="pop_gem_rate">Taxa gem (PSA 10): %1$s %%</string>
+    <string name="decks_title">Decks</string>
+    <string name="decks_new">Novo deck</string>
+    <string name="decks_empty">Nenhum deck ainda. Crie um e cole uma lista ou adicione cartas da sua coleção.</string>
+    <string name="deck_cards">Cartas: %1$d</string>
+    <string name="deck_value">Valor do deck: %1$s</string>
+    <string name="deck_missing">Faltam: %1$d · custo: %2$s</string>
+    <string name="deck_missing_none">Você tem todas as cartas deste deck.</string>
+    <string name="deck_owned">possui %1$d / %2$d</string>
+    <string name="deck_import">Colar lista do deck</string>
+    <string name="deck_import_hint">Uma carta por linha, ex.: 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Adicionar da coleção</string>
+    <string name="deck_share">Compartilhar lista</string>
+    <string name="deck_delete">Excluir deck</string>
+    <string name="deck_delete_confirm">Excluir “%1$s”? Sua coleção não muda.</string>
+    <string name="deck_rule_total">Decks de %1$s têm %2$d cartas; este tem %3$d.</string>
+    <string name="deck_rule_min">Decks de %1$s precisam de pelo menos %2$d cartas; este tem %3$d.</string>
+    <string name="deck_rule_copies">Mais de %1$d cópias: %2$s</string>
+    <string name="deck_rules_note">Confere só quantidade de cartas e cópias; não cartas banidas nem formatos.</string>
+    <string name="deck_not_found">Não encontrada: %1$s</string>
+    <string name="share_cards">Compartilhar como página</string>
+    <string name="share_cards_text">Envia estas cartas (%1$d) como uma página da web pelo menu compartilhar. O app não envia nada.</string>
+    <string name="share_with_prices">Com preços</string>
+    <string name="share_without_prices">Sem preços</string>
+</resources>

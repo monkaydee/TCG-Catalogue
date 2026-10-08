@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">اختياري: مشاركة معرّفات البطاقات وبصمة OCR دون الصور أو نص OCR المقروء. تُحفظ التقارير لمدة 90 يومًا.</string>
+    <string name="learning_photos_paused">مشاركة الصور متوقفة حتى التحقق من فحوص المحتوى وهوية البطاقة. لا يزال المسح المحلي يعمل.</string>
+    <string name="price_health_summary">%1$d بطاقة بلا سعر سوق · %2$d هوية يابانية تحتاج تصحيحًا</string>
+</resources>

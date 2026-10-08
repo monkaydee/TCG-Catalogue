@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wishlist, trade list, sold cards, set checklist, price alerts and price history. Translations follow later. -->
+<resources>
+    <!-- Common -->
+    <string name="lists_back">뒤로</string>
+    <string name="lists_cancel">취소</string>
+    <string name="lists_save">저장</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">지우기</string>
+    <string name="lists_remove">삭제</string>
+    <string name="lists_retry">다시 시도</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">목록</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">금액 (%1$s)</string>
+    <string name="lists_amount_invalid">금액을 입력하세요 (예: 12.50)</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">체크리스트</string>
+    <string name="checklist_open">체크리스트 보기</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="other">%2$d장 중 %1$d장 보유</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">전체 · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">보유 · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">미보유 · %1$d</string>
+    <string name="checklist_loading">이 세트의 카드를 불러오는 중…</string>
+    <string name="checklist_empty_title">이 세트의 체크리스트가 없어요</string>
+    <string name="checklist_empty_text">카드 목록을 불러오지 못했어요. 연결을 확인하세요. 아직 등록되지 않은 세트일 수도 있어요.</string>
+    <string name="checklist_none_owned">아직 이 세트의 카드를 갖고 있지 않아요.</string>
+    <string name="checklist_none_missing">완성! 이 세트의 모든 카드를 갖고 있어요.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">미보유</string>
+    <string name="checklist_on_wishlist">위시리스트에 있음</string>
+    <string name="checklist_add_collection">컬렉션에 추가</string>
+    <string name="checklist_add_wishlist">위시리스트에 추가</string>
+    <string name="checklist_card_loading">카드를 불러오는 중…</string>
+    <string name="checklist_card_failed">이 카드를 불러오지 못했어요. 연결을 확인하세요</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s을(를) 컬렉션에 추가했어요</string>
+    <string name="checklist_printing">프린트</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">위시리스트</string>
+    <string name="wish_add">위시리스트에 추가</string>
+    <string name="wish_remove">위시리스트에서 삭제</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s을(를) 위시리스트에 추가했어요</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s을(를) 위시리스트에서 삭제했어요</string>
+    <string name="wish_add_failed">카드를 추가하지 못했어요. 연결을 확인하세요</string>
+    <string name="wish_total">총 비용</string>
+    <plurals name="wish_count">
+        <item quantity="other">%1$d장</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="other">%1$d장이 목표가 이하</item>
+    </plurals>
+    <string name="wish_empty_title">위시리스트가 비어 있어요</string>
+    <string name="wish_empty_text">검색이나 세트 체크리스트의 미보유 카드에서 추가하세요.</string>
+    <string name="wish_no_price">가격 없음</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">목표 %1$s</string>
+    <string name="wish_no_target">목표가 없음</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">목표가 도달</string>
+    <string name="wish_set_target">목표가 설정</string>
+    <string name="wish_target_title">목표가</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">가격이 이 금액 이하로 내려가면 알려 드려요. 현재: %1$s</string>
+    <string name="wish_target_text_no_price">가격이 이 금액 이하로 내려가면 알려 드려요.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">교환 목록</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">교환 가능</string>
+    <string name="trade_share">목록 공유</string>
+    <string name="trade_remove">교환 목록에서 빼기</string>
+    <string name="trade_total">교환 가치</string>
+    <string name="trade_empty_title">교환할 카드가 아직 없어요</string>
+    <string name="trade_empty_text">컬렉션에서 카드를 열고 “교환 가능”을 탭하면 여기에 추가돼요.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="other">내 교환 목록 (%1$d장)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">총 가치: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">%1$s에서 공유함</string>
+    <string name="trade_share_subject">내 교환 목록</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">판매</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">%1$s 판매</string>
+    <string name="sold_quantity">판매 수량</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">보유 %1$d장 중</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">장당 가격 (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">합계 %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">손익 %1$s</string>
+    <string name="sold_confirm">판매</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">%2$s %1$d장을 판매했어요</string>
+    <string name="sold_title">판매 완료</string>
+    <string name="sold_realised">실현 수익</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">매출 %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="other">구매 가격이 없는 판매 %1$d건은 집계되지 않아요</item>
+    </plurals>
+    <string name="sold_empty_title">아직 판매 내역이 없어요</string>
+    <string name="sold_empty_text">컬렉션에서 카드를 열고 “판매”를 탭하면 여기에 기록돼요.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">%1$d장 × %2$s에 판매</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">장당 %1$s에 구매</string>
+    <string name="sold_paid_unknown">구매 가격 알 수 없음</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">판매일 %1$s</string>
+    <string name="sold_delete">기록 삭제</string>
+    <string name="sold_delete_title">이 판매 기록을 삭제할까요?</string>
+    <string name="sold_delete_text">판매 목록과 실현 수익에서 제거돼요. 카드는 컬렉션으로 돌아오지 않아요.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">알림</string>
+    <string name="alert_ui_title">가격 알림</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">장당 가치가 이 금액을 넘으면 알려 드려요. 현재: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">이 금액 초과 시 알림 (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">이 금액 미만 시 알림 (%1$s)</string>
+    <string name="alert_ui_order">“초과”는 “미만”보다 높아야 해요</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">%1$s 초과</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">%1$s 미만</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">가격 추이</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">최고 %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">최저 %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">편집</string>
+    <string name="lists_card_remove">삭제</string>
+</resources>

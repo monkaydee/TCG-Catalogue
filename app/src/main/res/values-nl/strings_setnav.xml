@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_previous">Vorige set</string>
+    <string name="set_next">Volgende set</string>
+    <string name="import_add_all_sure">Alle zekere toevoegen (%1$d)</string>
+    <string name="import_sure_match">Zekere match</string>
+    <string name="import_by_picture_check">Gevonden via afbeelding – controleer</string>
+</resources>

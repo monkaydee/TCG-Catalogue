@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Інструменти збору</string>
+  <string name="tools_costs">Книга обліку витрат</string>
+  <string name="tools_grading">Картки відправлені на оцінювання</string>
+  <string name="tools_shipping">Доставка за копію</string>
+  <string name="tools_tax">Податок за копію</string>
+  <string name="tools_grading_cost">Вартість класифікації за копію</string>
+  <string name="tools_pnl">Нереалізований PnL</string>
+  <string name="tools_unknown">Невідома ціна чи вартість</string>
+  <string name="tools_blank">Залиште невідомі витрати порожніми. Введіть 0 безкоштовно.</string>
+  <string name="tools_reference">Довідка про подання</string>
+  <string name="tools_notes">Примітки</string>
+  <string name="tools_export">Страховий експорт</string>
+  <string name="tools_review">Очікує огляду фотографій</string>
+  <string name="tools_evidence">Підтвердження ціни</string>
+  <string name="tools_stale">Застаріла ринкова ціна</string>
+  <string name="tools_current">Поточна ринкова ціна</string>
+  <string name="tools_fees">Плата за продаж</string>
+  <string name="tools_learning">Допоможіть покращити розпізнавання</string>
+  <string name="tools_photos">Поділіться схваленими культурами картки</string>
+  <string name="tools_send">Надсилати звіти, що очікують на розгляд</string>
+  <string name="tools_delete">Видалити спільні звіти</string>
+  <string name="tools_consent">Додатково. Текстові звіти містять дані картки та ваші виправлення. Фотографії потребують окремого попереднього перегляду та затвердження. Звіти зберігаються 90 днів.</string>
+  <string name="tools_preview">Затвердити кадрування картки</string>
+  <string name="tools_preparing">Готується</string>
+  <string name="tools_shipped">Відправлено</string>
+  <string name="tools_received">Отримано</string>
+  <string name="tools_grading_status">Виконується оцінювання карток</string>
+  <string name="tools_returned">Повернувся</string>
+  <string name="tools_cancelled">Скасовано</string>
+  <string name="tools_complete">Повний</string>
+  <string name="tools_price_challenge">Повідомити про неправильну ціну</string>
+  <string name="tools_confirm_outline">Підтвердьте весь контур картки</string>
+  <string name="tools_outline_hint">Перед підтвердженням переконайтеся, що всі чотири кути є зовнішніми кутами картки.</string>
+  <string name="tools_duplicate_cert">Цей сертифікат вже є у вашій колекції.</string>
+</resources>

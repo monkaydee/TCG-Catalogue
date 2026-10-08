@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Kortkontur · fyra hörn</string>
+  <string name="pre_center_screen">Centrering · åtta guider</string>
+  <string name="pre_open_centering">Mät inre och yttre gränser</string>
+  <string name="pre_outline_continue">Bekräfta hela kortets kontur</string>
+  <string name="pre_outline_adjust">Justera de fyra korthörnen</string>
+  <string name="pre_choose_game">Kortspel</string>
+  <string name="pre_center_missing">Placera yttre och inre styrningar på denna sida för att slutföra centreringsmätningen.</string>
+  <string name="pre_center_ready">Centrering uppmätt. Du kan justera alla åtta guider.</string>
+  <string name="pre_edit_front">Redigera frontcentrering</string>
+  <string name="pre_edit_back">Redigera ryggcentrering</string>
+  <string name="pre_potential_title">Centreringspotential</string>
+  <string name="pre_potential_10">Inom PSA 10 centreringsgränser</string>
+  <string name="pre_potential_borderline">Borderline PSA 10 centrering</string>
+  <string name="pre_potential_below">Utanför PSA 10 centreringsgränser</string>
+  <string name="pre_potential_incomplete">Komplettera båda sidorna för centreringspotential</string>
+  <string name="pre_potential_scope">Endast centrering, över kortspel. Använder PSA front 55/45 och back 75/25 limits. Borderline betyder att en guidejustering med en bildpunkt kan ändra resultatet. Hörn, kanter, yta och autenticitet kan minska slutbetyget.</string>
+  <string name="pre_model_scope">En förutsägelse av övergripande betyg är inte validerad för detta spel eller dessa mätningar. Centreringspotentialen ovan förblir tillgänglig när båda sidorna har mätts.</string>
+  <string name="pre_experimental_model">Experimentell Pokémon-fotouppskattning</string>
+  <string name="pre_quality_blocked">Ta om den här sidan: dess kontur eller fotokvalitet är inte lämplig för en slitagebedömning.</string>
+  <string name="pre_no_wear_detected">inget synligt slitage upptäckt</string>
+  <string name="pre_skip_frame">Ingen jämförbar tryckt ram</string>
+  <string name="pre_retake_front">Ta om fotot på framsidan</string>
+  <string name="pre_retake_back">Ta tillbaka fotot</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Elk exemplaar een eigen vak</string>
+    <string name="binder_move_hint">Tik op een vak om de kaart daarheen te verplaatsen</string>
+    <string name="binder_remove">Uit map verwijderen</string>
+    <string name="binder_pick_for_pocket">Kies een kaart voor dit vak</string>
+    <string name="binder_all_placed">Alle exemplaren zitten al in deze map</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">การทำงานอื่น</string>
+    <string name="design_game">เกม</string>
+    <string name="design_select">เลือก</string>
+    <string name="design_sort">เรียงลำดับ</string>
+    <string name="design_layout">รูปแบบ</string>
+    <string name="design_language">ภาษา</string>
+    <string name="design_capture">ถ่ายภาพ</string>
+    <string name="design_alignment">จัดแนว</string>
+    <string name="design_inspection">ตรวจสอบ</string>
+    <string name="design_result">ผลลัพธ์</string>
+    <string name="design_stage">ขั้นตอน %1$d จาก %2$d · %3$s</string>
+    <string name="design_expanded">ขยายแล้ว</string>
+    <string name="design_collapsed">ยุบแล้ว</string>
+    <string name="design_evidence">แหล่งราคา</string>
+    <string name="design_details">รายละเอียดการ์ด</string>
+    <string name="design_slab_hint">ราคาตรงกับบริษัทจัดเกรด เกรด และภาษาที่พิมพ์ซึ่งบันทึกไว้ ราคาอ้างอิงของการ์ดที่ยังไม่จัดเกรดจะแสดงแยกกัน</string>
+</resources>

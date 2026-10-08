@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="jp_printing_title" tools:ignore="MissingTranslation">Japanese printing</string>
+    <string name="jp_printing_required" tools:ignore="MissingTranslation">Match the set code and number printed on your Japanese card to fetch its price.</string>
+    <string name="jp_printing_repair_title" tools:ignore="MissingTranslation">Find this Japanese card’s price</string>
+    <string name="jp_printing_match_number" tools:ignore="MissingTranslation">Select the set code and number on your card, then Save to update its price.</string>
+    <string name="jp_printing_select" tools:ignore="MissingTranslation">Select this printing</string>
+    <string name="jp_printing_price_reference" tools:ignore="MissingTranslation">Japanese product references shown below; the saved value uses your selected finish and condition.</string>
+    <string name="jp_printing_loading" tools:ignore="MissingTranslation">Finding Japanese printings…</string>
+    <string name="jp_printing_failed" tools:ignore="MissingTranslation">Japanese printings could not be loaded. Retry or search by the printed set code and number.</string>
+    <string name="jp_printing_empty" tools:ignore="MissingTranslation">No matching Japanese printing found. Search by the printed set code and number, e.g. M1L 073/063.</string>
+    <string name="jp_cardmarket_reference" tools:ignore="MissingTranslation">Cardmarket reference for this Japanese product; condition is not isolated</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Chỉnh góc</string>
+    <string name="grade_adjust_hint">Kéo bốn điểm vào các góc của thẻ. Kính lúp giúp đặt chúng chính xác.</string>
+    <string name="grade_adjust_apply">Áp dụng</string>
+</resources>
