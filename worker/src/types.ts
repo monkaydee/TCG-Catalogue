@@ -55,6 +55,8 @@ export interface CardRequest {
   /** Optional slab to target; never substitutes a different grade or company. */
   grader?: string;
   grade?: string;
+  /** Raw condition the app needs (NM when absent); later providers are asked when it is missing. */
+  condition?: "LP" | "MP" | "HP" | "DMG";
   /** Cache key (game + best identifier + printing), filled in by the server. */
   key: string;
 }

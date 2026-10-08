@@ -19,7 +19,7 @@ export function cacheKey(c: Omit<CardRequest, "key">): string {
   const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
   // Version the cache after fixing language, printing and qualified-grade matching.
   const slab = c.graded && c.grader ? `:slab:${c.grader}:${c.grade ?? "all"}` : "";
-  return `v8:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}${slab}`;
+  return `v8:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}${slab}${c.condition ? `:c${c.condition}` : ""}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -47,6 +47,7 @@ export function parseCard(v: unknown): CardRequest | null {
     ...(text(o.localName, 120) ? { localName: text(o.localName, 120) } : {}),
     ...(language ? { language } : {}),
     ...(o.market === "US" || o.market === "DE" ? {market:o.market} : {}),
+    ...(o.condition === "LP" || o.condition === "MP" || o.condition === "HP" || o.condition === "DMG" ? {condition:o.condition} : {}),
     ...(o.graded === true ? { graded: true } : {}),
     ...(o.graded === true && o.gradedOnly === true ? {gradedOnly:true} : {}),
     ...(o.graded === true && /^(PSA|BGS|CGC|SGC|TAG|ACE|AOG|GSG|PI)$/.test(text(o.grader).toUpperCase()) ? {grader:text(o.grader).toUpperCase()} : {}),
@@ -98,13 +99,13 @@ export async function runChain<T>(
   calls: { left: number },
   wait: (ms: number) => Promise<unknown> = sleep,
   merge?: (previous: T | undefined, next: T) => T,
-  continueWhen?: (value: T) => boolean,
+  continueWhen?: (value: T, card: CardRequest) => boolean,
 ): Promise<ChainOutcome<T>> {
   const found = new Map<string, T>();
   const unchecked = new Set<string>(); // a provider that supports the card could not ask about it
 
   for (const { provider, key } of providers) {
-    const pending = cards.filter((c) => (merge || !found.has(c.key) || continueWhen?.(found.get(c.key)!)) && provider.supports(c));
+    const pending = cards.filter((c) => (merge || !found.has(c.key) || continueWhen?.(found.get(c.key)!, c)) && provider.supports(c));
     if (pending.length === 0) continue;
     const batches = chunk(pending, provider.batchSize);
     const cost = provider.callsPerBatch ?? 1;
@@ -128,7 +129,11 @@ export async function runChain<T>(
         const result = await provider.fetch(batch, key);
         for (const c of batch) {
           const v = result.get(c.key);
-          if (v !== undefined) found.set(c.key, merge ? merge(found.get(c.key), v) : v);
+          if (v === undefined) continue;
+          const previous = found.get(c.key);
+          // A later provider only replaces an earlier table when it supplies what that one lacked.
+          if (merge) found.set(c.key, merge(previous, v));
+          else if (previous === undefined || continueWhen?.(previous, c) && !continueWhen(v, c)) found.set(c.key, v);
         }
       } catch (e) {
         batch.forEach((c) => unchecked.add(c.key));
@@ -228,7 +233,7 @@ export async function getPrices(cards: CardRequest[], d: PriceDeps): Promise<Car
   const gradedMiss = unique.filter((c) => c.graded && !fresh(gradedKey(c)));
   const graded = await runChain(gradedMiss, d.graded, d.gate, calls, d.wait, mergeGraded);
   const rawMiss = unique.filter((c) => !c.gradedOnly && !fresh(rawKey(c)));
-  const raw = await runChain(rawMiss, d.raw, d.gate, calls, d.wait, undefined, p => !hasAnyCondition(p.conditions));
+  const raw = await runChain(rawMiss, d.raw, d.gate, calls, d.wait, undefined, (p, c) => !hasAnyCondition(p.conditions) || (c.condition !== undefined && p.conditions[c.condition] === null));
 
   // Store what we learned.
   const writes: Parameters<CacheLike["putMany"]>[0] = [];

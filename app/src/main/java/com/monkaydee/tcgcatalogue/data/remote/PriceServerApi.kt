@@ -91,6 +91,8 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
                         printing?.let { put("printing", it) }
                         if (language != "EN") put("language", language)
                         localName?.let { put("localName", it) }
+                        // lets the server ask further sources when the first one lacks this condition
+                        if (condition != "NM") put("condition", condition)
                     },
                 )
             }

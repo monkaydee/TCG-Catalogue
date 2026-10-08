@@ -97,6 +97,9 @@ interface SnapshotDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(snapshots: List<PortfolioSnapshot>)
+
+    @Query("DELETE FROM portfolio_snapshots")
+    suspend fun deleteAll()
 }
 
 @Dao

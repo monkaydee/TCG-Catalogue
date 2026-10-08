@@ -44,6 +44,23 @@ classification, sealed edits during refresh and malformed catalogue replacements
 revert those fixes. Four-corner outline confirmation on the original full photo precedes
 pre-grade cropping and is available for correction.
 
+## Review fixes (8 October 2026, Claude, after the Codex review of 118714d)
+
+Codex reviewed 0.1.207 and reported 8 defects; Claude verified each in the code and fixed all 8.
+
+| # | Defect | Fix | Test |
+| --- | --- | --- | --- |
+| 1 | eBay `2x`/`x3`/"3 copies"/"set of 2"/playset listings priced as one card or slab | `MULTI_COPY` rejects them in `titleMatches` (raw and graded) | `worker/test/review-findings.test.ts` |
+| 2 | Cloud merge ignored a corrected cost lot with the same id, then saved the stale one | `CostLot.updatedAt` (Room 9, auto-migration); merge takes the newer version first, then new lots (splits) | `LedgerBackupRegressionTest` |
+| 3 | Editing a card's purchase price left the ledger unchanged | `applyPurchaseEdit`: writes it into the lots unless they already record different prices (then the lot editor decides); fees and lot currency kept | same |
+| 4 | Backup merge dropped incoming per-card price history | history remapped through `rowMapping`; local points for the same day win | same |
+| 5 | Replacement import kept the previous portfolio chart | `snapshots().deleteAll()` inside the import transaction | same |
+| 6 | NM-only quote stopped the raw chain, so LP/MP/HP/DMG stayed unpriced | app sends `condition` (non-NM); Worker continues until that condition is found, keeps the earlier table otherwise, caches per condition (`:cLP`) | worker test |
+| 7 | Deleting/selling the last copy left uneditable grading submissions | `removeRow` deletes the row's submissions and price history (delete, sell-all, quantity 0) | same |
+| 8 | Re-selecting the current cloud file released its persisted permission | `choose` releases the old grant only for a different file | not automated (one-line guard) |
+
+Local: Android 219 tests, 0 failures, 3 existing skips; release build and lint OK. Worker 109 passed, typecheck OK.
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

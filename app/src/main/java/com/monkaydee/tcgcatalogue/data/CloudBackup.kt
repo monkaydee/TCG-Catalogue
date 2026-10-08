@@ -132,7 +132,8 @@ object CloudBackup {
                 return
             }
         lock.withLock {
-            releaseCurrent()
+            // Persisted grants are not counted: releasing the same file would drop the access just taken.
+            if (prefs.getString(KEY_URI, null) != uri.toString()) releaseCurrent()
             _pending.value = null
             prefs.edit().putString(KEY_URI, uri.toString()).putLong(KEY_LAST_SAVED, 0).putLong(KEY_LAST_SYNC, 0).remove(KEY_FINGERPRINT).apply()
             _state.value = CloudState(uri = uri.toString(), name = displayName(uri))

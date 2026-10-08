@@ -18,6 +18,8 @@ data class CostLot(
     val tax: Double? = null,
     val currency: String,
     val acquiredAt: Long = System.currentTimeMillis(),
+    /** When the lot was last corrected (0 = never); a backup merge keeps the newer version. */
+    @androidx.room.ColumnInfo(defaultValue = "0") val updatedAt: Long = 0,
 )
 
 @Serializable
@@ -52,5 +54,6 @@ interface ToolsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun put(submission: GradingSubmission)
     @Query("UPDATE grading_submissions SET cardRowId = :to WHERE cardRowId = :from") suspend fun moveSubmissions(from: Long, to: Long)
     @Query("DELETE FROM grading_submissions WHERE id = :id") suspend fun removeSubmission(id: String)
+    @Query("DELETE FROM grading_submissions WHERE cardRowId = :row") suspend fun removeSubmissions(row: Long)
     @Query("DELETE FROM grading_submissions") suspend fun clearSubmissions()
 }

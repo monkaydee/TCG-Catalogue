@@ -20,6 +20,8 @@ const API = "https://api.ebay.com";
 const SINGLES = "183454";
 const GRADERS = ["PSA", "BGS", "CGC", "SGC", "TAG", "ACE", "AOG", "GSG", "PI"];
 /** Special 10s that sell far above a plain 10: never counted as one. */
+/** "2x", "x3", "3 copies", "set of 2", "playset": the asking price is not for one card. */
+const MULTI_COPY = /(?:^|[^\p{L}\d/])(?:[2-9]|\d{2,})\s*[x×](?![\p{L}\d])|(?:^|[^\p{L}\d])[x×]\s*(?:[2-9]|\d{2,})(?![\d.,/])|\b(?:[2-9]|\d{2,}|two|three|four)\s+(?:copies|cards|slabs|karten)\b|\b(?:set|pair) of\b|\bplayset\b|\bpaar\b/iu;
 const NOT_A_SINGLE = /\b(lot|bundle|proxy|custom|reprint|orica|fan ?art|digital|choose|pick|you pick|break|box|pack|empty|label only)\b/i;
 
 let token: { value: string; expires: number } | null = null;
@@ -129,7 +131,7 @@ export function titleMatches(title: string, card: CardRequest, verifiedLanguage?
   if (!languageMatches(title, card.language, verifiedLanguage)) return false;
   if (!setMatches(title, card)) return false;
   const t = title.toLowerCase();
-  if (NOT_A_SINGLE.test(title)) return false;
+  if (NOT_A_SINGLE.test(title) || MULTI_COPY.test(title)) return false;
   // 1st Edition and Shadowless sell for many times the regular print: only for that printing.
   const first = /first|1st/i.test(card.printing ?? "");
   if (FIRST_EDITION.test(title) !== first) return false;

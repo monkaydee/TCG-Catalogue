@@ -637,6 +637,7 @@ class CardRepository(
         ensureCostLots(original)
         if (!original.graded && edited.graded) db.tools().lots(original.id).forEach { db.tools().put(CostLedger.afterGrading(it)) }
         resizeLots(original, edited.quantity)
+        if (edited.purchasePrice != original.purchasePrice) applyPurchaseEdit(original.id, edited.purchasePrice, edited.priceCurrency, s.usdToEur)
         val clash = db.cards().find(edited.game, edited.cardId, edited.variant, edited.condition, edited.language, edited.copyKey)?.takeIf { it.id != original.id }
         if (clash != null) {
             check(!edited.graded || edited.certNumber.isNullOrBlank()) { AppStrings.get(R.string.tools_duplicate_cert) }
@@ -657,7 +658,7 @@ class CardRepository(
     suspend fun update(card: OwnedCard) {
         db.withTransaction {
             db.cards().get(card.id)?.let { original -> ensureCostLots(original); resizeLots(original, card.quantity.coerceAtLeast(0)) }
-            if (card.quantity <= 0) db.cards().delete(card) else db.cards().update(card)
+            if (card.quantity <= 0) removeRow(card) else db.cards().update(card)
         }
         runCatching { snapshot() }
     }
@@ -831,8 +832,7 @@ class CardRepository(
         if (card.game == Game.ONE_PIECE) runCatching { cardmarket.listings(card.number) }.getOrDefault(emptyList()) else emptyList()
 
     suspend fun delete(card: OwnedCard) {
-        db.withTransaction { db.tools().removeLots(card.id); db.cards().delete(card) }
-        db.history().deleteFor(card.id)
+        db.withTransaction { db.tools().removeLots(card.id); removeRow(card) }
         runCatching { snapshot() }
     }
 
@@ -995,6 +995,7 @@ class CardRepository(
         db.tools().clearLots(); db.tools().clearSubmissions()
         db.cards().deleteAll()
         db.cards().insertAll(backup.cards)
+        db.snapshots().deleteAll()
         db.snapshots().insertAll(backup.snapshots)
         db.history().deleteAll()
         db.history().upsertAll(backup.history)
@@ -1034,7 +1035,14 @@ class CardRepository(
             rowMapping[c.id] = id
             if (match != null && c.quantity > match.quantity) db.cards().update(match.copy(quantity = c.quantity))
         }
-        val knownLots = db.tools().lots().map { it.id }.toSet()
+        val knownLots = db.tools().lots().associateBy { it.id }
+        // A lot corrected on the other phone keeps its id: take it when it is the newer version.
+        // Corrections come first, so the remainder of a split there still finds uncovered copies.
+        for (lot in backup.costLots) {
+            val local = knownLots[lot.id] ?: continue
+            val row = rowMapping[lot.cardRowId] ?: continue
+            if (lot.updatedAt > local.updatedAt && row == local.cardRowId) db.tools().put(lot.copy(cardRowId = row))
+        }
         for (lot in backup.costLots) if (lot.id !in knownLots) {
             val row = rowMapping[lot.cardRowId]?.let { db.cards().get(it) } ?: continue
             val covered = db.tools().lots(row.id).sumOf { it.quantity }
@@ -1043,6 +1051,8 @@ class CardRepository(
         }
         backup.submissions.forEach { sub -> rowMapping[sub.cardRowId]?.let { db.tools().put(sub.copy(cardRowId = it)) } }
         db.cards().getAll().forEach { ensureCostLots(it) }
+        val days = db.history().getAll().map { it.cardRowId to it.day }.toSet()
+        db.history().upsertAll(backup.history.mapNotNull { h -> rowMapping[h.cardRowId]?.let { h.copy(cardRowId = it) }?.takeIf { (it.cardRowId to it.day) !in days } })
         db.snapshots().insertAll(backup.snapshots.filter { s -> db.snapshots().getAll().none { it.day == s.day } })
         for (w in backup.wishlist) if (db.wishlist().find(w.game, w.cardId, w.variant) == null) db.wishlist().upsert(w.copy(id = 0))
         val sold = db.sold().getAll()
@@ -1113,10 +1123,17 @@ class CardRepository(
                 purchasePrice = basis?.div(quantity), purchaseCurrency = currency, totalBasis = basis,
                 salePrice = pricePerCopy, saleCurrency = currency, saleFees = fees, soldAt = soldAt))
             db.tools().removeLots(current.id); kept.forEach { db.tools().put(it) }
-            if (quantity == current.quantity) db.cards().delete(current)
+            if (quantity == current.quantity) removeRow(current)
             else db.cards().update(current.copy(quantity = current.quantity - quantity))
         }
         runCatching { snapshot() }
+    }
+
+    /** The last copy of a row is gone: its submissions and price history go with it, as nothing can open them any more. */
+    private suspend fun removeRow(card: OwnedCard) {
+        db.tools().removeSubmissions(card.id)
+        db.history().deleteFor(card.id)
+        db.cards().delete(card)
     }
 
     /** Backfills historical copies without inventing unknown grading fees. */
@@ -1126,6 +1143,18 @@ class CardRepository(
             quantity = card.quantity - covered, purchase = card.purchasePrice,
             grading = if (card.graded) null else 0.0, shipping = 0.0, tax = 0.0,
             currency = card.priceCurrency, acquiredAt = card.addedAt))
+    }
+    /**
+     * The card sheet's single purchase price, written into the cost ledger. Only when the lots do not
+     * already record different purchase prices: those are corrected one by one in the lot editor.
+     * Fees and each lot's currency stay as they are.
+     */
+    private suspend fun applyPurchaseEdit(rowId: Long, purchase: Double?, currency: String, usdToEur: Double) {
+        val lots = db.tools().lots(rowId)
+        val known = lots.mapNotNull { lot -> lot.purchase?.let { Money.convert(it, lot.currency, currency, usdToEur) } }
+        if (known.any { kotlin.math.abs(it - known.first()) > 0.005 }) return
+        val now = System.currentTimeMillis()
+        lots.forEach { lot -> db.tools().put(lot.copy(purchase = purchase?.let { Money.convert(it, currency, lot.currency, usdToEur) }, updatedAt = now)) }
     }
     suspend fun reviewed(token: String) = db.tools().reviewed(token)
     suspend fun discardReview(token: String) { db.tools().receipt(com.monkaydee.tcgcatalogue.data.db.ReviewReceipt(token)) }
@@ -1143,8 +1172,9 @@ class CardRepository(
         require(stored == original && edited.quantity in 1..stored.quantity && edited.cardRowId == stored.cardRowId)
         require(edited.currency in setOf("USD", "EUR"))
         require(listOf(edited.purchase, edited.grading, edited.shipping, edited.tax).all { it == null || it.isFinite() && it in 0.0..1e9 })
-        db.tools().put(edited.copy(id = stored.id, acquiredAt = stored.acquiredAt))
-        if (edited.quantity < stored.quantity) db.tools().put(stored.copy(id = java.util.UUID.randomUUID().toString(), quantity = stored.quantity - edited.quantity))
+        val now = System.currentTimeMillis()
+        db.tools().put(edited.copy(id = stored.id, acquiredAt = stored.acquiredAt, updatedAt = now))
+        if (edited.quantity < stored.quantity) db.tools().put(stored.copy(id = java.util.UUID.randomUUID().toString(), quantity = stored.quantity - edited.quantity, updatedAt = now))
     }
     suspend fun saveSubmission(submission: GradingSubmission) {
         require(submission.company in setOf("PSA", "CGC", "BGS", "SGC"))
