@@ -2,10 +2,32 @@
 
 import { QuotaError, type Conditions, type ProviderName } from "./types";
 
+export class BodyTooLarge extends Error {}
+/** Enforce limits while reading, including chunked requests with no Content-Length. */
+export async function boundedBody(req: Request, limit: number): Promise<Uint8Array> {
+  if (Number(req.headers.get("content-length") ?? 0) > limit) throw new BodyTooLarge();
+  const reader=req.body?.getReader();
+  if (!reader) return new Uint8Array();
+  const chunks:Uint8Array[]=[];let size=0;
+  while (true) {
+    const chunk=await reader.read();if(chunk.done)break;
+    size+=chunk.value.byteLength;
+    if(size>limit){await reader.cancel();throw new BodyTooLarge();}
+    chunks.push(chunk.value);
+  }
+  const bytes=new Uint8Array(size);let offset=0;
+  for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
+  return bytes;
+}
+export async function boundedJson(req:Request,limit:number):Promise<unknown> {
+  return JSON.parse(new TextDecoder().decode(await boundedBody(req,limit)));
+}
+
 /** A number from anything a provider might send ("1.23", 1.23, null, "N/A"). Negative or 0 → null. */
 export function price(v: unknown): number | null {
   const n = typeof v === "string" ? Number(v.replace(/[$,\s]/g, "")) : typeof v === "number" ? v : NaN;
-  return Number.isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : null;
+  const rounded = Math.round(n * 100) / 100;
+  return Number.isFinite(rounded) && rounded > 0 ? rounded : null;
 }
 
 export function str(v: unknown): string | undefined {

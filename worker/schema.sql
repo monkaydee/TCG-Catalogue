@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS ip_hits (
 );
 
 CREATE TABLE IF NOT EXISTS learning_installs (id TEXT PRIMARY KEY, token_hash TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS learning_policy (revision INTEGER PRIMARY KEY);
 CREATE TABLE IF NOT EXISTS recognition_reports (
  id TEXT PRIMARY KEY, install_hash TEXT NOT NULL, kind TEXT NOT NULL, context TEXT NOT NULL,
  card_id TEXT NOT NULL, game TEXT NOT NULL, language TEXT NOT NULL, payload TEXT NOT NULL,

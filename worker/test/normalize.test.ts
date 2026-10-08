@@ -52,8 +52,8 @@ describe("request parsing and cache keys", () => {
     expect(parseCard({...base,grader:"anything"})?.grader).toBeUndefined();
   });
   it("prefers the TCGplayer id in the key and includes the printing", () => {
-    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v7:pokemon:tcg42382:reverseholofoil:default");
-    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v7:magic:idabc:default");
+    expect(card({ tcgplayerId: "42382", printing: "Reverse Holofoil" }).key).toBe("v8:pokemon:tcg42382:reverseholofoil:default");
+    expect(cacheKey({ game: "magic", id: "abc", name: "", set: "", number: "" })).toBe("v8:magic:idabc:default");
   });
   it("accepts the app's enum names in any case and rejects unknown games", () => {
     expect(parseCard({ game: "ONE_PIECE", id: "OP01-024" })?.game).toBe("one_piece");
@@ -231,6 +231,10 @@ describe("printing availability", () => {
 
 
 describe("market is independent of language",()=>{
+ it("canonicalizes Japanese JP requests without splitting language cache keys",()=>{
+  const request={game:"POKEMON",id:"ja:M1L-066",language:"JP",market:"DE"};
+  expect(parseCard(request)).toEqual(parseCard({...request,language:"JA"}));
+ });
  it("keeps Japanese EUR imports apart from USD imports",()=>{
    const eur=parseCard({game:"POKEMON",id:"ja:SV2a-025",language:"JA",market:"DE"})!;
    const usd=parseCard({game:"POKEMON",id:"ja:SV2a-025",language:"JA",market:"US"})!;

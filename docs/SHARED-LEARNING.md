@@ -1,44 +1,44 @@
-# Private recognition learning
+# Private recognition learning — metadata only
 
-The app includes separate, default-off text and photo switches in Settings and Collection tools.
-Each confirmed addition creates a report only after text consent. Camera/photo confirmations
-attach OCR and the initial suggestion. Manual additions report the selected name/number.
-Photo reporting detects and rectifies a card region, re-encodes a JPEG without EXIF, and requires
-an individual preview and approval. There is no full-photo fallback. Rejecting a crop sends text only.
-Pending originals for import review are private local files, never uploaded by this feature.
-Acquisition costs, account email, location and collection backups are never included.
+Updated 8 October 2026. **Shared photo uploads are disabled in both app and server.**
 
-The Worker authenticates the app and separately binds a random installation ID to a random
-installation token. Neither is an account identity. Reports have a 100/day installation limit and
-an overall 20,000 report storage ceiling, in addition to the existing IP limit. Crops are limited to
-300 KB and 800 pixels, card-shaped JPEGs; EXIF segments are rejected. Crops use a private R2
-bucket without public access. When R2 is unavailable, a private D1 image table has a strict 32 MiB total cap; reaching it retains uploads on the phone for retry. The daily retention job removes reports/photos after 90 days.
-Deletion and opt-out delete that installation's reports and images; an offline deletion retries.
-Withdrawal also disables rules that no longer have supporting evidence. Installation token hashes are also removed on explicit deletion.
+Recognition sharing is separate and default-off. The client sends a normalized OCR hash,
+selected card identifiers/language/printing and optional grade, not readable OCR/photos.
+The server stores machine identifiers, the fingerprint, quote/grade evidence and an explicit
+confirmation flag. Missing confirmation means unconfirmed. Neither automatic reports nor
+price challenges automatically train a model or change shared prices.
 
-## Deployment
+Reports are private, pseudonymous and subject to GDPR assessment. Per-installation
+100/day, global 20,000 reports and daily IP limits remain. Upload endpoints enforce body
+limits while reading, including requests lacking Content-Length. Current server price
+matching is revision 8; sealed matching is revision 9. JP is accepted and canonicalized to
+JA internally; UI displays JP.
 
-The existing GitHub Worker workflow creates/attaches `cardnavo-recognition-private`. If R2 is
-not enabled or the deployment token lacks Workers R2 Storage Edit, it deploys text reporting and
-reports the R2 setup failure and uses bounded private D1 storage. Add Workers R2 Storage Edit and enable R2 to increase image capacity.
+## Existing photos and consent withdrawal
 
-Optionally add repository secret `FEEDBACK_ADMIN_KEY` (a random secret distinct from APP_KEY) for HTTP/CLI moderation.
-It is uploaded to the Worker only, never built into Android. Without it HTTP moderation is disabled. The account owner can still inspect reports and publish reviewed rules directly in the existing Cloudflare D1 dashboard; see `scripts/recognition/moderate.sql`. Existing provider secrets are unchanged.
+A revision-2 policy migration removes legacy photos/free-OCR reports and their derived
+rules. Private R2 is attached only to clean existing objects; it does not enable uploads.
+If referenced R2 objects cannot be deleted, cleanup fails and retains references. The
+migration runs before feedback/rule access and in scheduled cleanup; deployment smoke
+checks verify completion and photo rejection. It does not claim to remove separately
+operator-downloaded photos or infrastructure backups.
 
-## Moderation and rollback
+The app discards pending JPGs and requests remote deletion when upgrading a formerly
+photo-enabled installation. Opt-out stops future transfers and clears pending local files;
+remote deletion retries offline. New queued transfers wait for pending deletion. Reports
+expire after 90 days at the next successful daily cleanup. Empty installation token records
+are removed during cleanup. Delete before uninstalling to retain the token-based ability.
 
-`scripts/recognition/moderate.py` uses `LEARNING_SERVER_URL`, `APP_KEY` and `FEEDBACK_ADMIN_KEY`
-from environment variables. List consensus candidates, inspect their reports and privately
-download crops before approving. Three installation IDs constitute a review threshold, **not**
-proof of three different people. A malicious client can create IDs; human review is essential.
-The same tool disables an incorrect rule. Never commit downloaded private crops.
+## Operator review
 
-Apps fetch approved rules daily over authenticated HTTPS, verify the payload SHA-256, and
-stop using caches more than seven days old. This is origin authentication and corruption checking,
-not an independently signed model manifest. Rules can reorder cards already matched locally;
-they cannot invent a card ID, override printed-name checks or enable automatic additions.
+Optional secret FEEDBACK_ADMIN_KEY stays server-only. The private CLI/dashboard still
+inspect metadata and approve/disable hints after three supporting installation IDs and
+manual review. IDs are not proof of separate people. Crop downloads return disabled.
+Raw text contexts in old moderation scripts are obsolete: use the published hash contexts.
+Hints reorder candidates already matched locally, never invent IDs or loosen auto-add.
 
-Confirmed crops are available to the operator for a held-out recognition evaluation set.
-A release does not automatically train or publish new neural weights. Monthly model training
-requires rights-cleared, curated images, split by physical card/installation and a regression
-threshold; reported card IDs are recognition labels, not known grading labels.
+Re-enabling photos requires validated server-side content/card-identity moderation,
+quarantine without public access, rights-cleared evidence, deletion/report/appeal processes,
+processor arrangements and false-positive/false-negative evaluation. JPEG checks and a
+MobileNet distance threshold alone do not satisfy that requirement. Keep the feature off
+until those dependencies are real. See [UPLOAD-PRIVACY-REVIEW.md](UPLOAD-PRIVACY-REVIEW.md).

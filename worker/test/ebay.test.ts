@@ -1,11 +1,29 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ebay, gradeInTitle, languageAspectFilter, parseEbay, parseEbayRaw, searchParams, titleMatches } from "../src/providers/ebay";
+import { ebay, ebayRaw, gradeInTitle, languageAspectFilter, parseEbay, parseEbayRaw, searchParams, titleMatches } from "../src/providers/ebay";
 import type { CardRequest } from "../src/types";
 const flareon:CardRequest={game:"pokemon",id:"base2-3",name:"Flareon",set:"Jungle",number:"3/64",key:"k"};
 const item=(title:string,value:string,id=title)=>({itemId:id,title,price:{value,currency:"USD"}});
 const copies=(title:string,values:number[])=>values.map((v,i)=>item(title,String(v),`${title}-${i}`));
 afterEach(()=>vi.unstubAllGlobals());
 describe("the reported missing slabs",()=>{
+ it("verifies missing language titles on raw cards with a real language facet",async()=>{
+  const requested={...flareon,language:"DE",market:"DE" as const,printing:"Holofoil",printingUnique:true};
+  const urls:string[]=[];
+  const rows=[50,60,70].map((value,i)=>({...item("Flareon 3/64 Jungle Holo NM",String(value),`de-raw-${i}`),price:{value:String(value),currency:"EUR"}}));
+  vi.stubGlobal("fetch",vi.fn(async(input:string)=>{
+   urls.push(input);
+   if(input.includes("oauth2/token")) return new Response(JSON.stringify({access_token:"fixture",expires_in:7200}));
+   const filtered=new URL(input).searchParams.has("aspect_filter");
+   return new Response(JSON.stringify({itemSummaries:rows, ...(filtered ? {} : {refinement:{dominantCategoryId:"183454",aspectDistributions:[{localizedAspectName:"Sprache",aspectValueDistributions:[{localizedAspectValue:"Deutsch"}]}]}})}));
+  }));
+  expect(parseEbayRaw({itemSummaries:rows},requested)).toBeNull();
+  const result=(await ebayRaw().fetch([requested],"test:secret")).get(requested.key)!;
+  expect(result).toMatchObject({conditions:{NM:60},currency:"EUR",listings:3});
+  expect(urls.filter(u=>u.includes("item_summary/search"))).toHaveLength(2);
+  expect(ebayRaw().callsPerBatch).toBe(2);
+  const contradictory=rows.map(r=>({...r,title:r.title+" English"}));
+  expect(parseEbayRaw({itemSummaries:contradictory},requested,new Set(contradictory.map(r=>r.itemId)))).toBeNull();
+ });
  it("falls back from an empty EUR market to an exact USD reference without currency mixing",async()=>{
   const requested={...flareon,market:"DE" as const,language:"EN",grader:"PSA",grade:"8",printing:"Holofoil",printingUnique:true};
   const sites:string[]=[];
@@ -23,7 +41,7 @@ describe("the reported missing slabs",()=>{
   const titles=["Dark Charizard 4/82 Team Rocket Holo 1st Edition PSA 5", "Dark Charizard 4/82 Team Rocket Holo PSA 5", "Dark Charizard 4/82 Team Rocket Holo 1st Edition PSA 6", "Dark Charizard 4/82 Team Rocket Holo 1st Edition"];
   const items=titles.map((t,i)=>item(t,String(400+i),String(i)));
   expect(parseEbay({itemSummaries:items},dark)).toEqual([]);
-  expect(parseEbay({itemSummaries:items},dark,new Set(items.map(i=>i.itemId)))).toEqual([expect.objectContaining({grader:"PSA",grade:"5",price:400,listings:1,evidence:"limited"})]);
+  expect(parseEbay({itemSummaries:items},dark,new Set(items.map(i=>i.itemId)))).toEqual([expect.objectContaining({grader:"PSA",grade:"5",price:400,listings:1,evidence:"limited",comparableExamples:[{id:"0",title:titles[0],price:400,currency:"USD"}]})]);
   expect(titleMatches(titles[0]+" Japanese",dark,"EN")).toBe(false);
   expect(titleMatches("Dark Charizard 4/82 Team Rocket Non-holo 1st Edition English PSA 5",{...dark,printingUnique:true})).toBe(false);
   expect(titleMatches("Flareon 3/64 Jungle PSA 8",{...flareon,printing:"Holofoil",printingUnique:true},"EN")).toBe(true);

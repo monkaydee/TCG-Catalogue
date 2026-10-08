@@ -19,7 +19,7 @@ export function cacheKey(c: Omit<CardRequest, "key">): string {
   const language = c.language && c.language !== "EN" ? `@${c.language}` : "";
   // Version the cache after fixing language, printing and qualified-grade matching.
   const slab = c.graded && c.grader ? `:slab:${c.grader}:${c.grade ?? "all"}` : "";
-  return `v7:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}${slab}`;
+  return `v8:${c.game}:${id}${printing}${language}:${c.market ?? "default"}${c.printingUnique ? ":single" : ""}${slab}`;
 }
 
 /** Checks one card from the request body. Returns null when it is unusable. */
@@ -30,7 +30,8 @@ export function parseCard(v: unknown): CardRequest | null {
   if (!GAMES.includes(game)) return null;
   const id = text(o.id, 100);
   const tcg = text(o.tcgplayerId, 20);
-  const language = text(o.language, 10).toUpperCase();
+  const requestedLanguage = text(o.language, 10).toUpperCase();
+  const language = requestedLanguage === "JP" ? "JA" : requestedLanguage;
   if (o.language !== undefined && !/^[A-Z]{2}$/.test(language)) return null;
   const card: Omit<CardRequest, "key"> = {
     game,

@@ -45,7 +45,7 @@ export interface CardRequest {
   tcgplayerId?: string;
   printing?: string;
   printingUnique?: boolean;
-  /** Card language ("EN", "DE", "JA" …); prices for other languages than English come from eBay only. */
+  /** Card language ("EN", "DE", "JA" …); JP is canonicalized to JA at the API boundary. */
   language?: string;
   market?: "US" | "DE";
   /** The card's name in [language] (e.g. "Flamara" for Flareon in German), when known. */
@@ -99,6 +99,7 @@ export interface GradedPrice {
   listings?: number; // number of current listings an asking price is based on
   evidence?: string;
   excluded?: number;
+  comparableExamples?: {id:string;title:string;price:number;currency:string}[]; // bounded public listing evidence
   fetchedAt?: string;
   stale?: boolean;
   low?: number; // lowest and highest of those prices

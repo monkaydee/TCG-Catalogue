@@ -2,7 +2,8 @@
 
 The golden set is a collection of real card photos with the right answer for each. On every
 change to the app, CI runs the app's own photo recognition on it (on an Android emulator) and
-writes the score to the run summary (Actions → Recognition test). A drop shows before a release.
+writes the score to the run summary (Actions → Recognition test). When the private corpus is configured, an exact-match score below the default 90% fails.
+Without the corpus, the golden job is skipped; a green setup job is not an accuracy result.
 
 ## Where the photos live
 
@@ -35,7 +36,7 @@ flareon_jungle3_psa8.jpg,base2-3,EN,PSA,8
 3. In TCG-Catalogue → Settings → Secrets and variables → Actions:
    - secret `GOLDEN_TOKEN` = the token;
    - variable `GOLDEN_REPO` = `monkaydee/tcg-golden`;
-   - optional variable `GOLDEN_MIN_EXACT` = e.g. `0.9` to fail when fewer than 90 % are exact.
+   - optional variable `GOLDEN_MIN_EXACT` in (0, 1], default `0.9`. Empty corpora and invalid/zero thresholds fail.
 
 ## Good photos for the set
 

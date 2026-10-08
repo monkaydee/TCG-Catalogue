@@ -45,6 +45,21 @@ fun CollectionToolsScreen(repo: CardRepository, onCard: (Long) -> Unit, onReview
         }
         message?.let { Text(it) }
         OutlinedButton(onClick = onReview) { Text(stringResource(R.string.tools_review)) }
+        Text(stringResource(R.string.tools_evidence), style = MaterialTheme.typography.titleMedium)
+        val repair = cards.filter { it.game == Game.POKEMON && CardLanguage.displayCode(it.language) == "JP" && !it.cardId.startsWith("ja:") }
+        val missing = cards.filter { it.manualPrice == null && (it.price == null || !it.price.isFinite() || it.price <= 0) }
+        Text(stringResource(R.string.price_health_summary, missing.size, repair.size))
+        repair.forEach { card ->
+            OutlinedButton(onClick = { onCard(card.id) }) {
+                Text(card.name + " · JP · " + stringResource(R.string.jp_printing_repair_title))
+            }
+        }
+        missing.filter { it !in repair }.forEach { card ->
+            TextButton(onClick = { onCard(card.id) }) {
+                Text(card.name + " · " + CardLanguage.displayCode(card.language) + " · " +
+                    (card.priceNote ?: stringResource(R.string.card_no_market_price)))
+            }
+        }
         LearningPanel(repo)
         Text(stringResource(R.string.tools_grading), style = MaterialTheme.typography.titleMedium)
         submissions.forEach { sub ->

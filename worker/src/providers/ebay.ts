@@ -95,9 +95,6 @@ export function marketplace(language?: string, market?: string): { site: string;
   }
 }
 
-/** Used to choose search terms, never to infer card language from the marketplace. */
-const SITE_LANGUAGE: Record<string, string> = { EBAY_DE: "DE", EBAY_FR: "FR", EBAY_IT: "IT", EBAY_ES: "ES", EBAY_NL: "NL", EBAY_US: "EN" };
-
 /**
  * Require positive language evidence for every card; reject conflicting explicit languages.
  */
@@ -167,6 +164,7 @@ export function titleMatches(title: string, card: CardRequest, verifiedLanguage?
 
 export function parseEbay(json: unknown, card: CardRequest, verifiedLanguageIds: ReadonlySet<string> = new Set()): GradedPrice[] {
   const by = new Map<string, number[]>(); const seen = new Set<string>();
+  const examples = new Map<string, NonNullable<GradedPrice["comparableExamples"]>>();
   for (const it of Array.isArray(obj(json).itemSummaries) ? (obj(json).itemSummaries as unknown[]) : []) {
     const item = obj(it);
     const title = str(item.title) ?? "";
@@ -180,6 +178,7 @@ export function parseEbay(json: unknown, card: CardRequest, verifiedLanguageIds:
     seen.add(id);
     const k = `${g.grader}|${g.grade}|${g.qualifier ?? ""}`;
     by.set(k, [...(by.get(k) ?? []), value]);
+    examples.set(k,[...(examples.get(k) ?? []),{id:id.slice(0,100),title:title.slice(0,250),price:value,currency:marketplace(card.language,card.market).currency}]);
   }
   const date = new Date().toISOString().slice(0, 10);
   return [...by].flatMap(([k, list]) => {
@@ -188,7 +187,8 @@ export function parseEbay(json: unknown, card: CardRequest, verifiedLanguageIds:
     const [grader, grade, qualifier] = k.split("|");
     return [{ grader, grade, ...(qualifier ? { qualifier } : {}), price:summary.amount,
       currency:marketplace(card.language,card.market).currency, source:"eBay listings (asking, not sold; shipping excluded)", date,
-      listings:summary.listings,low:summary.low,high:summary.high,evidence:summary.evidence,excluded:summary.excluded }];
+      listings:summary.listings,low:summary.low,high:summary.high,evidence:summary.evidence,excluded:summary.excluded,
+      comparableExamples:examples.get(k)?.filter(x=>x.price>=summary.low && x.price<=summary.high).slice(0,5) }];
   });
 }
 
@@ -204,12 +204,12 @@ export function conditionInTitle(title: string): keyof RawPrice["conditions"] | 
   const found=labels.filter(([,r])=>r.test(title));
   return found.length === 1 ? found[0][0] : null;
 }
-export function parseEbayRaw(json: unknown, card: CardRequest): RawPrice | null {
+export function parseEbayRaw(json: unknown, card: CardRequest, verifiedLanguageIds: ReadonlySet<string> = new Set()): RawPrice | null {
   const groups = new Map<keyof RawPrice["conditions"],number[]>(); const seen=new Set<string>();
   for (const it of Array.isArray(obj(json).itemSummaries) ? obj(json).itemSummaries as unknown[] : []) {
     const item=obj(it), title=str(item.title) ?? "", id=str(item.itemId) ?? title;
     const p=obj(item.price), value=price(Number(p.value)), condition=conditionInTitle(title);
-    if (seen.has(id) || value===null || !condition || str(p.currency)!==marketplace(card.language,card.market).currency || SLAB.test(title) || !titleMatches(title,card)) continue;
+    if (seen.has(id) || value===null || !condition || str(p.currency)!==marketplace(card.language,card.market).currency || SLAB.test(title) || !titleMatches(title,card,verifiedLanguageIds.has(id) ? card.language ?? "EN" : undefined)) continue;
     seen.add(id);groups.set(condition,[...(groups.get(condition) ?? []),value]);
   }
   const conditions=emptyConditions(); const conditionEvidence:NonNullable<RawPrice["conditionEvidence"]>={}; let count=0;
@@ -224,19 +224,19 @@ export function parseEbayRaw(json: unknown, card: CardRequest): RawPrice | null 
 /** Query titles broadly, then verify language through eBay's actual item-specific facet. */
 export function searchParams(card: CardRequest, extra: string, graded = false, aspectFilter?: string): URLSearchParams {
   const first = /first|1st/i.test(card.printing ?? "") ? "1st edition" : "";
-  const { site } = marketplace(card.language,card.market);
-  const languageWord = { EN: "English", DE: "Deutsch", FR: "French", IT: "Italian", ES: "Spanish", NL: "Dutch", PT: "portuguese", PL: "polish", JA: "japanese", KO: "korean", ZH: "chinese" }[card.language ?? ""] ?? "";
   const localizedSet = card.language === "JA" ? card.setAliases?.find(a=>/^[\x00-\x7F]+$/.test(a)) : card.language && card.language !== "EN" ? card.setAliases?.find(a=>normalize(a)!==normalize(card.set) && !/^(?:SV|SWSH|SM|XY)\d/i.test(a)) : undefined;
   const alternatives = (values: (string | undefined)[]) => {
     const unique = [...new Set(values.filter((v):v is string=>!!v))];
     const quoted = unique.map(v=>'"'+v.replace(/"/g, "")+'"');
     return quoted.length > 1 ? '('+quoted.join(',')+')' : unique[0] ?? "";
   };
-  const name = graded ? alternatives([card.name,card.localName]) : card.localName ?? card.name;
-  const set = graded ? alternatives([card.set,localizedSet]) : localizedSet ?? card.set;
-  const q = [name, graded ? shortNumber(card.number) : card.number, set, first, graded || SITE_LANGUAGE[site] === card.language ? "" : languageWord, extra].filter(Boolean).join(" ");
+  const name = alternatives([card.name,card.localName]);
+  const set = alternatives([card.set,localizedSet]);
+  // Printed language is verified after search. Requiring its word in q would hide
+  // precisely the titles whose Language facet establishes it.
+  const q = [name, shortNumber(card.number), set, first, extra].filter(Boolean).join(" ");
   const params = new URLSearchParams({ q, category_ids: SINGLES, filter: "buyingOptions:{FIXED_PRICE}", limit: "100" });
-  if (graded) params.set("fieldgroups", "MATCHING_ITEMS,ASPECT_REFINEMENTS");
+  params.set("fieldgroups", "MATCHING_ITEMS,ASPECT_REFINEMENTS");
   if (aspectFilter) params.set("aspect_filter", aspectFilter);
   return params;
 }
@@ -263,15 +263,15 @@ export function languageAspectFilter(json: unknown, language = "EN", categoryId 
   }
 }
 
-async function languageSearch(card: CardRequest, key: string, extra: string) {
-  const initial = await search(card,key,extra,true);
+async function languageSearch(card: CardRequest, key: string, extra: string, graded = true) {
+  const initial = await search(card,key,extra,graded);
   const filter = languageAspectFilter(initial,card.language);
   let filtered: unknown = null;
   if (filter) {
-    try { filtered = await search(card,key,extra,true,filter); }
+    try { filtered = await search(card,key,extra,graded,filter); }
     catch (error) {
       // A failed facet query must not hide already verified title matches.
-      if (!parseEbay(initial,card).length) throw error;
+      if (!(graded ? parseEbay(initial,card).length : parseEbayRaw(initial,card))) throw error;
     }
   }
   const items = (json: unknown) => Array.isArray(obj(json).itemSummaries) ? obj(json).itemSummaries as unknown[] : [];
@@ -284,10 +284,12 @@ export function ebayRaw(): RawProvider {
   return {
     name: "ebay",
     batchSize: 1,
+    callsPerBatch: 2,
     supports: (card) => !!card.name,
     async fetch(cards, key): Promise<BatchResult<RawPrice>> {
       const card = cards[0];
-      const p = parseEbayRaw(await search(card, key, ""), card);
+      const found = await languageSearch(card,key,"",false);
+      const p = parseEbayRaw({itemSummaries:found.items},card,found.verified);
       return new Map(p ? [[card.key, p]] : []);
     },
   };

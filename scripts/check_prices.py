@@ -22,11 +22,22 @@ def main():
     # workers.dev edges can briefly serve the previous version after deployment.
     for attempt in range(9):
         status = call("/v1/status")
-        if status.get("priceMatchingRevision") == 7:
+        if status.get("priceMatchingRevision") == 8:
             break
         if attempt == 8:
             raise AssertionError("Updated price service did not propagate")
         time.sleep(5)
+    assert status["learning"]["privatePhotos"] is False, "Unmoderated learning photos must be disabled"
+    assert status["learning"]["metadataRevision"] == 2
+    # Fetching rules applies the one-time removal of legacy photos/free OCR evidence.
+    rules=call("/v1/feedback/rules")
+    assert isinstance(json.loads(rules["payload"]),list)
+    status=call("/v1/status")
+    assert status["learning"]["legacyMigrationComplete"] is True, "Legacy learning cleanup did not complete"
+    config='header = '+json.dumps('X-App-Key: '+key)+'\n'
+    rejection=subprocess.check_output(["curl","--silent","--show-error","--max-time","30","--config","-","-H","Content-Type: application/json","--data-raw",json.dumps({"image":"blocked-fixture","photoApproved":True}),"--write-out","\n%{http_code}",url+"/v1/feedback"],input=config.encode())
+    rejection_body,rejection_code=rejection.rsplit(b"\n",1)
+    assert rejection_code==b"422" and json.loads(rejection_body).get("error")=="photo_uploads_disabled", "Shared photo rejection failed"
     # Use native Japanese release identities; translating an English collector number is invalid.
     fixtures = [
         {"game":"POKEMON","id":"base1-4","name":"Charizard","set":"Base Set","number":"4/102","tcgplayerId":"42382","printing":"Holofoil","language":"EN","market":"US","graded":True},
@@ -43,7 +54,7 @@ def main():
     for card in fixtures:
         for attempt in range(9):
             result=call("/v1/prices", {"schemaVersion":2,"cards":[card]})
-            if all(r.get("key", "").startswith("v7:") for r in result.get("results",[])):
+            if all(r.get("key", "").startswith("v8:") for r in result.get("results",[])):
                 break
             if attempt == 8:
                 raise AssertionError("Price request still served an older matching revision")
@@ -82,7 +93,7 @@ def main():
     ]:
         for attempt in range(9):
             answer=call("/v1/sealed/price",{"game":game,"productId":product_id,"name":name,"language":language,"aliases":aliases,"market":market})
-            if answer.get("sealedMatchingRevision")==8:
+            if answer.get("sealedMatchingRevision")==9:
                 break
             if attempt==8:
                 raise AssertionError("Updated sealed matching did not propagate")
@@ -120,7 +131,7 @@ def main():
         if item["name"] in ["Surging Sparks Booster Box", "Two Legends Booster Box (Non-English)", "The Azure Sea's Seven Japanese Booster Box", "The Azure Sea's Seven Japanese Booster Pack"]:
             assert item.get("price"), "No exact-language sealed quote for regression fixture: "+json.dumps(item)
     assert any(row.get("graded") for row in rows), "No graded quotes returned across the entire live fixture set; see price-verification.json"
-    print("Live price API: schema, source, currency and language separation checks passed.")
+    print("Live API: photo rejection/legacy cleanup, schema, source, currency and language separation checks passed.")
     print("Graded provider access:",json.dumps(provider_probe))
     for card,row in zip(fixtures,rows):
         print(card["game"],card["language"],row.get("source") or row.get("reason"),row.get("conditions"), "graded comparables:",len(row.get("graded",[])))

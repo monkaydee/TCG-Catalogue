@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Необязательно: отправлять идентификаторы карт и отпечаток OCR, без фото и читаемого текста OCR. Отчёты хранятся 90 дней.</string>
+    <string name="learning_photos_paused">Передача фото приостановлена до проверки фильтров содержимого и идентичности карт. Локальное сканирование работает.</string>
+    <string name="price_health_summary">%1$d карт без рыночной цены · %2$d японских идентификаторов требуют исправления</string>
+</resources>

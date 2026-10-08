@@ -3,7 +3,6 @@ package com.monkaydee.tcgcatalogue.data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Base64
 import com.monkaydee.tcgcatalogue.data.db.OwnedCard
 import com.monkaydee.tcgcatalogue.data.remote.CardCandidate
 import com.monkaydee.tcgcatalogue.data.remote.Variant
@@ -22,6 +21,9 @@ import java.util.UUID
 
 /** Pseudonymous opt-in reports. Full originals, costs and account identifiers never leave the phone. */
 object SharedLearning {
+    const val PHOTOS_ENABLED = false // Re-enable only with server-side content and identity moderation.
+    internal fun readHash(text: String): String = java.security.MessageDigest.getInstance("SHA-256")
+        .digest(normalizeRead(text).toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
     fun normalizeRead(text: String): String = java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFKC)
         .lowercase(java.util.Locale.ROOT).replace(Regex("""[^\p{L}\p{N}]"""), "").take(300)
     @SuppressLint("StaticFieldLeak") private var app: Context? = null // application context only
@@ -35,13 +37,16 @@ object SharedLearning {
         app = context.applicationContext
         val p = prefs()
         if (!p.contains("install")) p.edit().putString("install", UUID.randomUUID().toString()).putString("token", UUID.randomUUID().toString()).apply()
-        state.value = State(p.getBoolean("text", false), p.getBoolean("photos", false), dir().listFiles()?.count { it.extension == "json" } ?: 0)
+        if (p.getBoolean("photos", false)) p.edit().putBoolean("deletePending", true).apply()
+        p.edit().putBoolean("photos", false).apply()
+        dir().listFiles()?.filter { it.extension == "jpg" }?.forEach { it.delete() }
+        state.value = State(p.getBoolean("text", false), false, dir().listFiles()?.count { it.extension == "json" } ?: 0)
         com.monkaydee.tcgcatalogue.work.LearningWorker.schedule(context)
     }
     suspend fun consent(repo: CardRepository, text: Boolean, photos: Boolean) {
         // Save consent first, so revocation stops all future background transfers even offline.
-        prefs().edit().putBoolean("text", text).putBoolean("photos", photos && text).apply()
-        state.value = state.value.copy(text = text, photos = photos && text)
+        prefs().edit().putBoolean("text", text).putBoolean("photos", photos && text && PHOTOS_ENABLED).apply()
+        state.value = state.value.copy(text = text, photos = photos && text && PHOTOS_ENABLED)
         if (!text) { dir().listFiles()?.forEach { it.delete() }; state.value = state.value.copy(pending = 0); deleteRemote(repo) }
         else if (!photos) withContext(Dispatchers.IO) { dir().listFiles()?.filter { it.extension == "jpg" }?.forEach { it.delete() } }
     }
@@ -49,7 +54,7 @@ object SharedLearning {
     suspend fun record(repo: CardRepository, row: Long, card: CardCandidate, variant: Variant, language: String, grade: com.monkaydee.tcgcatalogue.scan.GradeInfo? = null) = withContext(Dispatchers.IO) {
         if (app == null || !state.value.text) return@withContext
         val id = UUID.randomUUID().toString()
-        val body = identity().put("id", id).put("row", row).put("kind", "recognition").put("read", card.name + " " + card.number).put("created", System.currentTimeMillis())
+        val body = identity().put("id", id).put("row", row).put("kind", "recognition").put("humanConfirmed", true).put("readHash", readHash(card.name + " " + card.number)).put("created", System.currentTimeMillis())
             .put("card", JSONObject().put("game", card.game.name).put("id", card.cardId).put("name", card.name).put("set", card.setName).put("number", card.number).put("language", language).put("printing", variant.key))
         if (grade != null) body.put("selectedGrade", JSONObject().put("grader", grade.grader).put("grade", grade.grade).put("qualifier", grade.qualifier))
         File(dir(), "$id.json").writeText(body.toString())
@@ -64,9 +69,10 @@ object SharedLearning {
         if (app == null || !state.value.text) return@withContext
         val file = dir().listFiles()?.filter { it.extension == "json" }?.sortedByDescending { it.lastModified() }?.firstOrNull { runCatching { JSONObject(it.readText()).optLong("row") == row }.getOrDefault(false) } ?: return@withContext
         val body = JSONObject(file.readText())
-        body.put("read", texts.filterNot { '@' in it || "http" in it.lowercase() }.joinToString(" ").take(5000)).put("suggested", suggested)
+        body.put("readHash", readHash(texts.joinToString(" ")))
+        body.remove("read"); body.remove("suggested")
         file.writeText(body.toString())
-        val crop = if (state.value.photos && picture != null) runCatching {
+        val crop = if (PHOTOS_ENABLED && state.value.photos && picture != null) runCatching {
             val pixels = com.monkaydee.tcgcatalogue.scan.Pixels(picture.width, picture.height, IntArray(picture.width * picture.height).also { picture.getPixels(it, 0, picture.width, 0, 0, picture.width, picture.height) })
             com.monkaydee.tcgcatalogue.grade.CardRectifier.findQuad(pixels)?.let { quad -> com.monkaydee.tcgcatalogue.grade.CardRectifier.warp(pixels, quad).let { flat -> Bitmap.createBitmap(flat.argb, flat.width, flat.height, Bitmap.Config.ARGB_8888) } }
         }.getOrNull() else null
@@ -79,29 +85,33 @@ object SharedLearning {
     fun crops(): List<File> = if (app != null && state.value.photos) dir().listFiles()?.filter { it.extension == "jpg" && File(dir(), it.nameWithoutExtension + ".json").exists() }.orEmpty() else emptyList()
     suspend fun decline(file: File) = withContext(Dispatchers.IO) { file.delete() }
     suspend fun approve(file: File) = withContext(Dispatchers.IO) {
-        if (!state.value.text || !state.value.photos) return@withContext
+        if (!PHOTOS_ENABLED || !state.value.text || !state.value.photos) return@withContext
         val report = File(dir(), file.nameWithoutExtension + ".json")
         val body = JSONObject(report.readText()).put("photoApproved", true)
         report.writeText(body.toString())
     }
-    private suspend fun request(repo: CardRepository, method: String, body: JSONObject) = withContext(Dispatchers.IO) {
+    private suspend fun request(repo: CardRepository, method: String, body: JSONObject, explicitPriceReport: Boolean = false) = withContext(Dispatchers.IO) {
         val s = repo.settings.current()
         check(s.hasServer) { "Price server is not configured" }
         check(s.serverUrl.startsWith("https://"))
+        check(method != "POST" || explicitPriceReport || state.value.text) { "Recognition sharing is disabled" }
         client.newCall(Request.Builder().url(s.serverUrl.trimEnd('/') + "/v1/feedback").header("X-App-Key", s.serverKey).method(method, body.toString().toRequestBody("application/json".toMediaType())).build()).execute().use { response ->
             check(response.isSuccessful) { "Recognition reports: HTTP ${response.code}" }
         }
     }
     suspend fun flush(repo: CardRepository) = lock.withLock { withContext(Dispatchers.IO) {
         if (app == null || !state.value.text) return@withContext
+        if (prefs().getBoolean("deletePending", false)) return@withContext // Finish withdrawal before submitting again.
         val result = runCatching {
             for (file in dir().listFiles()?.filter { it.extension == "json" }.orEmpty()) {
                 if (!state.value.text) break
                 val body = JSONObject(file.readText())
+                if (body.has("read")) body.put("readHash", readHash(body.optString("read")))
+                body.remove("read"); body.remove("suggested"); body.remove("image"); body.remove("photoApproved")
+                body.optJSONObject("card")?.apply { remove("name"); remove("set") }
                 val image = File(dir(), file.nameWithoutExtension + ".jpg")
                 if (System.currentTimeMillis() - body.optLong("created", file.lastModified()) > 90 * 86400000L) { file.delete(); image.delete(); continue }
-                if (image.exists() && state.value.photos && !body.optBoolean("photoApproved")) continue
-                if (image.exists() && state.value.photos && body.optBoolean("photoApproved")) body.put("image", Base64.encodeToString(image.readBytes(), Base64.NO_WRAP))
+                if (!PHOTOS_ENABLED) image.delete()
                 body.remove("row"); body.remove("created")
                 request(repo, "POST", body)
                 file.delete(); image.delete()
@@ -134,7 +144,7 @@ object SharedLearning {
                 }
             }
             if (!cache.exists() || System.currentTimeMillis() - p.getLong("rulesAt", 0) > 7 * 86400000L) return@runCatching candidates
-            val read = normalizeRead(texts.joinToString(" "))
+            val read = readHash(texts.joinToString(" "))
             val rules = org.json.JSONArray(cache.readText())
             val language = com.monkaydee.tcgcatalogue.scan.CardTextParser.detectLanguage(texts) ?: "EN"
             val context = candidates.first().game.name.lowercase(java.util.Locale.ROOT) + "|" + language + "|" + read
@@ -151,6 +161,8 @@ object SharedLearning {
             .put("card", JSONObject().put("game", card.game.name).put("id", card.cardId).put("name", card.name).put("set", card.setName).put("number", card.number).put("language", card.language).put("printing", card.variant))
         body.put("evidence", JSONObject().put("amount", card.price).put("currency", card.priceCurrency).put("source", card.priceSource)
             .put("grader", card.grader).put("grade", card.grade).put("qualifier", card.gradeQualifier).put("quotedAt", card.priceUpdatedAt))
-        request(repo, "POST", body)
+        body.put("readHash", readHash(body.optString("read"))); body.remove("read")
+        body.optJSONObject("card")?.apply { remove("name"); remove("set") }
+        request(repo, "POST", body, explicitPriceReport = true)
     }
 }

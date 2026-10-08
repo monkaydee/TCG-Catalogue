@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">可選：分享卡牌識別碼和OCR指紋，不分享照片或可讀的OCR文字。報告保存90天。</string>
+    <string name="learning_photos_paused">在內容及卡牌身分檢查通過驗證前，照片分享已暫停。本機掃描仍可使用。</string>
+    <string name="price_health_summary">%1$d張卡牌沒有市場價格 · %2$d個日文卡牌身分需要修正</string>
+</resources>

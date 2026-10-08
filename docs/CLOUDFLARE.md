@@ -373,4 +373,4 @@ number of saved results.
 
 ## Recognition learning
 
-The release also enables private opt-in reports. See [SHARED-LEARNING.md](SHARED-LEARNING.md) for the private R2 bucket, separate moderation key, retention/deletion and operator review commands. `/v1/status` now reports whether private photos and moderation are configured, without returning secret values.
+Private opt-in identifier/OCR-fingerprint reports remain available. Shared photo uploads are disabled until validated content moderation exists. See [SHARED-LEARNING.md](SHARED-LEARNING.md) for legacy-photo cleanup, the separate moderation key, retention/deletion and operator review. `/v1/status` reports metadata policy revision and legacy migration completion without returning secret values.

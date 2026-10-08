@@ -46,11 +46,11 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                 val text = http.getText("$BASE/$name", accept = "application/json")
                 if (!text.isNullOrBlank()) withContext(Dispatchers.IO) {
                     // An HTTP 200 error page or truncated response must not replace a usable cache.
-                    require(http.json.parseToJsonElement(text).obj() != null) { "Invalid catalogue JSON" }
+                    validateDaily(name, text)
                     dir.mkdirs()
                     val tmp = File(dir, "$name.tmp")
                     tmp.writeText(text)
-                    tmp.renameTo(file)
+                    check(tmp.renameTo(file)) { "Catalogue cache replacement failed" }
                 }
             }
         }
@@ -61,21 +61,23 @@ class CardIndexApi(private val http: Http, private val dir: File) {
     data class NamedCard(val id: String, val number: String, val names: List<String>)
 
     @Volatile private var pokemonNames: List<NamedCard>? = null
+    @Volatile private var pokemonNamesStamp = 0L
 
     /**
      * Pokémon cards whose name in English, German, French, Italian, Spanish or Portuguese contains
      * [word] (from the daily name index; null when it isn't downloaded yet).
      */
     suspend fun pokemonByName(word: String): List<NamedCard>? {
-        val all = pokemonNames ?: withContext(Dispatchers.IO) {
+        val all = withContext(Dispatchers.IO) {
             val file = dailyFile("NAMES_POKEMON.json") ?: return@withContext null
+            pokemonNames?.takeIf { file.lastModified() == pokemonNamesStamp }?.let { return@withContext it }
             runCatching {
                 http.json.parseToJsonElement(file.readText())["cards"].arr().orEmpty().mapNotNull { c ->
                     val a = c.arr() ?: return@mapNotNull null
                     NamedCard(a.getOrNull(0).str() ?: return@mapNotNull null, a.getOrNull(1).str().orEmpty(), a.drop(2).mapNotNull { it.str() })
                 }
-            }.getOrNull()
-        }?.also { pokemonNames = it } ?: return null
+            }.getOrNull()?.also { pokemonNames = it; pokemonNamesStamp = file.lastModified() }
+        } ?: return null
         val w = word.lowercase()
         return all.filter { card -> card.names.any { it.lowercase().contains(w) } }
     }
@@ -96,7 +98,7 @@ class CardIndexApi(private val http: Http, private val dir: File) {
                     dir.mkdirs()
                     val tmp = File(dir, "${game.name}.json.tmp")
                     tmp.writeText(text)
-                    tmp.renameTo(file)
+                    check(tmp.renameTo(file)) { "Card index replacement failed" }
                 }
             }
         }
@@ -192,7 +194,9 @@ class CardIndexApi(private val http: Http, private val dir: File) {
         val nativeIds = native.map { it.productId }.toSet()
         val regionalByNativeId = regional.filter { it.catalogueProductId != null }.associateBy { it.catalogueProductId }
         val catalogue = native.map { product ->
-            product.copy(aliases = (product.aliases + regionalByNativeId[product.productId]?.aliases.orEmpty()).distinct())
+            val regionalProduct = regionalByNativeId[product.productId]
+            product.copy(aliases = (product.aliases + regionalProduct?.aliases.orEmpty()).distinct(),
+                imageUrl = product.imageUrl ?: regionalProduct?.imageUrl)
         } + regional.filter { it.catalogueProductId !in nativeIds }
         return catalogue.filter { p ->
             val fields = (listOf(p.name, p.groupName, p.game.short) + p.aliases).map { sealedSearchText(it, language) }
@@ -203,6 +207,19 @@ class CardIndexApi(private val http: Http, private val dir: File) {
 
     suspend fun sealedProduct(game: Game, productId: Long, language: String = "EN"): SealedProduct? =
         (if (productId > 0) sealed(game).filter { it.language == language } else regionalSealed(game, language)).firstOrNull { it.productId == productId }
+
+    /** Known feeds need their semantic containers, not merely syntactically valid JSON. */
+    private fun validateDaily(name: String, text: String) {
+        val root = http.json.parseToJsonElement(text)
+        require(root.obj() != null) { "Invalid catalogue JSON" }
+        when {
+            name == "NAMES_POKEMON.json" || name == "CARDMARKET_POKEMON.json" -> require(root["cards"].arr() != null)
+            name == "CARDMARKET_ONE_PIECE.json" -> require(root["cards"].arr() != null && root["expansions"].obj() != null)
+            name == "JAPANESE_NAME_ALIASES.json" -> require(root["sets"].obj() != null)
+            name.startsWith("SEALED_REGIONAL_") -> require(root["items"].arr() != null)
+            name.startsWith("SEALED_") -> require(root["items"].arr() != null && root["groups"].obj() != null)
+        }
+    }
 
     /** Every card of a set (TCGplayer group), in number order. */
     suspend fun setChecklist(game: Game, groupId: Int): List<ChecklistEntry> {

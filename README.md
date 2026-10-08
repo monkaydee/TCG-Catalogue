@@ -8,7 +8,7 @@ price, files it under its set and tracks the value of your whole collection over
 ## Install
 
 1. Open the [latest release](../../releases) on your phone.
-2. Download `tcg-catalogue-N.apk` and open it. Android asks you to allow installing apps from
+2. Download `cardnavo-N.apk` and open it. Android asks you to allow installing apps from
    your browser the first time.
 3. New builds install over the old one and keep your collection.
 
@@ -43,9 +43,9 @@ Every push to this repository builds a new APK with GitHub Actions (`.github/wor
   PSA slabs can have their cert checked (card, grade, population).
 - **Graded cards**: the slab label is read too. That covers PSA, BGS/Beckett (including Black Label),
   CGC (including Pristine), SGC, TAG, ACE, AOG, GSG and PI, plus the grade and cert number.
-  No free source of graded sales can be read by an app, so graded copies show the raw price until
-  you set **your own value**. The card page has links that open eBay sold listings, PriceCharting,
-  Cardmarket and TCGplayer for that exact card and grade in your browser, so you can look it up.
+  An exact company/grade/language/printing quote is used when available. Missing slab values stay
+  unknown; raw prices remain separately labelled references. Provider sold data and eBay active
+  asking references are distinct. You can enter your own value or open exact browser price links.
 - **Pre-grading**: take front and back photos and confirm the four physical corners on the original
   photo. The app then straightens and checks the selected full card; centering adjustments are optional. A short rotating slab and swipe-away paper reveal
   an experimental centering score, followed by an explanation, CSV export and private saved reports.
@@ -238,3 +238,11 @@ Ideas for what comes next, all free: see [ROADMAP.md](ROADMAP.md).
   it recovers or the client in `data/remote/` is adapted.
 
 Latest review: [quality audit](docs/QUALITY-AUDIT-2026-10-07.md) and [Go Shopping feasibility plan](docs/GO-SHOPPING-PLAN.md). The shopping feature is proposed only.
+
+## Current standing
+
+Read [current_standing.md](current_standing.md) for the latest Claude handoff: fixes, features,
+validation gaps, pricing/image limits and next ideas. Shared-learning photos are disabled until
+validated content moderation exists; identifier/OCR-fingerprint reports remain optional. See
+[the privacy review](docs/UPLOAD-PRIVACY-REVIEW.md) and
+[competitor comparison](docs/COMPETITOR-COMPARISON-2026-10-08.md). Go Shopping remains planned.

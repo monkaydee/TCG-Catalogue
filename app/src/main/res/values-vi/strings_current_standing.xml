@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Tùy chọn: chia sẻ mã thẻ và dấu vân tay OCR, không gửi ảnh hay văn bản OCR đọc được. Báo cáo lưu 90 ngày.</string>
+    <string name="learning_photos_paused">Chia sẻ ảnh tạm dừng đến khi kiểm tra nội dung và danh tính thẻ được xác thực. Quét cục bộ vẫn hoạt động.</string>
+    <string name="price_health_summary">%1$d thẻ chưa có giá thị trường · %2$d danh tính thẻ Nhật cần sửa</string>
+</resources>

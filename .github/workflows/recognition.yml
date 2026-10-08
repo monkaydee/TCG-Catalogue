@@ -65,7 +65,7 @@ jobs:
           arch: x86_64
           disable-animations: true
           script: |
-            ./gradlew --no-daemon connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.monkaydee.tcgcatalogue.GoldenSetTest -Pandroid.testInstrumentationRunnerArguments.minExact=${{ vars.GOLDEN_MIN_EXACT || '0' }} || touch failed
+            ./gradlew --no-daemon connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.monkaydee.tcgcatalogue.GoldenSetTest -Pandroid.testInstrumentationRunnerArguments.minExact=${{ vars.GOLDEN_MIN_EXACT || '0.9' }} || touch failed
             adb logcat -d -v raw -s GoldenSet:I > golden-report.txt || true
             test ! -f failed
 

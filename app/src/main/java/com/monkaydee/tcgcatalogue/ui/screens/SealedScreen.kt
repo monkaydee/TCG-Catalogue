@@ -394,9 +394,21 @@ internal fun SealedSearchRow(product: SealedProduct, settings: AppSettings, onCl
 /** Keep missing/failed product photos visible as a product placeholder instead of blank space. */
 @Composable
 private fun SealedImage(url: String?, modifier: Modifier) {
+    val choices = remember(url) { sealedImageCandidates(url) }
+    var attempt by remember(url) { mutableIntStateOf(0) }
     SubcomposeAsyncImage(
-        model = url, contentDescription = null, modifier = modifier, contentScale = ContentScale.Fit,
+        model = choices.getOrNull(attempt), contentDescription = null, modifier = modifier, contentScale = ContentScale.Fit,
+        onError = { if (attempt + 1 < choices.size) attempt++ },
         loading = { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(Modifier.size(18.dp)) } },
         error = { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Icon(Icons.Outlined.Inventory2, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) } },
     )
+}
+
+/** Retry sizes of the exact same catalogue product; never substitute another language's box. */
+internal fun sealedImageCandidates(url: String?): List<String> {
+    if (url.isNullOrBlank()) return emptyList()
+    val matched = Regex("^https://tcgplayer-cdn\\.tcgplayer\\.com/product/(\\d+)_in_\\d+x\\d+\\.jpg$").matchEntire(url)
+        ?: return listOf(url)
+    val product = matched.groupValues[1]
+    return (listOf(url) + listOf(200,400,1000).map { "https://tcgplayer-cdn.tcgplayer.com/product/${product}_in_${it}x${it}.jpg" }).distinct()
 }

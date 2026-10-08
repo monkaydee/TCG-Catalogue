@@ -16,6 +16,7 @@ import { psaCert, psaSpecPop, type Cert } from "./providers/psa";
 import { rapidPop, rapidTcg } from "./providers/rapidapi";
 import { tcgApi } from "./providers/tcgapi";
 import { ximilarIdentify } from "./providers/ximilar";
+import { boundedBody, boundedJson, BodyTooLarge } from "./util";
 import { QuotaError, type CardRequest, type Env, type GradedPrice, type Population, type ProviderName, type RawPrice } from "./types";
 
 const DAY = 86_400_000;
@@ -88,8 +89,9 @@ async function prices(req: Request, env: Env, s: Settings): Promise<Response> {
   if (Number(req.headers.get("content-length") ?? 0) > MAX_JSON_BYTES) return fail(413, "body_too_large");
   let body: unknown;
   try {
-    body = await req.json();
-  } catch {
+    body = await boundedJson(req,MAX_JSON_BYTES);
+  } catch (error) {
+    if (error instanceof BodyTooLarge) return fail(413,"body_too_large");
     return fail(400, "invalid_json");
   }
   const list = (body as { cards?: unknown })?.cards;
@@ -220,7 +222,9 @@ async function identify(req: Request, env: Env): Promise<Response> {
   const key = keyOf(env, "ximilar");
   if (!key) return fail(503, "unavailable", { reason: "identification is not configured" });
   if (Number(req.headers.get("content-length") ?? 0) > MAX_IMAGE_BYTES) return fail(413, "image_too_large", { maxBytes: MAX_IMAGE_BYTES });
-  const bytes = new Uint8Array(await req.arrayBuffer());
+  let bytes:Uint8Array;
+  try {bytes=await boundedBody(req,MAX_IMAGE_BYTES);}
+  catch (error) {if(error instanceof BodyTooLarge)return fail(413,"image_too_large",{maxBytes:MAX_IMAGE_BYTES});throw error;}
   if (bytes.length > MAX_IMAGE_BYTES) return fail(413, "image_too_large", { maxBytes: MAX_IMAGE_BYTES });
   if (bytes.length < 3 || bytes[0] !== 0xff || bytes[1] !== 0xd8 || bytes[2] !== 0xff) return fail(415, "jpeg_required");
   const budgets = await new Budgets(env.DB, env).load();
@@ -240,11 +244,13 @@ async function status(env: Env): Promise<Response> {
   const budgets = await new Budgets(env.DB, env).load();
   return json({
     ok: true,
-    priceMatchingRevision: 7,
+    priceMatchingRevision: 8,
     time: new Date().toISOString(),
     providers: budgets.report((p) => !!keyOf(env, p)),
     cache: await new Cache(env.DB).count(),
-    learning: { textReports: true, privatePhotos: true, photoStorage: env.FEEDBACK_IMAGES ? "r2" : "private-d1-32mib", dashboardModeration: true, moderationConfigured: !!env.FEEDBACK_ADMIN_KEY, retentionDays: 90 },
+    learning: { textReports: true, privatePhotos: false, photoStorage: "disabled-until-content-moderation", metadataRevision:2,
+      legacyMigrationComplete: !!await env.DB.prepare("SELECT revision FROM learning_policy WHERE revision=2").first(),
+      dashboardModeration: true, moderationConfigured: !!env.FEEDBACK_ADMIN_KEY, retentionDays: 90 },
   });
 }
 

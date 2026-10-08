@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Opcjonalnie: udostępniaj identyfikatory kart i skrót OCR, bez zdjęć i czytelnego tekstu OCR. Raporty są przechowywane 90 dni.</string>
+    <string name="learning_photos_paused">Udostępnianie zdjęć wstrzymano do czasu weryfikacji kontroli treści i tożsamości kart. Skanowanie lokalne działa.</string>
+    <string name="price_health_summary">%1$d kart bez ceny rynkowej · %2$d japońskich identyfikatorów do poprawy</string>
+</resources>

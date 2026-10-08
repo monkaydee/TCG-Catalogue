@@ -15,7 +15,7 @@ import java.io.File
  * Recognition test on real photos ("golden set"): every photo in androidTest assets/golden with
  * the card it shows (cases.csv: file,cardId[,language][,grader][,grade]). Runs the same pipeline
  * as photo import and reports how many were right. Fails when the share of exact matches drops
- * below `minExact` (instrumentation argument, default 0 = report only).
+ * below `minExact` (instrumentation argument, default 0.9 = 90% exact).
  *
  * The photos are not in this public repository; CI copies them in from a private source
  * (docs/GOLDEN_SET.md). Without them the test is skipped.
@@ -60,7 +60,8 @@ class GoldenSetTest {
             }
             report.append("${case.file} | ${case.cardId} | ${top?.cardId ?: "-"} | ${if (rank < 0) "miss" else rank + 1} | $how\n")
         }
-        val n = cases.size.coerceAtLeast(1)
+        assertTrue("Golden set must contain labelled photos", cases.isNotEmpty())
+        val n = cases.size
         report.append("\nexact ${exact}/${cases.size} (${100 * exact / n} %), top-3 ${inTop3}/${cases.size}")
         val withLanguage = cases.count { it.language != null }
         if (withLanguage > 0) report.append(", language ${languageRight}/$withLanguage")
@@ -70,7 +71,8 @@ class GoldenSetTest {
         android.util.Log.i("GoldenSet", report.toString())
         File(instrumentation.targetContext.getExternalFilesDir(null), "golden-report.txt").writeText(report.toString())
 
-        val minExact = InstrumentationRegistry.getArguments().getString("minExact")?.toDoubleOrNull() ?: 0.0
+        val minExact = InstrumentationRegistry.getArguments().getString("minExact")?.toDoubleOrNull() ?: 0.9
+        assertTrue("minExact must be finite and in (0, 1]", minExact.isFinite() && minExact > 0.0 && minExact <= 1.0)
         assertTrue("Recognition below ${minExact * 100} %:\n$report", exact.toDouble() / n >= minExact)
     }
 }

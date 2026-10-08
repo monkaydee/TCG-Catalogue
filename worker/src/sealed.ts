@@ -2,7 +2,7 @@ import { comparableSummary, phraseIn } from "./comparables";
 import { Cache } from "./cache";
 import { Budgets } from "./budget";
 import { accessToken, languageAspectFilter, languageMatches, marketplace } from "./providers/ebay";
-import { fetchJson, obj, str, price } from "./util";
+import { fetchJson, obj, str, price, boundedJson, BodyTooLarge } from "./util";
 import type { Env } from "./types";
 
 export interface SealedRequest { game: "pokemon" | "one_piece"; productId: string; name: string; language: "EN" | "DE" | "JA"; aliases?: string[]; market?: "US" | "DE"; }
@@ -168,16 +168,17 @@ async function searchSealedListings(card: SealedRequest, auth: string, budgets: 
   return {quote:parseSealedListings(data,card,verified),imageUrl:sealedListingImage(data,card,verified)};
 }
 export async function sealedPrice(req: Request, env: Env): Promise<Response> {
-  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:8}), { status, headers: { "content-type": "application/json" } });
+  const json = (value: Record<string,unknown>, status = 200) => new Response(JSON.stringify({...value,sealedMatchingRevision:9}), { status, headers: { "content-type": "application/json" } });
   if (Number(req.headers.get("content-length") ?? 0) > 4000) return json({error:"body_too_large"},413);
   let o: Record<string, unknown>;
-  try { o = obj(await req.json()); } catch { return json({error:"invalid_json"},400); }
-  const game = str(o.game)?.toLowerCase(), language = str(o.language)?.toUpperCase();
+  try { o = obj(await boundedJson(req,4000)); } catch (error) { return json({error:error instanceof BodyTooLarge ? "body_too_large" : "invalid_json"},error instanceof BodyTooLarge ? 413 : 400); }
+  const game = str(o.game)?.toLowerCase(), requestedLanguage = str(o.language)?.toUpperCase();
+  const language = requestedLanguage === "JP" ? "JA" : requestedLanguage;
   const name = str(o.name)?.trim(), productId = str(o.productId);
   if (!["pokemon","one_piece"].includes(game ?? "") || !["EN","DE","JA"].includes(language ?? "") || !name || name.length > 200 || !productId || !/^-?\d{1,16}$/.test(productId)) return json({error:"invalid_product"},400);
   const aliases = Array.isArray(o.aliases) ? o.aliases.filter((v): v is string => typeof v === "string" && v.length <= 100).slice(0, 12) : [];
   const card = { game, name, language, productId, aliases, market:o.market === "DE" || o.market === "US" ? o.market : undefined } as SealedRequest;
-  const key = `sealed:v8:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
+  const key = `sealed:v9:${game}:${productId}:${language}:${card.market ?? "default"}:${name}:${JSON.stringify([...new Set(aliases)].sort())}`;
   const cache = new Cache(env.DB), now = Date.now();
   const entry = (await cache.getMany<SealedLookup>([key])).get(key);
   if (entry && entry.expiresAt > now) return json({price:entry.value.quote,imageUrl:entry.value.imageUrl,reason:entry.value.quote ? null : "not_found"});

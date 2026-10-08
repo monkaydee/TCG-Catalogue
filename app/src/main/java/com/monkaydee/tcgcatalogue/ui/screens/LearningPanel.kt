@@ -18,15 +18,13 @@ fun LearningPanel(repo: CardRepository) {
     val scope = rememberCoroutineScope()
     var refresh by remember { mutableIntStateOf(0) }
     Text(stringResource(R.string.tools_learning), style = MaterialTheme.typography.titleMedium)
-    Text(stringResource(R.string.tools_consent), style = MaterialTheme.typography.bodySmall)
+    Text(stringResource(R.string.learning_metadata_notice), style = MaterialTheme.typography.bodySmall)
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(stringResource(R.string.tools_learning), Modifier.weight(1f))
         Switch(state.text, { scope.launch { SharedLearning.consent(repo, it, state.photos); refresh++ } })
     }
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(stringResource(R.string.tools_photos), Modifier.weight(1f))
-        Switch(state.photos, { scope.launch { SharedLearning.consent(repo, state.text, it); refresh++ } }, enabled = state.text)
-    }
+    Text(stringResource(R.string.learning_photos_paused), style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant)
     val crops = remember(state.pending, state.photos, refresh) { SharedLearning.crops() }
     crops.forEach { file ->
         AsyncImage(file, stringResource(R.string.tools_preview), Modifier.fillMaxWidth().height(240.dp))

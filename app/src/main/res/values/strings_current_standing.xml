@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Optional: share card identifiers and an OCR fingerprint, not the photo or readable OCR. Reports are kept for 90 days.</string>
+    <string name="learning_photos_paused">Photo sharing is paused until content and card-identity checks are validated. Local scanning still works.</string>
+    <string name="price_health_summary">Missing market prices: %1$d · JP identities needing repair: %2$d</string>
+</resources>

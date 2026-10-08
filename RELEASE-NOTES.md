@@ -1,9 +1,12 @@
-Refine the pre-grade reveal and binder page turns; protect prices and collection edits during refresh.
+Protect shared recognition data and improve exact-language price matching.
 
-- Slow the slab presentation to one smooth 2.8-second turn. Attach the synchronized pull arrow directly beneath the covering paper and keep the swipe-to-reveal interaction.
-- Redesign the shared PSA-inspired label with clear sans-serif typography, a compact red frame and better title/grade spacing. Pre-grade labels remain explicitly marked as photo estimates.
-- Bend binder pages as they turn, soften the release, and make arrow-button turns fluid. Handle canceled turns and shrinking page counts without jumping outside the binder.
-- Preserve current sealed quantities, costs and identity when a price refresh finishes. Distinguish raw-provider outages from empty quotes and keep the previous quote/date. Reject malformed catalogue replacements and nonfinite grade prices.
-- Include a pricing/image/recognition audit and a researched country-specific Go Shopping plan. Shopping is a proposal, not an implemented feature; price and image coverage still depends on exact identities and provider data.
+- Block shared-learning photo uploads in both Android and Worker until content/card-identity moderation is validated. Keep local scanning and pre-grading available.
+- Share OCR fingerprints rather than readable OCR; remove legacy photos/free-text reports and dependent hints through a verified privacy migration. Respect withdrawal retries and explicit confirmations.
+- Disable implicit OS backup/device transfer of private app data; preserve explicit exports and chosen-file cloud backup/sync.
+- Enforce request-size limits during streaming, including chunked uploads without Content-Length.
+- Verify raw-card language through eBay's returned Language facet, reject split price bands without a majority, and expose bounded accepted graded listing examples for diagnostics. Quotes remain asking references where labelled.
+- Accept JP API aliases, reload refreshed Pokémon name indexes, reject wrong-schema daily feeds, add collection-wide missing-price/JP repair links and retry sealed thumbnail sizes for the same product.
+- Default real-photo recognition gating to 90% when a private golden set is configured; missing data remains an explicit validation gap.
+- Add current_standing.md for Claude, a sourced competitor comparison and an upload/privacy review. Update the privacy notice; full DSGVO readiness still needs operator/contact/contract review.
 
-The four-corner outline review remains available before cropping and from the live result. CardNavo name, signing key and 0.1.<build-number> convention remain unchanged. Pre-grades remain non-professional centering estimates.
+Keep CardNavo, the existing 0.1.<build-number> convention, package and signing key. Shopping stays a plan. Exact graded/language prices and missing supplier images are not universally resolved; no raw/cross-language substitution or certified surface-grade claim is introduced.

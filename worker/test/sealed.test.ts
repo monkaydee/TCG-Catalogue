@@ -24,7 +24,7 @@ it("falls back across markets while retaining Japanese identity and charging eac
   expect(result.price.amount).toBe(60);
   expect(result.price.currency).toBe("USD");
   expect(result.price.source).toContain("EBAY_US international reference");
-  expect(result.sealedMatchingRevision).toBe(8);
+  expect(result.sealedMatchingRevision).toBe(9);
   expect(result.imageUrl).toBe("https://i.ebayimg.com/images/japanese-box.jpg");
   expect(searches.map(s=>s.market)).toEqual(["EBAY_DE","EBAY_US"]);
   expect(searches[0].url.searchParams.get("q")).toContain("OP-08");

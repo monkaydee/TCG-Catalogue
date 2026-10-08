@@ -95,13 +95,13 @@ jobs:
       - name: Apply database schema
         run: npx wrangler d1 execute "$DB_NAME" --remote --file schema.sql --yes
 
-      - name: Enable private recognition photo storage
+      - name: Attach private bucket for legacy-photo cleanup
         run: |
           if npx wrangler r2 bucket create cardnavo-recognition-private > r2.log 2>&1 || grep -qi "already exists" r2.log; then
             printf '\n[[r2_buckets]]\nbinding = "FEEDBACK_IMAGES"\nbucket_name = "cardnavo-recognition-private"\n' >> wrangler.toml
-            echo "Private recognition photo storage enabled."
+            echo "Private bucket attached for legacy-photo cleanup; new shared photo uploads stay disabled."
           else
-            echo "::warning::Private photo storage unavailable. Enable R2 and grant Workers R2 Storage Edit to the deployment token, then rerun. Approved crops use bounded private D1 storage until R2 is enabled."
+            echo "::warning::Private bucket unavailable. New photo uploads remain disabled. Legacy R2 cleanup requires the original bucket binding; D1 cleanup remains available when no R2 photos exist."
           fi
 
       - name: Deploy

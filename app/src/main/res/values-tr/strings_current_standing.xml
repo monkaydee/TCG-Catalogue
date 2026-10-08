@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">İsteğe bağlı: fotoğraf veya okunabilir OCR metni yerine kart kimlikleri ve OCR parmak izi paylaşılır. Raporlar 90 gün saklanır.</string>
+    <string name="learning_photos_paused">İçerik ve kart kimliği denetimleri doğrulanana kadar fotoğraf paylaşımı duraklatıldı. Yerel tarama çalışmaya devam eder.</string>
+    <string name="price_health_summary">%1$d kartın piyasa fiyatı yok · %2$d Japon kart kimliği düzeltilecek</string>
+</resources>
