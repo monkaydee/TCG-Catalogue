@@ -71,10 +71,14 @@ data class CardBinder(
     val createdAt: Long = System.currentTimeMillis(),
 )
 
-/** A collection row placed in a binder; a card may sit in several binders. */
+/**
+ * One pocket of an own binder: [slot] counts pockets from the first page on (page = slot / pockets
+ * per page). A card row may fill several pockets, one per copy, up to its quantity.
+ * (Backups written before pockets existed have no slot: -1, filled in on restore.)
+ */
 @Serializable
-@Entity(tableName = "binder_cards", primaryKeys = ["binderId", "cardRowId"], indices = [Index("cardRowId")])
-data class BinderCard(val binderId: Long, val cardRowId: Long)
+@Entity(tableName = "binder_slots", primaryKeys = ["binderId", "slot"], indices = [Index("cardRowId")])
+data class BinderCard(val binderId: Long, val cardRowId: Long, val slot: Int = -1)
 
 @Dao
 interface BinderDao {
@@ -85,12 +89,15 @@ interface BinderDao {
     @Update suspend fun update(binder: CardBinder)
     @Query("DELETE FROM binders WHERE id = :id") suspend fun delete(id: Long)
     @Query("DELETE FROM binders") suspend fun deleteAll()
-    @Query("SELECT * FROM binder_cards") fun observeCards(): kotlinx.coroutines.flow.Flow<List<BinderCard>>
-    @Query("SELECT * FROM binder_cards") suspend fun cards(): List<BinderCard>
-    @Query("SELECT cardRowId FROM binder_cards WHERE binderId = :binder") suspend fun rows(binder: Long): List<Long>
-    @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun put(cards: List<BinderCard>)
-    @Query("DELETE FROM binder_cards WHERE binderId = :binder") suspend fun clear(binder: Long)
-    @Query("DELETE FROM binder_cards WHERE cardRowId = :row") suspend fun removeRow(row: Long)
-    @Query("UPDATE OR IGNORE binder_cards SET cardRowId = :to WHERE cardRowId = :from") suspend fun moveRow(from: Long, to: Long)
-    @Query("DELETE FROM binder_cards") suspend fun clearAll()
+    @Query("SELECT * FROM binder_slots ORDER BY binderId, slot") fun observeCards(): kotlinx.coroutines.flow.Flow<List<BinderCard>>
+    @Query("SELECT * FROM binder_slots ORDER BY binderId, slot") suspend fun cards(): List<BinderCard>
+    @Query("SELECT * FROM binder_slots WHERE binderId = :binder ORDER BY slot") suspend fun slots(binder: Long): List<BinderCard>
+    @Query("SELECT DISTINCT cardRowId FROM binder_slots WHERE binderId = :binder") suspend fun rows(binder: Long): List<Long>
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun put(cards: List<BinderCard>)
+    @Query("DELETE FROM binder_slots WHERE binderId = :binder AND slot = :slot") suspend fun removeSlot(binder: Long, slot: Int)
+    @Query("DELETE FROM binder_slots WHERE binderId = :binder") suspend fun clear(binder: Long)
+    @Query("DELETE FROM binder_slots WHERE cardRowId = :row") suspend fun removeRow(row: Long)
+    @Query("SELECT * FROM binder_slots WHERE cardRowId = :row ORDER BY binderId, slot") suspend fun placements(row: Long): List<BinderCard>
+    @Query("UPDATE binder_slots SET cardRowId = :to WHERE cardRowId = :from") suspend fun moveRow(from: Long, to: Long)
+    @Query("DELETE FROM binder_slots") suspend fun clearAll()
 }

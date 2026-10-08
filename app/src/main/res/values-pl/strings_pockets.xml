@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Każdy egzemplarz w osobnej kieszeni</string>
+    <string name="binder_move_hint">Dotknij kieszeni, aby przenieść tam kartę</string>
+    <string name="binder_remove">Usuń z klasera</string>
+    <string name="binder_pick_for_pocket">Wybierz kartę do tej kieszeni</string>
+    <string name="binder_all_placed">Wszystkie egzemplarze są już w tym klaserze</string>
+</resources>

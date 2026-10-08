@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">แต่ละใบมีช่องของตัวเอง</string>
+    <string name="binder_move_hint">แตะช่องเพื่อย้ายการ์ดไปที่นั่น</string>
+    <string name="binder_remove">นำออกจากแฟ้ม</string>
+    <string name="binder_pick_for_pocket">เลือกการ์ดสำหรับช่องนี้</string>
+    <string name="binder_all_placed">ทุกใบอยู่ในแฟ้มนี้แล้ว</string>
+</resources>

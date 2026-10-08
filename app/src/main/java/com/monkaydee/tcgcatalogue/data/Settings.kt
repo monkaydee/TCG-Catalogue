@@ -35,6 +35,8 @@ data class AppSettings(
     val fullScreen: Boolean = true,
     /** Virtual binder layout: [Binder.CLASSIC] (4 × 3) or n × n pockets (3, 6 or 9). */
     val binderGrid: Int = Binder.CLASSIC,
+    /** Every copy gets its own pocket; off: copies of a card share one pocket (×2). */
+    val binderSpread: Boolean = true,
     /** Cover of the main binder: a [CoverDesign] key and optionally the user's own picture. */
     val mainCover: String = "midnight",
     val mainCoverImage: String? = null,
@@ -105,6 +107,7 @@ class SettingsStore(private val context: Context) {
         val binderSort = stringPreferencesKey("binder_sort")
         val binderSetOrder = stringPreferencesKey("binder_set_order")
         val binderAnimation = booleanPreferencesKey("binder_animation")
+        val binderSpread = booleanPreferencesKey("binder_spread")
         val mainCover = stringPreferencesKey("main_binder_cover")
         val mainCoverImage = stringPreferencesKey("main_binder_cover_image")
         val themeMode = stringPreferencesKey("theme_mode")
@@ -132,6 +135,7 @@ class SettingsStore(private val context: Context) {
             binderSort = p[Keys.binderSort]?.let { runCatching { BinderSort.valueOf(it) }.getOrNull() } ?: d.binderSort,
             binderSetOrder = p[Keys.binderSetOrder]?.let { runCatching { SetOrder.valueOf(it) }.getOrNull() } ?: d.binderSetOrder,
             binderAnimation = p[Keys.binderAnimation] ?: d.binderAnimation,
+            binderSpread = p[Keys.binderSpread] ?: d.binderSpread,
             mainCover = p[Keys.mainCover] ?: d.mainCover,
             mainCoverImage = p[Keys.mainCoverImage],
             look = Look(
@@ -162,6 +166,7 @@ class SettingsStore(private val context: Context) {
     suspend fun setBinderSort(v: BinderSort) = context.dataStore.edit { it[Keys.binderSort] = v.name }
     suspend fun setBinderSetOrder(v: SetOrder) = context.dataStore.edit { it[Keys.binderSetOrder] = v.name }
     suspend fun setBinderAnimation(v: Boolean) = context.dataStore.edit { it[Keys.binderAnimation] = v }
+    suspend fun setBinderSpread(v: Boolean) = context.dataStore.edit { it[Keys.binderSpread] = v }
     suspend fun setMainCover(design: String, image: String?) = context.dataStore.edit {
         it[Keys.mainCover] = design
         if (image == null) it.remove(Keys.mainCoverImage) else it[Keys.mainCoverImage] = image

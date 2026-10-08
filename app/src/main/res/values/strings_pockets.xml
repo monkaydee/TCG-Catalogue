@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Each copy its own pocket</string>
+    <string name="binder_move_hint">Tap a pocket to move the card there</string>
+    <string name="binder_remove">Remove from binder</string>
+    <string name="binder_pick_for_pocket">Choose a card for this pocket</string>
+    <string name="binder_all_placed">All copies are already in this binder</string>
+</resources>

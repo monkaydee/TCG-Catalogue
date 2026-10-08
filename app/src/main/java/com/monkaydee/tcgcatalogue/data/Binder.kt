@@ -24,8 +24,12 @@ enum class SetOrder(@StringRes val label: Int) {
     NAME_DESC(R.string.binder_sort_name_desc),
 }
 
-/** One binder page: its cards (at most rows × columns) and, sorted by set, the set it shows. */
-data class BinderPage(val cards: List<OwnedCard>, val title: String? = null)
+/**
+ * One binder page: its cards (at most rows × columns) and, sorted by set, the set it shows. An own
+ * binder's page also has [pockets], one entry per pocket with gaps as null; [firstSlot] is the
+ * number of its first pocket.
+ */
+data class BinderPage(val cards: List<OwnedCard>, val title: String? = null, val pockets: List<OwnedCard?>? = null, val firstSlot: Int = 0)
 
 object Binder {
     /** The usual 12-pocket page: 4 rows of 3 cards. The default layout. */
@@ -37,6 +41,23 @@ object Binder {
     fun rows(grid: Int) = if (grid == CLASSIC) 4 else grid
     fun perPage(grid: Int) = columns(grid) * rows(grid)
     fun label(grid: Int) = "${rows(grid)} × ${columns(grid)}"
+
+    /** One entry per copy when every copy has its own pocket, otherwise the rows as they are. */
+    fun copies(cards: List<OwnedCard>, spread: Boolean): List<OwnedCard> =
+        if (!spread) cards else cards.flatMap { c -> List(c.quantity.coerceAtLeast(1)) { c.copy(quantity = 1) } }
+
+    /**
+     * The pages of an own binder from its pockets: up to the page with the last card, plus one empty
+     * page to put new cards on. With [spread] each pocket holds one copy; otherwise the whole stack.
+     */
+    fun pocketPages(slots: List<com.monkaydee.tcgcatalogue.data.db.BinderCard>, cards: Map<Long, OwnedCard>, perPage: Int, spread: Boolean): List<BinderPage> {
+        val filled = slots.mapNotNull { s -> cards[s.cardRowId]?.let { s.slot to (if (spread) it.copy(quantity = 1) else it) } }.toMap()
+        val pageCount = (filled.keys.maxOrNull()?.let { it / perPage + 1 } ?: 0) + 1
+        return List(pageCount) { p ->
+            val pockets = List(perPage) { i -> filled[p * perPage + i] }
+            BinderPage(pockets.filterNotNull(), pockets = pockets, firstSlot = p * perPage)
+        }
+    }
 
     /** Sort key of a collector number: "TG05/TG30" -> "TG00005", "OP05-060" -> "00060", "25/102" -> "00025". */
     fun numberKey(c: OwnedCard): String {

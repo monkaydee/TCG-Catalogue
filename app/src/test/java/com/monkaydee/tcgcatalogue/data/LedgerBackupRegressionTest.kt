@@ -114,7 +114,7 @@ class LedgerBackupRegressionTest {
             val a = f.db.cards().insert(card())
             val b = f.db.cards().insert(card().copy(cardId = "base1-2", name = "Blastoise", number = "2/102"))
             val binder = f.repo.createBinder("Holos", "galaxy")
-            f.repo.setBinderCards(binder, setOf(a, b, 999))
+            f.repo.setBinderCards(binder, setOf(a, b, 999), spread = true)
             assertEquals(setOf(a, b), f.db.binders().rows(binder).toSet())
             val backup = f.repo.exportBackup()
             f.repo.delete(f.db.cards().get(b)!!)
@@ -130,6 +130,46 @@ class LedgerBackupRegressionTest {
             f.repo.deleteBinder(restored.id)
             assertTrue(f.db.binders().cards().isEmpty())
             assertEquals(2, f.db.cards().getAll().size)
+        }
+    }
+
+    @Test fun pocketsFollowCopiesChoicesMovesAndSales() = runBlocking {
+        Fixture().use { f ->
+            val a = f.db.cards().insert(card(quantity = 3))
+            val b = f.db.cards().insert(card().copy(cardId = "base1-2", name = "Blastoise", number = "2/102"))
+            val binder = f.repo.createBinder("Trade", "midnight")
+            // every copy its own pocket, in the order chosen
+            assertEquals(listOf(0, 1, 2, 3), f.repo.setBinderCards(binder, linkedSetOf(a, b), spread = true))
+            assertEquals(listOf(a, a, a, b), f.db.binders().slots(binder).map { it.cardRowId })
+            // a fourth copy of a does not exist; b can't go twice; an empty pocket on page 2 takes a new card
+            f.repo.removeFromBinder(binder, 1)
+            assertTrue(f.repo.placeCard(binder, 20, a, spread = true))
+            assertFalse(f.repo.placeCard(binder, 21, a, spread = true))
+            assertFalse(f.repo.placeCard(binder, 22, b, spread = true))
+            assertFalse(f.repo.placeCard(binder, 0, b, spread = true))
+            // moving onto a card swaps the two
+            f.repo.moveCard(binder, 3, 0)
+            assertEquals(listOf(0 to b, 2 to a, 3 to a, 20 to a), f.db.binders().slots(binder).map { it.slot to it.cardRowId })
+            // selling two copies frees their last pockets
+            f.repo.sell(f.db.cards().get(a)!!, 2, 10.0, "EUR")
+            assertEquals(listOf(0 to b, 2 to a), f.db.binders().slots(binder).map { it.slot to it.cardRowId })
+            // arranging closes the gaps in the given order
+            f.repo.arrangeBinder(binder, listOf(a, b))
+            assertEquals(listOf(0 to a, 1 to b), f.db.binders().slots(binder).map { it.slot to it.cardRowId })
+            // stacked: one pocket per card whatever the quantity
+            val stack = f.repo.createBinder("Stack", "gold")
+            f.db.cards().update(f.db.cards().get(b)!!.copy(quantity = 4))
+            assertEquals(listOf(0), f.repo.setBinderCards(stack, setOf(b), spread = false))
+        }
+    }
+
+    @Test fun backupsWithoutPocketsGetNumberedPockets() = runBlocking {
+        Fixture().use { f ->
+            val legacy = Backup(cards = listOf(card(id = 7), card(id = 8).copy(cardId = "base1-2")), snapshots = emptyList(),
+                binders = listOf(CardBinder(id = 3, name = "Old")), binderCards = listOf(BinderCard(3, 8), BinderCard(3, 7)))
+            f.repo.importBackup(legacy)
+            val id = f.db.binders().all().single().id
+            assertEquals(listOf(0 to 8L, 1 to 7L), f.db.binders().slots(id).map { it.slot to it.cardRowId })
         }
     }
 

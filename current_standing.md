@@ -82,6 +82,25 @@ Requested by the owner before the next Codex review.
 - Not done / for review: adding a card to a binder from the card page itself; per-binder layout/sort (shared setting today);
   physical-phone check of the cover tap/swipe feel.
 
+## Binder pockets and card arrival (8 October 2026, Claude)
+
+- **Copies:** option "Each copy its own pocket" (binder ⋯ menu, setting `binder_spread`, default on). Off = one pocket
+  per card row with ×n. Slabs, raw copies and different grades/companies/certificates were already separate rows
+  (`copyKey`, grade in `condition`), so they always get separate pockets.
+- **Own binders have fixed pockets:** table `binder_slots(binderId, slot, cardRowId)` replaces `binder_cards`
+  (schema 11, hand-written `MIGRATION_10_11` keeps each binder's cards in pockets 0, 1, 2 …; `BinderSlotMigrationTest`).
+  Tap an empty pocket (＋) → choose the card for exactly that pocket; long-press a card → tap another pocket to move
+  it there (swaps with a card already there) or "Remove from binder". ＋ in the toolbar still adds many cards; they fill
+  pockets after the last used one. Choosing a sort order in an own binder lays its pockets out again in that order.
+  A row never fills more pockets than it has copies (selling/editing trims its last pockets). Old backups without
+  pocket numbers get numbered on restore; merge appends rows a binder lacks after its last pocket.
+- **Animation:** cards placed or moved fall into their pocket from above the page (750 ms, ease in/out, slight turn
+  and shadow; several cards 170 ms apart). Screenshots `binder_arrival_mid/done`.
+- Main binder unchanged otherwise (auto-sorted by the sort setting, no manual pockets).
+
+Competitor gap research (8 Oct): [docs/COMPETITOR-GAPS-2026-10-08.md](docs/COMPETITOR-GAPS-2026-10-08.md). Recommended next: "Worth grading?",
+cost to complete a set, CSV import from other apps, slab cert barcode scan, more currencies + bulk multi-select.
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

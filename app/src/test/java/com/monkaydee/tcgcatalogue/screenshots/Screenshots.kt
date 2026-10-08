@@ -469,6 +469,23 @@ class Screenshots {
         save("binder_4x3")
     }
 
+    @Test fun binderCardsFlyIntoTheirPockets() {
+        rule.mainClock.autoAdvance = false
+        val page = BinderPage(cards(5), pockets = cards(5).let { c -> listOf(c[0], null, c[1], c[2], null, c[3], null, null, c[4], null, null, null) })
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(8.dp)) {
+                    BinderSheet(page, com.monkaydee.tcgcatalogue.data.Binder.CLASSIC, AppSettings(), {},
+                        com.monkaydee.tcgcatalogue.ui.screens.PocketActions({}, {}, null, null, mapOf(5 to 0, 8 to 1)))
+                }
+            }
+        }
+        rule.mainClock.advanceTimeBy(450)
+        save("binder_arrival_mid")
+        rule.mainClock.advanceTimeBy(1500)
+        save("binder_arrival_done")
+    }
+
     @Test fun binderCovers() {
         rule.setContent {
             TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {

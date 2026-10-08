@@ -652,6 +652,7 @@ class CardRepository(
             db.cards().delete(original)
         } else {
             db.cards().update(edited)
+            trimPockets(edited.id, edited.quantity)
         }
         }
         runCatching { ensureSet(r.card) }
@@ -663,7 +664,7 @@ class CardRepository(
     suspend fun update(card: OwnedCard) {
         db.withTransaction {
             db.cards().get(card.id)?.let { original -> ensureCostLots(original); resizeLots(original, card.quantity.coerceAtLeast(0)) }
-            if (card.quantity <= 0) removeRow(card) else db.cards().update(card)
+            if (card.quantity <= 0) removeRow(card) else { db.cards().update(card); trimPockets(card.id, card.quantity) }
         }
         runCatching { snapshot() }
     }
@@ -1019,7 +1020,7 @@ class CardRepository(
         db.binders().clearAll(); db.binders().deleteAll()
         backup.binders.forEach { db.binders().insert(it.copy(coverImage = it.coverImage?.takeIf { path -> java.io.File(path).isFile })) }
         val rows = backup.cards.map { it.id }.toSet()
-        db.binders().put(backup.binderCards.filter { it.cardRowId in rows && backup.binders.any { b -> b.id == it.binderId } })
+        db.binders().put(withPockets(backup.binderCards.filter { it.cardRowId in rows && backup.binders.any { b -> b.id == it.binderId } }))
         }
         backup.cards.distinctBy { it.game to it.setId }.forEach { c ->
             runCatching {
@@ -1066,16 +1067,20 @@ class CardRepository(
         val days = db.history().getAll().map { it.cardRowId to it.day }.toSet()
         db.history().upsertAll(backup.history.mapNotNull { h -> rowMapping[h.cardRowId]?.let { h.copy(cardRowId = it) }?.takeIf { (it.cardRowId to it.day) !in days } })
         // Binders are matched by name; their cards follow the rows they were merged into.
+        // A binder new to this phone keeps its pockets; one it already has only gains the rows it lacks, after its last pocket.
         val localBinders = db.binders().all()
-        val binderMapping = backup.binders.associate { b ->
-            b.id to (localBinders.firstOrNull { it.name == b.name }?.id
-                ?: db.binders().insert(b.copy(id = 0, coverImage = b.coverImage?.takeIf { java.io.File(it).isFile })))
+        val incomingPockets = withPockets(backup.binderCards)
+        for (b in backup.binders) {
+            val existing = localBinders.firstOrNull { it.name == b.name }
+            val target = existing?.id ?: db.binders().insert(b.copy(id = 0, coverImage = b.coverImage?.takeIf { java.io.File(it).isFile }))
+            val mine = db.binders().slots(target)
+            val have = mine.map { it.cardRowId }.toSet()
+            var next = (mine.maxOfOrNull { it.slot } ?: -1) + 1
+            db.binders().put(incomingPockets.filter { it.binderId == b.id }.sortedBy { it.slot }.mapNotNull { bc ->
+                val row = rowMapping[bc.cardRowId]?.takeIf { it !in have } ?: return@mapNotNull null
+                com.monkaydee.tcgcatalogue.data.db.BinderCard(target, row, if (existing == null) bc.slot else next++)
+            })
         }
-        db.binders().put(backup.binderCards.mapNotNull { bc ->
-            val binder = binderMapping[bc.binderId] ?: return@mapNotNull null
-            val row = rowMapping[bc.cardRowId] ?: return@mapNotNull null
-            com.monkaydee.tcgcatalogue.data.db.BinderCard(binder, row)
-        })
         db.snapshots().insertAll(backup.snapshots.filter { s -> db.snapshots().getAll().none { it.day == s.day } })
         for (w in backup.wishlist) if (db.wishlist().find(w.game, w.cardId, w.variant) == null) db.wishlist().upsert(w.copy(id = 0))
         val sold = db.sold().getAll()
@@ -1147,7 +1152,7 @@ class CardRepository(
                 salePrice = pricePerCopy, saleCurrency = currency, saleFees = fees, soldAt = soldAt))
             db.tools().removeLots(current.id); kept.forEach { db.tools().put(it) }
             if (quantity == current.quantity) removeRow(current)
-            else db.cards().update(current.copy(quantity = current.quantity - quantity))
+            else { db.cards().update(current.copy(quantity = current.quantity - quantity)); trimPockets(current.id, current.quantity - quantity) }
         }
         runCatching { snapshot() }
     }
@@ -1168,11 +1173,72 @@ class CardRepository(
         cover?.let { java.io.File(it).delete() }
     }
 
-    /** The rows in binder [id] become exactly [rows]; the cards themselves stay in the collection. */
-    suspend fun setBinderCards(id: Long, rows: Set<Long>) = db.withTransaction {
+    /** Pockets a row may fill: one per copy, or one for the whole stack. */
+    private fun pocketsFor(card: OwnedCard, spread: Boolean) = if (spread) card.quantity else 1
+
+    /**
+     * The cards of binder [id] become [rows] (in the order given): rows no longer chosen leave their
+     * pockets, new rows fill pockets after the last used one. Returns the pockets just filled.
+     */
+    suspend fun setBinderCards(id: Long, rows: Set<Long>, spread: Boolean): List<Int> = db.withTransaction {
+        val slots = db.binders().slots(id)
+        slots.filter { it.cardRowId !in rows }.forEach { db.binders().removeSlot(id, it.slot) }
+        val present = slots.map { it.cardRowId }.toSet()
+        var next = (slots.filter { it.cardRowId in rows }.maxOfOrNull { it.slot } ?: -1) + 1
+        val owned = db.cards().getAll().associateBy { it.id }
+        val added = mutableListOf<com.monkaydee.tcgcatalogue.data.db.BinderCard>()
+        for (row in rows) if (row !in present) {
+            val card = owned[row] ?: continue
+            repeat(pocketsFor(card, spread)) { added += com.monkaydee.tcgcatalogue.data.db.BinderCard(id, row, next++) }
+        }
+        db.binders().put(added)
+        added.map { it.slot }
+    }
+
+    /** Puts one copy of [row] into the empty pocket [slot]; false when it is taken or every copy is already in the binder. */
+    suspend fun placeCard(id: Long, slot: Int, row: Long, spread: Boolean): Boolean = db.withTransaction {
+        val card = db.cards().get(row) ?: return@withTransaction false
+        val slots = db.binders().slots(id)
+        if (slot < 0 || slots.any { it.slot == slot } || slots.count { it.cardRowId == row } >= pocketsFor(card, spread)) return@withTransaction false
+        db.binders().put(listOf(com.monkaydee.tcgcatalogue.data.db.BinderCard(id, row, slot)))
+        true
+    }
+
+    /** Moves the card in pocket [from] to pocket [to]; a card already there swaps places with it. */
+    suspend fun moveCard(id: Long, from: Int, to: Int) = db.withTransaction {
+        if (from == to || to < 0) return@withTransaction
+        val slots = db.binders().slots(id).associateBy { it.slot }
+        val moving = slots[from] ?: return@withTransaction
+        val other = slots[to]
+        db.binders().removeSlot(id, from); db.binders().removeSlot(id, to)
+        db.binders().put(listOfNotNull(moving.copy(slot = to), other?.copy(slot = from)))
+    }
+
+    suspend fun removeFromBinder(id: Long, slot: Int) = db.binders().removeSlot(id, slot)
+
+    /** Lays the binder's pockets out again without gaps, rows in [order]; each row keeps its number of pockets. */
+    suspend fun arrangeBinder(id: Long, order: List<Long>) = db.withTransaction {
+        val counts = db.binders().slots(id).groupingBy { it.cardRowId }.eachCount()
+        var next = 0
+        val laid = (order.filter { it in counts } + counts.keys.filter { it !in order }).flatMap { row ->
+            List(counts.getValue(row)) { com.monkaydee.tcgcatalogue.data.db.BinderCard(id, row, next++) }
+        }
         db.binders().clear(id)
-        val owned = db.cards().getAll().map { it.id }.toSet()
-        db.binders().put(rows.filter { it in owned }.map { com.monkaydee.tcgcatalogue.data.db.BinderCard(id, it) })
+        db.binders().put(laid)
+    }
+
+    /** After copies were sold or removed: a row never fills more pockets of a binder than it has copies. */
+    private suspend fun trimPockets(row: Long, quantity: Int) {
+        db.binders().placements(row).groupBy { it.binderId }.forEach { (binder, slots) ->
+            slots.sortedBy { it.slot }.drop(quantity.coerceAtLeast(0)).forEach { db.binders().removeSlot(binder, it.slot) }
+        }
+    }
+
+    /** Numbers pockets written without a position (old backups) after the binder's last used pocket. */
+    private fun withPockets(entries: List<com.monkaydee.tcgcatalogue.data.db.BinderCard>) = entries.groupBy { it.binderId }.flatMap { (_, list) ->
+        val placed = list.filter { it.slot >= 0 }.distinctBy { it.slot }
+        var next = (placed.maxOfOrNull { it.slot } ?: -1) + 1
+        placed + (list - placed.toSet()).map { it.copy(slot = next++) }
     }
 
     /** The last copy of a row is gone: its submissions and price history go with it, as nothing can open them any more. */

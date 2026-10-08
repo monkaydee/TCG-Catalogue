@@ -11,7 +11,7 @@ import androidx.room.RoomDatabase
         OwnedCard::class, CardSet::class, PortfolioSnapshot::class,
         PriceHistory::class, WishCard::class, SoldCard::class, SealedItem::class, CostLot::class, GradingSubmission::class, ReviewReceipt::class, CardBinder::class, BinderCard::class,
     ],
-    version = 10,
+    version = 11,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4),
@@ -31,7 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         fun create(context: Context): AppDatabase =
-            Room.databaseBuilder(context, AppDatabase::class.java, "tcg-catalogue.db").build()
+            Room.databaseBuilder(context, AppDatabase::class.java, "tcg-catalogue.db").addMigrations(MIGRATION_10_11).build()
     }
 }
 
@@ -39,5 +39,26 @@ abstract class AppDatabase : RoomDatabase() {
 class SlabIdentityMigration : androidx.room.migration.AutoMigrationSpec {
     override fun onPostMigrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
         db.execSQL("UPDATE owned_cards SET copyKey = CASE WHEN certNumber IS NOT NULL AND TRIM(certNumber) != '' THEN 'cert:' || TRIM(certNumber) ELSE 'slab:legacy:' || id END WHERE grader IS NOT NULL")
+    }
+}
+
+/**
+ * Binder entries become pockets with a position: each binder's cards keep their order (by row,
+ * as they were shown) in pockets 0, 1, 2 …
+ */
+val MIGRATION_10_11 = object : androidx.room.migration.Migration(10, 11) {
+    override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS `binder_slots` (`binderId` INTEGER NOT NULL, `cardRowId` INTEGER NOT NULL, `slot` INTEGER NOT NULL, PRIMARY KEY(`binderId`, `slot`))")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_binder_slots_cardRowId` ON `binder_slots` (`cardRowId`)")
+        val next = HashMap<Long, Int>()
+        db.query("SELECT binderId, cardRowId FROM binder_cards ORDER BY binderId, cardRowId").use { c ->
+            while (c.moveToNext()) {
+                val binder = c.getLong(0)
+                val slot = next.getOrDefault(binder, 0)
+                next[binder] = slot + 1
+                db.execSQL("INSERT INTO binder_slots (binderId, cardRowId, slot) VALUES (?, ?, ?)", arrayOf<Any>(binder, c.getLong(1), slot))
+            }
+        }
+        db.execSQL("DROP TABLE IF EXISTS `binder_cards`")
     }
 }

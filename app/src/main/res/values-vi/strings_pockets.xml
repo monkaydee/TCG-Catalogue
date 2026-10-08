@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Mỗi bản một ngăn riêng</string>
+    <string name="binder_move_hint">Chạm vào một ngăn để chuyển thẻ đến đó</string>
+    <string name="binder_remove">Gỡ khỏi album</string>
+    <string name="binder_pick_for_pocket">Chọn thẻ cho ngăn này</string>
+    <string name="binder_all_placed">Tất cả bản sao đã có trong album này</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">كل نسخة في جيب خاص</string>
+    <string name="binder_move_hint">انقر على جيب لنقل البطاقة إليه</string>
+    <string name="binder_remove">إزالة من المجلد</string>
+    <string name="binder_pick_for_pocket">اختر بطاقة لهذا الجيب</string>
+    <string name="binder_all_placed">كل النسخ موجودة بالفعل في هذا المجلد</string>
+</resources>

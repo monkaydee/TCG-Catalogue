@@ -53,6 +53,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -206,7 +207,11 @@ fun BinderEditor(name: String?, design: CoverDesign, image: String?, onDismiss: 
 /** Choose which collection cards are in a binder: search and tick them. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BinderCardPicker(cards: List<OwnedCard>, selected: Set<Long>, s: AppSettings, onDismiss: () -> Unit, onSave: (Set<Long>) -> Unit) {
+fun BinderCardPicker(
+    cards: List<OwnedCard>, selected: Set<Long>, s: AppSettings, onDismiss: () -> Unit, onSave: (Set<Long>) -> Unit = {},
+    /** One card for one pocket: a tap picks it straight away; [available] is false once all its copies are in the binder. */
+    single: Boolean = false, available: (OwnedCard) -> Boolean = { true }, onPick: (Long) -> Unit = {},
+) {
     var picked by remember { mutableStateOf(selected) }
     var query by remember { mutableStateOf("") }
     val sorted = remember(cards) { cards.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }) }
@@ -218,9 +223,9 @@ fun BinderCardPicker(cards: List<OwnedCard>, selected: Set<Long>, s: AppSettings
             topBar = {
                 TopAppBar(
                     colors = appBarColors(),
-                    title = { Text(stringResource(R.string.binder_choose_cards)) },
+                    title = { Text(stringResource(if (single) R.string.binder_pick_for_pocket else R.string.binder_choose_cards)) },
                     navigationIcon = { IconButton(onClick = onDismiss) { Icon(Icons.Outlined.Close, stringResource(android.R.string.cancel)) } },
-                    actions = { TextButton(onClick = { onSave(picked) }) { Text(stringResource(R.string.binder_save)) } },
+                    actions = { if (!single) TextButton(onClick = { onSave(picked) }) { Text(stringResource(R.string.binder_save)) } },
                 )
             },
         ) { padding ->
@@ -231,20 +236,25 @@ fun BinderCardPicker(cards: List<OwnedCard>, selected: Set<Long>, s: AppSettings
                     placeholder = { Text(stringResource(R.string.binder_search)) },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 )
-                Text(stringResource(R.string.binder_selected, picked.size), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(horizontal = 16.dp))
+                if (!single) Text(stringResource(R.string.binder_selected, picked.size), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(horizontal = 16.dp))
                 LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
                     items(shown, key = { it.id }) { c ->
                         val on = c.id in picked
+                        val free = !single || available(c)
                         Row(
-                            Modifier.fillMaxWidth().clickable { picked = if (on) picked - c.id else picked + c.id }.padding(horizontal = 16.dp, vertical = 6.dp),
+                            Modifier.fillMaxWidth()
+                                .clickable(enabled = free) { if (single) onPick(c.id) else picked = if (on) picked - c.id else picked + c.id }
+                                .alpha(if (free) 1f else 0.4f)
+                                .padding(horizontal = 16.dp, vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            Checkbox(on, { picked = if (on) picked - c.id else picked + c.id })
+                            if (!single) Checkbox(on, { picked = if (on) picked - c.id else picked + c.id })
                             Box(Modifier.width(40.dp).aspectRatio(63f / 88f).clip(RoundedCornerShape(3.dp))) { CardOrSlab(c, Modifier.fillMaxSize(), thumb = true) }
                             Column(Modifier.weight(1f)) {
                                 Text(c.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 Text(listOfNotNull(c.setName, c.number, CollectionList.slab(c)).joinToString(" · "), style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                if (!free) Text(stringResource(R.string.binder_all_placed), style = MaterialTheme.typography.labelSmall)
                             }
                             Text(Money.unitText(c, s.currency, s.usdToEur), style = MaterialTheme.typography.labelLarge)
                         }

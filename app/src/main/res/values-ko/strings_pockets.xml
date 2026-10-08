@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">카드마다 각자 포켓에</string>
+    <string name="binder_move_hint">포켓을 탭해 카드를 옮기세요</string>
+    <string name="binder_remove">바인더에서 제거</string>
+    <string name="binder_pick_for_pocket">이 포켓에 넣을 카드 선택</string>
+    <string name="binder_all_placed">모든 장이 이미 이 바인더에 있습니다</string>
+</resources>
