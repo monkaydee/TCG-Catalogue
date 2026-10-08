@@ -155,6 +155,7 @@ fun AppNav(repo: CardRepository) {
                     onBinder = { nav.navigate("binders") },
                     onCollection = { nav.navigate("collection") },
                     onBadges = { nav.navigate("badges") },
+                    onDecks = { nav.navigate("decks") },
                     onWishlist = { nav.navigate("wishlist") },
                     onTradeList = { nav.navigate("trade") },
                     onSold = { nav.navigate("sold") },
@@ -193,6 +194,10 @@ fun AppNav(repo: CardRepository) {
             }
             composable("tools") { com.monkaydee.tcgcatalogue.ui.screens.CollectionToolsScreen(repo, { nav.navigate("card/$it") }, { nav.navigate("import") }, onCsvImport = { nav.navigate("csv-import") }) }
             composable("csv-import") { com.monkaydee.tcgcatalogue.ui.screens.CsvImportScreen(repo, onBack = { nav.popBackStack() }) }
+            composable("decks") { com.monkaydee.tcgcatalogue.ui.screens.DecksScreen(repo, onBack = { nav.popBackStack() }, onOpen = { nav.navigate("deck/$it") }) }
+            composable("deck/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->
+                com.monkaydee.tcgcatalogue.ui.screens.DeckScreen(repo, e.arguments?.getLong("id") ?: 0L, onBack = { nav.popBackStack() })
+            }
             composable("badges") { com.monkaydee.tcgcatalogue.ui.screens.BadgesScreen(repo, onBack = { nav.popBackStack() }) }
             composable("settings") { SettingsScreen(repo, onRefresh = refresh) }
             composable(

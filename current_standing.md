@@ -132,6 +132,22 @@ cost to complete a set, CSV import from other apps, slab cert barcode scan, more
 - **Achievements** (home ⋯): 15 local badges computed from the collection; nothing stored or uploaded.
 - Tests: `ImportAndMoversTest`. Local: 241 tests, 0 failures; lint 0 errors, 319 warnings.
 
+## Collector tools, batch C (8 October 2026, Claude)
+
+- **PSA population + gem rate** (card page → Graded prices → "Show population"): through an owned PSA slab of the same
+  card and printing with a certificate (`/v1/pop?cert=`, existing Worker route and cache), shown on raw copies too.
+  Without such a slab there is no free way to find PSA's spec ID, so nothing is shown. Other graders: no free API.
+- **Decks** (home ⋯ → Decks): `decks`/`deck_cards` (schema 13, auto-migration, in backups; merge by name + game).
+  Paste a deck list (matched like the CSV import) or add owned cards; adjust copies; value from prices noted when added;
+  "still missing" vs owned copies with cost; share as text. Checks: Pokémon 60 / max 4 per name (basic energy free),
+  Magic ≥60 / max 4 (basic lands free), One Piece 51 incl. Leader / max 4 per number. No banned-card/format legality.
+- **Share as page** (Open collection, a selection, or an own binder's menu): one self-contained HTML file through the
+  share sheet, with or without prices. **Decision:** no hosted public link — that needs hosting, privacy and moderation
+  decisions (see shared-photo rules above); this keeps everything on the phone until the owner decides otherwise.
+- Tests: `DeckAndShareTest`, deck case in `LedgerBackupRegressionTest`. Local: 246 tests, 0 failures; lint 0 errors.
+- Not built from the gap list: in-app marketplace listings/watchlist (Go Shopping stays a plan), eBay listing from the app,
+  live translation, UPC sealed scan (no verified free UPC source).
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

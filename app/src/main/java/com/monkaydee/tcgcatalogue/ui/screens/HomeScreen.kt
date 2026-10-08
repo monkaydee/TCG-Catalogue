@@ -46,6 +46,7 @@ import com.monkaydee.tcgcatalogue.ui.components.AppSelector
 import com.monkaydee.tcgcatalogue.ui.components.SelectorOption
 import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.Style
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.Paid
@@ -158,6 +159,7 @@ fun HomeScreen(
     onBinder: () -> Unit = {},
     onCollection: () -> Unit = {},
     onBadges: () -> Unit = {},
+    onDecks: () -> Unit = {},
     onWishlist: () -> Unit = {},
     onTradeList: () -> Unit = {},
     onSold: () -> Unit = {},
@@ -196,6 +198,7 @@ fun HomeScreen(
                             listOf(
                                 Triple(R.string.home_binder, Icons.AutoMirrored.Outlined.MenuBook, onBinder),
                                 Triple(R.string.grade_open, Icons.Outlined.Straighten, onPreGrade),
+                                Triple(R.string.decks_title, Icons.Outlined.Style, onDecks),
                                 Triple(R.string.badges_title, Icons.Outlined.EmojiEvents, onBadges),
                                 Triple(R.string.home_import_photos, Icons.Outlined.AddPhotoAlternate, onPhotos),
                                 Triple(R.string.home_refresh, Icons.Outlined.Refresh, onRefresh),

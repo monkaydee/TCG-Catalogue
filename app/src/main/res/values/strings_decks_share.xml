@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA population</string>
+    <string name="pop_show">Show population</string>
+    <string name="pop_none">Add a PSA slab of this card with its certificate number to see its population.</string>
+    <string name="pop_total">Graded by PSA: %1$d</string>
+    <string name="pop_gem_rate">Gem rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Decks</string>
+    <string name="decks_new">New deck</string>
+    <string name="decks_empty">No decks yet. Create one, then paste a deck list or add cards from your collection.</string>
+    <string name="deck_cards">Cards: %1$d</string>
+    <string name="deck_value">Deck value: %1$s</string>
+    <string name="deck_missing">Still missing: %1$d · cost: %2$s</string>
+    <string name="deck_missing_none">You own every card of this deck.</string>
+    <string name="deck_owned">owned %1$d / %2$d</string>
+    <string name="deck_import">Paste deck list</string>
+    <string name="deck_import_hint">One card per line, e.g. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Add from collection</string>
+    <string name="deck_share">Share list</string>
+    <string name="deck_delete">Delete deck</string>
+    <string name="deck_delete_confirm">Delete “%1$s”? Your collection is not changed.</string>
+    <string name="deck_rule_total">%1$s deck size: %2$d (this deck: %3$d).</string>
+    <string name="deck_rule_min">%1$s minimum deck size: %2$d (this deck: %3$d).</string>
+    <string name="deck_rule_copies">Too many copies (at most %1$d): %2$s</string>
+    <string name="deck_rules_note">Checks card count and copies only; banned cards and formats are not checked.</string>
+    <string name="deck_not_found">Not found: %1$s</string>
+    <string name="share_cards">Share as page</string>
+    <string name="share_cards_text">Sends these cards (%1$d) as one web page through the share menu. Nothing is uploaded by the app.</string>
+    <string name="share_with_prices">With prices</string>
+    <string name="share_without_prices">Without prices</string>
+</resources>

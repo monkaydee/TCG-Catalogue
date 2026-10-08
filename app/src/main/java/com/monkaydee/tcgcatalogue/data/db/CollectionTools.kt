@@ -101,3 +101,45 @@ interface BinderDao {
     @Query("UPDATE binder_slots SET cardRowId = :to WHERE cardRowId = :from") suspend fun moveRow(from: Long, to: Long)
     @Query("DELETE FROM binder_slots") suspend fun clearAll()
 }
+
+/** A deck the user is building; its cards need not be owned. */
+@Serializable
+@Entity(tableName = "decks")
+data class Deck(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val game: Game,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+/** A card of a deck with how many copies it needs and a price per copy noted when it was added. */
+@Serializable
+@Entity(tableName = "deck_cards", primaryKeys = ["deckId", "cardId"])
+data class DeckCard(
+    val deckId: Long,
+    val cardId: String,
+    val name: String,
+    val number: String,
+    val setName: String,
+    val imageUrl: String? = null,
+    val quantity: Int,
+    val price: Double? = null,
+    val priceCurrency: String = "EUR",
+)
+
+@Dao
+interface DeckDao {
+    @Query("SELECT * FROM decks ORDER BY createdAt, id") fun observe(): Flow<List<Deck>>
+    @Query("SELECT * FROM decks ORDER BY createdAt, id") suspend fun all(): List<Deck>
+    @Insert suspend fun insert(deck: Deck): Long
+    @Update suspend fun update(deck: Deck)
+    @Query("DELETE FROM decks WHERE id = :id") suspend fun delete(id: Long)
+    @Query("DELETE FROM decks") suspend fun deleteAll()
+    @Query("SELECT * FROM deck_cards ORDER BY name") fun observeCards(): Flow<List<DeckCard>>
+    @Query("SELECT * FROM deck_cards") suspend fun cards(): List<DeckCard>
+    @Query("SELECT * FROM deck_cards WHERE deckId = :deck AND cardId = :cardId") suspend fun card(deck: Long, cardId: String): DeckCard?
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun put(card: DeckCard)
+    @Query("DELETE FROM deck_cards WHERE deckId = :deck AND cardId = :cardId") suspend fun remove(deck: Long, cardId: String)
+    @Query("DELETE FROM deck_cards WHERE deckId = :deck") suspend fun clear(deck: Long)
+    @Query("DELETE FROM deck_cards") suspend fun clearAll()
+}

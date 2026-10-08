@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">Popolazione PSA</string>
+    <string name="pop_show">Mostra popolazione</string>
+    <string name="pop_none">Aggiungi uno slab PSA di questa carta con il numero di certificato per vederne la popolazione.</string>
+    <string name="pop_total">Gradate da PSA: %1$d</string>
+    <string name="pop_gem_rate">Gem rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Mazzi</string>
+    <string name="decks_new">Nuovo mazzo</string>
+    <string name="decks_empty">Ancora nessun mazzo. Creane uno, poi incolla una lista o aggiungi carte dalla collezione.</string>
+    <string name="deck_cards">Carte: %1$d</string>
+    <string name="deck_value">Valore del mazzo: %1$s</string>
+    <string name="deck_missing">Mancano: %1$d · costo: %2$s</string>
+    <string name="deck_missing_none">Possiedi tutte le carte di questo mazzo.</string>
+    <string name="deck_owned">possedute %1$d / %2$d</string>
+    <string name="deck_import">Incolla lista</string>
+    <string name="deck_import_hint">Una carta per riga, es. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Aggiungi dalla collezione</string>
+    <string name="deck_share">Condividi lista</string>
+    <string name="deck_delete">Elimina mazzo</string>
+    <string name="deck_delete_confirm">Eliminare «%1$s»? La collezione non cambia.</string>
+    <string name="deck_rule_total">I mazzi %1$s hanno %2$d carte; questo ne ha %3$d.</string>
+    <string name="deck_rule_min">I mazzi %1$s richiedono almeno %2$d carte; questo ne ha %3$d.</string>
+    <string name="deck_rule_copies">Più di %1$d copie: %2$s</string>
+    <string name="deck_rules_note">Controlla solo numero di carte e copie; non carte bandite né formati.</string>
+    <string name="deck_not_found">Non trovata: %1$s</string>
+    <string name="share_cards">Condividi come pagina</string>
+    <string name="share_cards_text">Invia queste carte (%1$d) come pagina web dal menu condividi. L’app non carica nulla.</string>
+    <string name="share_with_prices">Con prezzi</string>
+    <string name="share_without_prices">Senza prezzi</string>
+</resources>

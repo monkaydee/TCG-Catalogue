@@ -466,6 +466,7 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
                 Text(stringResource(R.string.graded_asking_reference), style = MaterialTheme.typography.bodySmall)
             }
             if (!c.graded && !prices.isNullOrEmpty()) WorthGrading(c, s, repo, prices!!)
+            PsaPopulation(c, repo)
             val certNumber = c.certNumber?.filter(Char::isDigit)?.takeIf { it.isNotEmpty() && c.grader == "PSA" }
             if (certNumber != null) {
                 HorizontalDivider()
@@ -577,4 +578,39 @@ private fun WorthGrading(c: OwnedCard, s: AppSettings, repo: CardRepository, pri
         )
     }
     Text(stringResource(R.string.worth_grading_note, Money.format(raw, s.currency)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+}
+
+/** PSA population of this card by grade and its gem rate, when a PSA slab of it with a certificate is in the collection. */
+@Composable
+private fun PsaPopulation(c: OwnedCard, repo: CardRepository) {
+    var pop by remember(c.id) { mutableStateOf<com.monkaydee.tcgcatalogue.data.remote.PriceServerApi.Population?>(null) }
+    var state by remember(c.id) { mutableStateOf(0) } // 0 not loaded, 1 loading, 2 done
+    val scope = rememberCoroutineScope()
+    HorizontalDivider()
+    Text(stringResource(R.string.pop_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+    val p = pop
+    when {
+        state == 0 -> TextButton(onClick = {
+            state = 1
+            scope.launch { pop = runCatching { repo.populationFor(c) }.getOrNull(); state = 2 }
+        }) { Text(stringResource(R.string.pop_show)) }
+        state == 1 -> CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+        p == null -> Text(stringResource(R.string.pop_none), style = MaterialTheme.typography.bodySmall)
+        else -> {
+            Text(stringResource(R.string.pop_total, p.total), style = MaterialTheme.typography.bodyMedium)
+            com.monkaydee.tcgcatalogue.data.Population.gemRate(p.total, p.byGrade)?.let { rate ->
+                Text(stringResource(R.string.pop_gem_rate, "%.1f".format(rate)), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+            }
+            val ordered = com.monkaydee.tcgcatalogue.data.Population.ordered(p.byGrade)
+            val max = ordered.maxOfOrNull { it.second }?.coerceAtLeast(1) ?: 1
+            ordered.forEach { (grade, count) ->
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(grade, style = MaterialTheme.typography.labelMedium, modifier = Modifier.width(72.dp))
+                    androidx.compose.material3.LinearProgressIndicator(progress = { count.toFloat() / max }, modifier = Modifier.weight(1f))
+                    Text("$count", style = MaterialTheme.typography.labelMedium)
+                }
+            }
+            p.description?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        }
+    }
 }

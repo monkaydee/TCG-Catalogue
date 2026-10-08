@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">Populacja PSA</string>
+    <string name="pop_show">Pokaż populację</string>
+    <string name="pop_none">Dodaj slab PSA tej karty z numerem certyfikatu, aby zobaczyć populację.</string>
+    <string name="pop_total">Ocenione przez PSA: %1$d</string>
+    <string name="pop_gem_rate">Gem rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Talie</string>
+    <string name="decks_new">Nowa talia</string>
+    <string name="decks_empty">Brak talii. Utwórz talię i wklej listę lub dodaj karty z kolekcji.</string>
+    <string name="deck_cards">Karty: %1$d</string>
+    <string name="deck_value">Wartość talii: %1$s</string>
+    <string name="deck_missing">Brakuje: %1$d · koszt: %2$s</string>
+    <string name="deck_missing_none">Masz wszystkie karty tej talii.</string>
+    <string name="deck_owned">masz %1$d / %2$d</string>
+    <string name="deck_import">Wklej listę talii</string>
+    <string name="deck_import_hint">Jedna karta na wiersz, np. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Dodaj z kolekcji</string>
+    <string name="deck_share">Udostępnij listę</string>
+    <string name="deck_delete">Usuń talię</string>
+    <string name="deck_delete_confirm">Usunąć „%1$s”? Kolekcja się nie zmieni.</string>
+    <string name="deck_rule_total">Talie %1$s mają %2$d kart; ta ma %3$d.</string>
+    <string name="deck_rule_min">Talie %1$s wymagają co najmniej %2$d kart; ta ma %3$d.</string>
+    <string name="deck_rule_copies">Więcej niż %1$d kopie: %2$s</string>
+    <string name="deck_rules_note">Sprawdza tylko liczbę kart i kopii; nie sprawdza zakazanych kart ani formatów.</string>
+    <string name="deck_not_found">Nie znaleziono: %1$s</string>
+    <string name="share_cards">Udostępnij jako stronę</string>
+    <string name="share_cards_text">Wysyła te karty (%1$d) jako jedną stronę internetową przez menu udostępniania. Aplikacja niczego nie przesyła.</string>
+    <string name="share_with_prices">Z cenami</string>
+    <string name="share_without_prices">Bez cen</string>
+</resources>

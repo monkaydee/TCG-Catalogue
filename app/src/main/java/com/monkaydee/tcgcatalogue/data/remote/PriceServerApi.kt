@@ -54,6 +54,9 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
         val higher: Int?,
     )
 
+    /** PSA's population of a card: copies graded in total and per grade ("10", "9.5", "Authentic" …). */
+    data class Population(val total: Int, val byGrade: Map<String, Int>, val description: String?)
+
     /** A card the server's image recognition (Ximilar) found in a photo. */
     data class Identified(
         val name: String,
@@ -190,6 +193,16 @@ class PriceServerApi(private val server: suspend () -> Pair<String, String>?) {
             population = c["population"]["total"].int(),
             higher = c["population"]["higher"].int(),
         )
+    }
+
+    /** PSA's population for the card of a PSA [cert], or null when unknown. */
+    suspend fun population(cert: String): Population? {
+        val digits = cert.filter(Char::isDigit).ifEmpty { return null }
+        val p = get("/v1/pop?cert=$digits")?.get("population") ?: return null
+        val total = p["total"].int() ?: return null
+        val byGrade = (p["byGrade"] as? kotlinx.serialization.json.JsonObject).orEmpty()
+            .mapNotNull { (grade, count) -> count.int()?.let { grade to it } }.toMap()
+        return Population(total, byGrade, p["description"].str())
     }
 
     /** Cards the server recognises in [jpeg] (a photo of one card), best first. The photo is not kept. */

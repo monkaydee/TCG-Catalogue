@@ -59,6 +59,8 @@ data class Backup(
     val submissions: List<GradingSubmission> = emptyList(),
     val binders: List<com.monkaydee.tcgcatalogue.data.db.CardBinder> = emptyList(),
     val binderCards: List<com.monkaydee.tcgcatalogue.data.db.BinderCard> = emptyList(),
+    val decks: List<com.monkaydee.tcgcatalogue.data.db.Deck> = emptyList(),
+    val deckCards: List<com.monkaydee.tcgcatalogue.data.db.DeckCard> = emptyList(),
     /** When and on which install the backup was written (for sync between phones). */
     val savedAt: Long = 0,
     val device: String = "",
@@ -92,6 +94,8 @@ class CardRepository(
     val sets = db.sets().observeAll()
     val binders = db.binders().observe()
     val binderCards = db.binders().observeCards()
+    val decks = db.decks().observe()
+    val deckCards = db.decks().observeCards()
     val snapshots = db.snapshots().observeAll()
     val wishlist = db.wishlist().observeAll()
     val sold = db.sold().observeAll()
@@ -412,6 +416,17 @@ class CardRepository(
 
     /** PSA's record of a cert number (card, grade, population), through the price server. */
     suspend fun verifyCert(number: String): PriceServerApi.Cert? = server.cert(number)
+
+    /**
+     * PSA population of this card, through a PSA slab of the same card and printing in the collection
+     * (its certificate leads to PSA's record of the card). Null when there is no such slab.
+     */
+    suspend fun populationFor(card: OwnedCard): PriceServerApi.Population? {
+        val slab = db.cards().getAll().firstOrNull {
+            it.game == card.game && it.cardId == card.cardId && it.variant == card.variant && it.grader == "PSA" && !it.certNumber.isNullOrBlank()
+        } ?: return null
+        return server.population(slab.certNumber!!)
+    }
 
     /**
      * Cards the price server's image recognition finds in [jpeg] (one card), as candidates of the
@@ -1007,6 +1022,8 @@ class CardRepository(
         submissions = db.tools().submissions(),
         binders = db.binders().all(),
         binderCards = db.binders().cards(),
+        decks = db.decks().all(),
+        deckCards = db.decks().cards(),
         savedAt = System.currentTimeMillis(),
         device = device,
     ) }
@@ -1046,6 +1063,9 @@ class CardRepository(
         backup.binders.forEach { db.binders().insert(it.copy(coverImage = it.coverImage?.takeIf { path -> java.io.File(path).isFile })) }
         val rows = backup.cards.map { it.id }.toSet()
         db.binders().put(withPockets(backup.binderCards.filter { it.cardRowId in rows && backup.binders.any { b -> b.id == it.binderId } }))
+        db.decks().clearAll(); db.decks().deleteAll()
+        backup.decks.forEach { db.decks().insert(it) }
+        backup.deckCards.filter { dc -> backup.decks.any { it.id == dc.deckId } }.forEach { db.decks().put(it) }
         }
         backup.cards.distinctBy { it.game to it.setId }.forEach { c ->
             runCatching {
@@ -1105,6 +1125,12 @@ class CardRepository(
                 val row = rowMapping[bc.cardRowId]?.takeIf { it !in have } ?: return@mapNotNull null
                 com.monkaydee.tcgcatalogue.data.db.BinderCard(target, row, if (existing == null) bc.slot else next++)
             })
+        }
+        // Decks are matched by name and game; a deck new to this phone comes with its cards.
+        val localDecks = db.decks().all()
+        for (d in backup.decks) if (localDecks.none { it.name == d.name && it.game == d.game }) {
+            val id = db.decks().insert(d.copy(id = 0))
+            backup.deckCards.filter { it.deckId == d.id }.forEach { db.decks().put(it.copy(deckId = id)) }
         }
         db.snapshots().insertAll(backup.snapshots.filter { s -> db.snapshots().getAll().none { it.day == s.day } })
         for (w in backup.wishlist) if (db.wishlist().find(w.game, w.cardId, w.variant) == null) db.wishlist().upsert(w.copy(id = 0))
@@ -1192,6 +1218,43 @@ class CardRepository(
     /** Saves the notes of a card (at most 2000 characters). */
     suspend fun setNotes(card: OwnedCard, notes: String) {
         db.cards().get(card.id)?.let { db.cards().update(it.copy(notes = notes.trim().take(2000))) }
+    }
+
+    // ---- Decks ----
+
+    suspend fun createDeck(name: String, game: Game): Long =
+        db.decks().insert(com.monkaydee.tcgcatalogue.data.db.Deck(name = name.trim().take(60).ifBlank { AppStrings.get(R.string.decks_new) }, game = game))
+
+    suspend fun deleteDeck(id: Long) = db.withTransaction { db.decks().clear(id); db.decks().delete(id) }
+
+    /** Sets how many copies of a card the deck needs; 0 removes it. */
+    suspend fun setDeckQuantity(card: com.monkaydee.tcgcatalogue.data.db.DeckCard, quantity: Int) {
+        if (quantity <= 0) db.decks().remove(card.deckId, card.cardId) else db.decks().put(card.copy(quantity = quantity.coerceAtMost(99)))
+    }
+
+    /** Adds one copy of each owned row's card to deck [deckId], with the row's price per copy. */
+    suspend fun addOwnedToDeck(deckId: Long, rows: Collection<Long>) = db.withTransaction {
+        val s = settings.current()
+        db.cards().getAll().filter { it.id in rows }.distinctBy { it.cardId }.forEach { c ->
+            val existing = db.decks().card(deckId, c.cardId)
+            db.decks().put(existing?.copy(quantity = existing.quantity + 1) ?: com.monkaydee.tcgcatalogue.data.db.DeckCard(
+                deckId, c.cardId, c.name, c.number, c.setName, c.imageUrl, 1, Money.unitOrNull(c, s.currency, s.usdToEur), s.currency))
+        }
+    }
+
+    /** Adds the cards of a pasted deck list; returns the lines that could not be matched. */
+    suspend fun importDeckList(deckId: Long, game: Game, text: String): List<String> {
+        val s = settings.current()
+        val notFound = mutableListOf<String>()
+        for (row in CsvImport.parse(text)) {
+            val card = matchImport(row, game).candidates.firstOrNull()
+            if (card == null) { notFound += row.name; continue }
+            val existing = db.decks().card(deckId, card.cardId)
+            db.decks().put(existing?.copy(quantity = existing.quantity + row.quantity) ?: com.monkaydee.tcgcatalogue.data.db.DeckCard(
+                deckId, card.cardId, card.name, card.number, card.setName, card.imageUrl, row.quantity,
+                SetCompletion.cheapest(card, s.currency, s.usdToEur), s.currency))
+        }
+        return notFound
     }
 
     // ---- Binders ----

@@ -191,6 +191,25 @@ class LedgerBackupRegressionTest {
         }
     }
 
+    @Test fun decksKeepTheirCardsAndTravelInBackups() = runBlocking {
+        Fixture().use { f ->
+            val row = f.db.cards().insert(card())
+            val deck = f.repo.createDeck("Fire", Game.POKEMON)
+            f.repo.addOwnedToDeck(deck, listOf(row)); f.repo.addOwnedToDeck(deck, listOf(row))
+            assertEquals(2, f.db.decks().card(deck, "base1-4")!!.quantity)
+            // offline: the pasted line cannot be matched and is reported, not guessed
+            assertEquals(listOf("Unknown Card"), f.repo.importDeckList(deck, Game.POKEMON, "2 Unknown Card"))
+            val backup = f.repo.exportBackup()
+            f.repo.importBackup(backup)
+            val restored = f.db.decks().all().single()
+            assertEquals("Fire", restored.name); assertEquals(2, f.db.decks().cards().single().quantity)
+            f.repo.mergeBackup(backup)
+            assertEquals(1, f.db.decks().all().size)
+            f.repo.setDeckQuantity(f.db.decks().cards().single(), 0)
+            assertTrue(f.db.decks().cards().isEmpty())
+        }
+    }
+
     @Test fun deletingACardRemovesItsSubmissions() = runBlocking {
         Fixture().use { f ->
             val row = f.db.cards().insert(card())

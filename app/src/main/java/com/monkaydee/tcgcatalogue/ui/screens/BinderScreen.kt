@@ -136,6 +136,7 @@ fun BinderScreen(repo: CardRepository, binderId: Long = 0, onBack: () -> Unit, o
         if (arrivals.isNotEmpty()) { kotlinx.coroutines.delay(ARRIVAL_STAGGER_MS * arrivals.size + ARRIVAL_MS + 400L); arrivals = emptyMap() }
     }
     var deleting by remember { mutableStateOf(false) }
+    var sharingPage by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     // The shown page is recorded into [layer] while it is drawn, so "Share page" can turn it into a picture.
@@ -273,6 +274,7 @@ fun BinderScreen(repo: CardRepository, binderId: Long = 0, onBack: () -> Unit, o
                             DropdownMenuItem(text = { Text(stringResource(R.string.binder_edit)) }, onClick = { menu = false; editing = true })
                             if (custom != null) {
                                 DropdownMenuItem(text = { Text(stringResource(R.string.binder_add_cards)) }, onClick = { menu = false; choosing = true })
+                                DropdownMenuItem(text = { Text(stringResource(R.string.share_cards)) }, onClick = { menu = false; sharingPage = true })
                                 DropdownMenuItem(text = { Text(stringResource(R.string.binder_delete)) }, onClick = { menu = false; deleting = true })
                             }
                         }
@@ -403,6 +405,9 @@ fun BinderScreen(repo: CardRepository, binderId: Long = 0, onBack: () -> Unit, o
                     pickingSlot = null
                     scope.launch { if (repo.placeCard(custom.id, target, row, s.binderSpread)) arrivals = mapOf(target to 0) }
                 })
+        }
+        if (sharingPage && custom != null) {
+            ShareCardsDialog(pages.flatMap { it.cards }, s, custom.name) { sharingPage = false }
         }
         if (deleting && custom != null) {
             AlertDialog(

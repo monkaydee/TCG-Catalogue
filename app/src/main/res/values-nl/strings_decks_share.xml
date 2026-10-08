@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA-populatie</string>
+    <string name="pop_show">Populatie tonen</string>
+    <string name="pop_none">Voeg een PSA-slab van deze kaart met certificaatnummer toe om de populatie te zien.</string>
+    <string name="pop_total">Gegrade door PSA: %1$d</string>
+    <string name="pop_gem_rate">Gem rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Decks</string>
+    <string name="decks_new">Nieuw deck</string>
+    <string name="decks_empty">Nog geen decks. Maak er een en plak een decklijst of voeg kaarten uit je collectie toe.</string>
+    <string name="deck_cards">Kaarten: %1$d</string>
+    <string name="deck_value">Deckwaarde: %1$s</string>
+    <string name="deck_missing">Nog nodig: %1$d · kosten: %2$s</string>
+    <string name="deck_missing_none">Je bezit elke kaart van dit deck.</string>
+    <string name="deck_owned">in bezit %1$d / %2$d</string>
+    <string name="deck_import">Decklijst plakken</string>
+    <string name="deck_import_hint">Eén kaart per regel, bv. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Toevoegen uit collectie</string>
+    <string name="deck_share">Lijst delen</string>
+    <string name="deck_delete">Deck verwijderen</string>
+    <string name="deck_delete_confirm">“%1$s” verwijderen? Je collectie blijft gelijk.</string>
+    <string name="deck_rule_total">%1$s-decks hebben %2$d kaarten; dit heeft er %3$d.</string>
+    <string name="deck_rule_min">%1$s-decks hebben minstens %2$d kaarten; dit heeft er %3$d.</string>
+    <string name="deck_rule_copies">Meer dan %1$d exemplaren: %2$s</string>
+    <string name="deck_rules_note">Controleert alleen aantal kaarten en exemplaren; geen verboden kaarten of formats.</string>
+    <string name="deck_not_found">Niet gevonden: %1$s</string>
+    <string name="share_cards">Delen als pagina</string>
+    <string name="share_cards_text">Stuurt deze kaarten (%1$d) als één webpagina via het deelmenu. De app uploadt niets.</string>
+    <string name="share_with_prices">Met prijzen</string>
+    <string name="share_without_prices">Zonder prijzen</string>
+</resources>

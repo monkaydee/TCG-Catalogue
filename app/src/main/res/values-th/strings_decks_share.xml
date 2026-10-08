@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">ประชากร PSA</string>
+    <string name="pop_show">แสดงประชากร</string>
+    <string name="pop_none">เพิ่มสแล็บ PSA ของการ์ดนี้พร้อมหมายเลขใบรับรองเพื่อดูประชากร</string>
+    <string name="pop_total">PSA เกรดแล้ว: %1$d</string>
+    <string name="pop_gem_rate">อัตรา Gem (PSA 10): %1$s %%</string>
+    <string name="decks_title">เด็ค</string>
+    <string name="decks_new">เด็คใหม่</string>
+    <string name="decks_empty">ยังไม่มีเด็ค สร้างหนึ่งเด็คแล้ววางรายการหรือเพิ่มการ์ดจากคอลเลกชัน</string>
+    <string name="deck_cards">การ์ด: %1$d</string>
+    <string name="deck_value">มูลค่าเด็ค: %1$s</string>
+    <string name="deck_missing">ยังขาด: %1$d · ค่าใช้จ่าย: %2$s</string>
+    <string name="deck_missing_none">คุณมีการ์ดครบทุกใบของเด็คนี้</string>
+    <string name="deck_owned">มี %1$d / %2$d</string>
+    <string name="deck_import">วางรายการเด็ค</string>
+    <string name="deck_import_hint">บรรทัดละหนึ่งใบ เช่น 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">เพิ่มจากคอลเลกชัน</string>
+    <string name="deck_share">แชร์รายการ</string>
+    <string name="deck_delete">ลบเด็ค</string>
+    <string name="deck_delete_confirm">ลบ “%1$s” ไหม คอลเลกชันของคุณไม่เปลี่ยน</string>
+    <string name="deck_rule_total">เด็ค %1$s มี %2$d ใบ เด็คนี้มี %3$d ใบ</string>
+    <string name="deck_rule_min">เด็ค %1$s ต้องมีอย่างน้อย %2$d ใบ เด็คนี้มี %3$d ใบ</string>
+    <string name="deck_rule_copies">มากกว่า %1$d ใบ: %2$s</string>
+    <string name="deck_rules_note">ตรวจเฉพาะจำนวนการ์ดและจำนวนใบซ้ำ ไม่ตรวจการ์ดต้องห้ามหรือรูปแบบการเล่น</string>
+    <string name="deck_not_found">ไม่พบ: %1$s</string>
+    <string name="share_cards">แชร์เป็นหน้าเว็บ</string>
+    <string name="share_cards_text">ส่งการ์ดเหล่านี้ (%1$d) เป็นหน้าเว็บผ่านเมนูแชร์ แอปไม่ได้อัปโหลดอะไร</string>
+    <string name="share_with_prices">พร้อมราคา</string>
+    <string name="share_without_prices">ไม่ใส่ราคา</string>
+</resources>

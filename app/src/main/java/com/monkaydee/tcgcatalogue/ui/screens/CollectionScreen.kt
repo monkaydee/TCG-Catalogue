@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.Calculate
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.SwapHoriz
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,7 +65,33 @@ import com.monkaydee.tcgcatalogue.ui.components.CardOrSlab
 import com.monkaydee.tcgcatalogue.ui.components.SelectorOption
 import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 
-private enum class BulkDialog { BINDER, LOT, DELETE }
+private enum class BulkDialog { BINDER, LOT, DELETE, SHARE }
+
+/** Asks whether prices go on the shared page, then sends [cards] as one web page through the share sheet. */
+@Composable
+internal fun ShareCardsDialog(cards: List<com.monkaydee.tcgcatalogue.data.db.OwnedCard>, s: com.monkaydee.tcgcatalogue.data.AppSettings, title: String, onDone: () -> Unit) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    fun send(withPrices: Boolean) {
+        onDone()
+        scope.launch {
+            runCatching {
+                com.monkaydee.tcgcatalogue.data.CollectionShare.share(
+                    context, title, context.getString(R.string.binders_card_count, cards.sumOf { it.quantity }), cards,
+                    if (withPrices) ({ c -> Money.unitText(c, s.currency, s.usdToEur) }) else null,
+                    if (withPrices) Money.coverage(cards, s.currency, s.usdToEur).text(s.currency) else null,
+                )
+            }.onFailure { Toast.makeText(context, context.getString(R.string.share_failed, it.message.orEmpty()), Toast.LENGTH_LONG).show() }
+        }
+    }
+    AlertDialog(
+        onDismissRequest = onDone,
+        title = { Text(stringResource(R.string.share_cards)) },
+        text = { Text(stringResource(R.string.share_cards_text, cards.sumOf { it.quantity })) },
+        confirmButton = { TextButton(onClick = { send(true) }) { Text(stringResource(R.string.share_with_prices)) } },
+        dismissButton = { TextButton(onClick = { send(false) }) { Text(stringResource(R.string.share_without_prices)) } },
+    )
+}
 
 /** Market movers compare with the price a week ago. */
 internal const val MOVER_DAYS = 7
@@ -101,6 +128,7 @@ fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.collection_title)) },
                 navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.binder_back)) } },
+                actions = { IconButton(onClick = { dialog = BulkDialog.SHARE }) { Icon(Icons.Outlined.Share, stringResource(R.string.share_cards)) } },
             ) else TopAppBar(
                 colors = appBarColors(),
                 title = { Text(stringResource(R.string.binder_selected, selected.size)) },
@@ -114,6 +142,7 @@ fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List
                         Toast.makeText(context, context.getString(R.string.bulk_trade_done, chosen.size), Toast.LENGTH_SHORT).show()
                         selected = emptySet()
                     }) { Icon(Icons.Outlined.SwapHoriz, stringResource(R.string.bulk_trade)) }
+                    IconButton(onClick = { dialog = BulkDialog.SHARE }) { Icon(Icons.Outlined.Share, stringResource(R.string.share_cards)) }
                     IconButton(onClick = { dialog = BulkDialog.DELETE }) { Icon(Icons.Outlined.Delete, stringResource(R.string.bulk_delete)) }
                 },
             )
@@ -188,6 +217,10 @@ fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List
                     }) { Text(stringResource(R.string.bulk_delete)) } },
                     dismissButton = { TextButton(onClick = { dialog = null }) { Text(stringResource(android.R.string.cancel)) } },
                 )
+                BulkDialog.SHARE -> {
+                    val chosen = if (selected.isEmpty()) shown else shown.filter { it.id in selected }
+                    ShareCardsDialog(chosen, s, stringResource(R.string.collection_title)) { dialog = null; selected = emptySet() }
+                }
                 null -> {}
             }
             if (shown.isEmpty()) {

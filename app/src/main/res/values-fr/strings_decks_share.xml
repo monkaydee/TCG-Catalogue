@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">Population PSA</string>
+    <string name="pop_show">Voir la population</string>
+    <string name="pop_none">Ajoutez un slab PSA de cette carte avec son numéro de certificat pour voir sa population.</string>
+    <string name="pop_total">Notées par PSA : %1$d</string>
+    <string name="pop_gem_rate">Taux gem (PSA 10) : %1$s %%</string>
+    <string name="decks_title">Decks</string>
+    <string name="decks_new">Nouveau deck</string>
+    <string name="decks_empty">Pas encore de deck. Créez-en un, puis collez une liste ou ajoutez des cartes de votre collection.</string>
+    <string name="deck_cards">Cartes : %1$d</string>
+    <string name="deck_value">Valeur du deck : %1$s</string>
+    <string name="deck_missing">Il manque : %1$d · coût : %2$s</string>
+    <string name="deck_missing_none">Vous possédez toutes les cartes de ce deck.</string>
+    <string name="deck_owned">possédées %1$d / %2$d</string>
+    <string name="deck_import">Coller une liste</string>
+    <string name="deck_import_hint">Une carte par ligne, ex. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Ajouter depuis la collection</string>
+    <string name="deck_share">Partager la liste</string>
+    <string name="deck_delete">Supprimer le deck</string>
+    <string name="deck_delete_confirm">Supprimer « %1$s » ? Votre collection ne change pas.</string>
+    <string name="deck_rule_total">Les decks %1$s ont %2$d cartes ; celui-ci en a %3$d.</string>
+    <string name="deck_rule_min">Les decks %1$s ont au moins %2$d cartes ; celui-ci en a %3$d.</string>
+    <string name="deck_rule_copies">Plus de %1$d exemplaires : %2$s</string>
+    <string name="deck_rules_note">Vérifie seulement le nombre de cartes et d’exemplaires ; pas les cartes bannies ni les formats.</string>
+    <string name="deck_not_found">Introuvable : %1$s</string>
+    <string name="share_cards">Partager en page</string>
+    <string name="share_cards_text">Envoie ces cartes (%1$d) en une page web via le menu de partage. L’app n’envoie rien en ligne.</string>
+    <string name="share_with_prices">Avec les prix</string>
+    <string name="share_without_prices">Sans les prix</string>
+</resources>
