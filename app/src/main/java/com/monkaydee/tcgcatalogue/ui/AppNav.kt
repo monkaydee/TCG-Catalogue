@@ -154,6 +154,7 @@ fun AppNav(repo: CardRepository) {
                     onPhotos = { nav.navigate("import?pick=true") },
                     onBinder = { nav.navigate("binders") },
                     onCollection = { nav.navigate("collection") },
+                    onBadges = { nav.navigate("badges") },
                     onWishlist = { nav.navigate("wishlist") },
                     onTradeList = { nav.navigate("trade") },
                     onSold = { nav.navigate("sold") },
@@ -190,7 +191,9 @@ fun AppNav(repo: CardRepository) {
                     onManual = { nav.navigate("search") },
                 )
             }
-            composable("tools") { com.monkaydee.tcgcatalogue.ui.screens.CollectionToolsScreen(repo, { nav.navigate("card/$it") }, { nav.navigate("import") }) }
+            composable("tools") { com.monkaydee.tcgcatalogue.ui.screens.CollectionToolsScreen(repo, { nav.navigate("card/$it") }, { nav.navigate("import") }, onCsvImport = { nav.navigate("csv-import") }) }
+            composable("csv-import") { com.monkaydee.tcgcatalogue.ui.screens.CsvImportScreen(repo, onBack = { nav.popBackStack() }) }
+            composable("badges") { com.monkaydee.tcgcatalogue.ui.screens.BadgesScreen(repo, onBack = { nav.popBackStack() }) }
             composable("settings") { SettingsScreen(repo, onRefresh = refresh) }
             composable(
                 "search?replace={replace}",

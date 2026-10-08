@@ -116,6 +116,22 @@ cost to complete a set, CSV import from other apps, slab cert barcode scan, more
   at 30–120 % of market (`LotValue`).
 - Tests: `CollectorToolsTest`, notes/add-to-binder case in `LedgerBackupRegressionTest`. Local: 234 tests, 0 failures.
 
+## Collector tools, batch B (8 October 2026, Claude)
+
+- **Import from other apps** (Collection tools): CSV with header (ManaBox, TCGplayer, Dragon Shield, Collectr, own export;
+  `,`/`;`/tab, quoted fields, EU decimals) or plain lists ("4 Lightning Bolt (M10) 146"). `CsvImport` maps columns,
+  conditions and languages; `matchImport` finds the card (Magic: set code + number exact; else name, One Piece by code)
+  and narrows by number and set. Sure = exactly one fits number (+ set); sure lines are ticked, others offer up to 5
+  options. Japanese Pokémon rows matched to an international ID are never "sure". Max 2000 lines per file.
+  Collectr's column names are assumed from public material (unverified).
+- **Slab barcode/QR scan** (add sheet → certificate field icon): Google code scanner (`play-services-code-scanner`,
+  Play services UI, no camera permission of ours). `SlabCode` reads the cert and company from grader links; PSA certs fill
+  the grade through the existing cert check when the price server is set up.
+- **Market movers**: home "Movers this week" and collection sorts "Rising/Falling this week" from our own daily
+  `price_history` (latest vs last point ≥7 days earlier; cards under 1 unit ignored). Not market-wide data.
+- **Achievements** (home ⋯): 15 local badges computed from the collection; nothing stored or uploaded.
+- Tests: `ImportAndMoversTest`. Local: 241 tests, 0 failures; lint 0 errors, 319 warnings.
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

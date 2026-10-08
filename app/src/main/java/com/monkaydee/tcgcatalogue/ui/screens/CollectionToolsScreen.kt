@@ -20,7 +20,7 @@ import java.text.DateFormat
 import java.util.Date
 
 @Composable
-fun CollectionToolsScreen(repo: CardRepository, onCard: (Long) -> Unit, onReview: () -> Unit) {
+fun CollectionToolsScreen(repo: CardRepository, onCard: (Long) -> Unit, onReview: () -> Unit, onCsvImport: () -> Unit = {}) {
     val cards by repo.cards.collectAsState(emptyList())
     val lots by repo.costLots.collectAsState(emptyList())
     val submissions by repo.submissions.collectAsState(emptyList())
@@ -45,6 +45,7 @@ fun CollectionToolsScreen(repo: CardRepository, onCard: (Long) -> Unit, onReview
         }
         message?.let { Text(it) }
         OutlinedButton(onClick = onReview) { Text(stringResource(R.string.tools_review)) }
+        OutlinedButton(onClick = onCsvImport) { Text(stringResource(R.string.csv_title)) }
         var lot by remember { mutableStateOf(false) }
         OutlinedButton(onClick = { lot = true }) { Text(stringResource(R.string.lot_title)) }
         if (lot) com.monkaydee.tcgcatalogue.ui.components.LotCalculator(emptyList(), s.currency) { lot = false }

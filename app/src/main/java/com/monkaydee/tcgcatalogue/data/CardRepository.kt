@@ -273,6 +273,30 @@ class CardRepository(
         else -> brief.cardId.toLongOrNull()?.let { cardIndex.byProduct(brief.game, it) }
     }
 
+    /**
+     * Finds the catalogue card for a line imported from another app: by set code and number
+     * (Magic), else by name (One Piece: by code), narrowed by collector number and set name.
+     * Sure only when exactly one card fits the number and, if given, the set.
+     */
+    suspend fun matchImport(row: ImportRow, fallback: Game): ImportMatch {
+        val game = row.game ?: fallback
+        if (game == Game.MAGIC && row.setCode != null && row.number != null) {
+            runCatching { scryfall.card(row.setCode.lowercase(), row.number) }.getOrNull()?.let { return ImportMatch(listOf(it), true) }
+        }
+        val query = if (game == Game.ONE_PIECE && row.number?.contains('-') == true) row.number else row.name
+        val briefs = runCatching { search(game, query) }.getOrDefault(emptyList())
+        val want = CsvImport.numberKey(row.number)
+        val pool = (if (want == null) briefs else briefs.filter { CsvImport.numberKey(it.number) == want }).take(8)
+        val found = pool.mapNotNull { b -> runCatching { details(b) }.getOrNull() }
+        val sets = listOfNotNull(row.set, row.setCode).map { it.trim().lowercase() }
+        val bySet = if (sets.isEmpty()) found else found.filter { c ->
+            sets.any { t -> c.setName.lowercase() == t || c.setId.lowercase() == t || c.setName.lowercase().contains(t) }
+        }
+        val ranked = bySet + (found - bySet.toSet())
+        val japanese = game == Game.POKEMON && row.language == "JA" && ranked.firstOrNull()?.cardId?.startsWith("ja:") == false
+        return ImportMatch(ranked.take(5), want != null && bySet.size == 1 && !japanese)
+    }
+
     /** A language selection cannot reuse an international Pokémon set/collector number in Japan. */
     fun needsJapanesePrinting(card: CardCandidate, language: String): Boolean =
         card.game == Game.POKEMON && language == "JA" && !card.cardId.startsWith("ja:")
@@ -1097,6 +1121,9 @@ class CardRepository(
     // ---- Price history and alerts ----
 
     fun priceHistory(cardRowId: Long) = db.history().observe(cardRowId)
+
+    /** Every card's price history of the last [days] days, for market movers. */
+    fun recentHistory(days: Int) = db.history().observeSince(LocalDate.now().toEpochDay() - days)
 
     /** Stores today's price per copy of every card, for the price history charts. */
     private suspend fun recordHistory() {

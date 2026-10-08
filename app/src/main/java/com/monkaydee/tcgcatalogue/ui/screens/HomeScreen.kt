@@ -45,6 +45,7 @@ import com.monkaydee.tcgcatalogue.ui.components.ActionStyle
 import com.monkaydee.tcgcatalogue.ui.components.AppSelector
 import com.monkaydee.tcgcatalogue.ui.components.SelectorOption
 import androidx.compose.material.icons.outlined.Straighten
+import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.Paid
@@ -156,6 +157,7 @@ fun HomeScreen(
     onPhotos: () -> Unit,
     onBinder: () -> Unit = {},
     onCollection: () -> Unit = {},
+    onBadges: () -> Unit = {},
     onWishlist: () -> Unit = {},
     onTradeList: () -> Unit = {},
     onSold: () -> Unit = {},
@@ -194,6 +196,7 @@ fun HomeScreen(
                             listOf(
                                 Triple(R.string.home_binder, Icons.AutoMirrored.Outlined.MenuBook, onBinder),
                                 Triple(R.string.grade_open, Icons.Outlined.Straighten, onPreGrade),
+                                Triple(R.string.badges_title, Icons.Outlined.EmojiEvents, onBadges),
                                 Triple(R.string.home_import_photos, Icons.Outlined.AddPhotoAlternate, onPhotos),
                                 Triple(R.string.home_refresh, Icons.Outlined.Refresh, onRefresh),
                             ).forEach { (label, icon, action) ->
@@ -324,6 +327,7 @@ fun HomeScreen(
                     }
                 }
             }
+            item { HomeMovers(repo, state.cards.filter { gameFilter == null || it.game == gameFilter }, onOpenCard) }
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.home_sets, sets.size), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
@@ -426,5 +430,34 @@ private fun EmptyState(modifier: Modifier, onScan: () -> Unit, onPhotos: () -> U
                 Text(stringResource(R.string.home_import_photos))
             }
         }
+    }
+}
+
+/** Biggest risers and fallers of the collection over the last week, from the app's own price history. */
+@Composable
+private fun HomeMovers(repo: CardRepository, cards: List<com.monkaydee.tcgcatalogue.data.db.OwnedCard>, onOpenCard: (Long) -> Unit) {
+    val settings by repo.settings.flow.collectAsState(initial = null)
+    val s = settings ?: return
+    val history by remember { repo.recentHistory(MOVER_DAYS + 7) }.collectAsState(initial = emptyList())
+    val byId = remember(cards) { cards.associateBy { it.id } }
+    val (up, down) = remember(history, byId, s.currency, s.usdToEur) {
+        val moves = com.monkaydee.tcgcatalogue.data.Movers.moves(history, MOVER_DAYS) { p, c -> Money.convert(p, c, s.currency, s.usdToEur) }
+        com.monkaydee.tcgcatalogue.data.Movers.top(moves.values.filter { it.rowId in byId }, n = 4)
+    }
+    if (up.isEmpty() && down.isEmpty()) return
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(stringResource(R.string.movers_title), style = MaterialTheme.typography.titleMedium)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(up + down, key = { it.rowId }) { m ->
+                val c = byId[m.rowId] ?: return@items
+                Column(Modifier.width(96.dp).clickable { CardBrowse.open((up + down).map { it.rowId }, c.id, onOpenCard) }) {
+                    CardOrSlab(c, thumb = true)
+                    Text(c.name, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(Money.format(m.now, s.currency), style = MaterialTheme.typography.labelSmall)
+                    MoveLabel(m.percent)
+                }
+            }
+        }
+        Text(stringResource(R.string.movers_note), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

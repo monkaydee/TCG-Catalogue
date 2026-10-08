@@ -41,6 +41,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material.icons.outlined.QrCodeScanner
+import kotlinx.coroutines.launch
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -336,6 +338,8 @@ fun AddCardSheet(
                         }
                     }
                 }
+                val scanContext = androidx.compose.ui.platform.LocalContext.current
+                val scanScope = androidx.compose.runtime.rememberCoroutineScope()
                 OutlinedTextField(
                     value = cert,
                     onValueChange = { cert = it.filter(Char::isLetterOrDigit).take(14) },
@@ -343,6 +347,29 @@ fun AddCardSheet(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        // The label's barcode or QR code fills in the certificate (and the company and, for PSA, the grade).
+                        androidx.compose.material3.IconButton(onClick = {
+                            com.google.mlkit.vision.codescanner.GmsBarcodeScanning.getClient(scanContext).startScan()
+                                .addOnSuccessListener { code ->
+                                    val found = code.rawValue?.let(com.monkaydee.tcgcatalogue.scan.SlabCode::parse)
+                                    if (found == null) {
+                                        android.widget.Toast.makeText(scanContext, scanContext.getString(R.string.slab_scan_unreadable), android.widget.Toast.LENGTH_LONG).show()
+                                        return@addOnSuccessListener
+                                    }
+                                    cert = found.cert
+                                    found.grader?.let { grader = it }
+                                    if ((found.grader ?: grader) == "PSA") scanScope.launch {
+                                        runCatching { repo.verifyCert(found.cert) }.getOrNull()?.let { c ->
+                                            com.monkaydee.tcgcatalogue.scan.SlabCode.psaGrade(c.grade)?.let { g -> grade = g }
+                                        }
+                                    }
+                                }
+                                .addOnFailureListener {
+                                    android.widget.Toast.makeText(scanContext, scanContext.getString(R.string.slab_scan_unavailable), android.widget.Toast.LENGTH_LONG).show()
+                                }
+                        }) { androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Outlined.QrCodeScanner, stringResource(R.string.slab_scan)) }
+                    },
                 )
             } else {
                 Text(stringResource(R.string.add_condition), style = MaterialTheme.typography.labelLarge)

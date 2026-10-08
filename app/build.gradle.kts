@@ -101,6 +101,8 @@ dependencies {
     implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
     implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
     implementation("com.google.mlkit:text-recognition-korean:16.0.1")
+    // Slab labels: Google code scanner (barcode/QR, Play services UI; no camera permission of our own).
+    implementation(libs.code.scanner)
     // On-device image model for "find by picture" (the model itself is downloaded on first use).
     implementation(libs.litert)
 

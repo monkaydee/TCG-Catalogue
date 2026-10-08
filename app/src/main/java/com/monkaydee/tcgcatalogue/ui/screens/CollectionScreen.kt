@@ -66,6 +66,19 @@ import com.monkaydee.tcgcatalogue.ui.components.appBarColors
 
 private enum class BulkDialog { BINDER, LOT, DELETE }
 
+/** Market movers compare with the price a week ago. */
+internal const val MOVER_DAYS = 7
+
+/** "▲ 12 %" in the gain colour, "▼ 8 %" in the loss colour. */
+@Composable
+internal fun MoveLabel(percent: Double) {
+    Text(
+        (if (percent >= 0) "▲ " else "▼ ") + "%.0f %%".format(kotlin.math.abs(percent)),
+        style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold,
+        color = if (percent >= 0) com.monkaydee.tcgcatalogue.ui.theme.Gain else com.monkaydee.tcgcatalogue.ui.theme.Loss,
+    )
+}
+
 /** Every card of the collection as a scrollable list: picture, name, slab and price, in a chosen order. */
 @OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
@@ -110,8 +123,12 @@ fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List
         val cards = all
         if (s == null || cards == null) return@Scaffold
         val sets = remember(setList) { setList.associateBy { it.game to it.setId } }
-        val shown = remember(cards, game, sort, sets, s.currency, s.usdToEur) {
-            CollectionList.sorted(cards.filter { game == null || it.game == game }, sort, sets) { Money.unitOrNull(it, s.currency, s.usdToEur) }
+        val history by remember { repo.recentHistory(MOVER_DAYS + 7) }.collectAsState(initial = emptyList())
+        val moves = remember(history, s.currency, s.usdToEur) {
+            com.monkaydee.tcgcatalogue.data.Movers.moves(history, MOVER_DAYS) { p, c -> Money.convert(p, c, s.currency, s.usdToEur) }
+        }
+        val shown = remember(cards, game, sort, sets, s.currency, s.usdToEur, moves) {
+            CollectionList.sorted(cards.filter { game == null || it.game == game }, sort, sets, { moves[it.id]?.percent }) { Money.unitOrNull(it, s.currency, s.usdToEur) }
         }
         val order = shown.map { it.id }
         Column(Modifier.padding(padding).fillMaxSize()) {
@@ -210,6 +227,7 @@ fun CollectionScreen(repo: CardRepository, onBack: () -> Unit, onOpenCard: (List
                         Column(horizontalAlignment = Alignment.End) {
                             Text(Money.unitText(c, s.currency, s.usdToEur), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                             if (c.quantity > 1) Text("×${c.quantity}", style = MaterialTheme.typography.labelSmall)
+                            moves[c.id]?.takeIf { it.change != 0.0 }?.let { m -> MoveLabel(m.percent) }
                         }
                     }
                     HorizontalDivider(Modifier.padding(start = 80.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))

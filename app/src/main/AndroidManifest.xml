@@ -51,10 +51,11 @@
                 android:value="true" />
         </service>
 
-        <!-- Bundled ML Kit text model: no Play Services download needed. -->
+        <!-- Bundled ML Kit text model: no Play Services download needed. barcode_ui: the slab label
+             scanner, fetched by Play services ahead of first use. -->
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="ocr" />
+            android:value="ocr,barcode_ui" />
 
         <!-- Home-screen widget: collection value. -->
         <activity android:name=".widget.WidgetConfigureActivity" android:exported="true" android:theme="@style/Theme.TcgCatalogue">

@@ -110,6 +110,9 @@ interface PriceHistoryDao {
     @Query("SELECT * FROM price_history")
     suspend fun getAll(): List<PriceHistory>
 
+    @Query("SELECT * FROM price_history WHERE day >= :since")
+    fun observeSince(since: Long): Flow<List<PriceHistory>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(points: List<PriceHistory>)
 
