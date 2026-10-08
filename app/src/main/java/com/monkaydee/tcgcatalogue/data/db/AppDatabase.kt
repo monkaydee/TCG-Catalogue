@@ -9,17 +9,18 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [
         OwnedCard::class, CardSet::class, PortfolioSnapshot::class,
-        PriceHistory::class, WishCard::class, SoldCard::class, SealedItem::class, CostLot::class, GradingSubmission::class, ReviewReceipt::class,
+        PriceHistory::class, WishCard::class, SoldCard::class, SealedItem::class, CostLot::class, GradingSubmission::class, ReviewReceipt::class, CardBinder::class, BinderCard::class,
     ],
-    version = 9,
+    version = 10,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4),
-        AutoMigration(from = 4, to = 5), AutoMigration(from = 5, to = 6), AutoMigration(from = 6, to = 7, spec = SlabIdentityMigration::class), AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9),
+        AutoMigration(from = 4, to = 5), AutoMigration(from = 5, to = 6), AutoMigration(from = 6, to = 7, spec = SlabIdentityMigration::class), AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9), AutoMigration(from = 9, to = 10),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun tools(): ToolsDao
+    abstract fun binders(): BinderDao
     abstract fun cards(): CardDao
     abstract fun sets(): SetDao
     abstract fun snapshots(): SnapshotDao

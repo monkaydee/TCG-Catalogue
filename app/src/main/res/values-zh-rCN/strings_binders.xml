@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">打开收藏</string>
+    <string name="binders_title">卡册</string>
+    <string name="binders_all">全部卡牌</string>
+    <string name="binders_new">新建卡册</string>
+    <string name="binders_card_count">卡牌：%1$d</string>
+    <string name="binder_open_hint">滑动或点按以打开</string>
+    <string name="binder_add_cards">添加卡牌</string>
+    <string name="binder_choose_cards">此卡册中的卡牌</string>
+    <string name="binder_edit">编辑卡册</string>
+    <string name="binder_delete">删除卡册</string>
+    <string name="binder_delete_confirm">删除“%1$s”？卡牌仍保留在你的收藏中。</string>
+    <string name="binder_name">名称</string>
+    <string name="binder_cover_design">封面设计</string>
+    <string name="binder_cover_upload">使用自己的图片</string>
+    <string name="binder_cover_remove">移除图片</string>
+    <string name="binder_save">保存</string>
+    <string name="binder_empty_custom">此卡册为空。请从收藏中添加卡牌。</string>
+    <string name="binder_search">搜索卡牌</string>
+    <string name="binder_new_name">我的卡册</string>
+    <string name="binder_selected">已选：%1$d</string>
+    <string name="collection_title">收藏</string>
+    <string name="collection_sort_recent">最近添加</string>
+    <string name="collection_sort_grade">评级</string>
+    <string name="collection_sort_set">系列</string>
+    <string name="collection_empty">还没有卡牌。</string>
+    <string name="collection_summary">卡牌：%1$d · %2$s</string>
+    <string name="cover_midnight">午夜</string>
+    <string name="cover_crimson">绯红</string>
+    <string name="cover_forest">森林</string>
+    <string name="cover_ocean">海洋</string>
+    <string name="cover_galaxy">银河</string>
+    <string name="cover_sunset">日落</string>
+    <string name="cover_gold">金箔</string>
+    <string name="cover_carbon">碳纤维</string>
+</resources>

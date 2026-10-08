@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Öppna samlingen</string>
+    <string name="binders_title">Pärmar</string>
+    <string name="binders_all">Alla kort</string>
+    <string name="binders_new">Ny pärm</string>
+    <string name="binders_card_count">Kort: %1$d</string>
+    <string name="binder_open_hint">Svep eller tryck för att öppna</string>
+    <string name="binder_add_cards">Lägg till kort</string>
+    <string name="binder_choose_cards">Kort i den här pärmen</string>
+    <string name="binder_edit">Redigera pärm</string>
+    <string name="binder_delete">Ta bort pärm</string>
+    <string name="binder_delete_confirm">Ta bort ”%1$s”? Korten finns kvar i samlingen.</string>
+    <string name="binder_name">Namn</string>
+    <string name="binder_cover_design">Omslagsdesign</string>
+    <string name="binder_cover_upload">Använd egen bild</string>
+    <string name="binder_cover_remove">Ta bort bild</string>
+    <string name="binder_save">Spara</string>
+    <string name="binder_empty_custom">Pärmen är tom. Lägg till kort från din samling.</string>
+    <string name="binder_search">Sök kort</string>
+    <string name="binder_new_name">Min pärm</string>
+    <string name="binder_selected">Valda: %1$d</string>
+    <string name="collection_title">Samling</string>
+    <string name="collection_sort_recent">Nyligen tillagda</string>
+    <string name="collection_sort_grade">Gradering</string>
+    <string name="collection_sort_set">Set</string>
+    <string name="collection_empty">Inga kort än.</string>
+    <string name="collection_summary">Kort: %1$d · %2$s</string>
+    <string name="cover_midnight">Midnatt</string>
+    <string name="cover_crimson">Karmosin</string>
+    <string name="cover_forest">Skog</string>
+    <string name="cover_ocean">Hav</string>
+    <string name="cover_galaxy">Galax</string>
+    <string name="cover_sunset">Solnedgång</string>
+    <string name="cover_gold">Guldfolie</string>
+    <string name="cover_carbon">Kolfiber</string>
+</resources>

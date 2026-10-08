@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Otwórz kolekcję</string>
+    <string name="binders_title">Klasery</string>
+    <string name="binders_all">Wszystkie karty</string>
+    <string name="binders_new">Nowy klaser</string>
+    <string name="binders_card_count">Karty: %1$d</string>
+    <string name="binder_open_hint">Przesuń lub dotknij, aby otworzyć</string>
+    <string name="binder_add_cards">Dodaj karty</string>
+    <string name="binder_choose_cards">Karty w tym klaserze</string>
+    <string name="binder_edit">Edytuj klaser</string>
+    <string name="binder_delete">Usuń klaser</string>
+    <string name="binder_delete_confirm">Usunąć „%1$s”? Karty pozostaną w kolekcji.</string>
+    <string name="binder_name">Nazwa</string>
+    <string name="binder_cover_design">Wzór okładki</string>
+    <string name="binder_cover_upload">Użyj własnego zdjęcia</string>
+    <string name="binder_cover_remove">Usuń zdjęcie</string>
+    <string name="binder_save">Zapisz</string>
+    <string name="binder_empty_custom">Ten klaser jest pusty. Dodaj karty z kolekcji.</string>
+    <string name="binder_search">Szukaj kart</string>
+    <string name="binder_new_name">Mój klaser</string>
+    <string name="binder_selected">Wybrano: %1$d</string>
+    <string name="collection_title">Kolekcja</string>
+    <string name="collection_sort_recent">Ostatnio dodane</string>
+    <string name="collection_sort_grade">Ocena</string>
+    <string name="collection_sort_set">Dodatek</string>
+    <string name="collection_empty">Brak kart.</string>
+    <string name="collection_summary">Karty: %1$d · %2$s</string>
+    <string name="cover_midnight">Północ</string>
+    <string name="cover_crimson">Karmazyn</string>
+    <string name="cover_forest">Las</string>
+    <string name="cover_ocean">Ocean</string>
+    <string name="cover_galaxy">Galaktyka</string>
+    <string name="cover_sunset">Zachód słońca</string>
+    <string name="cover_gold">Złota folia</string>
+    <string name="cover_carbon">Karbon</string>
+</resources>

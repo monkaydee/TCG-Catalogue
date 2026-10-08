@@ -61,6 +61,27 @@ Codex reviewed 0.1.207 and reported 8 defects; Claude verified each in the code 
 
 Local: Android 219 tests, 0 failures, 3 existing skips; release build and lint OK. Worker 109 passed, typecheck OK.
 
+## Binders and collection list (8 October 2026, Claude)
+
+Requested by the owner before the next Codex review.
+
+- **Several binders.** Home → "Open binder" now opens a shelf: the main binder (every card, unchanged) plus the user's own
+  binders and a "New binder" tile. Own binders are Room tables `binders` and `binder_cards` (schema 10, auto-migration);
+  a card row may sit in several binders. Cards are chosen in the binder (＋ / menu → "Add cards": search and tick).
+- **Closed covers.** Every binder opens on its cover (turner page 0); swiping, tapping the cover or the › button opens
+  page 1. Covers: 8 preset designs (`CoverDesign`) or the user's own picture (stored in app files, never uploaded).
+  The main binder's cover is in settings (`main_binder_cover*`).
+- **4 × 3 layout** (`Binder.CLASSIC`, 4 rows of 3) is the new default; 3 × 3, 6 × 6 and 9 × 9 remain.
+- **Open collection.** New button next to "Open binder": a scrollable list with picture, name, set/number/language,
+  slab label (or condition), price per copy and quantity; game filter and sort by value, name, set, recently added, grade.
+- **Data safety.** Deleting or selling the last copy removes it from binders; merging rows moves membership; backups
+  carry binders and memberships (merge matches binders by name). Cover pictures are not in backups: on another phone
+  the preset design is shown.
+- Tests: `CollectionListTest`, binder case in `LedgerBackupRegressionTest`, screenshots `binder_4x3`, `binder_covers`.
+  Local: 225 tests, 0 failures, 3 skips; lint 0 errors, 319 warnings.
+- Not done / for review: adding a card to a binder from the card page itself; per-binder layout/sort (shared setting today);
+  physical-phone check of the cover tap/swipe feel.
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

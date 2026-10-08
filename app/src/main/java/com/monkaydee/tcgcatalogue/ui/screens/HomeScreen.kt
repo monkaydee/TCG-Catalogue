@@ -31,6 +31,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.AddPhotoAlternate
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Refresh
@@ -154,6 +155,7 @@ fun HomeScreen(
     onScan: () -> Unit,
     onPhotos: () -> Unit,
     onBinder: () -> Unit = {},
+    onCollection: () -> Unit = {},
     onWishlist: () -> Unit = {},
     onTradeList: () -> Unit = {},
     onSold: () -> Unit = {},
@@ -280,8 +282,12 @@ fun HomeScreen(
                             ),
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        AppButton(stringResource(R.string.home_open_binder), onBinder, Modifier.padding(top = 8.dp),
-                            Icons.AutoMirrored.Outlined.MenuBook, style = ActionStyle.TONAL)
+                        Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            AppButton(stringResource(R.string.home_open_binder), onBinder, Modifier.weight(1f),
+                                Icons.AutoMirrored.Outlined.MenuBook, style = ActionStyle.TONAL)
+                            AppButton(stringResource(R.string.home_open_collection), onCollection, Modifier.weight(1f),
+                                Icons.AutoMirrored.Outlined.List, style = ActionStyle.TONAL)
+                        }
                         if (gameFilter == null) {
                             Spacer(Modifier.height(12.dp))
                             if (history.size >= 2) ValueChart(history)

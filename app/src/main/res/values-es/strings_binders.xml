@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Abrir colección</string>
+    <string name="binders_title">Carpetas</string>
+    <string name="binders_all">Todas las cartas</string>
+    <string name="binders_new">Nueva carpeta</string>
+    <string name="binders_card_count">Cartas: %1$d</string>
+    <string name="binder_open_hint">Desliza o toca para abrir</string>
+    <string name="binder_add_cards">Añadir cartas</string>
+    <string name="binder_choose_cards">Cartas en esta carpeta</string>
+    <string name="binder_edit">Editar carpeta</string>
+    <string name="binder_delete">Eliminar carpeta</string>
+    <string name="binder_delete_confirm">¿Eliminar «%1$s»? Las cartas siguen en tu colección.</string>
+    <string name="binder_name">Nombre</string>
+    <string name="binder_cover_design">Diseño de portada</string>
+    <string name="binder_cover_upload">Usar imagen propia</string>
+    <string name="binder_cover_remove">Quitar imagen</string>
+    <string name="binder_save">Guardar</string>
+    <string name="binder_empty_custom">Esta carpeta está vacía. Añade cartas de tu colección.</string>
+    <string name="binder_search">Buscar cartas</string>
+    <string name="binder_new_name">Mi carpeta</string>
+    <string name="binder_selected">Seleccionadas: %1$d</string>
+    <string name="collection_title">Colección</string>
+    <string name="collection_sort_recent">Añadidas recientemente</string>
+    <string name="collection_sort_grade">Gradación</string>
+    <string name="collection_sort_set">Expansión</string>
+    <string name="collection_empty">Aún no hay cartas.</string>
+    <string name="collection_summary">Cartas: %1$d · %2$s</string>
+    <string name="cover_midnight">Medianoche</string>
+    <string name="cover_crimson">Carmesí</string>
+    <string name="cover_forest">Bosque</string>
+    <string name="cover_ocean">Océano</string>
+    <string name="cover_galaxy">Galaxia</string>
+    <string name="cover_sunset">Atardecer</string>
+    <string name="cover_gold">Lámina dorada</string>
+    <string name="cover_carbon">Carbono</string>
+</resources>

@@ -28,7 +28,15 @@ enum class SetOrder(@StringRes val label: Int) {
 data class BinderPage(val cards: List<OwnedCard>, val title: String? = null)
 
 object Binder {
-    val GRIDS = listOf(3, 6, 9)
+    /** The usual 12-pocket page: 4 rows of 3 cards. The default layout. */
+    const val CLASSIC = 12
+    val GRIDS = listOf(CLASSIC, 3, 6, 9)
+
+    /** Pockets per row and rows per page of a layout ([CLASSIC], or n for n × n). */
+    fun columns(grid: Int) = if (grid == CLASSIC) 3 else grid
+    fun rows(grid: Int) = if (grid == CLASSIC) 4 else grid
+    fun perPage(grid: Int) = columns(grid) * rows(grid)
+    fun label(grid: Int) = "${rows(grid)} × ${columns(grid)}"
 
     /** Sort key of a collector number: "TG05/TG30" -> "TG00005", "OP05-060" -> "00060", "25/102" -> "00025". */
     fun numberKey(c: OwnedCard): String {
@@ -90,3 +98,22 @@ object Binder {
     private fun setName(key: Pair<Game, String>, cards: List<OwnedCard>, sets: Map<Pair<Game, String>, CardSet>) =
         sets[key]?.name?.takeIf { it.isNotBlank() } ?: cards.first().setName.ifBlank { key.second }
 }
+
+/** Preset binder covers: a base colour pair and a pattern drawn over it. */
+enum class CoverDesign(val key: String, @StringRes val label: Int, val top: Long, val bottom: Long, val pattern: CoverPattern) {
+    MIDNIGHT("midnight", R.string.cover_midnight, 0xFF1F2A44, 0xFF0D1220, CoverPattern.LEATHER),
+    CRIMSON("crimson", R.string.cover_crimson, 0xFF9C1C2B, 0xFF4A0911, CoverPattern.LEATHER),
+    FOREST("forest", R.string.cover_forest, 0xFF2E6B4A, 0xFF10291C, CoverPattern.LEATHER),
+    OCEAN("ocean", R.string.cover_ocean, 0xFF1D8FB8, 0xFF0B3550, CoverPattern.WAVES),
+    GALAXY("galaxy", R.string.cover_galaxy, 0xFF3B1E6E, 0xFF0A0618, CoverPattern.STARS),
+    SUNSET("sunset", R.string.cover_sunset, 0xFFF08A3C, 0xFF8E2C5E, CoverPattern.WAVES),
+    GOLD("gold", R.string.cover_gold, 0xFFD9B45A, 0xFF7A5A17, CoverPattern.FOIL),
+    CARBON("carbon", R.string.cover_carbon, 0xFF3A3D42, 0xFF15171A, CoverPattern.CARBON),
+    ;
+
+    companion object {
+        fun of(key: String?) = entries.firstOrNull { it.key == key } ?: MIDNIGHT
+    }
+}
+
+enum class CoverPattern { LEATHER, WAVES, STARS, FOIL, CARBON }

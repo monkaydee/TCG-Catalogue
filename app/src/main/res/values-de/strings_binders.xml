@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Sammlung öffnen</string>
+    <string name="binders_title">Ordner</string>
+    <string name="binders_all">Alle Karten</string>
+    <string name="binders_new">Neuer Ordner</string>
+    <string name="binders_card_count">Karten: %1$d</string>
+    <string name="binder_open_hint">Wischen oder tippen zum Öffnen</string>
+    <string name="binder_add_cards">Karten hinzufügen</string>
+    <string name="binder_choose_cards">Karten in diesem Ordner</string>
+    <string name="binder_edit">Ordner bearbeiten</string>
+    <string name="binder_delete">Ordner löschen</string>
+    <string name="binder_delete_confirm">„%1$s“ löschen? Die Karten bleiben in deiner Sammlung.</string>
+    <string name="binder_name">Name</string>
+    <string name="binder_cover_design">Cover-Design</string>
+    <string name="binder_cover_upload">Eigenes Bild verwenden</string>
+    <string name="binder_cover_remove">Bild entfernen</string>
+    <string name="binder_save">Speichern</string>
+    <string name="binder_empty_custom">Dieser Ordner ist leer. Füge Karten aus deiner Sammlung hinzu.</string>
+    <string name="binder_search">Karten suchen</string>
+    <string name="binder_new_name">Mein Ordner</string>
+    <string name="binder_selected">Ausgewählt: %1$d</string>
+    <string name="collection_title">Sammlung</string>
+    <string name="collection_sort_recent">Zuletzt hinzugefügt</string>
+    <string name="collection_sort_grade">Grading</string>
+    <string name="collection_sort_set">Serie</string>
+    <string name="collection_empty">Noch keine Karten.</string>
+    <string name="collection_summary">Karten: %1$d · %2$s</string>
+    <string name="cover_midnight">Mitternacht</string>
+    <string name="cover_crimson">Karmesin</string>
+    <string name="cover_forest">Wald</string>
+    <string name="cover_ocean">Ozean</string>
+    <string name="cover_galaxy">Galaxie</string>
+    <string name="cover_sunset">Sonnenuntergang</string>
+    <string name="cover_gold">Goldfolie</string>
+    <string name="cover_carbon">Carbon</string>
+</resources>

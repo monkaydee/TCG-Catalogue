@@ -152,7 +152,8 @@ fun AppNav(repo: CardRepository) {
                     onSearch = { nav.navigate("search") },
                     onScan = { goTab("scan") },
                     onPhotos = { nav.navigate("import?pick=true") },
-                    onBinder = { nav.navigate("binder") },
+                    onBinder = { nav.navigate("binders") },
+                    onCollection = { nav.navigate("collection") },
                     onWishlist = { nav.navigate("wishlist") },
                     onTradeList = { nav.navigate("trade") },
                     onSold = { nav.navigate("sold") },
@@ -167,8 +168,16 @@ fun AppNav(repo: CardRepository) {
             }
             composable("sold") { SoldScreen(repo, onBack = { nav.popBackStack() }) }
             composable("sealed") { com.monkaydee.tcgcatalogue.ui.screens.SealedScreen(repo, onBack = { nav.popBackStack() }) }
-            composable("binder") {
-                BinderScreen(repo, onBack = { nav.popBackStack() }, onOpenCard = { ids, id -> CardBrowse.open(ids, id) { nav.navigate("card/$it") } })
+            composable("binders") {
+                com.monkaydee.tcgcatalogue.ui.screens.BindersScreen(repo, onBack = { nav.popBackStack() }, onOpen = { nav.navigate("binder/$it") })
+            }
+            composable("binder/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->
+                BinderScreen(repo, binderId = e.arguments?.getLong("id") ?: 0L, onBack = { nav.popBackStack() },
+                    onOpenCard = { ids, id -> CardBrowse.open(ids, id) { nav.navigate("card/$it") } })
+            }
+            composable("collection") {
+                com.monkaydee.tcgcatalogue.ui.screens.CollectionScreen(repo, onBack = { nav.popBackStack() },
+                    onOpenCard = { ids, id -> CardBrowse.open(ids, id) { nav.navigate("card/$it") } })
             }
             composable("scan") {
                 ScanScreen(repo, onManual = { nav.navigate("search") }, onPhotos = { nav.navigate("import?pick=true") })

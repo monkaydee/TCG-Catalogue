@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -464,7 +465,30 @@ class Screenshots {
         save("binder_3x3")
         rule.runOnUiThread { grid = 9 }
         save("binder_9x9")
+        rule.runOnUiThread { grid = com.monkaydee.tcgcatalogue.data.Binder.CLASSIC }
+        save("binder_4x3")
     }
+
+    @Test fun binderCovers() {
+        rule.setContent {
+            TcgTheme(Look(ThemeMode.DARK, Palette.INDIGO)) {
+                Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    com.monkaydee.tcgcatalogue.data.CoverDesign.entries.chunked(2).take(2).forEach { row ->
+                        androidx.compose.foundation.layout.Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            row.forEach { d ->
+                                com.monkaydee.tcgcatalogue.ui.components.BinderCover(d, null, d.name.lowercase().replaceFirstChar { it.uppercase() }, "Cards: 12",
+                                    Modifier.size(160.dp, 222.dp), compact = true)
+                            }
+                        }
+                    }
+                    com.monkaydee.tcgcatalogue.ui.components.BinderCover(com.monkaydee.tcgcatalogue.data.CoverDesign.GALAXY, null, "Vintage holos", "Cards: 48",
+                        Modifier.fillMaxWidth(0.55f).aspectRatio(0.72f))
+                }
+            }
+        }
+        save("binder_covers")
+    }
+
 
     @Test fun gradingCompanySlabs() {
         var spec by mutableStateOf(Triple("PSA", "10", null as String?))

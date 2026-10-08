@@ -109,6 +109,30 @@ class LedgerBackupRegressionTest {
         }
     }
 
+    @Test fun bindersKeepTheirCardsThroughDeletesAndBackups() = runBlocking {
+        Fixture().use { f ->
+            val a = f.db.cards().insert(card())
+            val b = f.db.cards().insert(card().copy(cardId = "base1-2", name = "Blastoise", number = "2/102"))
+            val binder = f.repo.createBinder("Holos", "galaxy")
+            f.repo.setBinderCards(binder, setOf(a, b, 999))
+            assertEquals(setOf(a, b), f.db.binders().rows(binder).toSet())
+            val backup = f.repo.exportBackup()
+            f.repo.delete(f.db.cards().get(b)!!)
+            assertEquals(listOf(a), f.db.binders().rows(binder))
+            f.repo.importBackup(backup)
+            val restored = f.db.binders().all().single()
+            assertEquals("Holos", restored.name); assertEquals("galaxy", restored.cover)
+            assertEquals(2, f.db.binders().rows(restored.id).size)
+            // merging the same backup again neither duplicates the binder nor its cards
+            f.repo.mergeBackup(backup)
+            assertEquals(1, f.db.binders().all().size)
+            assertEquals(2, f.db.binders().rows(restored.id).size)
+            f.repo.deleteBinder(restored.id)
+            assertTrue(f.db.binders().cards().isEmpty())
+            assertEquals(2, f.db.cards().getAll().size)
+        }
+    }
+
     @Test fun deletingACardRemovesItsSubmissions() = runBlocking {
         Fixture().use { f ->
             val row = f.db.cards().insert(card())

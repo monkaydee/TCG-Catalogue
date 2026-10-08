@@ -57,6 +57,8 @@ data class Backup(
     val sealed: List<SealedItem> = emptyList(),
     val costLots: List<CostLot> = emptyList(),
     val submissions: List<GradingSubmission> = emptyList(),
+    val binders: List<com.monkaydee.tcgcatalogue.data.db.CardBinder> = emptyList(),
+    val binderCards: List<com.monkaydee.tcgcatalogue.data.db.BinderCard> = emptyList(),
     /** When and on which install the backup was written (for sync between phones). */
     val savedAt: Long = 0,
     val device: String = "",
@@ -88,6 +90,8 @@ class CardRepository(
     val submissions = db.tools().observeSubmissions()
     val cards = db.cards().observeAll()
     val sets = db.sets().observeAll()
+    val binders = db.binders().observe()
+    val binderCards = db.binders().observeCards()
     val snapshots = db.snapshots().observeAll()
     val wishlist = db.wishlist().observeAll()
     val sold = db.sold().observeAll()
@@ -644,6 +648,7 @@ class CardRepository(
             db.cards().update(clash.copy(quantity = clash.quantity + edited.quantity))
             db.tools().moveLots(original.id, clash.id)
             db.tools().moveSubmissions(original.id, clash.id)
+            db.binders().moveRow(original.id, clash.id)
             db.cards().delete(original)
         } else {
             db.cards().update(edited)
@@ -676,6 +681,7 @@ class CardRepository(
             db.cards().update(existing.copy(quantity = existing.quantity + card.quantity))
             db.tools().moveLots(card.id, existing.id)
             db.tools().moveSubmissions(card.id, existing.id)
+            db.binders().moveRow(card.id, existing.id)
             db.cards().delete(card)
             }
             runCatching { snapshot() }
@@ -973,6 +979,8 @@ class CardRepository(
         sealed = db.sealed().getAll(),
         costLots = db.tools().lots(),
         submissions = db.tools().submissions(),
+        binders = db.binders().all(),
+        binderCards = db.binders().cards(),
         savedAt = System.currentTimeMillis(),
         device = device,
     ) }
@@ -1008,6 +1016,10 @@ class CardRepository(
         backup.costLots.forEach { db.tools().put(it) }
         backup.submissions.forEach { db.tools().put(it) }
         backup.cards.forEach { ensureCostLots(it) }
+        db.binders().clearAll(); db.binders().deleteAll()
+        backup.binders.forEach { db.binders().insert(it.copy(coverImage = it.coverImage?.takeIf { path -> java.io.File(path).isFile })) }
+        val rows = backup.cards.map { it.id }.toSet()
+        db.binders().put(backup.binderCards.filter { it.cardRowId in rows && backup.binders.any { b -> b.id == it.binderId } })
         }
         backup.cards.distinctBy { it.game to it.setId }.forEach { c ->
             runCatching {
@@ -1053,6 +1065,17 @@ class CardRepository(
         db.cards().getAll().forEach { ensureCostLots(it) }
         val days = db.history().getAll().map { it.cardRowId to it.day }.toSet()
         db.history().upsertAll(backup.history.mapNotNull { h -> rowMapping[h.cardRowId]?.let { h.copy(cardRowId = it) }?.takeIf { (it.cardRowId to it.day) !in days } })
+        // Binders are matched by name; their cards follow the rows they were merged into.
+        val localBinders = db.binders().all()
+        val binderMapping = backup.binders.associate { b ->
+            b.id to (localBinders.firstOrNull { it.name == b.name }?.id
+                ?: db.binders().insert(b.copy(id = 0, coverImage = b.coverImage?.takeIf { java.io.File(it).isFile })))
+        }
+        db.binders().put(backup.binderCards.mapNotNull { bc ->
+            val binder = binderMapping[bc.binderId] ?: return@mapNotNull null
+            val row = rowMapping[bc.cardRowId] ?: return@mapNotNull null
+            com.monkaydee.tcgcatalogue.data.db.BinderCard(binder, row)
+        })
         db.snapshots().insertAll(backup.snapshots.filter { s -> db.snapshots().getAll().none { it.day == s.day } })
         for (w in backup.wishlist) if (db.wishlist().find(w.game, w.cardId, w.variant) == null) db.wishlist().upsert(w.copy(id = 0))
         val sold = db.sold().getAll()
@@ -1129,9 +1152,33 @@ class CardRepository(
         runCatching { snapshot() }
     }
 
+    // ---- Binders ----
+
+    suspend fun createBinder(name: String, cover: String): Long =
+        db.binders().insert(com.monkaydee.tcgcatalogue.data.db.CardBinder(name = name.trim().take(60).ifBlank { AppStrings.get(R.string.binder_new_name) }, cover = cover))
+
+    suspend fun updateBinder(binder: com.monkaydee.tcgcatalogue.data.db.CardBinder) =
+        db.binders().update(binder.copy(name = binder.name.trim().take(60).ifBlank { AppStrings.get(R.string.binder_new_name) }))
+
+    suspend fun binder(id: Long) = db.binders().get(id)
+
+    suspend fun deleteBinder(id: Long) {
+        val cover = db.binders().get(id)?.coverImage
+        db.withTransaction { db.binders().clear(id); db.binders().delete(id) }
+        cover?.let { java.io.File(it).delete() }
+    }
+
+    /** The rows in binder [id] become exactly [rows]; the cards themselves stay in the collection. */
+    suspend fun setBinderCards(id: Long, rows: Set<Long>) = db.withTransaction {
+        db.binders().clear(id)
+        val owned = db.cards().getAll().map { it.id }.toSet()
+        db.binders().put(rows.filter { it in owned }.map { com.monkaydee.tcgcatalogue.data.db.BinderCard(id, it) })
+    }
+
     /** The last copy of a row is gone: its submissions and price history go with it, as nothing can open them any more. */
     private suspend fun removeRow(card: OwnedCard) {
         db.tools().removeSubmissions(card.id)
+        db.binders().removeRow(card.id)
         db.history().deleteFor(card.id)
         db.cards().delete(card)
     }
