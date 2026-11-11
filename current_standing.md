@@ -169,6 +169,13 @@ Owner's request: work that leads to income. Full description and the owner's lau
   No server-side receipt check. Commercial price-data plans and the open privacy/operator items still gate a launch.
 - billing-ktx 9 is built with a newer Kotlin than 2.1, so the Java artifact is used with two small coroutine wrappers.
 
+### Price server hidden in Settings (11 November 2026, Claude)
+
+Owner's request. The "Price server" section (address, app key, Save / Use built-in / Test) is shown only when the
+build has no built-in server (`BuildConfig.PRICE_SERVER_URL` empty). CI builds hide it. A value saved earlier still
+applies. **Limit:** the address is still inside the APK and can be read by unpacking it; it contains the owner's
+Cloudflare account name. A custom domain or a renamed workers.dev subdomain removes that; only the owner can do it.
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

@@ -363,8 +363,12 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
                 CloudBackupSection()
             }
 
-            Section(stringResource(R.string.settings_server_title)) {
-                ServerSettings(repo, s)
+            // Builds that come with the price server (GitHub, Play) do not show its address or key.
+            // Only a build without one offers the fields, for people who run their own server.
+            if (BuildConfig.PRICE_SERVER_URL.isEmpty()) {
+                Section(stringResource(R.string.settings_server_title)) {
+                    ServerSettings(repo, s)
+                }
             }
 
             Section(stringResource(R.string.settings_about_title)) {
