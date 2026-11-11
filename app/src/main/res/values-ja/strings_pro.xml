@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">コレクター向けツールをすべて、一度の購入で。</string>
+    <string name="pro_feature_export">コレクション・保険用レポート（PDF、CSV）</string>
+    <string name="pro_feature_import">他のアプリやリストからのインポート</string>
+    <string name="pro_feature_decks">足りないカードの費用がわかるデッキビルダー</string>
+    <string name="pro_feature_binders">自分のバインダーを無制限に作成</string>
+    <string name="pro_feature_grading">鑑定に出す価値は？とPSAポピュレーション</string>
+    <string name="pro_feature_set_cost">セットをコンプリートする費用</string>
+    <string name="pro_free_note">スキャン、価格、コレクション、バックアップは無料のままです。</string>
+    <string name="pro_buy">%1$sでアンロック</string>
+    <string name="pro_buy_no_price">Proをアンロック</string>
+    <string name="pro_one_time">買い切り、サブスクリプションなし。</string>
+    <string name="pro_restore">購入を復元</string>
+    <string name="pro_owned">Proがアンロックされました。ありがとうございます！</string>
+    <string name="pro_pending">お支払いを処理中です。完了しだいProがアンロックされます。</string>
+    <string name="pro_store_unavailable">現在Google Playを利用できません。接続を確認して、もう一度お試しください。</string>
+    <string name="pro_restore_none">このGoogleアカウントでの購入は見つかりませんでした。</string>
+    <string name="pro_failed">購入は完了しませんでした。請求は発生していません。</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

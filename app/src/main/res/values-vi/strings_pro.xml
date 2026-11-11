@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Mọi công cụ cho nhà sưu tầm, chỉ một lần mua.</string>
+    <string name="pro_feature_export">Báo cáo bộ sưu tập và bảo hiểm (PDF, CSV)</string>
+    <string name="pro_feature_import">Nhập từ ứng dụng và danh sách khác</string>
+    <string name="pro_feature_decks">Trình dựng bộ bài kèm chi phí các lá còn thiếu</string>
+    <string name="pro_feature_binders">Không giới hạn số album riêng</string>
+    <string name="pro_feature_grading">Có đáng chấm điểm không? và số lượng PSA</string>
+    <string name="pro_feature_set_cost">Chi phí để hoàn thành một bộ</string>
+    <string name="pro_free_note">Quét thẻ, giá, bộ sưu tập và bản sao lưu của bạn vẫn miễn phí.</string>
+    <string name="pro_buy">Mở khóa với giá %1$s</string>
+    <string name="pro_buy_no_price">Mở khóa Pro</string>
+    <string name="pro_one_time">Mua một lần, không cần đăng ký.</string>
+    <string name="pro_restore">Khôi phục giao dịch mua</string>
+    <string name="pro_owned">Pro đã được mở khóa. Cảm ơn bạn!</string>
+    <string name="pro_pending">Khoản thanh toán của bạn vẫn đang được xử lý. Pro sẽ mở khóa ngay khi hoàn tất.</string>
+    <string name="pro_store_unavailable">Hiện không kết nối được Google Play. Hãy kiểm tra kết nối và thử lại.</string>
+    <string name="pro_restore_none">Không tìm thấy giao dịch mua nào cho tài khoản Google này.</string>
+    <string name="pro_failed">Giao dịch mua không thành công. Bạn chưa bị trừ tiền.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

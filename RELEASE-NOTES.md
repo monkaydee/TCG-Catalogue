@@ -1,12 +1,9 @@
-Protect shared recognition data and improve exact-language price matching.
+Add CardNavo Pro, the paid tier, for the Play Store build. This GitHub build is unchanged for users.
 
-- Block shared-learning photo uploads in both Android and Worker until content/card-identity moderation is validated. Keep local scanning and pre-grading available.
-- Share OCR fingerprints rather than readable OCR; remove legacy photos/free-text reports and dependent hints through a verified privacy migration. Respect withdrawal retries and explicit confirmations.
-- Disable implicit OS backup/device transfer of private app data; preserve explicit exports and chosen-file cloud backup/sync.
-- Enforce request-size limits during streaming, including chunked uploads without Content-Length.
-- Verify raw-card language through eBay's returned Language facet, reject split price bands without a majority, and expose bounded accepted graded listing examples for diagnostics. Quotes remain asking references where labelled.
-- Accept JP API aliases, reload refreshed Pokémon name indexes, reject wrong-schema daily feeds, add collection-wide missing-price/JP repair links and retry sealed thumbnail sizes for the same product.
-- Default real-photo recognition gating to 90% when a private golden set is configured; missing data remains an explicit validation gap.
-- Add current_standing.md for Claude, a sourced competitor comparison and an upload/privacy review. Update the privacy notice; full DSGVO readiness still needs operator/contact/contract review.
+- New one-time "CardNavo Pro" purchase through Google Play Billing (product `cardnavo_pro`; the price comes from the Play Console). Pro page with buy and restore, in 21 languages.
+- Pro tools in the Play build: CSV/PDF reports, import from other apps, decks, more than one own binder, "Worth grading?" with PSA population, cost to complete a set. Scanning, prices, the collection, backups and pre-grading stay free.
+- The paywall is only active in builds made with `PRO_PAYWALL=true` (new hand-started "Play Store bundle" workflow). APKs from GitHub Releases keep every tool open and show no Pro page.
+- Pending payments do not unlock, purchases are acknowledged, refunds lock again, and Pro keeps working offline.
+- Launch steps for the owner and what is not yet verified: docs/PRO-TIER.md. A real purchase has not been tested; that needs the Play Console setup.
 
-Keep CardNavo, the existing 0.1.<build-number> convention, package and signing key. Shopping stays a plan. Exact graded/language prices and missing supplier images are not universally resolved; no raw/cross-language substitution or certified surface-grade claim is introduced.
+Keep CardNavo, the existing 0.1.<build-number> convention, package and signing key for GitHub builds. The Play build uses its own upload key.

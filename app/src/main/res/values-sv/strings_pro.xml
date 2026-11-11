@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Alla samlarverktyg, ett köp.</string>
+    <string name="pro_feature_export">Samlings- och försäkringsrapporter (PDF, CSV)</string>
+    <string name="pro_feature_import">Importera från andra appar och listor</string>
+    <string name="pro_feature_decks">Lekbyggare med kostnaden för saknade kort</string>
+    <string name="pro_feature_binders">Obegränsat antal egna pärmar</string>
+    <string name="pro_feature_grading">Värt att gradera? och PSA-population</string>
+    <string name="pro_feature_set_cost">Kostnad för att göra ett set komplett</string>
+    <string name="pro_free_note">Skanning, priser, din samling och säkerhetskopior förblir gratis.</string>
+    <string name="pro_buy">Lås upp för %1$s</string>
+    <string name="pro_buy_no_price">Lås upp Pro</string>
+    <string name="pro_one_time">Engångsköp, ingen prenumeration.</string>
+    <string name="pro_restore">Återställ köp</string>
+    <string name="pro_owned">Pro är upplåst. Tack!</string>
+    <string name="pro_pending">Din betalning behandlas fortfarande. Pro låses upp så snart den är klar.</string>
+    <string name="pro_store_unavailable">Google Play är inte tillgängligt just nu. Kontrollera anslutningen och försök igen.</string>
+    <string name="pro_restore_none">Inget köp hittades för det här Google-kontot.</string>
+    <string name="pro_failed">Köpet gick inte igenom. Du har inte debiterats.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

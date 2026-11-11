@@ -83,6 +83,8 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BindersScreen(repo: CardRepository, onBack: () -> Unit, onOpen: (Long) -> Unit) {
+    val onPro = LocalOpenPro.current
+    val pro by com.monkaydee.tcgcatalogue.data.Pro.state.collectAsState()
     val settings by repo.settings.flow.collectAsState(initial = null)
     val cards by repo.cards.collectAsState(initial = emptyList())
     val binders by repo.binders.collectAsState(initial = emptyList())
@@ -120,7 +122,7 @@ fun BindersScreen(repo: CardRepository, onBack: () -> Unit, onOpen: (Long) -> Un
             }
             item {
                 Surface(
-                    onClick = { creating = true },
+                    onClick = { if (pro.canCreateBinder(binders.size)) creating = true else onPro() },
                     modifier = Modifier.aspectRatio(0.72f),
                     shape = RoundedCornerShape(16.dp),
                     border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline),

@@ -21,6 +21,9 @@ import java.util.Date
 
 @Composable
 fun CollectionToolsScreen(repo: CardRepository, onCard: (Long) -> Unit, onReview: () -> Unit, onCsvImport: () -> Unit = {}) {
+    val onPro = LocalOpenPro.current
+    val pro by com.monkaydee.tcgcatalogue.data.Pro.state.collectAsState()
+    val reports = pro.allows(com.monkaydee.tcgcatalogue.data.ProFeature.EXPORT_REPORTS)
     val cards by repo.cards.collectAsState(emptyList())
     val lots by repo.costLots.collectAsState(emptyList())
     val submissions by repo.submissions.collectAsState(emptyList())
@@ -40,8 +43,8 @@ fun CollectionToolsScreen(repo: CardRepository, onCard: (Long) -> Unit, onReview
         Text(stringResource(R.string.tools_unknown) + ": " + (cards.size - known.size))
         Text(stringResource(R.string.tools_export), style = MaterialTheme.typography.titleMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { csv.launch("cardnavo-${java.time.LocalDate.now()}.csv") }) { Text("CSV") }
-            OutlinedButton(onClick = { pdf.launch("cardnavo-${java.time.LocalDate.now()}.pdf") }) { Text("PDF") }
+            OutlinedButton(onClick = { if (!reports) onPro() else csv.launch("cardnavo-${java.time.LocalDate.now()}.csv") }) { Text("CSV") }
+            OutlinedButton(onClick = { if (!reports) onPro() else pdf.launch("cardnavo-${java.time.LocalDate.now()}.pdf") }) { Text("PDF") }
         }
         message?.let { Text(it) }
         OutlinedButton(onClick = onReview) { Text(stringResource(R.string.tools_review)) }

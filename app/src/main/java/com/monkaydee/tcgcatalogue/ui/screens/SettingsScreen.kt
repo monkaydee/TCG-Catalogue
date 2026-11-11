@@ -151,6 +151,14 @@ fun SettingsScreen(repo: CardRepository, onRefresh: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             CloudPendingCard()
+            val pro by com.monkaydee.tcgcatalogue.data.Pro.state.collectAsState()
+            if (pro.enforced) {
+                val openPro = LocalOpenPro.current
+                Section(stringResource(R.string.pro_title)) {
+                    Text(stringResource(if (pro.owned) R.string.pro_owned else R.string.pro_free_note), style = MaterialTheme.typography.bodySmall)
+                    if (!pro.owned) OutlinedButton(onClick = openPro, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pro_buy_no_price)) }
+                }
+            }
             Section(stringResource(R.string.widget_customize)) {
                 Text(stringResource(R.string.widget_default_note), style = MaterialTheme.typography.bodySmall)
                 OutlinedButton(onClick = {

@@ -148,6 +148,27 @@ cost to complete a set, CSV import from other apps, slab cert barcode scan, more
 - Not built from the gap list: in-app marketplace listings/watchlist (Go Shopping stays a plan), eBay listing from the app,
   live translation, UPC sealed scan (no verified free UPC source).
 
+## CardNavo Pro, paid tier (11 November 2026, Claude) — roadmap item 33
+
+Owner's request: work that leads to income. Full description and the owner's launch steps: [docs/PRO-TIER.md](docs/PRO-TIER.md).
+
+- **One-time Pro unlock** through Google Play Billing 9.1 (product `cardnavo_pro`, price set in the Play Console).
+  `data/Pro.kt` (feature list, state, pure ownership rule), `billing/ProBilling.kt`, `ui/screens/ProScreen.kt`.
+- **Pro tools:** CSV/PDF reports, import from other apps, decks, more than one own binder, "Worth grading?" with
+  PSA population, cost to complete a set. Everything else stays free, including backups and pre-grading.
+  **Decision:** pre-grading is not sold while it is uncalibrated.
+- **Paywall only with `PRO_PAYWALL=true`** (new hand-started workflow `play.yml`: signed `.aab` with an upload key
+  from secrets and a `VERSION_CODE` input). `build.yml` and the GitHub APKs are unchanged: every tool open, no Pro
+  page in Settings. The release signing falls back to the existing key when no upload key is given.
+- Pending payments do not unlock; purchases are acknowledged; a refund locks again when Play answers; offline keeps
+  the last known answer.
+- Tests: `ProTest` (8), `ProScreenTest` (4, screenshots `pro_paywall`, `pro_owned`). Strings in 21 languages.
+  Local: 258 tests, 0 failures, 3 existing skips; release build OK; lint 0 errors (one new StaticFieldLeak warning on
+  `ProBilling.instance`, which only holds the application context).
+- **Not verified:** a real purchase. That needs a Play Console account, the uploaded bundle and the product.
+  No server-side receipt check. Commercial price-data plans and the open privacy/operator items still gate a launch.
+- billing-ktx 9 is built with a newer Kotlin than 2.1, so the Java artifact is used with two small coroutine wrappers.
+
 ## Current features
 
 - Android local collection for Pokémon, One Piece, Magic, Dragon Ball Fusion World/Super,

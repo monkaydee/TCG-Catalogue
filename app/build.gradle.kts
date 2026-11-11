@@ -17,13 +17,18 @@ android {
         applicationId = "com.monkaydee.tcgcatalogue"
         minSdk = 26
         targetSdk = 35
-        versionCode = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
-        versionName = "0.1.${System.getenv("GITHUB_RUN_NUMBER") ?: "0"}"
+        // The Play Store build (play.yml) passes VERSION_CODE; every other build uses the Actions run number.
+        val build = System.getenv("VERSION_CODE")?.trim()?.takeIf { it.isNotEmpty() } ?: System.getenv("GITHUB_RUN_NUMBER")
+        versionCode = (build ?: "1").toInt()
+        versionName = "0.1.${build ?: "0"}"
         // The app's price server (docs/CLOUDFLARE.md), from repository secrets in CI builds. The app
         // key is not a real secret (anyone can read it from the APK); it only keeps casual callers out.
         fun env(name: String) = System.getenv(name).orEmpty().trim().filter { it.isLetterOrDigit() || it in ":/._-~" }
         buildConfigField("String", "PRICE_SERVER_URL", "\"${env("PRICE_SERVER_URL")}\"")
         buildConfigField("String", "PRICE_SERVER_KEY", "\"${env("PRICE_SERVER_KEY")}\"")
+        // CardNavo Pro (docs/PRO-TIER.md): only a build made with PRO_PAYWALL=true (the Play Store build) puts
+        // the Pro tools behind the purchase. Every other build, including the GitHub APKs, leaves them open.
+        buildConfigField("boolean", "PRO_PAYWALL", (System.getenv("PRO_PAYWALL")?.trim() == "true").toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -35,6 +40,15 @@ android {
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
+        }
+        // The Play Store upload key, from CI secrets only (docs/PRO-TIER.md). Never in the repository.
+        System.getenv("UPLOAD_KEYSTORE")?.takeIf { it.isNotBlank() }?.let { path ->
+            create("upload") {
+                storeFile = file(path)
+                storePassword = System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("UPLOAD_KEY_ALIAS")
+                keyPassword = System.getenv("UPLOAD_KEY_PASSWORD")
+            }
         }
     }
 
@@ -49,7 +63,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.getByName("debug")
         }
     }
 
@@ -103,6 +117,8 @@ dependencies {
     implementation("com.google.mlkit:text-recognition-korean:16.0.1")
     // Slab labels: Google code scanner (barcode/QR, Play services UI; no camera permission of our own).
     implementation(libs.code.scanner)
+    // CardNavo Pro: the one-time purchase through Google Play. The Java artifact: billing-ktx 9 needs a newer Kotlin.
+    implementation(libs.billing)
     // On-device image model for "find by picture" (the model itself is downloaded on first use).
     implementation(libs.litert)
 

@@ -465,8 +465,11 @@ private fun GradedPanel(c: OwnedCard, s: AppSettings, repo: CardRepository) {
             if (prices.orEmpty().any { (it.listings ?: 0) > 0 }) {
                 Text(stringResource(R.string.graded_asking_reference), style = MaterialTheme.typography.bodySmall)
             }
-            if (!c.graded && !prices.isNullOrEmpty()) WorthGrading(c, s, repo, prices!!)
-            PsaPopulation(c, repo)
+            // CardNavo Pro: the grading decision helpers. The graded prices above stay free.
+            if (com.monkaydee.tcgcatalogue.data.Pro.state.collectAsState().value.allows(com.monkaydee.tcgcatalogue.data.ProFeature.WORTH_GRADING)) {
+                if (!c.graded && !prices.isNullOrEmpty()) WorthGrading(c, s, repo, prices!!)
+                PsaPopulation(c, repo)
+            } else ProLock(stringResource(R.string.worth_grading_title))
             val certNumber = c.certNumber?.filter(Char::isDigit)?.takeIf { it.isNotEmpty() && c.grader == "PSA" }
             if (certNumber != null) {
                 HorizontalDivider()

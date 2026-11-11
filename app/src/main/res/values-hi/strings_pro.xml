@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">संग्राहकों के सभी टूल, एक ही खरीदारी में।</string>
+    <string name="pro_feature_export">संग्रह और बीमा रिपोर्ट (PDF, CSV)</string>
+    <string name="pro_feature_import">दूसरे ऐप और सूचियों से इंपोर्ट</string>
+    <string name="pro_feature_decks">छूटे हुए कार्डों की लागत के साथ डेक बिल्डर</string>
+    <string name="pro_feature_binders">अपने जितने चाहें उतने बाइंडर</string>
+    <string name="pro_feature_grading">क्या ग्रेडिंग कराना फ़ायदेमंद है? और PSA पॉपुलेशन</string>
+    <string name="pro_feature_set_cost">सेट पूरा करने की लागत</string>
+    <string name="pro_free_note">स्कैनिंग, कीमतें, आपका संग्रह और बैकअप मुफ़्त रहेंगे।</string>
+    <string name="pro_buy">%1$s में अनलॉक करें</string>
+    <string name="pro_buy_no_price">Pro अनलॉक करें</string>
+    <string name="pro_one_time">एक बार की खरीदारी, कोई सदस्यता नहीं।</string>
+    <string name="pro_restore">खरीदारी बहाल करें</string>
+    <string name="pro_owned">Pro अनलॉक हो गया है। धन्यवाद!</string>
+    <string name="pro_pending">आपका भुगतान अभी प्रोसेस हो रहा है। पूरा होते ही Pro अनलॉक हो जाएगा।</string>
+    <string name="pro_store_unavailable">Google Play अभी उपलब्ध नहीं है। अपना कनेक्शन जाँचें और फिर कोशिश करें।</string>
+    <string name="pro_restore_none">इस Google खाते के लिए कोई खरीदारी नहीं मिली।</string>
+    <string name="pro_failed">खरीदारी पूरी नहीं हुई। आपसे कोई शुल्क नहीं लिया गया।</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

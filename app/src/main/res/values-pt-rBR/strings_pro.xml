@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Todas as ferramentas de colecionador, uma única compra.</string>
+    <string name="pro_feature_export">Relatórios da coleção e para o seguro (PDF, CSV)</string>
+    <string name="pro_feature_import">Importar de outros apps e listas</string>
+    <string name="pro_feature_decks">Construtor de decks com o custo das cartas que faltam</string>
+    <string name="pro_feature_binders">Pastas próprias ilimitadas</string>
+    <string name="pro_feature_grading">Vale a pena graduar? e população PSA</string>
+    <string name="pro_feature_set_cost">Custo para completar um set</string>
+    <string name="pro_free_note">Escanear, os preços, sua coleção e os backups continuam gratuitos.</string>
+    <string name="pro_buy">Desbloquear por %1$s</string>
+    <string name="pro_buy_no_price">Desbloquear o Pro</string>
+    <string name="pro_one_time">Compra única, sem assinatura.</string>
+    <string name="pro_restore">Restaurar compra</string>
+    <string name="pro_owned">O Pro está desbloqueado. Obrigado!</string>
+    <string name="pro_pending">Seu pagamento ainda está sendo processado. O Pro será desbloqueado assim que ele for concluído.</string>
+    <string name="pro_store_unavailable">O Google Play não está disponível agora. Verifique sua conexão e tente de novo.</string>
+    <string name="pro_restore_none">Nenhuma compra encontrada para esta conta do Google.</string>
+    <string name="pro_failed">A compra não foi concluída. Nada foi cobrado.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

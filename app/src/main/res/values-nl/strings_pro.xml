@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Alle verzamelaarstools, één aankoop.</string>
+    <string name="pro_feature_export">Collectie- en verzekeringsrapporten (PDF, CSV)</string>
+    <string name="pro_feature_import">Importeren uit andere apps en lijsten</string>
+    <string name="pro_feature_decks">Deckbouwer met de kosten van ontbrekende kaarten</string>
+    <string name="pro_feature_binders">Onbeperkt eigen mappen</string>
+    <string name="pro_feature_grading">Graden de moeite waard? en PSA-populatie</string>
+    <string name="pro_feature_set_cost">Kosten om een set compleet te maken</string>
+    <string name="pro_free_note">Scannen, prijzen, je collectie en back-ups blijven gratis.</string>
+    <string name="pro_buy">Ontgrendelen voor %1$s</string>
+    <string name="pro_buy_no_price">Pro ontgrendelen</string>
+    <string name="pro_one_time">Eenmalige aankoop, geen abonnement.</string>
+    <string name="pro_restore">Aankoop herstellen</string>
+    <string name="pro_owned">Pro is ontgrendeld. Bedankt!</string>
+    <string name="pro_pending">Je betaling wordt nog verwerkt. Pro wordt ontgrendeld zodra die is voltooid.</string>
+    <string name="pro_store_unavailable">Google Play is nu niet beschikbaar. Controleer je verbinding en probeer het opnieuw.</string>
+    <string name="pro_restore_none">Geen aankoop gevonden voor dit Google-account.</string>
+    <string name="pro_failed">De aankoop is niet gelukt. Er is niets afgeschreven.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

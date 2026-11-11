@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">所有收藏工具，一次購買。</string>
+    <string name="pro_feature_export">收藏與保險報告（PDF、CSV）</string>
+    <string name="pro_feature_import">從其他應用程式和清單匯入</string>
+    <string name="pro_feature_decks">顯示缺少卡牌費用的牌組建構器</string>
+    <string name="pro_feature_binders">不限數量的自訂卡冊</string>
+    <string name="pro_feature_grading">值得送鑑定嗎？與 PSA 鑑定數量</string>
+    <string name="pro_feature_set_cost">集滿一個系列的費用</string>
+    <string name="pro_free_note">掃描、價格、你的收藏和備份一律免費。</string>
+    <string name="pro_buy">以 %1$s 解鎖</string>
+    <string name="pro_buy_no_price">解鎖 Pro</string>
+    <string name="pro_one_time">一次性購買，無需訂閱。</string>
+    <string name="pro_restore">恢復購買</string>
+    <string name="pro_owned">Pro 已解鎖，謝謝！</string>
+    <string name="pro_pending">你的付款仍在處理中。完成後 Pro 會立即解鎖。</string>
+    <string name="pro_store_unavailable">目前無法連線到 Google Play。請檢查網路後再試一次。</string>
+    <string name="pro_restore_none">這個 Google 帳戶沒有找到購買紀錄。</string>
+    <string name="pro_failed">購買未完成，沒有向你收費。</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

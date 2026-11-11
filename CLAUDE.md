@@ -13,4 +13,6 @@ Android app (Kotlin 2.1, Compose, Room, CameraX, ML Kit, LiteRT) that scans and 
 - Pre-grader model: `scripts/pregrade/` (train_grade_model.py writes grade/GradeWeights.kt; data provenance in DATASETS.md).
 - Strings: every user-visible string in `values/strings_*.xml` plus 20 translations (values-*).
 - Rules: no API keys or user email in the APK; no bot-protection evasion; never commit secrets.
+- Paid tier: docs/PRO-TIER.md. Paywall only in builds with `PRO_PAYWALL=true` (play.yml); GitHub APKs stay unlocked.
+  A new Pro tool = one entry in `ProFeature` (data/Pro.kt) + a gate + a line on the Pro page.
 - Roadmap: ROADMAP.md.

@@ -484,6 +484,7 @@ private fun CompletionCost(repo: CardRepository, game: Game, missing: List<Check
             } else Text(stringResource(R.string.completion_hint), style = MaterialTheme.typography.labelSmall)
         }
         if (running) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+        else if (!com.monkaydee.tcgcatalogue.data.Pro.state.collectAsState().value.allows(com.monkaydee.tcgcatalogue.data.ProFeature.SET_COST)) ProLock(stringResource(R.string.completion_calculate))
         else if (done < missing.size) TextButton(onClick = {
             running = true
             scope.launch {

@@ -76,6 +76,10 @@ fun AppNav(repo: CardRepository) {
     val route = entry?.destination?.route
     val refreshState by remember { PriceRefreshWorker.observeNow(context).map { it.firstOrNull()?.state } }.collectAsState(initial = null)
     val refresh = { PriceRefreshWorker.runNow(context) }
+    val pro by com.monkaydee.tcgcatalogue.data.Pro.state.collectAsState()
+    val openPro = { nav.navigate("pro") { launchSingleTop = true } }
+    /** Opens a Pro tool, or the Pro page for a free user. */
+    fun proRoute(feature: com.monkaydee.tcgcatalogue.data.ProFeature, route: String) = if (pro.allows(feature)) nav.navigate(route) else openPro()
 
     // The app crashed last time: offer to report it (nothing is sent unless the user chooses to).
     var crash by remember { mutableStateOf(com.monkaydee.tcgcatalogue.CrashReporter.pending(context)) }
@@ -133,6 +137,7 @@ fun AppNav(repo: CardRepository) {
             }
         },
     ) { padding ->
+        androidx.compose.runtime.CompositionLocalProvider(com.monkaydee.tcgcatalogue.ui.screens.LocalOpenPro provides openPro) {
         NavHost(
             nav,
             startDestination = "home",
@@ -155,7 +160,7 @@ fun AppNav(repo: CardRepository) {
                     onBinder = { nav.navigate("binders") },
                     onCollection = { nav.navigate("collection") },
                     onBadges = { nav.navigate("badges") },
-                    onDecks = { nav.navigate("decks") },
+                    onDecks = { proRoute(com.monkaydee.tcgcatalogue.data.ProFeature.DECKS, "decks") },
                     onWishlist = { nav.navigate("wishlist") },
                     onTradeList = { nav.navigate("trade") },
                     onSold = { nav.navigate("sold") },
@@ -192,7 +197,7 @@ fun AppNav(repo: CardRepository) {
                     onManual = { nav.navigate("search") },
                 )
             }
-            composable("tools") { com.monkaydee.tcgcatalogue.ui.screens.CollectionToolsScreen(repo, { nav.navigate("card/$it") }, { nav.navigate("import") }, onCsvImport = { nav.navigate("csv-import") }) }
+            composable("tools") { com.monkaydee.tcgcatalogue.ui.screens.CollectionToolsScreen(repo, { nav.navigate("card/$it") }, { nav.navigate("import") }, onCsvImport = { proRoute(com.monkaydee.tcgcatalogue.data.ProFeature.APP_IMPORT, "csv-import") }) }
             composable("csv-import") { com.monkaydee.tcgcatalogue.ui.screens.CsvImportScreen(repo, onBack = { nav.popBackStack() }) }
             composable("decks") { com.monkaydee.tcgcatalogue.ui.screens.DecksScreen(repo, onBack = { nav.popBackStack() }, onOpen = { nav.navigate("deck/$it") }) }
             composable("deck/{id}", arguments = listOf(navArgument("id") { type = NavType.LongType })) { e ->
@@ -200,6 +205,7 @@ fun AppNav(repo: CardRepository) {
             }
             composable("badges") { com.monkaydee.tcgcatalogue.ui.screens.BadgesScreen(repo, onBack = { nav.popBackStack() }) }
             composable("settings") { SettingsScreen(repo, onRefresh = refresh) }
+            composable("pro") { com.monkaydee.tcgcatalogue.ui.screens.ProScreen(onBack = { nav.popBackStack() }) }
             composable(
                 "search?replace={replace}",
                 arguments = listOf(navArgument("replace") { type = NavType.LongType; defaultValue = -1L }),
@@ -246,6 +252,7 @@ fun AppNav(repo: CardRepository) {
             composable("pregrade?title={title}&game={game}", arguments = listOf(navArgument("title") { type = NavType.StringType; nullable = true; defaultValue = null }, navArgument("game") { type = NavType.StringType; nullable = true; defaultValue = null })) { e ->
                 com.monkaydee.tcgcatalogue.ui.screens.PreGradeScreen(e.arguments?.getString("title"), onBack = { nav.popBackStack() }, initialGame = e.arguments?.getString("game")?.let { runCatching { Game.valueOf(it) }.getOrNull() })
             }
+        }
         }
     }
 }

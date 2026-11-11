@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">모든 수집가 도구를 한 번의 구매로.</string>
+    <string name="pro_feature_export">컬렉션 및 보험용 보고서(PDF, CSV)</string>
+    <string name="pro_feature_import">다른 앱과 목록에서 가져오기</string>
+    <string name="pro_feature_decks">부족한 카드 비용을 알려 주는 덱 빌더</string>
+    <string name="pro_feature_binders">내 바인더 무제한</string>
+    <string name="pro_feature_grading">그레이딩할 가치가 있을까? 및 PSA 파퓰레이션</string>
+    <string name="pro_feature_set_cost">세트를 완성하는 비용</string>
+    <string name="pro_free_note">스캔, 가격, 내 컬렉션과 백업은 계속 무료입니다.</string>
+    <string name="pro_buy">%1$s에 잠금 해제</string>
+    <string name="pro_buy_no_price">Pro 잠금 해제</string>
+    <string name="pro_one_time">일회성 구매, 구독 없음.</string>
+    <string name="pro_restore">구매 복원</string>
+    <string name="pro_owned">Pro가 잠금 해제되었습니다. 감사합니다!</string>
+    <string name="pro_pending">결제가 아직 처리 중입니다. 완료되는 즉시 Pro가 잠금 해제됩니다.</string>
+    <string name="pro_store_unavailable">지금은 Google Play를 사용할 수 없습니다. 연결을 확인하고 다시 시도하세요.</string>
+    <string name="pro_restore_none">이 Google 계정에서 구매 내역을 찾지 못했습니다.</string>
+    <string name="pro_failed">구매가 완료되지 않았습니다. 요금은 청구되지 않았습니다.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

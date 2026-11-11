@@ -160,7 +160,7 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 | 30 | Logo and animated start, home dashboard with movers, shared-element transitions, card page 2.0 | M |
 | 31 | Tablet / foldable layout, binder upgrades, themes gallery, accessibility pass | M |
 | 32 | Pre-grading Pro: surface, scratches, dents, print lines (raking light, several photos) | L |
-| 33 | Paid tier through Google Play Billing | M |
+| 33 | Paid tier through Google Play Billing: **built** (11 Nov 2026, docs/PRO-TIER.md); Play Console setup and a real purchase test are the owner's open steps | M |
 
 ### Price sources (reference)
 

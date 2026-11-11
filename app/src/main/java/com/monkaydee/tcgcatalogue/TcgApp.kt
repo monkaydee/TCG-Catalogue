@@ -68,6 +68,7 @@ class TcgApp : Application() {
         }
 
         CloudBackup.init(this, repository)
+        com.monkaydee.tcgcatalogue.billing.ProBilling.init(this, BuildConfig.PRO_PAYWALL)
         ProcessLifecycleOwner.get().lifecycle.addObserver(LifecycleEventObserver { _, event ->
             when (event) {
                 // Opening the app (also a cold start): is there a newer collection from another phone?

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Alle Sammler-Werkzeuge, ein Kauf.</string>
+    <string name="pro_feature_export">Sammlungs- und Versicherungsberichte (PDF, CSV)</string>
+    <string name="pro_feature_import">Import aus anderen Apps und Listen</string>
+    <string name="pro_feature_decks">Deckbauer mit Kosten der fehlenden Karten</string>
+    <string name="pro_feature_binders">Beliebig viele eigene Ordner</string>
+    <string name="pro_feature_grading">Lohnt sich Grading? und PSA-Population</string>
+    <string name="pro_feature_set_cost">Kosten, um ein Set zu vervollständigen</string>
+    <string name="pro_free_note">Scannen, Preise, deine Sammlung und Backups bleiben kostenlos.</string>
+    <string name="pro_buy">Für %1$s freischalten</string>
+    <string name="pro_buy_no_price">Pro freischalten</string>
+    <string name="pro_one_time">Einmaliger Kauf, kein Abo.</string>
+    <string name="pro_restore">Kauf wiederherstellen</string>
+    <string name="pro_owned">Pro ist freigeschaltet. Danke!</string>
+    <string name="pro_pending">Deine Zahlung wird noch verarbeitet. Pro wird freigeschaltet, sobald sie abgeschlossen ist.</string>
+    <string name="pro_store_unavailable">Google Play ist gerade nicht erreichbar. Prüfe deine Verbindung und versuche es erneut.</string>
+    <string name="pro_restore_none">Für dieses Google-Konto wurde kein Kauf gefunden.</string>
+    <string name="pro_failed">Der Kauf wurde nicht abgeschlossen. Dir wurde nichts berechnet.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>
