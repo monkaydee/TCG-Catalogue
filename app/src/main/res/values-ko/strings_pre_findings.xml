@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">소견</string>
+    <string name="pre_findings_scope">소견은 살펴볼 곳을 알려 줍니다. 아직 점수에는 반영되지 않습니다.</string>
+    <string name="pre_findings_confirmed">확인됨</string>
+    <string name="pre_findings_possible">가능성 있음</string>
+    <string name="pre_findings_blind">판정 불가</string>
+    <string name="pre_findings_markers">표시 보기</string>
+    <string name="pre_findings_none">사진으로 측정할 수 있었던 곳에서는 이상이 발견되지 않았습니다. 카드에 결함이 없다는 증거는 아닙니다.</string>
+    <string name="pre_findings_corner_shape">모서리 윤곽이 다른 모서리와 다릅니다</string>
+    <string name="pre_findings_surface_scratches">표면 스크래치</string>
+    <string name="pre_findings_surface_dent">표면 찍힘 또는 접힘</string>
+    <string name="pre_findings_surface_blind">평면 사진으로는 스크래치나 찍힘이 보이지 않습니다. 비스듬한 조명에서 찍은 사진을 추가하세요.</string>
+    <string name="pre_findings_export">보고서 내보내기(JSON)</string>
+    <string name="pre_whole_surface">표면 전체</string>
+    <string name="pre_verified_title">받은 등급</string>
+    <string name="pre_verified_hint">그레이딩 후 슬랩의 등급을 입력하세요. 사진과 그 등급이 검증된 샘플이 되어 사전 그레이딩 개선에 쓰일 수 있습니다.</string>
+    <string name="pre_verified_grade">등급(1–10)</string>
+    <string name="pre_verified_cert">인증 번호(선택)</string>
+    <string name="pre_verified_save">등급 저장</string>
+    <string name="pre_verified_invalid">1부터 10까지 0.5 단위의 등급과 숫자로 된 인증 번호를 입력하세요.</string>
+    <string name="pre_verified_export">학습 샘플 내보내기</string>
+    <string name="pre_verified_remove">등급 삭제</string>
+</resources>

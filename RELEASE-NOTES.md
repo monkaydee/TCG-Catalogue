@@ -1,10 +1,11 @@
-Add CardNavo Pro, the paid tier, for the Play Store build. This GitHub build is unchanged for users.
+Pre-grading: findings report with markers on the card, and a way to record the grade a card received.
 
-- New one-time "CardNavo Pro" purchase through Google Play Billing (product `cardnavo_pro`; the price comes from the Play Console). Pro page with buy and restore, in 21 languages.
-- Pro tools in the Play build: CSV/PDF reports, import from other apps, decks, more than one own binder, "Worth grading?" with PSA population, cost to complete a set. Scanning, prices, the collection, backups and pre-grading stay free.
-- The paywall is only active in builds made with `PRO_PAYWALL=true` (new hand-started "Play Store bundle" workflow). APKs from GitHub Releases keep every tool open and show no Pro page.
-- Pending payments do not unlock, purchases are acknowledged, refunds lock again, and Pro keeps working offline.
-- Settings no longer shows the price server address and key in builds that ship with the server. Builds without one still offer the fields.
-- Launch steps for the owner and what is not yet verified: docs/PRO-TIER.md. A real purchase has not been tested; that needs the Play Console setup.
+- New "Findings" section on the pre-grade result: every corner, edge and the surface is listed as confirmed (you recorded damage), possible (an automatic check flagged it) or not assessable (the photos cannot show it), with a marker on the card photo. "Nothing flagged" is never worded as "flawless".
+- Export the full report as JSON (centering ratios, each finding with its location and measured evidence, what extra photos are needed, limits of the estimate).
+- New "Grade received" on saved pre-grades: after a card comes back from grading, enter grader, grade and certificate number. "Export training sample" saves your photos with that verified grade, the data a real grade model needs.
+- Pre-grading is now offered for Pokémon and One Piece only.
+- The score itself is unchanged: centering only, experimental. A grade model was trained and tested on 6,388 PSA-graded cards and is deliberately not used: it did barely better than knowing a card's language and print year (docs/PREGRADING-SYSTEM.md).
+- Settings no longer shows the price server address and key in builds that ship with the server.
+- CardNavo Pro (paid tier for the Play Store build) from the previous release is unchanged; this GitHub build keeps every tool open.
 
-Keep CardNavo, the existing 0.1.<build-number> convention, package and signing key for GitHub builds. The Play build uses its own upload key.
+Keep CardNavo, the existing 0.1.<build-number> convention, package and signing key.

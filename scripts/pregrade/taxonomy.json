@@ -1,0 +1,18 @@
+{
+  "_about": "The pre-grader's defect classes and how the classes of outside datasets map onto them. A class that maps to null is dropped. Checked against the class lists reported for each dataset; re-check on the first real export, because uploaders rename classes.",
+  "classes": [
+    {"id": 0, "name": "corner_wear", "component": "corners", "covers": "whitening, fraying, rounding, chips or missing material at a corner"},
+    {"id": 1, "name": "edge_wear", "component": "edges", "covers": "whitening, chipping, fraying, rough cut or ink loss along an edge"},
+    {"id": 2, "name": "scratch", "component": "surface", "covers": "scratches, hairlines, holo scratches, scuffs"},
+    {"id": 3, "name": "dent", "component": "surface", "covers": "dents, indentations, pressure marks, holes"},
+    {"id": 4, "name": "crease", "component": "surface", "covers": "creases, bends, folds"},
+    {"id": 5, "name": "delamination", "component": "edges", "covers": "layer separation, peeling, tears"},
+    {"id": 6, "name": "stain_or_ink", "component": "surface", "covers": "stains, dirt, discolouration, ink loss or ink defects on the face"}
+  ],
+  "not_modelled_yet": ["print lines", "roller marks", "fading", "water damage", "manufacturing vs handling"],
+  "capture_artifacts_never_defects": ["glare", "reflection", "shadow", "blur", "sleeve or case scratch", "scanner dust", "compression"],
+  "maps": {
+    "rf_defect": {"corner wear": "corner_wear", "corner_wear": "corner_wear", "edge wear": "edge_wear", "edge_wear": "edge_wear", "scratch": "scratch", "scratches": "scratch", "dent": "dent", "dents": "dent", "crease": "crease", "creases": "crease", "delamination": "delamination", "ink loss": "stain_or_ink", "ink_loss": "stain_or_ink"},
+    "rf_surface": {"scratch": "scratch", "scratches": "scratch", "hole": "dent", "holes": "dent", "crease": "crease", "creases": "crease", "damaged corner": "corner_wear", "damaged corners": "corner_wear", "damaged_corner": "corner_wear", "edge wear": "edge_wear", "edge_wear": "edge_wear", "tear": "delamination", "tears": "delamination", "heavy wear": null, "heavy_wear": null}
+  }
+}

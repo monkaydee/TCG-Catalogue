@@ -44,8 +44,9 @@ internal fun AutomaticGradeResult(front: PreGrader.Side?, back: PreGrader.Side?,
         result?.let { PreGradeReport.create(label, game, it, front!!, back) }
     }
     if (report != null) {
+        val evidence = remember(front, back, result, label, game) { Evidence.build(label, game, front, back, result) }
         PreGradeReportPage(sessionReport ?: report, photo = front!!.card, backPhoto = back?.card,
-            onEdit = onEdit, onRedo = onRedo, onOutline = onOutline)
+            onEdit = onEdit, onRedo = onRedo, onOutline = onOutline, evidence = evidence)
     } else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text(stringResource(R.string.pre_quick_missing), style = MaterialTheme.typography.headlineSmall)
@@ -64,7 +65,8 @@ internal fun AutomaticGradeResult(front: PreGrader.Side?, back: PreGrader.Side?,
 @Composable
 internal fun PreGradeReportPage(report: PreGradeReport, photo: Bitmap? = null, backPhoto: Bitmap? = null,
                                 alreadySaved: Boolean = false, imagePath: String? = null,
-                                onEdit: ((Step) -> Unit)? = null, onRedo: (() -> Unit)? = null, onOutline: ((Step) -> Unit)? = null) {
+                                onEdit: ((Step) -> Unit)? = null, onRedo: (() -> Unit)? = null, onOutline: ((Step) -> Unit)? = null,
+                                evidence: EvidenceReport? = null) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = remember { PreGradeReportStore(context) }
@@ -88,7 +90,7 @@ internal fun PreGradeReportPage(report: PreGradeReport, photo: Bitmap? = null, b
             onSave = {
                 if (!saved && !saving && photo != null) scope.launch {
                     saving = true
-                    val success = withContext(Dispatchers.IO) { runCatching { store.save(report, photo, backPhoto) }.isSuccess }
+                    val success = withContext(Dispatchers.IO) { runCatching { store.save(report, photo, backPhoto, evidence) }.isSuccess }
                     saved = success; saving = false
                     if (!success) Toast.makeText(context, context.getString(R.string.pre_quick_save_failed), Toast.LENGTH_LONG).show()
                 }
@@ -133,6 +135,11 @@ internal fun PreGradeReportPage(report: PreGradeReport, photo: Bitmap? = null, b
                     }
                 }
             }
+            // Where to look: every marker is a measurement or a recorded observation (grade/Evidence.kt).
+            if (evidence != null) FindingsSection(evidence, photo, backPhoto)
+            else if (alreadySaved) SavedFindings(store, report.id, store.image(report), store.image(report, front = false))
+            // The grade the card later received turns the saved photos into a verified training sample.
+            if (saved) VerifiedGradeSection(store, report.id)
             ExpandablePanel(stringResource(R.string.pre_quick_scanning)) {
                 Text(stringResource(R.string.pre_quick_auto_note), style = MaterialTheme.typography.bodySmall)
                 Text(stringResource(R.string.pre_quick_score_notice), style = MaterialTheme.typography.bodySmall)

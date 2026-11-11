@@ -1,0 +1,23 @@
+{
+ "cards": 241,
+ "grade_counts": {
+  "10": 103,
+  "9": 88,
+  "8": 27,
+  "7": 10,
+  "6": 6,
+  "5": 4,
+  "4": 1,
+  "3": 2
+ },
+ "mae_scan": 0.6348547717842323,
+ "mae_degraded": 0.6721991701244814,
+ "within_1_scan": 0.8921161825726142,
+ "within_1_degraded": 0.8713692946058091,
+ "same_most_likely_grade": 0.7966804979253111,
+ "mean_shift_in_expected_grade": 0.01838578921033954,
+ "mean_absolute_shift_in_expected_grade": 0.21945955369642434,
+ "share_called_10_scan": 0.5684647302904564,
+ "share_called_10_degraded": 0.5394190871369294,
+ "degradation": "60 % resolution, Gaussian blur 0.8 px, JPEG quality 70, brightness x0.85-1.15, colour x0.85-1.1"
+}

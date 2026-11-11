@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">الملاحظات</string>
+    <string name="pre_findings_scope">الملاحظات تبيّن أين يجب أن تنظر. وهي لا تغيّر الدرجة حاليًا.</string>
+    <string name="pre_findings_confirmed">مؤكد</string>
+    <string name="pre_findings_possible">محتمل</string>
+    <string name="pre_findings_blind">غير قابل للتقييم</string>
+    <string name="pre_findings_markers">إظهار العلامات</string>
+    <string name="pre_findings_none">لم تُرصد أي ملاحظة في الأجزاء التي أمكن قياسها من الصور. هذا لا يثبت أن البطاقة خالية من العيوب.</string>
+    <string name="pre_findings_corner_shape">محيط الزاوية يختلف عن بقية الزوايا</string>
+    <string name="pre_findings_surface_scratches">خدوش على السطح</string>
+    <string name="pre_findings_surface_dent">انبعاج أو ثنية في السطح</string>
+    <string name="pre_findings_surface_blind">الصورة المسطحة لا تُظهر الخدوش أو الانبعاجات. أضف صورًا بإضاءة مائلة.</string>
+    <string name="pre_findings_export">تصدير التقرير (JSON)</string>
+    <string name="pre_whole_surface">السطح كاملًا</string>
+    <string name="pre_verified_title">الدرجة التي حصلت عليها</string>
+    <string name="pre_verified_hint">بعد التقييم، أدخل الدرجة المكتوبة على العلبة. صورك وتلك الدرجة تصبح عينة موثّقة يمكن أن تحسّن التقييم المسبق.</string>
+    <string name="pre_verified_grade">الدرجة (1–10)</string>
+    <string name="pre_verified_cert">رقم الشهادة (اختياري)</string>
+    <string name="pre_verified_save">حفظ الدرجة</string>
+    <string name="pre_verified_invalid">أدخل درجة من 1 إلى 10 بخطوات نصف درجة ورقم شهادة مكوّنًا من أرقام.</string>
+    <string name="pre_verified_export">تصدير عينة تدريب</string>
+    <string name="pre_verified_remove">إزالة الدرجة</string>
+</resources>

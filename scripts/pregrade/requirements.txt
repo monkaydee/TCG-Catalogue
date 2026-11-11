@@ -2,3 +2,8 @@ numpy>=1.26,<3
 scipy>=1.11,<2
 scikit-learn>=1.4,<2
 Pillow>=10,<13
+# grade model v2 and the defect detector (CPU wheels: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu)
+torch>=2.4
+torchvision>=0.19
+onnx>=1.16
+onnxruntime>=1.18

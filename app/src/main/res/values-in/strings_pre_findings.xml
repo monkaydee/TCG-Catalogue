@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Temuan</string>
+    <string name="pre_findings_scope">Temuan menunjukkan bagian yang perlu diperiksa. Untuk saat ini temuan belum mengubah skor.</string>
+    <string name="pre_findings_confirmed">Terkonfirmasi</string>
+    <string name="pre_findings_possible">Mungkin</string>
+    <string name="pre_findings_blind">Tidak dapat dinilai</string>
+    <string name="pre_findings_markers">Tampilkan penanda</string>
+    <string name="pre_findings_none">Tidak ada anomali pada bagian foto yang bisa diukur. Itu bukan bukti kartu tanpa cacat.</string>
+    <string name="pre_findings_corner_shape">Kontur sudut berbeda dari sudut lainnya</string>
+    <string name="pre_findings_surface_scratches">Goresan pada permukaan</string>
+    <string name="pre_findings_surface_dent">Penyok atau lipatan pada permukaan</string>
+    <string name="pre_findings_surface_blind">Foto datar tidak memperlihatkan goresan atau penyok. Tambahkan foto dengan cahaya miring.</string>
+    <string name="pre_findings_export">Ekspor laporan (JSON)</string>
+    <string name="pre_whole_surface">Seluruh permukaan</string>
+    <string name="pre_verified_title">Nilai yang diterima</string>
+    <string name="pre_verified_hint">Setelah grading, masukkan nilai dari slab. Foto dan nilai itu menjadi sampel terverifikasi yang dapat meningkatkan pra-grading.</string>
+    <string name="pre_verified_grade">Nilai (1–10)</string>
+    <string name="pre_verified_cert">Nomor sertifikat (opsional)</string>
+    <string name="pre_verified_save">Simpan nilai</string>
+    <string name="pre_verified_invalid">Masukkan nilai 1 sampai 10 dengan kelipatan setengah dan nomor sertifikat berupa angka.</string>
+    <string name="pre_verified_export">Ekspor sampel pelatihan</string>
+    <string name="pre_verified_remove">Hapus nilai</string>
+</resources>

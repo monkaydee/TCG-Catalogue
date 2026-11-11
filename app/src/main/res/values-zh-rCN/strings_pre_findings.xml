@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">检查结果</string>
+    <string name="pre_findings_scope">检查结果提示该看哪里，目前不会改变评分。</string>
+    <string name="pre_findings_confirmed">已确认</string>
+    <string name="pre_findings_possible">可能</string>
+    <string name="pre_findings_blind">无法判断</string>
+    <string name="pre_findings_markers">显示标记</string>
+    <string name="pre_findings_none">在照片可测量的区域没有发现异常。这并不能证明卡牌毫无瑕疵。</string>
+    <string name="pre_findings_corner_shape">该角的轮廓与其他角不同</string>
+    <string name="pre_findings_surface_scratches">表面划痕</string>
+    <string name="pre_findings_surface_dent">表面凹痕或折痕</string>
+    <string name="pre_findings_surface_blind">平拍的照片看不出划痕和凹痕。请添加斜光拍摄的照片。</string>
+    <string name="pre_findings_export">导出报告（JSON）</string>
+    <string name="pre_whole_surface">整个表面</string>
+    <string name="pre_verified_title">实际评级</string>
+    <string name="pre_verified_hint">送评后，请输入卡砖上的评级。你的照片和该评级会成为经过验证的样本，可用于改进预评级。</string>
+    <string name="pre_verified_grade">评级（1–10）</string>
+    <string name="pre_verified_cert">证书编号（可选）</string>
+    <string name="pre_verified_save">保存评级</string>
+    <string name="pre_verified_invalid">请输入 1 到 10、以 0.5 为步长的评级，证书编号须为数字。</string>
+    <string name="pre_verified_export">导出训练样本</string>
+    <string name="pre_verified_remove">删除评级</string>
+</resources>

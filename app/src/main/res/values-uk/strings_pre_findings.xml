@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Знахідки</string>
+    <string name="pre_findings_scope">Знахідки показують, куди варто подивитися. Поки що вони не змінюють оцінку.</string>
+    <string name="pre_findings_confirmed">Підтверджено</string>
+    <string name="pre_findings_possible">Можливо</string>
+    <string name="pre_findings_blind">Неможливо оцінити</string>
+    <string name="pre_findings_markers">Показати позначки</string>
+    <string name="pre_findings_none">Там, де фото вдалося виміряти, відхилень не знайдено. Це не доводить, що карта бездоганна.</string>
+    <string name="pre_findings_corner_shape">Контур кута відрізняється від інших кутів</string>
+    <string name="pre_findings_surface_scratches">Подряпини на поверхні</string>
+    <string name="pre_findings_surface_dent">Вм\'ятина або залом на поверхні</string>
+    <string name="pre_findings_surface_blind">На пласкому фото не видно подряпин і вм\'ятин. Додайте фото при бічному світлі.</string>
+    <string name="pre_findings_export">Експорт звіту (JSON)</string>
+    <string name="pre_whole_surface">Уся поверхня</string>
+    <string name="pre_verified_title">Отримана оцінка</string>
+    <string name="pre_verified_hint">Після грейдингу введіть оцінку зі слабу. Ваші фото та ця оцінка стануть перевіреним зразком, який допоможе покращити попередню оцінку.</string>
+    <string name="pre_verified_grade">Оцінка (1–10)</string>
+    <string name="pre_verified_cert">Номер сертифіката (необов\'язково)</string>
+    <string name="pre_verified_save">Зберегти оцінку</string>
+    <string name="pre_verified_invalid">Введіть оцінку від 1 до 10 з кроком 0,5 і номер сертифіката з цифр.</string>
+    <string name="pre_verified_export">Експорт навчального зразка</string>
+    <string name="pre_verified_remove">Видалити оцінку</string>
+</resources>

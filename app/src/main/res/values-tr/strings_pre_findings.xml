@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Bulgular</string>
+    <string name="pre_findings_scope">Bulgular nereye bakman gerektiğini gösterir. Şimdilik puanı değiştirmez.</string>
+    <string name="pre_findings_confirmed">Doğrulandı</string>
+    <string name="pre_findings_possible">Olası</string>
+    <string name="pre_findings_blind">Değerlendirilemiyor</string>
+    <string name="pre_findings_markers">İşaretleri göster</string>
+    <string name="pre_findings_none">Fotoğrafların ölçülebildiği yerlerde bir anormallik bulunmadı. Bu, kartın kusursuz olduğunu kanıtlamaz.</string>
+    <string name="pre_findings_corner_shape">Köşe hattı diğer köşelerden farklı</string>
+    <string name="pre_findings_surface_scratches">Yüzeyde çizikler</string>
+    <string name="pre_findings_surface_dent">Yüzeyde göçük veya kırışık</string>
+    <string name="pre_findings_surface_blind">Düz bir fotoğraf çizikleri veya göçükleri göstermez. Eğik ışıkta çekilmiş fotoğraflar ekle.</string>
+    <string name="pre_findings_export">Raporu dışa aktar (JSON)</string>
+    <string name="pre_whole_surface">Tüm yüzey</string>
+    <string name="pre_verified_title">Alınan not</string>
+    <string name="pre_verified_hint">Derecelendirmeden sonra slab üzerindeki notu gir. Fotoğrafların ve bu not, ön derecelendirmeyi geliştirebilecek doğrulanmış bir örnek olur.</string>
+    <string name="pre_verified_grade">Not (1–10)</string>
+    <string name="pre_verified_cert">Sertifika numarası (isteğe bağlı)</string>
+    <string name="pre_verified_save">Notu kaydet</string>
+    <string name="pre_verified_invalid">1 ile 10 arasında yarım adımlarla bir not ve rakamlardan oluşan bir sertifika numarası gir.</string>
+    <string name="pre_verified_export">Eğitim örneğini dışa aktar</string>
+    <string name="pre_verified_remove">Notu kaldır</string>
+</resources>

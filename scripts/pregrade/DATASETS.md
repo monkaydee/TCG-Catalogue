@@ -1,5 +1,9 @@
 # Pre-grader data sources (provenance)
 
+**Superseded as the ledger by `sources.json`** (11 November 2026): every source, its licence, the origin of its
+labels and whether weights fitted on it may ship. `python3 pgdata.py sources` prints it. The text below describes
+the first model (`GradeWeights.kt`) and stays for its history.
+
 What the pre-grader was calibrated or tested on. Nothing from these datasets is shipped in the app:
 only the fitted numbers in `GradeWeights.kt` (50 feature weights per grade) end up in the APK.
 

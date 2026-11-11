@@ -148,6 +148,38 @@ cost to complete a set, CSV import from other apps, slab cert barcode scan, more
 - Not built from the gap list: in-app marketplace listings/watchlist (Go Shopping stays a plan), eBay listing from the app,
   live translation, UPC sealed scan (no verified free UPC source).
 
+## Pre-grading system: evidence report, verified-grade loop, trained and evaluated grade model (11 November 2026, Claude)
+
+Owner's brief: build and train an evidence-based pre-grader for Pokémon and One Piece. Full report:
+[docs/PREGRADING-SYSTEM.md](docs/PREGRADING-SYSTEM.md); generated numbers: [docs/PREGRADING-RESULTS.md](docs/PREGRADING-RESULTS.md);
+commands and rules: [scripts/pregrade/README.md](scripts/pregrade/README.md).
+
+- **App.** `grade/Evidence.kt`: machine-readable report (JSON, explicit nulls) with three finding states
+  (confirmed = user-recorded, possible = automatic flag, not assessable). `ui/screens/PreGradeFindings.kt`: markers on
+  the flattened photo per finding, list, JSON export; "Grade received" entry on saved reports and "Export training
+  sample" (zip with photos, report, findings, `sample.json`). Findings are saved with reports. Pre-grading offered for
+  Pokémon and One Piece only (game selector, card page button). 21 strings × 21 languages (`strings_pre_findings.xml`).
+  **The score is unchanged: centering only.**
+- **Data.** `scripts/pregrade/sources.json` is the rights ledger. Used: 2 of 8 shards of jyesr/pokemon-tcg-grading
+  (6,388 PSA-graded Pokémon cards), research only, quarantined from commercial shipping (no licence; PSA's scans).
+  **Blocked:** Roboflow defect datasets (need `ROBOFLOW_API_KEY`), gated `lding101` set (needs the owner's HF account).
+  **Not found:** any graded or defect-labelled One Piece photos.
+- **Training (real, CPU).** `extract_features.py` → `train_grade_v2.py`: frozen MobileNetV3-small features of 28
+  close-ups per card + ordinal logistic head; split by printed card 4,474 / 959 / 955. Test: learned MAE 0.520, within
+  one 92.1 %; **catalogue-only (language + year, no picture) MAE 0.554, within one 90.3 %**; the first model's 50
+  measurements 0.613–0.639. Paired gain of the picture over the catalogue: 0.046 grades (95 % 0.008–0.085). PSA 8/7/6
+  recall 17 % / 17 % / 8 %. Mild degradation of the scan changes the top grade for 20 % of cards.
+  **Conclusion: the model does not grade condition; not used in the app.** Registered as `grade-v2-20261111`,
+  quarantined; `registry.py promote` refuses it.
+- **Not trained:** defect detector (no data without the key; `fetch_roboflow.py` + `train_defects.py` written,
+  `--selftest` passes on generated pictures) and any One Piece model.
+- **Do not repeat:** scoring a grade model only against "always 10". Always include the catalogue-only reference; a
+  picture model that does not clearly beat it has learned the grade mix. Split by printed card, never at random.
+- **Next:** owner supplies a Roboflow key (defect detector, GPU advised) and collects verified phone samples through the
+  app; then `validate_phone_dataset.py`. Six more shards can be added with the same commands; it will not change the conclusion.
+- Verification: 268 Android tests, 0 failures, 3 existing skips; `assembleRelease` and `lintRelease` pass (0 lint errors).
+  Model files are not in the repository (reproducible; the owner has a copy).
+
 ## CardNavo Pro, paid tier (11 November 2026, Claude) — roadmap item 33
 
 Owner's request: work that leads to income. Full description and the owner's launch steps: [docs/PRO-TIER.md](docs/PRO-TIER.md).

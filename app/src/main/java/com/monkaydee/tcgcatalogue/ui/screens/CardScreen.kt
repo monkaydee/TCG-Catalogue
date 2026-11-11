@@ -290,7 +290,8 @@ private fun CardDetail(
         } else CardPriceSummary(c, s)
 
         actions()
-        if (!c.graded) {
+        // Pre-grading is offered for Pokémon and One Piece only (grade/Evidence.kt).
+        if (!c.graded && c.game in com.monkaydee.tcgcatalogue.grade.Evidence.GAMES) {
             AppButton(stringResource(R.string.grade_open), onPreGrade, Modifier.fillMaxWidth(),
                 Icons.Outlined.Straighten, style = ActionStyle.SECONDARY)
         }

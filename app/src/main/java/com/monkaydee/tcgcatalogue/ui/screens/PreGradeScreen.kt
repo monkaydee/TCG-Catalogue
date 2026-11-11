@@ -342,7 +342,7 @@ private fun QuickCaptureStep(step: Step, side: PreGrader.Side?, busy: Boolean, e
                 }
             }
             else -> {
-                if (step == Step.FRONT) GameChips(game, { it?.let(onGame) }, nullLabel = null)
+                if (step == Step.FRONT) GameChips(game, { it?.let(onGame) }, games = com.monkaydee.tcgcatalogue.grade.Evidence.GAMES, nullLabel = null)
                 error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 AppButton(stringResource(R.string.grade_take_photo), onCamera, Modifier.fillMaxWidth(), Icons.Outlined.CameraAlt)
                 AppButton(stringResource(R.string.grade_choose_photo), onGallery, Modifier.fillMaxWidth(), Icons.Outlined.PhotoLibrary, style = ActionStyle.SECONDARY)
@@ -405,7 +405,7 @@ internal fun GradeResult(front: PreGrader.Side?, back: PreGrader.Side?, game: Ga
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         InspectionStages(if (estimate == null) 2 else 3)
-        GameChips(game, { it?.let(onGame) }, nullLabel = null)
+        GameChips(game, { it?.let(onGame) }, games = com.monkaydee.tcgcatalogue.grade.Evidence.GAMES, nullLabel = null)
         Card(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.grade_title), style = MaterialTheme.typography.titleMedium)

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Bevindingen</string>
+    <string name="pre_findings_scope">Bevindingen laten zien waar je moet kijken. Ze veranderen de score nog niet.</string>
+    <string name="pre_findings_confirmed">Bevestigd</string>
+    <string name="pre_findings_possible">Mogelijk</string>
+    <string name="pre_findings_blind">Niet te beoordelen</string>
+    <string name="pre_findings_markers">Markeringen tonen</string>
+    <string name="pre_findings_none">Er is niets opvallends gevonden waar de foto\'s meetbaar waren. Dat bewijst niet dat de kaart foutloos is.</string>
+    <string name="pre_findings_corner_shape">Hoekcontour wijkt af van de andere hoeken</string>
+    <string name="pre_findings_surface_scratches">Krassen op het oppervlak</string>
+    <string name="pre_findings_surface_dent">Deuk of vouw in het oppervlak</string>
+    <string name="pre_findings_surface_blind">Een vlakke foto toont geen krassen of deuken. Voeg foto\'s met schuin licht toe.</string>
+    <string name="pre_findings_export">Rapport exporteren (JSON)</string>
+    <string name="pre_whole_surface">Hele oppervlak</string>
+    <string name="pre_verified_title">Ontvangen cijfer</string>
+    <string name="pre_verified_hint">Vul na het graden het cijfer van de slab in. Je foto\'s en dat cijfer vormen een geverifieerd voorbeeld dat de pre-grader kan verbeteren.</string>
+    <string name="pre_verified_grade">Cijfer (1–10)</string>
+    <string name="pre_verified_cert">Certificaatnummer (optioneel)</string>
+    <string name="pre_verified_save">Cijfer opslaan</string>
+    <string name="pre_verified_invalid">Vul een cijfer van 1 tot 10 in halve stappen in en een certificaatnummer met alleen cijfers.</string>
+    <string name="pre_verified_export">Trainingsvoorbeeld exporteren</string>
+    <string name="pre_verified_remove">Cijfer verwijderen</string>
+</resources>

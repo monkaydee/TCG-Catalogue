@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">สิ่งที่พบ</string>
+    <string name="pre_findings_scope">สิ่งที่พบบอกว่าควรดูตรงไหน ตอนนี้ยังไม่เปลี่ยนคะแนน</string>
+    <string name="pre_findings_confirmed">ยืนยันแล้ว</string>
+    <string name="pre_findings_possible">เป็นไปได้</string>
+    <string name="pre_findings_blind">ประเมินไม่ได้</string>
+    <string name="pre_findings_markers">แสดงเครื่องหมาย</string>
+    <string name="pre_findings_none">ไม่พบความผิดปกติในส่วนที่วัดจากรูปได้ แต่ไม่ได้พิสูจน์ว่าการ์ดไร้ตำหนิ</string>
+    <string name="pre_findings_corner_shape">เส้นขอบมุมต่างจากมุมอื่น</string>
+    <string name="pre_findings_surface_scratches">รอยขีดข่วนบนผิว</string>
+    <string name="pre_findings_surface_dent">รอยบุบหรือรอยพับบนผิว</string>
+    <string name="pre_findings_surface_blind">รูปถ่ายแบบราบไม่แสดงรอยขีดข่วนหรือรอยบุบ โปรดเพิ่มรูปที่ถ่ายด้วยแสงเฉียง</string>
+    <string name="pre_findings_export">ส่งออกรายงาน (JSON)</string>
+    <string name="pre_whole_surface">ผิวทั้งหมด</string>
+    <string name="pre_verified_title">เกรดที่ได้รับ</string>
+    <string name="pre_verified_hint">หลังส่งเกรดแล้ว ให้กรอกเกรดจากสแลบ รูปของคุณกับเกรดนั้นจะเป็นตัวอย่างที่ยืนยันแล้ว ซึ่งช่วยปรับปรุงการประเมินเกรดล่วงหน้าได้</string>
+    <string name="pre_verified_grade">เกรด (1–10)</string>
+    <string name="pre_verified_cert">หมายเลขใบรับรอง (ไม่บังคับ)</string>
+    <string name="pre_verified_save">บันทึกเกรด</string>
+    <string name="pre_verified_invalid">กรอกเกรด 1 ถึง 10 ทีละครึ่งขั้น และหมายเลขใบรับรองเป็นตัวเลข</string>
+    <string name="pre_verified_export">ส่งออกตัวอย่างสำหรับฝึก</string>
+    <string name="pre_verified_remove">ลบเกรด</string>
+</resources>

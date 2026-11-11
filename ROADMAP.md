@@ -132,7 +132,7 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 | 12 | **Performance** | Picture index and name index loaded once in memory (memory-mapped), OCR on a cropped card instead of the full photo, prices fetched in batches of 20, images cached in two sizes. Goal: scan → result < 800 ms on a mid-range phone, app start < 1 s. | M |
 | 13 | **Import review screen** ("add all sure ones" and sure / check marks done) | All imported photos in one list with confidence colours; "add all sure ones" button; unsure ones side by side with the photo. | S |
 | 14 | **Edit everything in one place** | Card page: language, printing, condition, grade, cert, price override, notes, purchase date, all inline. | S |
-| 15 | **Pre-grader reliability** | Golden set of our own phone photos with known grades; outline accuracy test in CI; centering for full-art fronts via the printed frame of the set's template; One Piece / other games calibrated separately. | L |
+| 15 | **Pre-grader reliability** (11 Nov 2026: the app now collects verified samples, "Grade received" → export; evaluation protocol and results in docs/PREGRADING-SYSTEM.md) | Golden set of our own phone photos with known grades; outline accuracy test in CI; centering for full-art fronts via the printed frame of the set's template; One Piece / other games calibrated separately. | L |
 | 16 | **Offline mode** | Everything except prices works offline; prices refresh when back online, with their age shown. | S |
 
 ## P2: More features
@@ -159,7 +159,7 @@ Recognition can't be "guaranteed" by more rules alone: every rule that fixes one
 | 29 | Language / edition classifier from the picture (backs up the text) | M |
 | 30 | Logo and animated start, home dashboard with movers, shared-element transitions, card page 2.0 | M |
 | 31 | Tablet / foldable layout, binder upgrades, themes gallery, accessibility pass | M |
-| 32 | Pre-grading Pro: surface, scratches, dents, print lines (raking light, several photos) | L |
+| 32 | Pre-grading Pro: surface, scratches, dents, print lines (raking light, several photos). 11 Nov 2026: detector code ready (`scripts/pregrade/train_defects.py`), blocked on annotated data (Roboflow key) and on angled-light photos | L |
 | 33 | Paid tier through Google Play Billing: **built** (11 Nov 2026, docs/PRO-TIER.md); Play Console setup and a real purchase test are the owner's open steps | M |
 
 ### Price sources (reference)

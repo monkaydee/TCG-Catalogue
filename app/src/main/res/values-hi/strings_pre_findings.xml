@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">निष्कर्ष</string>
+    <string name="pre_findings_scope">निष्कर्ष बताते हैं कि कहाँ देखना है। अभी ये स्कोर नहीं बदलते।</string>
+    <string name="pre_findings_confirmed">पुष्ट</string>
+    <string name="pre_findings_possible">संभावित</string>
+    <string name="pre_findings_blind">आकलन संभव नहीं</string>
+    <string name="pre_findings_markers">मार्कर दिखाएँ</string>
+    <string name="pre_findings_none">जहाँ फ़ोटो मापी जा सकीं, वहाँ कोई गड़बड़ी नहीं मिली। यह कार्ड के बेदाग होने का प्रमाण नहीं है।</string>
+    <string name="pre_findings_corner_shape">कोने की रूपरेखा बाकी कोनों से अलग है</string>
+    <string name="pre_findings_surface_scratches">सतह पर खरोंचें</string>
+    <string name="pre_findings_surface_dent">सतह पर गड्ढा या मोड़</string>
+    <string name="pre_findings_surface_blind">सपाट फ़ोटो में खरोंच या गड्ढे नहीं दिखते। तिरछी रोशनी में ली गई फ़ोटो जोड़ें।</string>
+    <string name="pre_findings_export">रिपोर्ट एक्सपोर्ट करें (JSON)</string>
+    <string name="pre_whole_surface">पूरी सतह</string>
+    <string name="pre_verified_title">मिला हुआ ग्रेड</string>
+    <string name="pre_verified_hint">ग्रेडिंग के बाद स्लैब पर लिखा ग्रेड दर्ज करें। आपकी फ़ोटो और वह ग्रेड एक सत्यापित नमूना बनते हैं, जो प्री-ग्रेडर को बेहतर बना सकता है।</string>
+    <string name="pre_verified_grade">ग्रेड (1–10)</string>
+    <string name="pre_verified_cert">प्रमाणपत्र संख्या (वैकल्पिक)</string>
+    <string name="pre_verified_save">ग्रेड सहेजें</string>
+    <string name="pre_verified_invalid">1 से 10 तक आधे-आधे चरण में ग्रेड और अंकों वाली प्रमाणपत्र संख्या दर्ज करें।</string>
+    <string name="pre_verified_export">ट्रेनिंग नमूना एक्सपोर्ट करें</string>
+    <string name="pre_verified_remove">ग्रेड हटाएँ</string>
+</resources>
