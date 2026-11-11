@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">その他の操作</string>
+    <string name="design_game">ゲーム</string>
+    <string name="design_select">選択</string>
+    <string name="design_sort">並び替え</string>
+    <string name="design_layout">表示</string>
+    <string name="design_language">言語</string>
+    <string name="design_capture">撮影</string>
+    <string name="design_alignment">位置合わせ</string>
+    <string name="design_inspection">確認</string>
+    <string name="design_result">結果</string>
+    <string name="design_stage">ステップ %1$d / %2$d · %3$s</string>
+    <string name="design_expanded">展開済み</string>
+    <string name="design_collapsed">折りたたみ済み</string>
+    <string name="design_evidence">価格の根拠</string>
+    <string name="design_details">カード詳細</string>
+    <string name="design_slab_hint">価格は記録した鑑定会社、評価、印刷言語に対応します。未鑑定カードの参考価格は別に表示されます。</string>
+</resources>

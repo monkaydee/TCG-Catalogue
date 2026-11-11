@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">Det gick inte att läsa in kortdata — kontrollera anslutningen</string>
+    <string name="card_pager_position">%1$d / %2$d · svep för fler</string>
+    <string name="card_back">Tillbaka</string>
+    <string name="card_edit">Redigera kort</string>
+    <string name="card_remove_from_collection">Ta bort från samlingen</string>
+    <string name="card_save">Spara</string>
+    <string name="card_remove_title">Ta bort kortet?</string>
+    <plurals name="card_remove_message">
+        <item quantity="one">Detta tar bort %1$d exemplar av %2$s från din samling.</item>
+        <item quantity="other">Detta tar bort alla %1$d exemplar av %2$s från din samling.</item>
+    </plurals>
+    <string name="card_remove">Ta bort</string>
+    <string name="card_cancel">Avbryt</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s per exemplar (%2$s på %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s per exemplar (%2$s på marknaden)</string>
+    <string name="card_price_updated">Uppdaterad %1$s</string>
+    <string name="card_no_market_price">Inget marknadspris tillgängligt</string>
+    <string name="card_own_value">Ditt eget värde: %1$s per exemplar</string>
+    <string name="card_own_value_with_market">Ditt eget värde: %1$s per exemplar · marknad %2$s</string>
+    <string name="card_bought_for_with_percent">Köpt för %1$s styck · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Köpt för %1$s styck · %2$s</string>
+    <string name="card_cert">Cert-nr %1$s</string>
+    <string name="card_graded_hint">Graded-exemplar använder ditt eget värde — kolla senaste försäljningar med länkarna nedan.</string>
+    <string name="card_raw_hint">Marknadspris för raw-kort i det här skicket.</string>
+    <string name="card_quantity">Antal</string>
+    <string name="card_cardmarket_listing">Cardmarket-annons</string>
+    <string name="card_condition">Skick</string>
+    <string name="card_all_prices">Alla priser</string>
+    <string name="card_show">Visa</string>
+    <string name="card_refresh">Uppdatera</string>
+    <string name="card_check_prices">Kolla priser online</string>
+    <string name="set_back">Tillbaka</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%1$d av %2$d kort (%3$d%%)</item>
+        <item quantity="other">%1$d av %2$d kort (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="one">%d kort</item>
+        <item quantity="other">%d kort</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="one">%d exemplar</item>
+        <item quantity="other">%d exemplar</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">Efter värde</string>
+    <string name="set_sort_number">Efter nummer</string>
+    <string name="set_no_price">inget pris</string>
+    <string name="common_auto">Auto</string>
+    <string name="common_less">Färre</string>
+    <string name="common_more">Fler</string>
+    <string name="links_ebay_sold">eBay sålda</string>
+</resources>

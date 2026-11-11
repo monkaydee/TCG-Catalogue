@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">Скинути</string>
+  <string name="center_rotation_hint">Точне вирівнювання ±15°. Вільно перетягуйте або повертайте зображення або використовуйте повзунок. Напрямні залишаються фіксованими.</string>
+  <string name="center_rotation_done">Завершено обертання</string>
+  <string name="center_rotation_saved">Обертання вирівнювання: %1$.2f°</string>
+</resources>

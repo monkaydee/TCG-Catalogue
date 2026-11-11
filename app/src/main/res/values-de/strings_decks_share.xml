@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA-Population</string>
+    <string name="pop_show">Population anzeigen</string>
+    <string name="pop_none">Füge einen PSA-Slab dieser Karte mit Zertifikatsnummer hinzu, um ihre Population zu sehen.</string>
+    <string name="pop_total">Von PSA gegradet: %1$d</string>
+    <string name="pop_gem_rate">Gem-Rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Decks</string>
+    <string name="decks_new">Neues Deck</string>
+    <string name="decks_empty">Noch keine Decks. Lege eins an und füge eine Deckliste ein oder Karten aus deiner Sammlung hinzu.</string>
+    <string name="deck_cards">Karten: %1$d</string>
+    <string name="deck_value">Deckwert: %1$s</string>
+    <string name="deck_missing">Es fehlen noch: %1$d · Kosten: %2$s</string>
+    <string name="deck_missing_none">Du besitzt jede Karte dieses Decks.</string>
+    <string name="deck_owned">besessen %1$d / %2$d</string>
+    <string name="deck_import">Deckliste einfügen</string>
+    <string name="deck_import_hint">Eine Karte pro Zeile, z. B. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Aus Sammlung hinzufügen</string>
+    <string name="deck_share">Liste teilen</string>
+    <string name="deck_delete">Deck löschen</string>
+    <string name="deck_delete_confirm">„%1$s“ löschen? Deine Sammlung bleibt unverändert.</string>
+    <string name="deck_rule_total">%1$s-Decks haben %2$d Karten; dieses hat %3$d.</string>
+    <string name="deck_rule_min">%1$s-Decks brauchen mindestens %2$d Karten; dieses hat %3$d.</string>
+    <string name="deck_rule_copies">Mehr als %1$d Kopien: %2$s</string>
+    <string name="deck_rules_note">Prüft nur Kartenzahl und Kopien; verbotene Karten und Formate werden nicht geprüft.</string>
+    <string name="deck_not_found">Nicht gefunden: %1$s</string>
+    <string name="share_cards">Als Seite teilen</string>
+    <string name="share_cards_text">Sendet diese Karten (%1$d) als eine Webseite über das Teilen-Menü. Die App lädt nichts hoch.</string>
+    <string name="share_with_prices">Mit Preisen</string>
+    <string name="share_without_prices">Ohne Preise</string>
+</resources>

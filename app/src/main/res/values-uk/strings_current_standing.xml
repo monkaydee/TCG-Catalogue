@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Необов’язково: надсилати ідентифікатори карт і відбиток OCR, без фото та читабельного тексту OCR. Звіти зберігаються 90 днів.</string>
+    <string name="learning_photos_paused">Передачу фото призупинено до перевірки фільтрів вмісту й ідентичності карт. Локальне сканування працює.</string>
+    <string name="price_health_summary">%1$d карт без ринкової ціни · %2$d японських ідентифікаторів потребують виправлення</string>
+</resources>

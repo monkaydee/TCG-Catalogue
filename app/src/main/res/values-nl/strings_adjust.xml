@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Hoeken aanpassen</string>
+    <string name="grade_adjust_hint">Sleep de vier punten naar de hoeken van de kaart. Het vergrootglas helpt ze precies te plaatsen.</string>
+    <string name="grade_adjust_apply">Toepassen</string>
+</resources>

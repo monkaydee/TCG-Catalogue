@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">Số lượng PSA</string>
+    <string name="pop_show">Hiện số lượng</string>
+    <string name="pop_none">Thêm slab PSA của thẻ này kèm số chứng nhận để xem số lượng.</string>
+    <string name="pop_total">PSA đã chấm: %1$d</string>
+    <string name="pop_gem_rate">Tỷ lệ gem (PSA 10): %1$s %%</string>
+    <string name="decks_title">Bộ bài</string>
+    <string name="decks_new">Bộ bài mới</string>
+    <string name="decks_empty">Chưa có bộ bài. Hãy tạo một bộ rồi dán danh sách hoặc thêm thẻ từ bộ sưu tập.</string>
+    <string name="deck_cards">Thẻ: %1$d</string>
+    <string name="deck_value">Giá trị bộ bài: %1$s</string>
+    <string name="deck_missing">Còn thiếu: %1$d · chi phí: %2$s</string>
+    <string name="deck_missing_none">Bạn có đủ mọi thẻ của bộ bài này.</string>
+    <string name="deck_owned">có %1$d / %2$d</string>
+    <string name="deck_import">Dán danh sách bộ bài</string>
+    <string name="deck_import_hint">Mỗi dòng một thẻ, vd. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Thêm từ bộ sưu tập</string>
+    <string name="deck_share">Chia sẻ danh sách</string>
+    <string name="deck_delete">Xóa bộ bài</string>
+    <string name="deck_delete_confirm">Xóa “%1$s”? Bộ sưu tập không đổi.</string>
+    <string name="deck_rule_total">Bộ bài %1$s có %2$d thẻ; bộ này có %3$d.</string>
+    <string name="deck_rule_min">Bộ bài %1$s cần ít nhất %2$d thẻ; bộ này có %3$d.</string>
+    <string name="deck_rule_copies">Hơn %1$d bản: %2$s</string>
+    <string name="deck_rules_note">Chỉ kiểm tra số thẻ và số bản; không kiểm tra thẻ bị cấm hay thể thức.</string>
+    <string name="deck_not_found">Không thấy: %1$s</string>
+    <string name="share_cards">Chia sẻ dạng trang</string>
+    <string name="share_cards_text">Gửi các thẻ này (%1$d) thành một trang web qua menu chia sẻ. Ứng dụng không tải gì lên.</string>
+    <string name="share_with_prices">Kèm giá</string>
+    <string name="share_without_prices">Không kèm giá</string>
+</resources>

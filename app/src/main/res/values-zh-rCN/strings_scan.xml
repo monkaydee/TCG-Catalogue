@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">无价格</string>
+    <string name="add_grader_other">其他</string>
+    <string name="add_confirm">添加</string>
+    <string name="add_graded_missing">未找到评级价格（%1$s）。请在下方输入自定义价值；不会使用未评级价格。</string>
+    <string name="add_no_sales_found">未找到成交记录</string>
+    <plurals name="add_possible_matches">
+        <item quantity="other">%d 个可能的匹配，请点选正确的一个</item>
+    </plurals>
+    <string name="add_raw_price">裸卡价格</string>
+    <string name="add_looking_up_sales">正在查询成交记录…</string>
+    <string name="add_price_details">每张 · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">版本，请确认：扫描无法与另一个版本区分</string>
+    <string name="add_printing_recognised">版本，已从扫描中识别</string>
+    <string name="add_printing">版本</string>
+    <string name="add_cardmarket_listing">Cardmarket 商品（请选择你持有的确切版本）</string>
+    <string name="add_raw">裸卡</string>
+    <string name="add_graded">评级卡</string>
+    <string name="add_grading_company">评级公司</string>
+    <string name="add_grade">评级分数</string>
+    <string name="add_cert_number">认证编号（选填）</string>
+    <string name="add_condition">品相</string>
+    <string name="add_purchase_price">每张买入价（%1$s，选填）</string>
+    <string name="add_my_value">每张自定价值（%1$s，选填，优先于市场价）</string>
+    <string name="add_wrong_card">卡片不对？搜索正确的卡片</string>
+    <string name="add_cancel">取消</string>
+    <string name="import_could_not_open_photo">无法打开照片</string>
+    <string name="import_lookup_failed">查询失败，请检查网络连接</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">导入照片</string>
+    <string name="import_back">返回</string>
+    <string name="import_add_photos">添加照片</string>
+    <string name="import_intro">外出时拍了卡片照片？在这里导入，识别效果与实时扫描一样。\n\n• 每张照片一张卡效果最佳；卡册页面只要编号清晰也可以\n• 确保卡片底部的编号清晰可读\n• 也可以从相册或聊天应用将照片分享到 CardNavo</string>
+    <string name="import_choose_photos">选择照片</string>
+    <plurals name="import_count_added">
+        <item quantity="other">已添加 %d 张</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="other">%d 张待确认</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="other">%d 张处理中</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="other">%d 张未识别</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="other">为全部 %d 张卡添加最佳匹配</item>
+    </plurals>
+    <string name="import_reading_photo">正在读取照片…</string>
+    <string name="import_looking_up">正在查询 %1$s…</string>
+    <string name="import_check_printing">请确认版本，无法与另一个版本区分</string>
+    <plurals name="import_possible_matches">
+        <item quantity="other">%d 个可能的匹配 · 点按选择</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · 点按添加</string>
+    <string name="import_added">已添加</string>
+    <string name="import_no_card_found">未找到 %1$s 对应的卡片</string>
+    <string name="import_no_number">这张照片中未找到卡片编号</string>
+    <string name="import_something_wrong">出错了</string>
+    <string name="import_type_it_in">手动输入</string>
+    <string name="import_retry">重试</string>
+    <string name="import_dismiss">忽略</string>
+    <string name="scan_lookup_failed">查询失败，请检查网络连接</string>
+    <string name="scan_no_card_found">未找到 %1$s 对应的卡片</string>
+    <string name="scan_added_auto">已添加 %1$s（%2$s）</string>
+    <string name="scan_added_auto_graded">已添加 %1$s（%2$s）· %3$s</string>
+    <string name="scan_added_qty">已添加 %1$s ×%2$d</string>
+    <string name="scan_could_not_save">无法保存：%1$s</string>
+    <string name="scan_camera_rationale">相机仅用于读取卡片编号。图像不会离开你的手机。</string>
+    <string name="scan_allow_camera">允许使用相机</string>
+    <string name="scan_import_instead">改为导入照片</string>
+    <string name="scan_torch">手电筒</string>
+    <string name="scan_quick_add_on">快速添加已开启，卡片将自动添加</string>
+    <string name="scan_quick_add_off">快速添加已关闭，需逐张确认</string>
+    <string name="scan_reading">正在读取 %1$s…</string>
+    <string name="scan_hint">让卡片充满取景框。保持底部编号清晰、光线充足，点按屏幕即可对焦。</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="other">本次已添加 %d 张</item>
+    </plurals>
+    <string name="scan_from_photos">从照片</string>
+    <string name="scan_type_it_in">手动输入</string>
+    <string name="search_no_card">没有卡片 %1$s</string>
+    <string name="search_nothing_found">未找到“%1$s”的相关结果</string>
+    <string name="search_failed">搜索失败：%1$s</string>
+    <string name="search_could_not_load">无法加载卡片</string>
+    <string name="search_added_qty">已添加 %1$s ×%2$d</string>
+    <string name="search_could_not_save">无法保存：%1$s</string>
+    <string name="search_hint_pokemon">名称或编号（如 Pikachu、025/165）</string>
+    <string name="search_hint_one_piece">卡牌编号（如 OP05-060）</string>
+    <string name="search_hint_magic">名称，或系列 + 编号（如 Sheoldred、DMU 107）</string>
+    <string name="search_hint_dragon_ball_fw">编号或名称（如 FB01-139）</string>
+    <string name="search_hint_dragon_ball_super">编号或名称（如 BT1-031）</string>
+    <string name="search_hint_union_arena">编号或名称（如 UE01BT/BLC-1-001）</string>
+    <string name="search_hint_weiss_schwarz">编号或名称（如 HOL/W91-001）</string>
+    <string name="search_hint_naruto">编号或名称</string>
+    <string name="search_title_replace">找到正确的卡片</string>
+    <string name="search_title_add">添加卡片</string>
+    <string name="search_back">返回</string>
+    <string name="search_search">搜索</string>
+    <string name="search_replace">替换</string>
+</resources>

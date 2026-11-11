@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wishlist, trade list, sold cards, set checklist, price alerts and price history. Translations follow later. -->
+<resources>
+    <!-- Common -->
+    <string name="lists_back">返回</string>
+    <string name="lists_cancel">取消</string>
+    <string name="lists_save">儲存</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">清除</string>
+    <string name="lists_remove">移除</string>
+    <string name="lists_retry">重試</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">清單</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">金額（%1$s）</string>
+    <string name="lists_amount_invalid">請輸入金額，例如 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">收集清單</string>
+    <string name="checklist_open">顯示收集清單</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="other">已擁有 %1$d / %2$d 張</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">全部 · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">已擁有 · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">未擁有 · %1$d</string>
+    <string name="checklist_loading">正在載入此系列的卡片…</string>
+    <string name="checklist_empty_title">此系列沒有收集清單</string>
+    <string name="checklist_empty_text">無法載入卡片清單。請檢查網路連線，或者此系列尚未收錄。</string>
+    <string name="checklist_none_owned">你還沒有此系列的任何卡片。</string>
+    <string name="checklist_none_missing">已集齊！你擁有此系列的全部卡片。</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">未擁有</string>
+    <string name="checklist_on_wishlist">已在願望清單中</string>
+    <string name="checklist_add_collection">加入收藏</string>
+    <string name="checklist_add_wishlist">加入願望清單</string>
+    <string name="checklist_card_loading">正在載入卡片…</string>
+    <string name="checklist_card_failed">無法載入此卡片，請檢查網路連線</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">已將 %1$s 加入收藏</string>
+    <string name="checklist_printing">版本</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">願望清單</string>
+    <string name="wish_add">加入願望清單</string>
+    <string name="wish_remove">從願望清單移除</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">已將 %1$s 加入願望清單</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">已將 %1$s 從願望清單移除</string>
+    <string name="wish_add_failed">無法加入卡片，請檢查網路連線</string>
+    <string name="wish_total">總花費</string>
+    <plurals name="wish_count">
+        <item quantity="other">%1$d 張</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="other">%1$d 張已達目標價</item>
+    </plurals>
+    <string name="wish_empty_title">願望清單是空的</string>
+    <string name="wish_empty_text">可從搜尋結果或收集清單中未擁有的卡片加入。</string>
+    <string name="wish_no_price">無價格</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">目標 %1$s</string>
+    <string name="wish_no_target">未設目標價</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">已達目標價</string>
+    <string name="wish_set_target">設定目標價</string>
+    <string name="wish_target_title">目標價</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">價格降到此金額或更低時，你會收到通知。目前：%1$s</string>
+    <string name="wish_target_text_no_price">價格降到此金額或更低時，你會收到通知。</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">交換清單</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">可交換</string>
+    <string name="trade_share">分享清單</string>
+    <string name="trade_remove">移出交換清單</string>
+    <string name="trade_total">交換價值</string>
+    <string name="trade_empty_title">還沒有可交換的卡片</string>
+    <string name="trade_empty_text">開啟收藏中的卡片並點一下「可交換」，即可加入這裡。</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="other">我的交換清單（%1$d 張）</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">總價值：%1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">分享自 %1$s</string>
+    <string name="trade_share_subject">我的交換清單</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">出售</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">出售 %1$s</string>
+    <string name="sold_quantity">出售數量</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">共 %1$d 張</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">單張價格（%1$s）</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">合計 %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">損益 %1$s</string>
+    <string name="sold_confirm">出售</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">已出售 %1$d 張 %2$s</string>
+    <string name="sold_title">已售出</string>
+    <string name="sold_realised">已實現損益</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">銷售額 %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="other">%1$d 筆無購入價的出售未計入</item>
+    </plurals>
+    <string name="sold_empty_title">還沒有出售紀錄</string>
+    <string name="sold_empty_text">開啟收藏中的卡片並點一下「出售」，即可在此記錄一筆出售。</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">以 %2$s 售出 %1$d 張</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">購入價 每張 %1$s</string>
+    <string name="sold_paid_unknown">購入價未知</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">出售於 %1$s</string>
+    <string name="sold_delete">刪除紀錄</string>
+    <string name="sold_delete_title">刪除這筆出售紀錄？</string>
+    <string name="sold_delete_text">將從已售出清單和已實現損益中移除。卡片不會回到你的收藏中。</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">提醒</string>
+    <string name="alert_ui_title">價格提醒</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">單張價值越過以下任一金額時通知你。目前：%1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">高於時通知（%1$s）</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">低於時通知（%1$s）</string>
+    <string name="alert_ui_order">「高於」的金額必須大於「低於」</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">高於 %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">低於 %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">價格走勢</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">最高 %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">最低 %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">編輯</string>
+    <string name="lists_card_remove">移除</string>
+</resources>

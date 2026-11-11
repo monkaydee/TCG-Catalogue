@@ -1,0 +1,32 @@
+{
+  "records": [
+    {
+      "_status": { "code": 200, "text": "OK" },
+      "Category": "Card/Trading Card Game",
+      "_objects": [
+        {
+          "name": "Card",
+          "prob": 0.93,
+          "_tags": { "Subcategory": [{ "prob": 0.99, "name": "Pokemon" }] },
+          "_identification": {
+            "best_match": {
+              "year": 2000, "full_name": "Dark Gyarados Team Rocket (RO) #8", "name": "Dark Gyarados",
+              "set": "Team Rocket", "set_code": "RO", "rarity": "Rare Holo", "out_of": "82", "card_number": "8",
+              "series": "Classic", "subcategory": "Pokemon",
+              "links": { "tcgplayer.com": "https://www.tcgplayer.com/product/84606", "ebay.com": "https://www.ebay.com/sch/i.html?_nkw=x" }
+            },
+            "alternatives": [
+              { "year": 2000, "full_name": "Dark Gyarados Team Rocket (RO) #25", "name": "Dark Gyarados", "set": "Team Rocket",
+                "set_code": "RO", "card_number": "25", "subcategory": "Pokemon",
+                "links": { "tcgplayer.com": "https://www.tcgplayer.com/product/84607" } },
+              { "name": "Gyarados", "set": "Alpha", "card_number": "1", "subcategory": "Magic The Gathering" }
+            ],
+            "distances": [0.30719548, 0.38173488, 1.4]
+          }
+        },
+        { "name": "Slab Label", "_tags": { "Company": [{ "name": "PSA" }], "Grade": [{ "name": "9" }] } }
+      ]
+    }
+  ],
+  "status": { "code": 200, "text": "OK" }
+}

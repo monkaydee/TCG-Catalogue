@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">リセット</string>
+  <string name="center_rotation_hint">微調整±15°。画像を自由にドラッグしたりひねったり、スライダーを使用したりできます。ガイドは固定されたままになります。</string>
+  <string name="center_rotation_done">回転完了</string>
+  <string name="center_rotation_saved">位置合わせの回転: %1$.2f°</string>
+</resources>

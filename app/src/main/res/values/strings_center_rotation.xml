@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="center_rotation_value">%1$.2f° ▾</string>
+    <string name="center_rotation_reset">Reset</string>
+    <string name="center_rotation_hint">Fine alignment ±15°. Drag or twist the image freely, or use the slider. Guides stay fixed.</string>
+    <string name="center_rotation_done">Done rotating</string>
+    <string name="center_rotation_saved">Alignment rotation: %1$.2f°</string>
+</resources>

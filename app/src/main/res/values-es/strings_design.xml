@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Más acciones</string>
+    <string name="design_game">Juego</string>
+    <string name="design_select">Seleccionar</string>
+    <string name="design_sort">Ordenar</string>
+    <string name="design_layout">Vista</string>
+    <string name="design_language">Idioma</string>
+    <string name="design_capture">Captura</string>
+    <string name="design_alignment">Alineación</string>
+    <string name="design_inspection">Inspección</string>
+    <string name="design_result">Resultado</string>
+    <string name="design_stage">Paso %1$d de %2$d · %3$s</string>
+    <string name="design_expanded">Expandido</string>
+    <string name="design_collapsed">Contraído</string>
+    <string name="design_evidence">Fuentes del precio</string>
+    <string name="design_details">Detalles de la carta</string>
+    <string name="design_slab_hint">Los precios corresponden a la empresa de graduación, la nota y el idioma registrados. Las referencias sin graduar se muestran por separado.</string>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">كل أدوات هواة الجمع بعملية شراء واحدة.</string>
+    <string name="pro_feature_export">تقارير المجموعة والتأمين (PDF و CSV)</string>
+    <string name="pro_feature_import">الاستيراد من تطبيقات وقوائم أخرى</string>
+    <string name="pro_feature_decks">منشئ المجموعات مع تكلفة البطاقات الناقصة</string>
+    <string name="pro_feature_binders">عدد غير محدود من الألبومات الخاصة بك</string>
+    <string name="pro_feature_grading">هل يستحق التقييم؟ وأعداد PSA</string>
+    <string name="pro_feature_set_cost">تكلفة إكمال مجموعة</string>
+    <string name="pro_free_note">المسح والأسعار ومجموعتك والنسخ الاحتياطية تبقى مجانية.</string>
+    <string name="pro_buy">افتح مقابل %1$s</string>
+    <string name="pro_buy_no_price">افتح Pro</string>
+    <string name="pro_one_time">شراء لمرة واحدة، بدون اشتراك.</string>
+    <string name="pro_restore">استعادة الشراء</string>
+    <string name="pro_owned">تم فتح Pro. شكرًا لك!</string>
+    <string name="pro_pending">ما زالت عملية الدفع قيد المعالجة. سيُفتح Pro فور اكتمالها.</string>
+    <string name="pro_store_unavailable">Google Play غير متاح الآن. تحقق من اتصالك وحاول مرة أخرى.</string>
+    <string name="pro_restore_none">لم يُعثر على عملية شراء لحساب Google هذا.</string>
+    <string name="pro_failed">لم تكتمل عملية الشراء. لم يُخصم منك أي مبلغ.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

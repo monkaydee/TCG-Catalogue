@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_ok">OK</string>
+    <string name="ui_cancel">Cancel</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_backup_saved">Backup saved</string>
+    <string name="settings_backup_failed">Backup failed: %1$s</string>
+    <string name="settings_restored">Collection restored</string>
+    <string name="settings_import_failed">Import failed: %1$s</string>
+    <string name="settings_prices_title">Prices</string>
+    <string name="settings_currency">Display currency</string>
+    <string name="settings_fx_rate">1 USD = %1$.4f EUR (ECB rate, refreshed with prices)</string>
+    <!-- Which marketplace prices Pokémon, Magic and One Piece cards come from -->
+    <string name="settings_price_source">Price source (Pokémon, Magic &amp; One Piece)</string>
+    <string name="settings_price_source_hint">Cardmarket trend price for European prices, TCGplayer market price for US prices. For One Piece you pick the exact Cardmarket listing (set and V.1/V.2…) of your copy. The other games only have TCGplayer prices. When the two markets disagree by more than 3×, one of them is linked to the wrong card and the app uses the other one (the card shows a note). Graded cards use your own value; the card page links to recent sales.</string>
+    <string name="settings_refresh_hint">Prices refresh automatically once a day, which also records the value history.</string>
+    <string name="settings_refresh_now">Refresh prices now</string>
+    <string name="settings_scanning_title">Scanning</string>
+    <!-- Trading card games -->
+    <string name="settings_games">Games</string>
+    <string name="settings_games_hint">The scanner looks for these games. Dragon Ball, Union Arena, Weiss Schwarz and Naruto download a card list (up to a few MB, refreshed daily).</string>
+    <!-- Add recognised cards to the collection automatically, without a confirmation step -->
+    <string name="settings_quick_add">Quick add while scanning</string>
+    <string name="settings_quick_add_hint">Adds clearly recognised cards without asking, so you can scan a stack quickly.</string>
+    <!-- Condition of an ungraded card: NM, LP, MP, HP, DMG -->
+    <string name="settings_default_condition">Default condition</string>
+    <string name="settings_display_title">Display</string>
+    <string name="settings_full_screen">Full screen</string>
+    <string name="settings_full_screen_hint">Hides the status and navigation bars. Swipe from the top or bottom edge to show them.</string>
+    <string name="settings_backup_title">Backup</string>
+    <string name="settings_backup_hint">Your collection is stored only on this phone. Export a backup before uninstalling or switching phones.</string>
+    <string name="settings_export">Export</string>
+    <!-- Import a backup file; it replaces the current collection -->
+    <string name="settings_import">Import (replaces)</string>
+    <string name="settings_about_title">About</string>
+    <string name="settings_about">Version %1$s\nPokémon data &amp; prices: TCGdex (tcgdex.dev)\nOne Piece data &amp; prices: OPTCG API (optcgapi.com)\nMagic data &amp; prices: Scryfall (scryfall.com)\nDragon Ball, Union Arena, Weiss Schwarz, Naruto: TCGplayer via TCGCSV (tcgcsv.com)\nExchange rates: Frankfurter (ECB)\nText recognition runs on-device with Google ML Kit.</string>
+
+    <!-- Appearance -->
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_mode">Theme</string>
+    <string name="appearance_mode_system">System</string>
+    <string name="appearance_mode_light">Light</string>
+    <string name="appearance_mode_dark">Dark</string>
+    <string name="appearance_palette">Colours</string>
+    <string name="appearance_palette_hint_dynamic">“Wallpaper” uses the colours of your phone\'s wallpaper.</string>
+    <string name="appearance_palette_hint">Pick a colour theme, or set your own colours below.</string>
+    <!-- Parts of the app (accent, background, cards, bars, binder pages) whose colour can be set -->
+    <string name="appearance_areas">Your own colours</string>
+    <!-- The colour comes from the colour theme -->
+    <string name="appearance_area_theme">Theme</string>
+    <!-- The user picked this colour -->
+    <string name="appearance_area_custom">Custom</string>
+    <string name="appearance_reset_colors">Reset to theme colours</string>
+    <string name="appearance_images">Background pictures</string>
+    <string name="appearance_image_home">Collection</string>
+    <string name="appearance_image_binder">Binder</string>
+    <string name="appearance_image_choose">Choose</string>
+    <string name="appearance_image_remove">Remove</string>
+    <string name="appearance_image_dim">Dim pictures (keeps text readable)</string>
+    <string name="appearance_image_failed">Couldn\'t open that picture</string>
+    <string name="palette_dynamic">Wallpaper</string>
+    <string name="palette_indigo">Indigo</string>
+    <string name="palette_ocean">Ocean</string>
+    <string name="palette_teal">Teal</string>
+    <string name="palette_forest">Forest</string>
+    <string name="palette_gold">Gold</string>
+    <string name="palette_sunset">Sunset</string>
+    <string name="palette_rose">Rose</string>
+    <string name="palette_grape">Grape</string>
+    <string name="palette_graphite">Graphite</string>
+    <string name="palette_custom">Custom</string>
+    <!-- Main highlight colour of buttons, chips and links -->
+    <string name="area_accent">Accent</string>
+    <string name="area_background">Background</string>
+    <!-- Colour of the panels/cards that group content (not trading cards) -->
+    <string name="area_cards">Panels</string>
+    <string name="area_top_bar">Top bar</string>
+    <string name="area_bottom_bar">Bottom bar</string>
+    <string name="area_binder_page">Binder pages</string>
+    <string name="color_hue">Hue</string>
+    <string name="color_saturation">Saturation</string>
+    <string name="color_brightness">Brightness</string>
+    <string name="color_hex">Hex code</string>
+    <!-- Go back to the colour theme's own colour -->
+    <string name="color_theme_default">Theme colour</string>
+
+    <!-- Language -->
+    <string name="language_title">Language</string>
+    <!-- Follow the phone's language -->
+    <string name="language_system">Phone language</string>
+    <string name="language_hint">The app follows your phone\'s language unless you pick one here.</string>
+    <string name="language_change">Change</string>
+
+    <!-- Navigation tabs -->
+    <string name="nav_collection">Collection</string>
+    <string name="nav_scan">Scan</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Collection screen -->
+    <string name="home_binder">Binder</string>
+    <string name="home_import_photos">Import photos</string>
+    <string name="home_search">Search cards</string>
+    <string name="home_refresh">Refresh prices</string>
+    <string name="home_portfolio_value">Portfolio value</string>
+    <!-- %1$s = name of a card game, e.g. "One Piece value" -->
+    <string name="home_game_value">%1$s value</string>
+    <!-- %1$s = signed amount (+12.50 €), %2$.1f = signed percent, %3$s = period (1M, 3M …) -->
+    <string name="home_change">%1$s (%2$+.1f%%) · %3$s</string>
+    <!-- "12 cards · 9 unique" -->
+    <string name="home_counts">%1$s · %2$s</string>
+    <plurals name="home_cards">
+        <item quantity="one">%d card</item>
+        <item quantity="other">%d cards</item>
+    </plurals>
+    <plurals name="home_unique">
+        <item quantity="one">%d unique</item>
+        <item quantity="other">%d unique</item>
+    </plurals>
+    <string name="home_open_binder">Open binder</string>
+    <string name="home_chart_empty">The value chart fills in as prices are refreshed each day.</string>
+    <!-- Chart periods: one month, three months, one year, everything -->
+    <string name="home_range_1m">1M</string>
+    <string name="home_range_3m">3M</string>
+    <string name="home_range_1y">1Y</string>
+    <string name="home_range_all">All</string>
+    <!-- %1$s = relative time, e.g. "5 minutes ago" -->
+    <string name="home_prices_updated">Prices updated %1$s</string>
+    <!-- Filter showing all card games -->
+    <string name="home_all_games">All</string>
+    <string name="home_most_valuable">Most valuable</string>
+    <!-- Card sets (expansions) and how many -->
+    <string name="home_sets">Sets (%1$d)</string>
+    <string name="home_sort_value">Value</string>
+    <string name="home_sort_name">Name</string>
+    <string name="home_sort_recent">Recent</string>
+    <!-- %1$s = game, %2$d owned cards of %3$d in the set -->
+    <string name="home_set_progress">%1$s · %2$d/%3$d cards</string>
+    <string name="home_set_owned">%1$s · %2$d cards</string>
+    <plurals name="home_copies">
+        <item quantity="one">%d copy</item>
+        <item quantity="other">%d copies</item>
+    </plurals>
+    <string name="home_empty_title">Your collection is empty</string>
+    <string name="home_empty_text">Scan a card from Pokémon, One Piece, Magic, Dragon Ball, Union Arena, Weiss Schwarz or Naruto. The app reads the number printed on the card (e.g. 025/165, OP05-060, FB01-139) and looks up the card and its market price. Graded slabs are recognised too.</string>
+    <string name="home_scan_card">Scan a card</string>
+
+    <!-- Virtual binder: a photo album for cards -->
+    <string name="binder_title">Binder</string>
+    <string name="binder_back">Back</string>
+    <string name="binder_sort_value_desc">Value · highest first</string>
+    <string name="binder_sort_value_asc">Value · lowest first</string>
+    <string name="binder_sort_name_asc">Name · A–Z</string>
+    <string name="binder_sort_name_desc">Name · Z–A</string>
+    <!-- Sort the binder by card set (expansion) -->
+    <string name="binder_sort_set">By set</string>
+    <!-- Number printed on the card -->
+    <string name="binder_order_number">Card number</string>
+    <!-- Order of cards within each set; %1$s = the order -->
+    <string name="binder_in_set">In set: %1$s</string>
+    <string name="binder_animation">Page-turn animation</string>
+    <string name="binder_empty">No cards yet — scan some to fill your binder.</string>
+    <string name="binder_previous">Previous page</string>
+    <string name="binder_next">Next page</string>
+    <!-- %1$d = page, %2$d = number of pages, %3$s = value of the cards on the page -->
+    <string name="binder_page">Page %1$d of %2$d · %3$s</string>
+</resources>

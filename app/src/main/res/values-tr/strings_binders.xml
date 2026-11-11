@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Koleksiyonu aç</string>
+    <string name="binders_title">Klasörler</string>
+    <string name="binders_all">Tüm kartlar</string>
+    <string name="binders_new">Yeni klasör</string>
+    <string name="binders_card_count">Kart: %1$d</string>
+    <string name="binder_open_hint">Açmak için kaydırın veya dokunun</string>
+    <string name="binder_add_cards">Kart ekle</string>
+    <string name="binder_choose_cards">Bu klasördeki kartlar</string>
+    <string name="binder_edit">Klasörü düzenle</string>
+    <string name="binder_delete">Klasörü sil</string>
+    <string name="binder_delete_confirm">“%1$s” silinsin mi? Kartlar koleksiyonunda kalır.</string>
+    <string name="binder_name">Ad</string>
+    <string name="binder_cover_design">Kapak tasarımı</string>
+    <string name="binder_cover_upload">Kendi resmini kullan</string>
+    <string name="binder_cover_remove">Resmi kaldır</string>
+    <string name="binder_save">Kaydet</string>
+    <string name="binder_empty_custom">Bu klasör boş. Koleksiyonundan kart ekle.</string>
+    <string name="binder_search">Kart ara</string>
+    <string name="binder_new_name">Klasörüm</string>
+    <string name="binder_selected">Seçilen: %1$d</string>
+    <string name="collection_title">Koleksiyon</string>
+    <string name="collection_sort_recent">Son eklenenler</string>
+    <string name="collection_sort_grade">Not</string>
+    <string name="collection_sort_set">Set</string>
+    <string name="collection_empty">Henüz kart yok.</string>
+    <string name="collection_summary">Kart: %1$d · %2$s</string>
+    <string name="cover_midnight">Gece yarısı</string>
+    <string name="cover_crimson">Kızıl</string>
+    <string name="cover_forest">Orman</string>
+    <string name="cover_ocean">Okyanus</string>
+    <string name="cover_galaxy">Galaksi</string>
+    <string name="cover_sunset">Gün batımı</string>
+    <string name="cover_gold">Altın folyo</string>
+    <string name="cover_carbon">Karbon</string>
+</resources>

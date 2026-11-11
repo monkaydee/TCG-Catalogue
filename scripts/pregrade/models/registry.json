@@ -1,0 +1,29 @@
+{
+ "deployed": null,
+ "previous": null,
+ "versions": {
+  "grade-v2-20261111": {
+   "registered": "2026-11-11",
+   "kind": "grade",
+   "model": "combined",
+   "sources": [
+    "jyesr"
+   ],
+   "quarantined": true,
+   "domain": "PSA scans of slabbed cards",
+   "validated_on_phone_photos": false,
+   "cards": 6388,
+   "test": {
+    "n": 955,
+    "mae": 0.5256544502617801,
+    "exact": 0.6083769633507854,
+    "within_1": 0.9162303664921466,
+    "range_75_coverage": 0.8293193717277487
+   },
+   "validation": {
+    "mae": 0.4421272158498436,
+    "within_1": 0.9290928050052137
+   }
+  }
+ }
+}

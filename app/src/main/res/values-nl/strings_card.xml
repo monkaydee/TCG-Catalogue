@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">Kaartgegevens laden mislukt — controleer je verbinding</string>
+    <string name="card_pager_position">%1$d / %2$d · swipe voor meer</string>
+    <string name="card_back">Terug</string>
+    <string name="card_edit">Kaart bewerken</string>
+    <string name="card_remove_from_collection">Uit collectie verwijderen</string>
+    <string name="card_save">Opslaan</string>
+    <string name="card_remove_title">Kaart verwijderen?</string>
+    <plurals name="card_remove_message">
+        <item quantity="one">Hiermee verwijder je %1$d exemplaar van %2$s uit je collectie.</item>
+        <item quantity="other">Hiermee verwijder je alle %1$d exemplaren van %2$s uit je collectie.</item>
+    </plurals>
+    <string name="card_remove">Verwijderen</string>
+    <string name="card_cancel">Annuleren</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s per exemplaar (%2$s op %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s per exemplaar (%2$s op de markt)</string>
+    <string name="card_price_updated">Bijgewerkt %1$s</string>
+    <string name="card_no_market_price">Geen marktprijs beschikbaar</string>
+    <string name="card_own_value">Je eigen waarde: %1$s per exemplaar</string>
+    <string name="card_own_value_with_market">Je eigen waarde: %1$s per exemplaar · markt %2$s</string>
+    <string name="card_bought_for_with_percent">Gekocht voor %1$s per stuk · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Gekocht voor %1$s per stuk · %2$s</string>
+    <string name="card_cert">Cert-nr. %1$s</string>
+    <string name="card_graded_hint">Voor gegradede exemplaren geldt je eigen waarde — bekijk recente verkopen via de links hieronder.</string>
+    <string name="card_raw_hint">Marktprijs van een raw kaart in deze conditie.</string>
+    <string name="card_quantity">Aantal</string>
+    <string name="card_cardmarket_listing">Cardmarket-vermelding</string>
+    <string name="card_condition">Conditie</string>
+    <string name="card_all_prices">Alle prijzen</string>
+    <string name="card_show">Tonen</string>
+    <string name="card_refresh">Vernieuwen</string>
+    <string name="card_check_prices">Prijzen online bekijken</string>
+    <string name="set_back">Terug</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%1$d van %2$d kaart (%3$d%%)</item>
+        <item quantity="other">%1$d van %2$d kaarten (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="one">%d kaart</item>
+        <item quantity="other">%d kaarten</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="one">%d exemplaar</item>
+        <item quantity="other">%d exemplaren</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">Op waarde</string>
+    <string name="set_sort_number">Op nummer</string>
+    <string name="set_no_price">geen prijs</string>
+    <string name="common_auto">Auto</string>
+    <string name="common_less">Minder</string>
+    <string name="common_more">Meer</string>
+    <string name="links_ebay_sold">eBay verkocht</string>
+</resources>

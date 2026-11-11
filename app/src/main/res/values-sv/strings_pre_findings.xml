@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Fynd</string>
+    <string name="pre_findings_scope">Fynden visar var du bör titta. De ändrar inte poängen ännu.</string>
+    <string name="pre_findings_confirmed">Bekräftat</string>
+    <string name="pre_findings_possible">Möjligt</string>
+    <string name="pre_findings_blind">Kan inte bedömas</string>
+    <string name="pre_findings_markers">Visa markeringar</string>
+    <string name="pre_findings_none">Ingen avvikelse hittades där bilderna gick att mäta. Det bevisar inte att kortet är felfritt.</string>
+    <string name="pre_findings_corner_shape">Hörnets kontur avviker från de andra hörnen</string>
+    <string name="pre_findings_surface_scratches">Repor på ytan</string>
+    <string name="pre_findings_surface_dent">Buckla eller veck på ytan</string>
+    <string name="pre_findings_surface_blind">En plan bild visar inte repor eller bucklor. Lägg till bilder i snett ljus.</string>
+    <string name="pre_findings_export">Exportera rapport (JSON)</string>
+    <string name="pre_whole_surface">Hela ytan</string>
+    <string name="pre_verified_title">Erhållet betyg</string>
+    <string name="pre_verified_hint">Ange betyget från slabben efter graderingen. Dina bilder och betyget blir ett verifierat exempel som kan förbättra förgraderingen.</string>
+    <string name="pre_verified_grade">Betyg (1–10)</string>
+    <string name="pre_verified_cert">Certifikatnummer (valfritt)</string>
+    <string name="pre_verified_save">Spara betyg</string>
+    <string name="pre_verified_invalid">Ange ett betyg från 1 till 10 i halva steg och ett certifikatnummer med siffror.</string>
+    <string name="pre_verified_export">Exportera träningsexempel</string>
+    <string name="pre_verified_remove">Ta bort betyg</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">인식 테스트 케이스 수집</string>
+    <string name="settings_collect_cases_hint">인식 개선을 위해 확인된 사진 가져오기(올바른 카드 포함)를 이 기기에 보관합니다. 수정한 항목은 항상 보관됩니다. 내보내기 전까지 아무것도 전송되지 않습니다.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="other">테스트 케이스 %d개 내보내기</item>
+    </plurals>
+    <string name="settings_clear_cases">케이스 삭제</string>
+    <string name="import_details_title">인식 방법</string>
+    <string name="import_details_by_picture">이미지로 찾음</string>
+    <string name="import_details_by_number">번호 %1$s로 찾음</string>
+    <string name="import_details_read">카드에서 읽은 내용:</string>
+</resources>

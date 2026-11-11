@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Tindakan lain</string>
+    <string name="design_game">Game</string>
+    <string name="design_select">Pilih</string>
+    <string name="design_sort">Urutkan</string>
+    <string name="design_layout">Tampilan</string>
+    <string name="design_language">Bahasa</string>
+    <string name="design_capture">Foto</string>
+    <string name="design_alignment">Penyelarasan</string>
+    <string name="design_inspection">Pemeriksaan</string>
+    <string name="design_result">Hasil</string>
+    <string name="design_stage">Langkah %1$d dari %2$d · %3$s</string>
+    <string name="design_expanded">Diperluas</string>
+    <string name="design_collapsed">Diciutkan</string>
+    <string name="design_evidence">Sumber harga</string>
+    <string name="design_details">Detail kartu</string>
+    <string name="design_slab_hint">Harga sesuai perusahaan penilaian, nilai, dan bahasa cetak yang tercatat. Referensi kartu tanpa penilaian ditampilkan terpisah.</string>
+</resources>

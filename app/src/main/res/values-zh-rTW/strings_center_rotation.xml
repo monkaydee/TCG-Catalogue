@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">重置</string>
+  <string name="center_rotation_hint">精細對準 ±15°。自由拖曳或扭曲影像，或使用滑桿。指南保持固定。</string>
+  <string name="center_rotation_done">旋轉完畢</string>
+  <string name="center_rotation_saved">對齊旋轉：%1$.2f°</string>
+</resources>

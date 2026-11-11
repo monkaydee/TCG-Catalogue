@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">認識のテストケースを集める</string>
+    <string name="settings_collect_cases_hint">認識を改善するため、確認済みの写真インポート（正しいカード付き）をこの端末に保存します。修正したものは常に保存されます。エクスポートするまで何も送信されません。</string>
+    <plurals name="settings_export_cases">
+        <item quantity="other">テストケース%d件をエクスポート</item>
+    </plurals>
+    <string name="settings_clear_cases">ケースを削除</string>
+    <string name="import_details_title">認識の方法</string>
+    <string name="import_details_by_picture">画像から見つけました</string>
+    <string name="import_details_by_number">番号 %1$s から見つけました</string>
+    <string name="import_details_read">カードから読み取った文字:</string>
+</resources>

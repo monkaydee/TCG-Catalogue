@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_no_price">無價格</string>
+    <string name="add_grader_other">其他</string>
+    <string name="add_confirm">新增</string>
+    <string name="add_graded_missing">未找到評級價格（%1$s）。請在下方輸入自訂價值；不會使用未評級價格。</string>
+    <string name="add_no_sales_found">找不到成交紀錄</string>
+    <plurals name="add_possible_matches">
+        <item quantity="other">有 %d 個可能的符合項目，請點選正確的一個</item>
+    </plurals>
+    <string name="add_raw_price">裸卡價格</string>
+    <string name="add_looking_up_sales">正在查詢成交紀錄…</string>
+    <string name="add_price_details">每張 · %1$s · %2$s · %3$s</string>
+    <string name="add_printing_check">版本，請確認：掃描無法與另一個版本區分</string>
+    <string name="add_printing_recognised">版本，已從掃描辨識</string>
+    <string name="add_printing">版本</string>
+    <string name="add_cardmarket_listing">Cardmarket 商品（請選擇你持有的確切版本）</string>
+    <string name="add_raw">裸卡</string>
+    <string name="add_graded">評級卡</string>
+    <string name="add_grading_company">評級公司</string>
+    <string name="add_grade">評級分數</string>
+    <string name="add_cert_number">認證編號（選填）</string>
+    <string name="add_condition">卡況</string>
+    <string name="add_purchase_price">每張買入價（%1$s，選填）</string>
+    <string name="add_my_value">每張自訂價值（%1$s，選填，優先於市價）</string>
+    <string name="add_wrong_card">卡片不對嗎？搜尋正確的卡片</string>
+    <string name="add_cancel">取消</string>
+    <string name="import_could_not_open_photo">無法開啟照片</string>
+    <string name="import_lookup_failed">查詢失敗，請檢查網路連線</string>
+    <string name="import_quantity">×%1$d</string>
+    <string name="import_title">匯入照片</string>
+    <string name="import_back">返回</string>
+    <string name="import_add_photos">新增照片</string>
+    <string name="import_intro">外出時拍了卡片照片嗎？在這裡匯入，辨識效果與即時掃描相同。\n\n• 一張照片一張卡效果最好；卡冊頁面只要編號清晰也可以\n• 請確保卡片底部的編號清晰可讀\n• 你也可以從相簿或通訊軟體將照片分享到 CardNavo</string>
+    <string name="import_choose_photos">選擇照片</string>
+    <plurals name="import_count_added">
+        <item quantity="other">已新增 %d 張</item>
+    </plurals>
+    <plurals name="import_count_to_review">
+        <item quantity="other">%d 張待確認</item>
+    </plurals>
+    <plurals name="import_count_in_progress">
+        <item quantity="other">%d 張處理中</item>
+    </plurals>
+    <plurals name="import_count_not_recognised">
+        <item quantity="other">%d 張無法辨識</item>
+    </plurals>
+    <plurals name="import_add_all_best">
+        <item quantity="other">為全部 %d 張卡新增最佳符合項目</item>
+    </plurals>
+    <string name="import_reading_photo">正在讀取照片…</string>
+    <string name="import_looking_up">正在查詢 %1$s…</string>
+    <string name="import_check_printing">請確認版本，無法與另一個版本區分</string>
+    <plurals name="import_possible_matches">
+        <item quantity="other">有 %d 個可能的符合項目 · 點一下選擇</item>
+    </plurals>
+    <string name="import_tap_to_add">%1$s · 點一下新增</string>
+    <string name="import_added">已新增</string>
+    <string name="import_no_card_found">找不到 %1$s 對應的卡片</string>
+    <string name="import_no_number">這張照片中找不到卡片編號</string>
+    <string name="import_something_wrong">發生錯誤</string>
+    <string name="import_type_it_in">手動輸入</string>
+    <string name="import_retry">重試</string>
+    <string name="import_dismiss">忽略</string>
+    <string name="scan_lookup_failed">查詢失敗，請檢查網路連線</string>
+    <string name="scan_no_card_found">找不到 %1$s 對應的卡片</string>
+    <string name="scan_added_auto">已新增 %1$s（%2$s）</string>
+    <string name="scan_added_auto_graded">已新增 %1$s（%2$s）· %3$s</string>
+    <string name="scan_added_qty">已新增 %1$s ×%2$d</string>
+    <string name="scan_could_not_save">無法儲存：%1$s</string>
+    <string name="scan_camera_rationale">相機僅用於讀取卡片編號。影像不會離開你的手機。</string>
+    <string name="scan_allow_camera">允許使用相機</string>
+    <string name="scan_import_instead">改為匯入照片</string>
+    <string name="scan_torch">手電筒</string>
+    <string name="scan_quick_add_on">快速新增已開啟，卡片會自動新增</string>
+    <string name="scan_quick_add_off">快速新增已關閉，需逐張確認</string>
+    <string name="scan_reading">正在讀取 %1$s…</string>
+    <string name="scan_hint">讓卡片填滿取景框。保持底部編號清晰、光線充足，點一下螢幕即可對焦。</string>
+    <plurals name="scan_added_this_session">
+        <item quantity="other">本次已新增 %d 張</item>
+    </plurals>
+    <string name="scan_from_photos">從照片</string>
+    <string name="scan_type_it_in">手動輸入</string>
+    <string name="search_no_card">沒有卡片 %1$s</string>
+    <string name="search_nothing_found">找不到「%1$s」的相關結果</string>
+    <string name="search_failed">搜尋失敗：%1$s</string>
+    <string name="search_could_not_load">無法載入卡片</string>
+    <string name="search_added_qty">已新增 %1$s ×%2$d</string>
+    <string name="search_could_not_save">無法儲存：%1$s</string>
+    <string name="search_hint_pokemon">名稱或編號（例如 Pikachu、025/165）</string>
+    <string name="search_hint_one_piece">卡片編號（例如 OP05-060）</string>
+    <string name="search_hint_magic">名稱，或系列 + 編號（例如 Sheoldred、DMU 107）</string>
+    <string name="search_hint_dragon_ball_fw">編號或名稱（例如 FB01-139）</string>
+    <string name="search_hint_dragon_ball_super">編號或名稱（例如 BT1-031）</string>
+    <string name="search_hint_union_arena">編號或名稱（例如 UE01BT/BLC-1-001）</string>
+    <string name="search_hint_weiss_schwarz">編號或名稱（例如 HOL/W91-001）</string>
+    <string name="search_hint_naruto">編號或名稱</string>
+    <string name="search_title_replace">找出正確的卡片</string>
+    <string name="search_title_add">新增卡片</string>
+    <string name="search_back">返回</string>
+    <string name="search_search">搜尋</string>
+    <string name="search_replace">取代</string>
+</resources>

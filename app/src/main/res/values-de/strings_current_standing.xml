@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Optional: Kartenkennungen und einen OCR-Fingerabdruck teilen, keine Fotos oder lesbaren OCR-Texte. Berichte werden 90 Tage gespeichert.</string>
+    <string name="learning_photos_paused">Das Teilen von Fotos ist pausiert, bis Inhalts- und Kartenprüfungen validiert sind. Lokales Scannen funktioniert weiterhin.</string>
+    <string name="price_health_summary">%1$d Karten ohne Marktpreis · %2$d japanische Kartenkennungen prüfen</string>
+</resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">%1$sの最近の販売は見つかりませんでした — 自分の評価額を設定するか、価格リンクを確認してください</string>
+    <string name="data_graded_server_error">現在、価格サーバーに接続できません</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="other">%1$d件の販売</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">鑑定品の価格</string>
+    <string name="graded_none">このカードの鑑定品の販売は見つかりませんでした。</string>
+    <string name="graded_failed">現在、価格サーバーに接続できません。</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">あなたの評価</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">PSAで証明書を確認</string>
+    <string name="cert_unknown">この証明書番号のカードはPSAに登録されていません。</string>
+    <string name="cert_failed">現在、PSAに接続できません。しばらくしてからもう一度お試しください。</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">PSAグレード: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">母数: 同グレード%1$d枚、上位グレード%2$d枚</string>
+    <string name="cert_mismatch">PSAの記録上のグレードが、このカードに保存されているグレードと異なります。</string>
+    <string name="links_psa_cert">PSA証明書</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">オンラインで識別</string>
+    <string name="identify_hint">この写真を画像認識のため、アプリの価格サーバーに送信します（Ximilar）。写真は保存されません。</string>
+    <string name="identify_searching">オンラインで識別中…</string>
+    <string name="identify_none">オンラインでも認識できませんでした。よりはっきりした写真を試すか、カードを手入力してください。</string>
+    <string name="identify_failed">現在、オンライン識別は利用できません（1日の上限に達したか、接続がありません）。</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">価格サーバー</string>
+    <string name="settings_server_summary">鑑定品の価格、PSA証明書の確認、オンライン識別のためのアプリ専用の無料サーバーです。GitHubのビルドには組み込み済みです。独自に設定するにはdocs/CLOUDFLARE.mdをご覧ください。</string>
+    <string name="settings_server_url">サーバーアドレス（https://…）</string>
+    <string name="settings_server_key">アプリキー</string>
+    <string name="settings_server_save">保存</string>
+    <string name="settings_server_reset">組み込みを使用</string>
+    <string name="settings_server_test">テスト</string>
+    <string name="settings_server_ok">価格サーバーに接続しました。</string>
+    <string name="settings_server_bad">価格サーバーが応答しませんでした。アドレスとアプリキーを確認してください。</string>
+    <string name="settings_server_off">価格サーバーが未設定です: 鑑定品の価格には自分の評価額が使われます。</string>
+</resources>

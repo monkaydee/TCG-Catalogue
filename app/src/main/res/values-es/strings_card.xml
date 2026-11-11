@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">No se pudieron cargar los datos de la carta — revisa tu conexión</string>
+    <string name="card_pager_position">%1$d / %2$d · desliza para ver más</string>
+    <string name="card_back">Atrás</string>
+    <string name="card_edit">Editar carta</string>
+    <string name="card_remove_from_collection">Quitar de la colección</string>
+    <string name="card_save">Guardar</string>
+    <string name="card_remove_title">¿Quitar la carta?</string>
+    <plurals name="card_remove_message">
+        <item quantity="one">Se quitará %1$d copia de %2$s de tu colección.</item>
+        <item quantity="many">Se quitarán las %1$d copias de %2$s de tu colección.</item>
+        <item quantity="other">Se quitarán las %1$d copias de %2$s de tu colección.</item>
+    </plurals>
+    <string name="card_remove">Quitar</string>
+    <string name="card_cancel">Cancelar</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s por copia (%2$s en %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s por copia (%2$s en el mercado)</string>
+    <string name="card_price_updated">Actualizado %1$s</string>
+    <string name="card_no_market_price">No hay precio de mercado disponible</string>
+    <string name="card_own_value">Tu valor: %1$s por copia</string>
+    <string name="card_own_value_with_market">Tu valor: %1$s por copia · mercado %2$s</string>
+    <string name="card_bought_for_with_percent">Compra: %1$s c/u · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Compra: %1$s c/u · %2$s</string>
+    <string name="card_cert">N.º cert. %1$s</string>
+    <string name="card_graded_hint">Las copias graduadas usan tu propio valor — consulta las ventas recientes con los enlaces de abajo.</string>
+    <string name="card_raw_hint">Precio de mercado de una carta sin graduar en este estado.</string>
+    <string name="card_quantity">Cantidad</string>
+    <string name="card_cardmarket_listing">Anuncio de Cardmarket</string>
+    <string name="card_condition">Estado</string>
+    <string name="card_all_prices">Todos los precios</string>
+    <string name="card_show">Mostrar</string>
+    <string name="card_refresh">Actualizar</string>
+    <string name="card_check_prices">Consultar precios en línea</string>
+    <string name="set_back">Atrás</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%1$d de %2$d carta (%3$d%%)</item>
+        <item quantity="many">%1$d de %2$d cartas (%3$d%%)</item>
+        <item quantity="other">%1$d de %2$d cartas (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="one">%d carta</item>
+        <item quantity="many">%d cartas</item>
+        <item quantity="other">%d cartas</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="one">%d copia</item>
+        <item quantity="many">%d copias</item>
+        <item quantity="other">%d copias</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">Por valor</string>
+    <string name="set_sort_number">Por número</string>
+    <string name="set_no_price">sin precio</string>
+    <string name="common_auto">Auto</string>
+    <string name="common_less">Menos</string>
+    <string name="common_more">Más</string>
+    <string name="links_ebay_sold">eBay vendidas</string>
+</resources>

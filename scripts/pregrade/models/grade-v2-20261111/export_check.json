@@ -1,0 +1,6 @@
+{
+ "onnx_bytes": 3714940,
+ "head_bytes": 564146,
+ "max_abs_difference_features_onnx_vs_torch": 1.2874603271484375e-05,
+ "max_abs_difference_probabilities_head_vs_sklearn": 1.6391277313232422e-06
+}

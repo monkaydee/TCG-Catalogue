@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "id": "6f1d6c2a-2222-4b9e-8c1d-111111111111",
+      "name": "Pikachu",
+      "cardNumber": "025/165",
+      "set": { "slug": "sv-151", "name": "Scarlet & Violet 151" },
+      "variant": "Reverse_Holofoil",
+      "game": "pokemon",
+      "market": "US",
+      "currency": "USD",
+      "refs": { "tcgplayerId": "502000", "cardmarketId": null },
+      "prices": {
+        "tcgplayer": { "NEAR_MINT": { "avg": 1.5, "low": 1.1, "saleCount": 40 } },
+        "ebay": { "NEAR_MINT": { "avg": 9.99 }, "LIGHTLY_PLAYED": { "avg": 1.2 }, "PSA_10": { "avg": 80 } }
+      },
+      "lastUpdated": "2026-10-02T10:00:00Z"
+    },
+    {
+      "id": "6f1d6c2a-2222-4b9e-8c1d-222222222222",
+      "name": "Pikachu",
+      "cardNumber": "025/165",
+      "variant": "Normal",
+      "currency": "USD",
+      "refs": { "tcgplayerId": "502000" },
+      "prices": { "tcgplayer": { "NEAR_MINT": { "avg": 0.4 }, "DAMAGED": { "avg": 0.05 } } }
+    }
+  ],
+  "pagination": { "hasMore": false, "count": 2 }
+}

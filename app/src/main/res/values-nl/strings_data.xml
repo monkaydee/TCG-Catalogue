@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">De naam op de gescande kaart komt niet overeen met deze kaart — het nummer is mogelijk verkeerd gelezen. Controleer het, of annuleer en typ het zelf in.</string>
+    <string name="data_graded">Graded</string>
+    <string name="data_graded_grade">Graded %1$s</string>
+    <string name="data_graded_choose_grader">kies het gradingbedrijf</string>
+    <string name="data_graded_choose_grade">kies de grade</string>
+    <string name="data_graded_no_source">geen bron voor graded prijzen — stel je eigen waarde in of bekijk de prijslinks op de kaartpagina</string>
+    <string name="data_variant_normal">Normaal</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Standaard</string>
+    <string name="data_variant_numbered">Variant %1$d</string>
+    <string name="data_overview_prices">Prijzen</string>
+    <string name="data_overview_no_card_data">kaartgegevens laden mislukt — controleer je verbinding</string>
+    <string name="data_overview_no_cardmarket">geen Cardmarket-prijzen voor deze kaart</string>
+    <string name="data_overview_no_tcgplayer">geen TCGplayer-prijzen voor deze kaart</string>
+    <string name="data_overview_by_condition">TCGplayer per conditie (verkopen)</string>
+    <string name="data_overview_no_condition_sales">geen verkopen per conditie</string>
+    <string name="price_label_trend">Trend</string>
+    <string name="price_label_lowest_offer">Laagste aanbod</string>
+    <string name="price_label_average_sold">Gemiddeld verkocht</string>
+    <string name="price_label_avg1">Gemiddelde van 1 dag</string>
+    <string name="price_label_avg7">Gemiddelde van 7 dagen</string>
+    <string name="price_label_avg30">Gemiddelde van 30 dagen</string>
+    <string name="price_label_market">Markt</string>
+    <string name="price_label_lowest_listing">Laagste listing</string>
+    <string name="price_label_mid">Midden</string>
+    <string name="price_label_highest_listing">Hoogste listing</string>
+    <string name="price_label_direct_low">Direct low</string>
+    <string name="price_note_raw_no_graded_source">Raw-prijs getoond — geen bron voor graded prijzen — stel je eigen waarde in of bekijk de prijslinks op de kaartpagina</string>
+    <string name="price_note_markets_disagree">%1$s-listing kwam niet overeen met deze kaart (%2$dx verschil); %3$s wordt gebruikt</string>
+    <string name="price_note_capped">%1$s gewaardeerd als %2$s (de verkoopdata lag hoger)</string>
+    <string name="price_note_tcgplayer_sales">%1$s-prijs uit TCGplayer-verkopen</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% van NM (TCGplayer-verkopen)</string>
+    <string name="price_note_estimated_share">%1$s geschat op %2$d%% van NM (geen verkoopdata)</string>
+    <string name="data_http_error">HTTP %1$d voor %2$s</string>
+    <string name="data_service_unavailable">De kaartenservice (%1$s) reageert op dit moment niet. Probeer het over een minuut opnieuw.</string>
+</resources>

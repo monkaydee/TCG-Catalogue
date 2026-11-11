@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">शीर्ष-बाएँ कोने</string>
+  <string name="wear_top_right">शीर्ष-दायाँ कोना</string>
+  <string name="wear_bottom_right">निचला-दायाँ कोना</string>
+  <string name="wear_bottom_left">निचला बायां कोना</string>
+  <string name="wear_top">शीर्ष किनारा</string>
+  <string name="wear_right">दाहिना किनारा</string>
+  <string name="wear_bottom">निचला किनारा</string>
+  <string name="wear_left">बायां किनारा</string>
+  <string name="wear_evidence_count">स्वचालित जाँच: 8 क्षेत्रों में से %1$d के पास प्रयोग योग्य रंग साक्ष्य हैं</string>
+  <string name="wear_review_count">मैन्युअल समीक्षा: 8 क्षेत्रों में से %1$d</string>
+  <string name="wear_inspect_regions">चारों कोनों और चारों किनारों का निरीक्षण करें</string>
+  <string name="wear_hide_regions">क्षेत्र विवरण छिपाएँ</string>
+  <string name="wear_screening_scope">रंग संबंधी विसंगतियों और सफेदी के लिए प्रत्येक क्षेत्र की अलग से जांच की जाती है। प्रिंट, फ़ॉइल और कट संरेखण क्षति के समान हो सकते हैं। फ़ोटो का निरीक्षण करने और जो आप देखते हैं उसे रिकॉर्ड करने के लिए एक क्षेत्र खोलें।</string>
+  <string name="wear_not_assessed">मूल्यांकन नहीं किया गया - अपर्याप्त उपयोगी साक्ष्य</string>
+  <string name="wear_inconclusive">स्वचालित जाँच अनिर्णायक है</string>
+  <string name="wear_possible_damage">स्वचालित जांच: संभावित टूट-फूट - इस क्षेत्र का निरीक्षण करें</string>
+  <string name="wear_auto_none">स्वचालित जाँच: कोई रंग विसंगति चिह्नित नहीं</string>
+  <string name="wear_your_observation">आपका अवलोकन: %1$s</string>
+  <string name="wear_white_border">सफेद सीमाएँ सफेदी को छिपा सकती हैं; रंग जांच उनकी स्थिति की पुष्टि नहीं कर सकती।</string>
+  <string name="wear_textured_border">परिवर्तनीय कलाकृति या फ़ॉइल रंग तुलना को सीमित करती है।</string>
+  <string name="wear_flagged_pixels">ध्वजांकित क्षेत्र पिक्सेल: %1$.1f%% · उज्जवल विसंगतियाँ: %2$.1f%%</string>
+  <string name="wear_zoom_hint">ज़ूम करने के लिए पिंच करें और निरीक्षण करने के लिए खींचें। आवर्धन कोई फ़ोटो विवरण नहीं जोड़ता; धुंधली तस्वीरें दोबारा लें.</string>
+  <string name="wear_record_observation">इस क्षेत्र के लिए आपका अवलोकन</string>
+  <string name="wear_not_reviewed">समीक्षा नहीं की गई</string>
+  <string name="wear_observed_clear">इस फ़ोटो में कोई दृश्यमान क्षति नहीं है</string>
+  <string name="wear_whitening">सफ़ेद होना / घिसना दिखाई देना</string>
+  <string name="wear_chip">चिप/फाड़ दिखाई दे रहा है</string>
+  <string name="wear_bend">मोड़/डेंट दिखाई दे रहा है</string>
+  <string name="wear_done">हो गया</string>
+  <string name="wear_damage_blocks_grade">दृश्यमान क्षति दर्ज की गई. समग्र मॉडल अनुमान रोक दिया गया है क्योंकि मैन्युअल निष्कर्ष कैलिब्रेटेड मॉडल इनपुट नहीं हैं। केन्द्रीकरण परिणाम इस क्षति का कारण नहीं बनते।</string>
+  <string name="wear_incomplete_blocks_grade">कोनों और किनारों का बारीकी से निरीक्षण करने की आवश्यकता है। गुम या अनिर्णायक साक्ष्य समग्र मॉडल अनुमान को रोकता है; केवल केन्द्रित करने से कोई ग्रेड स्थापित नहीं होता।</string>
+</resources>

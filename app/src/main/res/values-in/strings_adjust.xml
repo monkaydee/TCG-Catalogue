@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Sesuaikan sudut</string>
+    <string name="grade_adjust_hint">Seret keempat titik ke sudut kartu. Kaca pembesar membantu menempatkannya dengan tepat.</string>
+    <string name="grade_adjust_apply">Terapkan</string>
+</resources>

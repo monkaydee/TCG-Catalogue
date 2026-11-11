@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Thao tác khác</string>
+    <string name="design_game">Trò chơi</string>
+    <string name="design_select">Chọn</string>
+    <string name="design_sort">Sắp xếp</string>
+    <string name="design_layout">Bố cục</string>
+    <string name="design_language">Ngôn ngữ</string>
+    <string name="design_capture">Chụp ảnh</string>
+    <string name="design_alignment">Căn chỉnh</string>
+    <string name="design_inspection">Kiểm tra</string>
+    <string name="design_result">Kết quả</string>
+    <string name="design_stage">Bước %1$d / %2$d · %3$s</string>
+    <string name="design_expanded">Mở rộng</string>
+    <string name="design_collapsed">Thu gọn</string>
+    <string name="design_evidence">Nguồn giá</string>
+    <string name="design_details">Chi tiết thẻ</string>
+    <string name="design_slab_hint">Giá khớp với công ty chấm điểm, điểm và ngôn ngữ in đã lưu. Giá tham khảo thẻ chưa chấm điểm được hiển thị riêng.</string>
+</resources>

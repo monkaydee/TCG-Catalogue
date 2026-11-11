@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">إجراءات أخرى</string>
+    <string name="design_game">اللعبة</string>
+    <string name="design_select">اختيار</string>
+    <string name="design_sort">ترتيب</string>
+    <string name="design_layout">العرض</string>
+    <string name="design_language">اللغة</string>
+    <string name="design_capture">التقاط</string>
+    <string name="design_alignment">محاذاة</string>
+    <string name="design_inspection">فحص</string>
+    <string name="design_result">النتيجة</string>
+    <string name="design_stage">الخطوة %1$d من %2$d · %3$s</string>
+    <string name="design_expanded">موسّع</string>
+    <string name="design_collapsed">مطوي</string>
+    <string name="design_evidence">مصادر السعر</string>
+    <string name="design_details">تفاصيل البطاقة</string>
+    <string name="design_slab_hint">تطابق الأسعار شركة التقييم والدرجة ولغة الطباعة المسجلة. تظهر الأسعار المرجعية للبطاقات غير المصنفة بشكل منفصل.</string>
+</resources>

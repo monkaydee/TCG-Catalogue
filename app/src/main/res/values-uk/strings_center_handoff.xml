@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Продовжуйте центрування</string>
+  <string name="center_confirm_next">Підтвердьте контур і виміряйте центрування</string>
+  <string name="center_step_two">Крок 2: зовнішні та внутрішні напрямні</string>
+</resources>

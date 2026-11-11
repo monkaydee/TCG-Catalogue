@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">छोड़ें</string>
+    <string name="onboarding_next">आगे</string>
+    <string name="onboarding_get_started">शुरू करें</string>
+    <string name="onboarding_scan_title">अपने कार्ड स्कैन करें</string>
+    <string name="onboarding_scan_text">कैमरा किसी कार्ड की ओर करें या गैलरी से फ़ोटो इंपोर्ट करें। नाम और नंबर अपने आप पढ़े जाते हैं।</string>
+    <string name="onboarding_binder_title">बाइंडर में आपका कलेक्शन</string>
+    <string name="onboarding_binder_text">वर्चुअल बाइंडर में अपने कार्ड पेज दर पेज देखें और असली बाइंडर की तरह पलटें।</string>
+    <string name="onboarding_prices_title">कीमतें और वैल्यू</string>
+    <string name="onboarding_prices_text">देखें कि हर कार्ड की कीमत कितनी है और समय के साथ अपने पूरे कलेक्शन की वैल्यू को फ़ॉलो करें।</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">पेज %1$d / %2$d</string>
+</resources>

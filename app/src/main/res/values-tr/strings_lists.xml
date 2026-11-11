@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wishlist, trade list, sold cards, set checklist, price alerts and price history. Translations follow later. -->
+<resources>
+    <!-- Common -->
+    <string name="lists_back">Geri</string>
+    <string name="lists_cancel">İptal</string>
+    <string name="lists_save">Kaydet</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">Temizle</string>
+    <string name="lists_remove">Kaldır</string>
+    <string name="lists_retry">Tekrar dene</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">Listeler</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">Tutar (%1$s)</string>
+    <string name="lists_amount_invalid">Bir tutar girin, örn. 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">Kontrol listesi</string>
+    <string name="checklist_open">Kontrol listesini göster</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="one">%2$d karttan %1$d tanesi sizde</item>
+        <item quantity="other">%2$d karttan %1$d tanesi sizde</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">Tümü · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">Sahip olunan · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">Eksik · %1$d</string>
+    <string name="checklist_loading">Bu setin kartları yükleniyor…</string>
+    <string name="checklist_empty_title">Bu set için kontrol listesi yok</string>
+    <string name="checklist_empty_text">Kart listesi yüklenemedi. Bağlantınızı kontrol edin veya bu set henüz listelenmemiş olabilir.</string>
+    <string name="checklist_none_owned">Bu setten henüz hiç kartınız yok.</string>
+    <string name="checklist_none_missing">Tamamlandı! Bu setin tüm kartlarına sahipsiniz.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">Eksik</string>
+    <string name="checklist_on_wishlist">İstek listenizde</string>
+    <string name="checklist_add_collection">Koleksiyona ekle</string>
+    <string name="checklist_add_wishlist">İstek listesine ekle</string>
+    <string name="checklist_card_loading">Kart yükleniyor…</string>
+    <string name="checklist_card_failed">Bu kart yüklenemedi — bağlantınızı kontrol edin</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s koleksiyonunuza eklendi</string>
+    <string name="checklist_printing">Basım</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">İstek listesi</string>
+    <string name="wish_add">İstek listesine ekle</string>
+    <string name="wish_remove">İstek listesinden çıkar</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s istek listenize eklendi</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s istek listenizden çıkarıldı</string>
+    <string name="wish_add_failed">Kart eklenemedi — bağlantınızı kontrol edin</string>
+    <string name="wish_total">Toplam maliyet</string>
+    <plurals name="wish_count">
+        <item quantity="one">%1$d kart</item>
+        <item quantity="other">%1$d kart</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="one">%1$d tanesi hedefinizde veya altında</item>
+        <item quantity="other">%1$d tanesi hedefinizde veya altında</item>
+    </plurals>
+    <string name="wish_empty_title">İstek listeniz boş</string>
+    <string name="wish_empty_text">Aramadan veya bir set kontrol listesindeki eksik kartlardan kart ekleyin.</string>
+    <string name="wish_no_price">Fiyat yok</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">Hedef %1$s</string>
+    <string name="wish_no_target">Hedef fiyat yok</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">Hedefinizde</string>
+    <string name="wish_set_target">Hedef fiyat belirle</string>
+    <string name="wish_target_title">Hedef fiyat</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">Fiyat bu tutara veya altına düştüğünde bildirim alırsınız. Şu an: %1$s</string>
+    <string name="wish_target_text_no_price">Fiyat bu tutara veya altına düştüğünde bildirim alırsınız.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">Takas listesi</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">Takaslık</string>
+    <string name="trade_share">Listeyi paylaş</string>
+    <string name="trade_remove">Takas listesinden çıkar</string>
+    <string name="trade_total">Takas değeri</string>
+    <string name="trade_empty_title">Henüz takas için bir şey yok</string>
+    <string name="trade_empty_text">Koleksiyonunuzdan bir kart açın ve buraya eklemek için “Takaslık”a dokunun.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="one">Takas listem (%1$d kart)</item>
+        <item quantity="other">Takas listem (%1$d kart)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">Toplam değer: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">%1$s ile paylaşıldı</string>
+    <string name="trade_share_subject">Takas listem</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">Sat</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">%1$s sat</string>
+    <string name="sold_quantity">Satılan adet</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">/ %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">Adet fiyatı (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">Toplam %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">Kâr %1$s</string>
+    <string name="sold_confirm">Sat</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">Satıldı: %1$d× %2$s</string>
+    <string name="sold_title">Satılanlar</string>
+    <string name="sold_realised">Gerçekleşen kâr</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">Satışlar %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="one">Alış fiyatı olmayan %1$d satış sayılmaz</item>
+        <item quantity="other">Alış fiyatı olmayan %1$d satış sayılmaz</item>
+    </plurals>
+    <string name="sold_empty_title">Henüz satış yok</string>
+    <string name="sold_empty_text">Koleksiyonunuzdan bir kart açın ve burada satış kaydetmek için “Sat”a dokunun.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">Satıldı: %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">Adedi %1$s ödendi</string>
+    <string name="sold_paid_unknown">Alış fiyatı bilinmiyor</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">%1$s tarihinde satıldı</string>
+    <string name="sold_delete">Kaydı sil</string>
+    <string name="sold_delete_title">Bu satış silinsin mi?</string>
+    <string name="sold_delete_text">Satılanlar listesinden ve gerçekleşen kârdan çıkarılır. Kart koleksiyonunuza geri dönmez.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">Uyarı</string>
+    <string name="alert_ui_title">Fiyat uyarısı</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">Adet başına değer bu tutarlardan birini geçtiğinde bildirim alın. Şu an: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">Üzerinde bildir (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">Altında bildir (%1$s)</string>
+    <string name="alert_ui_order">“Üzerinde” değeri “altında” değerinden yüksek olmalı</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">%1$s üzeri</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">%1$s altı</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">Fiyat geçmişi</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">En yüksek %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">En düşük %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">Düzenle</string>
+    <string name="lists_card_remove">Kaldır</string>
+</resources>

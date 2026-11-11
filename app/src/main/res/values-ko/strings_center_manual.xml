@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">센터링 가이드 조정</string>
+  <string name="center_hint">각 측면에는 외부 카드 가장자리와 내부 인쇄 프레임이라는 두 개의 가이드가 있습니다. 두 가지를 모두 드래그하여 간격을 측정하세요. 청록색은 외부 가이드를 표시합니다. 녹색은 내부 가이드를 표시합니다. 노란색은 선택된 가이드입니다. 모든 면에 동일한 인쇄된 프레임을 사용하십시오.</string>
+  <string name="center_left">왼쪽</string>
+  <string name="center_right">오른쪽</string>
+  <string name="center_top">탑</string>
+  <string name="center_bottom">바닥</string>
+  <string name="center_detail">선택한 가이드 세부정보</string>
+  <string name="center_outer">외부 가장자리</string>
+  <string name="center_inner">내부 프레임</string>
+  <string name="center_minus_pixel">-1 이미지 픽셀</string>
+  <string name="center_plus_pixel">+1 이미지 픽셀</string>
+  <string name="center_cancel">취소</string>
+  <string name="center_apply">이 가이드를 사용하세요</string>
+</resources>

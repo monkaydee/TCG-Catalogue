@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Điều chỉnh hướng dẫn định tâm</string>
+  <string name="center_hint">Mỗi mặt có hai thanh dẫn hướng: mép ngoài thẻ và khung in bên trong. Kéo cả hai để đo khoảng cách của chúng. Cyan đánh dấu các hướng dẫn bên ngoài; hướng dẫn bên trong đánh dấu màu xanh lá cây. Màu vàng là hướng dẫn được chọn. Sử dụng cùng một khung in ở mọi mặt.</string>
+  <string name="center_left">trái</string>
+  <string name="center_right">Đúng</string>
+  <string name="center_top">hàng đầu</string>
+  <string name="center_bottom">Dưới cùng</string>
+  <string name="center_detail">Chi tiết hướng dẫn đã chọn</string>
+  <string name="center_outer">Cạnh ngoài</string>
+  <string name="center_inner">Khung bên trong</string>
+  <string name="center_minus_pixel">−1 pixel hình ảnh</string>
+  <string name="center_plus_pixel">+1 pixel hình ảnh</string>
+  <string name="center_cancel">Hủy bỏ</string>
+  <string name="center_apply">Sử dụng những hướng dẫn này</string>
+</resources>

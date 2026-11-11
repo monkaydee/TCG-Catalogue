@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Pokazuj ceny w</string>
+    <string name="settings_display_same">Jak kolekcja (%1$s)</string>
+    <string name="settings_display_offline">Nie udało się pobrać kursów walut. Spróbuj ponownie online.</string>
+    <string name="settings_display_hint">Przeliczane kursami referencyjnymi EBC tylko do wyświetlania. Wpisywane kwoty i zapisane wartości pozostają w EUR lub USD.</string>
+    <string name="card_notes">Notatki</string>
+    <string name="card_notes_hint">Gdzie kupiona, wady, dla kogo …</string>
+    <string name="worth_grading_title">Czy warto gradować?</string>
+    <string name="worth_grading_cost">Koszt gradingu na kartę w %1$s (opłata + wysyłka)</string>
+    <string name="worth_grading_no_raw">Wartość tej karty bez gradingu jest nieznana, więc nie da się obliczyć zysku.</string>
+    <string name="worth_grading_from">%1$s: opłaca się od oceny %2$s</string>
+    <string name="worth_grading_never">%1$s: nie opłaca się przy żadnej podanej ocenie</string>
+    <string name="worth_grading_note">Porównane z wartością tego egzemplarza bez gradingu: %1$s. Ceny gradowane to ceny rynkowe lub ofertowe; ocena nie jest gwarantowana.</string>
+    <string name="completion_title">Koszt uzupełnienia</string>
+    <string name="completion_total">%1$s za %2$d kart</string>
+    <string name="completion_unknown">%1$d kart bez znanej ceny (nie liczone)</string>
+    <string name="completion_progress">Wczytane ceny: %1$d z %2$d</string>
+    <string name="completion_hint">Najtańszy druk każdej brakującej karty po cenie rynkowej</string>
+    <string name="completion_calculate">Oblicz</string>
+    <string name="lot_title">Kalkulator lotu</string>
+    <string name="lot_remove">Usuń</string>
+    <string name="lot_add_value">Dodaj wartość (%1$s)</string>
+    <string name="lot_add">Dodaj</string>
+    <string name="lot_market">Wartość rynkowa: %1$s (%2$d pozycji)</string>
+    <string name="lot_unknown">%1$d pozycji bez ceny (nie liczone)</string>
+    <string name="lot_percent">Oferta: %1$d %% rynku</string>
+    <string name="lot_offer">Cena lotu: %1$s</string>
+    <string name="bulk_add_to_binder">Dodaj do klasera</string>
+    <string name="bulk_trade">Oznacz do wymiany</string>
+    <string name="bulk_trade_done">Oznaczono %1$d kart do wymiany</string>
+    <string name="bulk_delete">Usuń</string>
+    <string name="bulk_delete_confirm">Usunąć %1$d kart z kolekcji?</string>
+    <string name="bulk_select_all">Zaznacz wszystko (%1$d)</string>
+    <string name="bulk_no_binders">Nie masz jeszcze własnych klaserów. Utwórz go w Otwórz klaser.</string>
+    <string name="bulk_added_to_binder">Dodano %1$d kart do %2$s</string>
+</resources>

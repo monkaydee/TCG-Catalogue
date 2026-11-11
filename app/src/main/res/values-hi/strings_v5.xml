@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">कीमत अलर्ट</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">अभी %1$s — आपके %2$s के अलर्ट से ऊपर</string>
+    <string name="alert_below">अभी %1$s — आपके %2$s के अलर्ट से नीचे</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">आपकी विशलिस्ट में: अभी %1$s — आपके लक्ष्य %2$s पर या उससे कम</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">स्टैक मोड</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — इसे बाद में नीचे की पट्टी में जाँचें</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">जाँचने के लिए %d कार्ड — टैप करें</item>
+        <item quantity="other">जाँचने के लिए %d कार्ड — टैप करें</item>
+    </plurals>
+    <string name="stack_tap_to_review">जाँचने के लिए टैप करें</string>
+    <string name="stack_undo">पूर्ववत करें</string>
+    <string name="stack_discard">हटाएँ</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">सीलबंद प्रोडक्ट</string>
+    <string name="sealed_add">सीलबंद प्रोडक्ट जोड़ें</string>
+    <string name="sealed_value">सीलबंद वैल्यू</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d आइटम</item>
+        <item quantity="other">%d आइटम</item>
+    </plurals>
+    <string name="sealed_empty">यहाँ बिना खुले बूस्टर बॉक्स, पैक, डेक और बॉक्स ट्रैक करें। इनकी बाज़ार वैल्यू आपके पोर्टफोलियो में गिनी जाती है।</string>
+    <string name="sealed_remove_hint">0 के साथ सेव करने पर प्रोडक्ट हट जाता है।</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">खरीद के बाद से %1$s</string>
+    <string name="sealed_no_price">कीमत नहीं</string>
+    <string name="sealed_search_hint">प्रोडक्ट का नाम या सेट, जैसे “151 booster box”</string>
+    <string name="sealed_no_results">कोई सीलबंद प्रोडक्ट नहीं मिला</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">क्षमा करें, ऐप क्रैश हो गया</string>
+    <string name="crash_text">एक तकनीकी रिपोर्ट सहेजी गई है (ऐप और Android वर्शन, फ़ोन मॉडल और एरर — आपके कार्ड नहीं)। समस्या ठीक करने में मदद के लिए आप इसे भेज सकते हैं।</string>
+    <string name="crash_report_github">GitHub पर रिपोर्ट करें</string>
+    <string name="crash_share">शेयर करें</string>
+    <string name="crash_dismiss">अभी नहीं</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">दूसरे फ़ोन से नया कलेक्शन</string>
+    <string name="home_cloud_newer_text">आपका क्लाउड बैकअप दूसरे फ़ोन पर अपडेट हुआ है। सेटिंग्स में इसे लोड या मर्ज करने के लिए टैप करें।</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">तस्वीर से खोजें</string>
+    <string name="picture_preparing">तस्वीर से खोज तैयार हो रही है — लगभग 20 MB का एक बार का डाउनलोड…</string>
+    <string name="picture_searching">तस्वीर से कार्ड खोजा जा रहा है…</string>
+    <string name="picture_none">तस्वीर से कोई कार्ड नहीं मिला — उसे टाइप करके खोजें।</string>
+    <string name="picture_unavailable">तस्वीर से खोज अभी उपलब्ध नहीं है — अपना कनेक्शन जाँचें।</string>
+    <string name="picture_check">तस्वीर से मिला — कृपया जाँच लें कि यह सही कार्ड है।</string>
+</resources>

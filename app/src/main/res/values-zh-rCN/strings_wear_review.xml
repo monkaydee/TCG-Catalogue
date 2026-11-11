@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">左上角</string>
+  <string name="wear_top_right">右上角</string>
+  <string name="wear_bottom_right">右下角</string>
+  <string name="wear_bottom_left">左下角</string>
+  <string name="wear_top">顶边</string>
+  <string name="wear_right">右边缘</string>
+  <string name="wear_bottom">底边</string>
+  <string name="wear_left">左边缘</string>
+  <string name="wear_evidence_count">自动检查：8 个区域中的 %1$d 有可用的颜色证据</string>
+  <string name="wear_review_count">手动审核：8 个区域的 %1$d</string>
+  <string name="wear_inspect_regions">检查所有四个角和四个边缘</string>
+  <string name="wear_hide_regions">隐藏区域详细信息</string>
+  <string name="wear_screening_scope">每个区域都会单独检查颜色异常和泛白情况。印刷、贴箔和切割对齐可能类似于损坏。打开一个区域来检查照片并记录您所看到的内容。</string>
+  <string name="wear_not_assessed">未评估——可用证据不足</string>
+  <string name="wear_inconclusive">自动检查没有结果</string>
+  <string name="wear_possible_damage">自动检查：可能的磨损 - 检查该区域</string>
+  <string name="wear_auto_none">自动检查：没有标记颜色异常</string>
+  <string name="wear_your_observation">您的观察结果：%1$s</string>
+  <string name="wear_white_border">白色边框可以隐藏白化；颜色检查无法确认其状况。</string>
+  <string name="wear_textured_border">可变的艺术品或箔片限制了颜色比较。</string>
+  <string name="wear_flagged_pixels">标记区域像素：%1$.1f%% · 较亮的异常：%2$.1f%%</string>
+  <string name="wear_zoom_hint">捏合进行缩放并拖动进行检查。放大不会增加照片细节；重新拍摄模糊的照片。</string>
+  <string name="wear_record_observation">您对该地区的观察</string>
+  <string name="wear_not_reviewed">未审核</string>
+  <string name="wear_observed_clear">这张照片中没有明显的损坏</string>
+  <string name="wear_whitening">可见泛白/磨损</string>
+  <string name="wear_chip">可见缺口/撕裂</string>
+  <string name="wear_bend">弯曲/凹痕可见</string>
+  <string name="wear_done">完成</string>
+  <string name="wear_damage_blocks_grade">记录了可见的损坏。总体模型估计值被保留，因为手动结果不是校准模型输入。居中结果不考虑这种损坏。</string>
+  <string name="wear_incomplete_blocks_grade">角落和边缘需要仔细检查。证据缺失或不确定会妨碍整体模型估计；单独居中并不能建立等级。</string>
+</resources>

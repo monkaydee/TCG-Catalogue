@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Open collection</string>
+    <string name="binders_title">Binders</string>
+    <string name="binders_all">All cards</string>
+    <string name="binders_new">New binder</string>
+    <string name="binders_card_count">Cards: %1$d</string>
+    <string name="binder_open_hint">Swipe or tap to open</string>
+    <string name="binder_add_cards">Add cards</string>
+    <string name="binder_choose_cards">Cards in this binder</string>
+    <string name="binder_edit">Edit binder</string>
+    <string name="binder_delete">Delete binder</string>
+    <string name="binder_delete_confirm">Delete “%1$s”? The cards stay in your collection.</string>
+    <string name="binder_name">Name</string>
+    <string name="binder_cover_design">Cover design</string>
+    <string name="binder_cover_upload">Use own picture</string>
+    <string name="binder_cover_remove">Remove picture</string>
+    <string name="binder_save">Save</string>
+    <string name="binder_empty_custom">This binder is empty. Add cards from your collection.</string>
+    <string name="binder_search">Search cards</string>
+    <string name="binder_new_name">My binder</string>
+    <string name="binder_selected">Selected: %1$d</string>
+    <string name="collection_title">Collection</string>
+    <string name="collection_sort_recent">Recently added</string>
+    <string name="collection_sort_grade">Grade</string>
+    <string name="collection_sort_set">Set</string>
+    <string name="collection_empty">No cards yet.</string>
+    <string name="collection_summary">Cards: %1$d · %2$s</string>
+    <string name="cover_midnight">Midnight</string>
+    <string name="cover_crimson">Crimson</string>
+    <string name="cover_forest">Forest</string>
+    <string name="cover_ocean">Ocean</string>
+    <string name="cover_galaxy">Galaxy</string>
+    <string name="cover_sunset">Sunset</string>
+    <string name="cover_gold">Gold foil</string>
+    <string name="cover_carbon">Carbon</string>
+</resources>

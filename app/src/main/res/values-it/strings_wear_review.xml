@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Angolo in alto a sinistra</string>
+  <string name="wear_top_right">Angolo in alto a destra</string>
+  <string name="wear_bottom_right">Angolo in basso a destra</string>
+  <string name="wear_bottom_left">Angolo in basso a sinistra</string>
+  <string name="wear_top">Bordo superiore</string>
+  <string name="wear_right">Bordo destro</string>
+  <string name="wear_bottom">Bordo inferiore</string>
+  <string name="wear_left">Bordo sinistro</string>
+  <string name="wear_evidence_count">Controllo automatico: %1$d di 8 regioni hanno prove di colore utilizzabili</string>
+  <string name="wear_review_count">Revisione manuale: %1$d di 8 regioni</string>
+  <string name="wear_inspect_regions">Ispezionare tutti e quattro gli angoli e i quattro bordi</string>
+  <string name="wear_hide_regions">Nascondi i dettagli della regione</string>
+  <string name="wear_screening_scope">Ogni regione viene controllata separatamente per anomalie di colore e sbiancamento. L\'allineamento della stampa, della lamina e del taglio può assomigliare a un danno. Apri una regione per ispezionare la foto e registrare ciò che vedi.</string>
+  <string name="wear_not_assessed">Non valutato: prove utilizzabili insufficienti</string>
+  <string name="wear_inconclusive">Il controllo automatico non è conclusivo</string>
+  <string name="wear_possible_damage">Controllo automatico: possibile usura: ispezionare questa zona</string>
+  <string name="wear_auto_none">Controllo automatico: nessuna anomalia colore segnalata</string>
+  <string name="wear_your_observation">La tua osservazione: %1$s</string>
+  <string name="wear_white_border">I bordi bianchi possono nascondere lo sbiancamento; i controlli del colore non possono confermare la loro condizione.</string>
+  <string name="wear_textured_border">La grafica variabile o la pellicola limitano il confronto dei colori.</string>
+  <string name="wear_flagged_pixels">Pixel della regione contrassegnata: %1$.1f%% · anomalie più luminose: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Pizzica per ingrandire e trascina per ispezionare. L\'ingrandimento non aggiunge dettagli alla foto; riprendere le foto sfocate.</string>
+  <string name="wear_record_observation">La tua osservazione per questa regione</string>
+  <string name="wear_not_reviewed">Non recensito</string>
+  <string name="wear_observed_clear">Nessun danno visibile in questa foto</string>
+  <string name="wear_whitening">Sbiancamento/graffi visibili</string>
+  <string name="wear_chip">Scheggiatura/strappo visibile</string>
+  <string name="wear_bend">Piega/ammaccatura visibile</string>
+  <string name="wear_done">Fatto</string>
+  <string name="wear_damage_blocks_grade">Sono stati registrati danni visibili. La stima complessiva del modello viene trattenuta perché i risultati manuali non sono input del modello calibrati. I risultati della centratura non tengono conto di questo danno.</string>
+  <string name="wear_incomplete_blocks_grade">Angoli e bordi necessitano di un\'ispezione più attenta. Prove mancanti o inconcludenti impediscono una stima complessiva del modello; la sola centratura non stabilisce un grado.</string>
+</resources>

@@ -1,0 +1,15 @@
+*.iml
+.gradle/
+/local.properties
+.idea/
+.DS_Store
+build/
+/captures
+.externalNativeBuild
+.cxx
+*.keystore
+!debug.keystore
+__pycache__/
+/app/src/androidTest/assets/golden/
+
+.kotlin/

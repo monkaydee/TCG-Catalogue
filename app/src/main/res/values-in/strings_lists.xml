@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Common -->
+    <string name="lists_back">Kembali</string>
+    <string name="lists_cancel">Batal</string>
+    <string name="lists_save">Simpan</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">Hapus</string>
+    <string name="lists_remove">Buang</string>
+    <string name="lists_retry">Coba lagi</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">Daftar</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">Jumlah (%1$s)</string>
+    <string name="lists_amount_invalid">Masukkan jumlah, mis. 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">Checklist</string>
+    <string name="checklist_open">Tampilkan checklist</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="other">%1$d dari %2$d kartu dimiliki</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">Semua · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">Dimiliki · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">Belum punya · %1$d</string>
+    <string name="checklist_loading">Memuat kartu set ini…</string>
+    <string name="checklist_empty_title">Tidak ada checklist untuk set ini</string>
+    <string name="checklist_empty_text">Daftar kartu tidak dapat dimuat. Periksa koneksi Anda, atau set ini mungkin belum terdaftar.</string>
+    <string name="checklist_none_owned">Anda belum memiliki kartu apa pun dari set ini.</string>
+    <string name="checklist_none_missing">Lengkap! Anda memiliki semua kartu set ini.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">Belum punya</string>
+    <string name="checklist_on_wishlist">Ada di wishlist</string>
+    <string name="checklist_add_collection">Tambah ke koleksi</string>
+    <string name="checklist_add_wishlist">Tambah ke wishlist</string>
+    <string name="checklist_card_loading">Memuat kartu…</string>
+    <string name="checklist_card_failed">Kartu ini tidak dapat dimuat — periksa koneksi Anda</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s ditambahkan ke koleksi Anda</string>
+    <string name="checklist_printing">Cetakan</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">Wishlist</string>
+    <string name="wish_add">Tambah ke wishlist</string>
+    <string name="wish_remove">Hapus dari wishlist</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s ditambahkan ke wishlist Anda</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s dihapus dari wishlist Anda</string>
+    <string name="wish_add_failed">Kartu tidak dapat ditambahkan — periksa koneksi Anda</string>
+    <string name="wish_total">Total biaya</string>
+    <plurals name="wish_count">
+        <item quantity="other">%1$d kartu</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="other">%1$d sama dengan atau di bawah target Anda</item>
+    </plurals>
+    <string name="wish_empty_title">Wishlist Anda kosong</string>
+    <string name="wish_empty_text">Tambahkan kartu dari pencarian atau dari kartu yang belum Anda punya di checklist set.</string>
+    <string name="wish_no_price">Tanpa harga</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">Target %1$s</string>
+    <string name="wish_no_target">Tanpa harga target</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">Mencapai target</string>
+    <string name="wish_set_target">Atur harga target</string>
+    <string name="wish_target_title">Harga target</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">Anda akan mendapat notifikasi saat harga turun ke jumlah ini atau lebih rendah. Sekarang: %1$s</string>
+    <string name="wish_target_text_no_price">Anda akan mendapat notifikasi saat harga turun ke jumlah ini atau lebih rendah.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">Daftar tukar</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">Untuk ditukar</string>
+    <string name="trade_share">Bagikan daftar</string>
+    <string name="trade_remove">Keluarkan dari daftar tukar</string>
+    <string name="trade_total">Nilai tukar</string>
+    <string name="trade_empty_title">Belum ada yang untuk ditukar</string>
+    <string name="trade_empty_text">Buka kartu di koleksi Anda dan ketuk “Untuk ditukar” untuk menambahkannya ke sini.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="other">Daftar tukar saya (%1$d kartu)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">Total nilai: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">Dibagikan dari %1$s</string>
+    <string name="trade_share_subject">Daftar tukar saya</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">Jual</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">Jual %1$s</string>
+    <string name="sold_quantity">Jumlah terjual</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">dari %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">Harga per kartu (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">Total %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">Untung %1$s</string>
+    <string name="sold_confirm">Jual</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">Terjual %1$d× %2$s</string>
+    <string name="sold_title">Terjual</string>
+    <string name="sold_realised">Keuntungan terealisasi</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">Penjualan %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="other">%1$d penjualan tanpa harga beli tidak dihitung</item>
+    </plurals>
+    <string name="sold_empty_title">Belum ada penjualan</string>
+    <string name="sold_empty_text">Buka kartu di koleksi Anda dan ketuk “Jual” untuk mencatat penjualan di sini.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">Terjual %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">Dibeli %1$s per kartu</string>
+    <string name="sold_paid_unknown">Harga beli tidak diketahui</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">Terjual pada %1$s</string>
+    <string name="sold_delete">Hapus entri</string>
+    <string name="sold_delete_title">Hapus penjualan ini?</string>
+    <string name="sold_delete_text">Entri ini dihapus dari daftar terjual dan keuntungan terealisasi. Kartunya tidak kembali ke koleksi Anda.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">Peringatan</string>
+    <string name="alert_ui_title">Peringatan harga</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">Dapatkan notifikasi saat nilai per kartu melewati salah satu jumlah ini. Sekarang: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">Beri tahu jika di atas (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">Beri tahu jika di bawah (%1$s)</string>
+    <string name="alert_ui_order">“Di atas” harus lebih tinggi dari “di bawah”</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">Di atas %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">Di bawah %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">Riwayat harga</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">Tertinggi %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">Terendah %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">Ubah</string>
+    <string name="lists_card_remove">Buang</string>
+</resources>

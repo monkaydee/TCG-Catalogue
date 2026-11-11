@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alert_channel">Alertas de precio</string>
+    <string name="alert_above">Ahora %1$s — por encima de tu alerta de %2$s</string>
+    <string name="alert_below">Ahora %1$s — por debajo de tu alerta de %2$s</string>
+    <string name="alert_wish">En tu lista de deseos: ahora %1$s — igual o por debajo de tu objetivo de %2$s</string>
+
+    <string name="stack_mode">Modo pila</string>
+    <string name="stack_review_later">%1$s — revísala más tarde en la tira de abajo</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d carta por revisar — tócala</item>
+        <item quantity="many">%d de cartas por revisar — tócalas</item>
+        <item quantity="other">%d cartas por revisar — tócalas</item>
+    </plurals>
+    <string name="stack_tap_to_review">Toca para revisar</string>
+    <string name="stack_undo">Deshacer</string>
+    <string name="stack_discard">Descartar</string>
+
+    <string name="sealed_title">Productos sellados</string>
+    <string name="sealed_add">Añadir producto sellado</string>
+    <string name="sealed_value">Valor sellado</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d artículo</item>
+        <item quantity="many">%d de artículos</item>
+        <item quantity="other">%d artículos</item>
+    </plurals>
+    <string name="sealed_empty">Controla aquí tus cajas de sobres, sobres, mazos y cajas sin abrir. Su valor de mercado cuenta para tu cartera.</string>
+    <string name="sealed_remove_hint">Guardar con 0 elimina el producto.</string>
+    <string name="sealed_gain">%1$s desde la compra</string>
+    <string name="sealed_no_price">sin precio</string>
+    <string name="sealed_search_hint">Nombre del producto o set, p. ej. «caja de sobres 151»</string>
+    <string name="sealed_no_results">No se encontraron productos sellados</string>
+
+    <string name="crash_title">Lo sentimos, la app se ha cerrado</string>
+    <string name="crash_text">Se guardó un informe técnico (versión de la app y de Android, modelo del teléfono y el error — ninguna de tus cartas). Puedes enviarlo para ayudar a corregir el problema.</string>
+    <string name="crash_report_github">Informar en GitHub</string>
+    <string name="crash_share">Compartir</string>
+    <string name="crash_dismiss">Ahora no</string>
+
+    <string name="home_cloud_newer_title">Una colección más reciente de otro teléfono</string>
+    <string name="home_cloud_newer_text">Tu copia de seguridad en la nube se actualizó en otro teléfono. Toca para cargarla o combinarla en Ajustes.</string>
+
+    <string name="picture_find">Buscar por imagen</string>
+    <string name="picture_preparing">Preparando la búsqueda por imagen — descarga única de unos 20 MB…</string>
+    <string name="picture_searching">Buscando la carta por su imagen…</string>
+    <string name="picture_none">No se encontró ninguna carta por su imagen — prueba a escribirla.</string>
+    <string name="picture_unavailable">La búsqueda por imagen no está disponible ahora — comprueba tu conexión.</string>
+    <string name="picture_check">Encontrada por su imagen — comprueba que es la carta correcta.</string>
+</resources>

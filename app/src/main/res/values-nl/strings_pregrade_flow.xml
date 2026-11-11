@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Kaartoverzicht · vier hoeken</string>
+  <string name="pre_center_screen">Centreren · acht geleiders</string>
+  <string name="pre_open_centering">Meet de binnen- en buitengrenzen</string>
+  <string name="pre_outline_continue">Bevestig de omtrek van de hele kaart</string>
+  <string name="pre_outline_adjust">Pas de vier kaarthoeken aan</string>
+  <string name="pre_choose_game">Kaartspel</string>
+  <string name="pre_center_missing">Plaats de buitenste en binnenste geleiders aan deze kant om de centreringsmeting te voltooien.</string>
+  <string name="pre_center_ready">Centrering gemeten. Je kunt alle acht hulplijnen aanpassen.</string>
+  <string name="pre_edit_front">Centrering voorzijde bewerken</string>
+  <string name="pre_edit_back">Achtercentrering bewerken</string>
+  <string name="pre_potential_title">Centrerend potentieel</string>
+  <string name="pre_potential_10">Binnen PSA 10 centreringslimieten</string>
+  <string name="pre_potential_borderline">Borderline PSA 10-centrering</string>
+  <string name="pre_potential_below">Buiten PSA 10-centreerlimieten</string>
+  <string name="pre_potential_incomplete">Voltooi beide zijden voor centreringspotentieel</string>
+  <string name="pre_potential_scope">Alleen centreren, over kaartspellen heen. Gebruikt PSA-limieten vooraan 55/45 en achteraan 75/25. Randlijn betekent dat een aanpassing van de hulplijn van één afbeeldingspixel het resultaat kan veranderen. Hoeken, randen, oppervlak en authenticiteit kunnen het eindcijfer verminderen.</string>
+  <string name="pre_model_scope">Een algemene cijfervoorspelling is niet gevalideerd voor dit spel of deze metingen. Centreerpotentieel hierboven blijft beschikbaar zodra beide zijden zijn gemeten.</string>
+  <string name="pre_experimental_model">Experimentele Pokémon-fotoschatting</string>
+  <string name="pre_quality_blocked">Neem deze kant opnieuw: de omtrek- of fotokwaliteit is niet geschikt voor een slijtagebeoordeling.</string>
+  <string name="pre_no_wear_detected">geen zichtbare slijtage gedetecteerd</string>
+  <string name="pre_skip_frame">Geen vergelijkbaar bedrukt frame</string>
+  <string name="pre_retake_front">Maak opnieuw een foto van de voorkant</string>
+  <string name="pre_retake_back">Foto opnieuw maken</string>
+</resources>

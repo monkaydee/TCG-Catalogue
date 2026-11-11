@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Buka koleksi</string>
+    <string name="binders_title">Binder</string>
+    <string name="binders_all">Semua kartu</string>
+    <string name="binders_new">Binder baru</string>
+    <string name="binders_card_count">Kartu: %1$d</string>
+    <string name="binder_open_hint">Geser atau ketuk untuk membuka</string>
+    <string name="binder_add_cards">Tambah kartu</string>
+    <string name="binder_choose_cards">Kartu di binder ini</string>
+    <string name="binder_edit">Edit binder</string>
+    <string name="binder_delete">Hapus binder</string>
+    <string name="binder_delete_confirm">Hapus “%1$s”? Kartu tetap ada di koleksi Anda.</string>
+    <string name="binder_name">Nama</string>
+    <string name="binder_cover_design">Desain sampul</string>
+    <string name="binder_cover_upload">Pakai gambar sendiri</string>
+    <string name="binder_cover_remove">Hapus gambar</string>
+    <string name="binder_save">Simpan</string>
+    <string name="binder_empty_custom">Binder ini kosong. Tambahkan kartu dari koleksi Anda.</string>
+    <string name="binder_search">Cari kartu</string>
+    <string name="binder_new_name">Binder saya</string>
+    <string name="binder_selected">Dipilih: %1$d</string>
+    <string name="collection_title">Koleksi</string>
+    <string name="collection_sort_recent">Baru ditambahkan</string>
+    <string name="collection_sort_grade">Grade</string>
+    <string name="collection_sort_set">Set</string>
+    <string name="collection_empty">Belum ada kartu.</string>
+    <string name="collection_summary">Kartu: %1$d · %2$s</string>
+    <string name="cover_midnight">Tengah malam</string>
+    <string name="cover_crimson">Merah tua</string>
+    <string name="cover_forest">Hutan</string>
+    <string name="cover_ocean">Samudra</string>
+    <string name="cover_galaxy">Galaksi</string>
+    <string name="cover_sunset">Senja</string>
+    <string name="cover_gold">Foil emas</string>
+    <string name="cover_carbon">Karbon</string>
+</resources>

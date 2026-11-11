@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">每张卡单独一格</string>
+    <string name="binder_move_hint">点按一个卡位，把卡牌移到那里</string>
+    <string name="binder_remove">从卡册移除</string>
+    <string name="binder_pick_for_pocket">为此卡位选择卡牌</string>
+    <string name="binder_all_placed">所有副本都已在此卡册中</string>
+</resources>

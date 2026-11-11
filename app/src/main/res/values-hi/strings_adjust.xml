@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">कोने ठीक करें</string>
+    <string name="grade_adjust_hint">चारों बिंदुओं को कार्ड के कोनों पर खींचें। आवर्धक उन्हें सटीक रखने में मदद करता है।</string>
+    <string name="grade_adjust_apply">लागू करें</string>
+</resources>

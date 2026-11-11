@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">संग्रह उपकरण</string>
+  <string name="tools_costs">लागत बही</string>
+  <string name="tools_grading">ग्रेडिंग के लिए कार्ड भेजे गए हैं</string>
+  <string name="tools_shipping">प्रति कॉपी शिपिंग</string>
+  <string name="tools_tax">प्रति कॉपी कर</string>
+  <string name="tools_grading_cost">प्रति कॉपी ग्रेडिंग लागत</string>
+  <string name="tools_pnl">अवास्तविक पी.एन.एल</string>
+  <string name="tools_unknown">अज्ञात कीमत या लागत</string>
+  <string name="tools_blank">अज्ञात लागतों को खाली छोड़ दें. बिना किसी लागत के 0 दर्ज करें.</string>
+  <string name="tools_reference">सबमिशन संदर्भ</string>
+  <string name="tools_notes">टिप्पणियाँ</string>
+  <string name="tools_export">बीमा निर्यात</string>
+  <string name="tools_review">फ़ोटो समीक्षाएँ लंबित</string>
+  <string name="tools_evidence">मूल्य प्रमाण</string>
+  <string name="tools_stale">पुराना बाज़ार मूल्य</string>
+  <string name="tools_current">वर्तमान बाजार मूल्य</string>
+  <string name="tools_fees">बिक्री शुल्क</string>
+  <string name="tools_learning">पहचान सुधारने में मदद करें</string>
+  <string name="tools_photos">स्वीकृत कार्ड फसलें साझा करें</string>
+  <string name="tools_send">लंबित रिपोर्ट भेजें</string>
+  <string name="tools_delete">साझा रिपोर्ट हटाएं</string>
+  <string name="tools_consent">वैकल्पिक. टेक्स्ट रिपोर्ट में कार्ड विवरण और आपका सुधार शामिल है। फ़ोटो के लिए अलग पूर्वावलोकन और अनुमोदन की आवश्यकता होती है. रिपोर्टें 90 दिनों तक रखी जाती हैं।</string>
+  <string name="tools_preview">कार्ड क्रॉप को मंजूरी दें</string>
+  <string name="tools_preparing">तैयारी</string>
+  <string name="tools_shipped">भेज दिया गया</string>
+  <string name="tools_received">प्राप्त हुआ</string>
+  <string name="tools_grading_status">कार्ड की ग्रेडिंग चल रही है</string>
+  <string name="tools_returned">लौट आये</string>
+  <string name="tools_cancelled">रद्द कर दिया गया</string>
+  <string name="tools_complete">पूर्ण</string>
+  <string name="tools_price_challenge">ग़लत कीमत की रिपोर्ट करें</string>
+  <string name="tools_confirm_outline">पूरे कार्ड की रूपरेखा की पुष्टि करें</string>
+  <string name="tools_outline_hint">पुष्टि करने से पहले जांच लें कि चारों कोने कार्ड के बाहरी कोने हैं।</string>
+  <string name="tools_duplicate_cert">यह ग्रेडिंग प्रमाणपत्र पहले से ही आपके संग्रह में है।</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Alat koleksi</string>
+  <string name="tools_costs">Buku besar biaya</string>
+  <string name="tools_grading">Kartu dikirim untuk dinilai</string>
+  <string name="tools_shipping">Pengiriman per salinan</string>
+  <string name="tools_tax">Pajak per salinan</string>
+  <string name="tools_grading_cost">Biaya penilaian per salinan</string>
+  <string name="tools_pnl">PnL yang belum terealisasi</string>
+  <string name="tools_unknown">Harga atau biaya tidak diketahui</string>
+  <string name="tools_blank">Biarkan biaya yang tidak diketahui kosong. Masukkan 0 tanpa biaya.</string>
+  <string name="tools_reference">Referensi penyerahan</string>
+  <string name="tools_notes">Catatan</string>
+  <string name="tools_export">Ekspor asuransi</string>
+  <string name="tools_review">Ulasan foto menunggu keputusan</string>
+  <string name="tools_evidence">Bukti harga</string>
+  <string name="tools_stale">Harga pasar sudah ketinggalan jaman</string>
+  <string name="tools_current">Harga pasar saat ini</string>
+  <string name="tools_fees">Biaya penjualan</string>
+  <string name="tools_learning">Membantu meningkatkan pengenalan</string>
+  <string name="tools_photos">Bagikan hasil panen kartu yang disetujui</string>
+  <string name="tools_send">Kirim laporan yang tertunda</string>
+  <string name="tools_delete">Hapus laporan bersama</string>
+  <string name="tools_consent">Opsional. Laporan teks mencakup detail kartu dan koreksi Anda. Foto memerlukan pratinjau dan persetujuan terpisah. Laporan disimpan selama 90 hari.</string>
+  <string name="tools_preview">Setujui pemangkasan kartu</string>
+  <string name="tools_preparing">Mempersiapkan</string>
+  <string name="tools_shipped">Dikirim</string>
+  <string name="tools_received">Diterima</string>
+  <string name="tools_grading_status">Penilaian kartu sedang berlangsung</string>
+  <string name="tools_returned">Kembali</string>
+  <string name="tools_cancelled">Dibatalkan</string>
+  <string name="tools_complete">Lengkap</string>
+  <string name="tools_price_challenge">Laporkan harga yang salah</string>
+  <string name="tools_confirm_outline">Konfirmasikan seluruh kerangka kartu</string>
+  <string name="tools_outline_hint">Periksa apakah keempat sudut adalah sudut luar kartu sebelum mengonfirmasi.</string>
+  <string name="tools_duplicate_cert">Sertifikat penilaian ini sudah ada dalam koleksi Anda.</string>
+</resources>

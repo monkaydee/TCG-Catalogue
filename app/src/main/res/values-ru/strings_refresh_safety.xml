@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">Последний поиск не нашёл подходящую цену; предыдущая цена сохранена</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Показувати ціни в</string>
+    <string name="settings_display_same">Як у колекції (%1$s)</string>
+    <string name="settings_display_offline">Не вдалося завантажити курси валют. Спробуйте знову онлайн.</string>
+    <string name="settings_display_hint">Перераховано за довідковими курсами ЄЦБ лише для показу. Введені й збережені суми лишаються в EUR або USD.</string>
+    <string name="card_notes">Нотатки</string>
+    <string name="card_notes_hint">Де куплено, дефекти, для кого …</string>
+    <string name="worth_grading_title">Чи варто грейдити?</string>
+    <string name="worth_grading_cost">Вартість грейдингу за карту в %1$s (збір + доставка)</string>
+    <string name="worth_grading_no_raw">Ціна цієї карти без грейду невідома, тож вигоду не порахувати.</string>
+    <string name="worth_grading_from">%1$s: окупається з оцінки %2$s</string>
+    <string name="worth_grading_never">%1$s: не окупається за жодної вказаної оцінки</string>
+    <string name="worth_grading_note">Порівняно з ціною цієї копії без грейду: %1$s. Ціни грейдів — ринкові або ціни оголошень; оцінка не гарантована.</string>
+    <string name="completion_title">Вартість до повного сету</string>
+    <string name="completion_total">%1$s за %2$d карт</string>
+    <string name="completion_unknown">Карт без відомої ціни: %1$d (не враховано)</string>
+    <string name="completion_progress">Завантажено цін: %1$d з %2$d</string>
+    <string name="completion_hint">Найдешевша версія кожної відсутньої карти за ринковою ціною</string>
+    <string name="completion_calculate">Розрахувати</string>
+    <string name="lot_title">Калькулятор лоту</string>
+    <string name="lot_remove">Прибрати</string>
+    <string name="lot_add_value">Додати суму (%1$s)</string>
+    <string name="lot_add">Додати</string>
+    <string name="lot_market">Ринкова вартість: %1$s (%2$d позицій)</string>
+    <string name="lot_unknown">Позицій без ціни: %1$d (не враховано)</string>
+    <string name="lot_percent">Пропозиція: %1$d %% від ринку</string>
+    <string name="lot_offer">Ціна лоту: %1$s</string>
+    <string name="bulk_add_to_binder">Додати до альбому</string>
+    <string name="bulk_trade">Позначити для обміну</string>
+    <string name="bulk_trade_done">Позначено для обміну: %1$d</string>
+    <string name="bulk_delete">Видалити</string>
+    <string name="bulk_delete_confirm">Видалити %1$d карт із колекції?</string>
+    <string name="bulk_select_all">Вибрати все (%1$d)</string>
+    <string name="bulk_no_binders">У вас ще немає власних альбомів. Створіть його у «Відкрити альбом».</string>
+    <string name="bulk_added_to_binder">Додано %1$d карт до %2$s</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">มุมซ้ายบน</string>
+  <string name="wear_top_right">มุมขวาบน</string>
+  <string name="wear_bottom_right">มุมขวาล่าง</string>
+  <string name="wear_bottom_left">มุมซ้ายล่าง</string>
+  <string name="wear_top">ขอบบน</string>
+  <string name="wear_right">ขอบขวา</string>
+  <string name="wear_bottom">ขอบล่าง</string>
+  <string name="wear_left">ขอบซ้าย</string>
+  <string name="wear_evidence_count">การตรวจสอบอัตโนมัติ: %1$d จาก 8 ภูมิภาคมีหลักฐานสีที่ใช้งานได้</string>
+  <string name="wear_review_count">การตรวจสอบด้วยตนเอง: %1$d จาก 8 ภูมิภาค</string>
+  <string name="wear_inspect_regions">ตรวจสอบมุมทั้งสี่และขอบทั้งสี่</string>
+  <string name="wear_hide_regions">ซ่อนรายละเอียดภูมิภาค</string>
+  <string name="wear_screening_scope">แต่ละภูมิภาคจะได้รับการตรวจสอบความผิดปกติของสีและการฟอกสีฟันแยกกัน การจัดตำแหน่งการพิมพ์ ฟอยล์ และการตัดอาจมีลักษณะคล้ายกับความเสียหาย เปิดขอบเขตเพื่อตรวจสอบภาพถ่ายและบันทึกสิ่งที่คุณเห็น</string>
+  <string name="wear_not_assessed">ไม่ได้ประเมิน — หลักฐานที่ใช้ได้ไม่เพียงพอ</string>
+  <string name="wear_inconclusive">การตรวจสอบอัตโนมัติไม่สามารถสรุปได้</string>
+  <string name="wear_possible_damage">การตรวจสอบอัตโนมัติ: การสึกหรอที่เป็นไปได้ — ตรวจสอบภูมิภาคนี้</string>
+  <string name="wear_auto_none">การตรวจสอบอัตโนมัติ: ไม่มีการตั้งค่าสถานะสีผิดปกติ</string>
+  <string name="wear_your_observation">ข้อสังเกตของคุณ: %1$s</string>
+  <string name="wear_white_border">ขอบสีขาวสามารถซ่อนความขาวได้ การตรวจสอบสีไม่สามารถยืนยันสภาพได้</string>
+  <string name="wear_textured_border">งานศิลปะหรือฟอยล์ที่ปรับเปลี่ยนได้จะจำกัดการเปรียบเทียบสี</string>
+  <string name="wear_flagged_pixels">พิกเซลของภูมิภาคที่ถูกตั้งค่าสถานะ: %1$.1f%% · ความผิดปกติที่สว่างมากขึ้น: %2$.1f%%</string>
+  <string name="wear_zoom_hint">บีบนิ้วเพื่อซูมและลากเพื่อตรวจสอบ การขยายภาพไม่เพิ่มรายละเอียดของภาพ ถ่ายภาพเบลออีกครั้ง</string>
+  <string name="wear_record_observation">ข้อสังเกตของคุณสำหรับภูมิภาคนี้</string>
+  <string name="wear_not_reviewed">ไม่ได้รับการตรวจทาน</string>
+  <string name="wear_observed_clear">ไม่มีความเสียหายที่มองเห็นได้ในภาพนี้</string>
+  <string name="wear_whitening">ไวท์เทนนิ่ง / รอยครูดที่มองเห็นได้</string>
+  <string name="wear_chip">มองเห็นชิป/ฉีกขาด</string>
+  <string name="wear_bend">มองเห็นส่วนโค้ง/บุ๋มได้</string>
+  <string name="wear_done">เสร็จแล้ว</string>
+  <string name="wear_damage_blocks_grade">บันทึกความเสียหายที่มองเห็นได้ การประมาณแบบจำลองโดยรวมถูกระงับเนื่องจากการค้นพบด้วยตนเองไม่ได้รับการปรับเทียบอินพุตแบบจำลอง ผลลัพธ์การจัดศูนย์กลางไม่ได้คำนึงถึงความเสียหายนี้</string>
+  <string name="wear_incomplete_blocks_grade">มุมและขอบจำเป็นต้องได้รับการตรวจสอบอย่างใกล้ชิด หลักฐานที่ขาดหายไปหรือไม่สามารถสรุปได้ทำให้ไม่สามารถประมาณการแบบจำลองโดยรวมได้ การตั้งศูนย์กลางเพียงอย่างเดียวไม่ได้สร้างเกรด</string>
+</resources>

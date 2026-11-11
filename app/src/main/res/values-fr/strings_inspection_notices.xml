@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Pré-examen photo non professionnel. Les plages expérimentales reposent sur vos observations des coins, bords et surfaces, pas sur des probabilités de note validées. La note professionnelle peut différer. Les défauts cachés, modifications et problèmes d’authenticité ne sont pas exclus.</string>
+    <string name="center_manual_notice">Mesure manuelle du centrage. Les repères et la perspective influencent le ratio. Une estimation expérimentale exige aussi une inspection des coins, bords et surfaces sous plusieurs angles de lumière.</string>
+    <string name="wear_observation_scope">Vos observations sont conservées pour cette séance et utilisées dans la plage expérimentale. Elles ne certifient pas l’état et ne compensent pas des photos médiocres. Les dommages enregistrés élargissent ou abaissent la plage.</string>
+</resources>

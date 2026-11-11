@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">所見</string>
+    <string name="pre_findings_scope">所見は確認すべき場所を示します。スコアにはまだ反映されません。</string>
+    <string name="pre_findings_confirmed">確認済み</string>
+    <string name="pre_findings_possible">可能性あり</string>
+    <string name="pre_findings_blind">判定不可</string>
+    <string name="pre_findings_markers">マーカーを表示</string>
+    <string name="pre_findings_none">写真で測定できた範囲では異常は見つかりませんでした。カードが無傷であることの証明ではありません。</string>
+    <string name="pre_findings_corner_shape">角の輪郭が他の角と異なります</string>
+    <string name="pre_findings_surface_scratches">表面のキズ</string>
+    <string name="pre_findings_surface_dent">表面のへこみ・折れ</string>
+    <string name="pre_findings_surface_blind">平らな写真ではキズやへこみは写りません。斜めからの光で撮った写真を追加してください。</string>
+    <string name="pre_findings_export">レポートを書き出す（JSON）</string>
+    <string name="pre_whole_surface">表面全体</string>
+    <string name="pre_verified_title">実際のグレード</string>
+    <string name="pre_verified_hint">鑑定後、スラブのグレードを入力してください。写真とそのグレードが検証済みサンプルになり、事前鑑定の改善に使えます。</string>
+    <string name="pre_verified_grade">グレード（1〜10）</string>
+    <string name="pre_verified_cert">証明番号（任意）</string>
+    <string name="pre_verified_save">グレードを保存</string>
+    <string name="pre_verified_invalid">1〜10のグレードを0.5刻みで、証明番号は数字で入力してください。</string>
+    <string name="pre_verified_export">学習用サンプルを書き出す</string>
+    <string name="pre_verified_remove">グレードを削除</string>
+</resources>

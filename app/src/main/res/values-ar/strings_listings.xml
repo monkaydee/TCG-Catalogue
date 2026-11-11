@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="data_listings_count">
+        <item quantity="zero">%d عروض</item>
+        <item quantity="one">%d عرض</item>
+        <item quantity="two">%d عروض</item>
+        <item quantity="few">%d عروض</item>
+        <item quantity="many">%d عروض</item>
+        <item quantity="other">%d عروض</item>
+    </plurals>
+</resources>

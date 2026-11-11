@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Continuar a centralizar</string>
+  <string name="center_confirm_next">Confirme o contorno e meça a centralização</string>
+  <string name="center_step_two">Etapa 2: guias externas e internas</string>
+</resources>

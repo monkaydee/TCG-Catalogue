@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">inga senaste försäljningar av %1$s hittades — ange ditt eget värde eller kolla prislänkarna</string>
+    <string name="data_graded_server_error">prisservern går inte att nå just nu</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="one">%1$d försäljning</item>
+        <item quantity="other">%1$d försäljningar</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Graded-priser</string>
+    <string name="graded_none">Inga graded-försäljningar hittades för det här kortet.</string>
+    <string name="graded_failed">Prisservern går inte att nå just nu.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">ditt betyg</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Kontrollera certifikatet hos PSA</string>
+    <string name="cert_unknown">PSA har inget kort med det här certifikatnumret.</string>
+    <string name="cert_failed">PSA går inte att nå just nu. Försök igen senare.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">PSA-betyg: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Population: %1$d med detta betyg, %2$d högre</string>
+    <string name="cert_mismatch">Betyget i PSA:s register skiljer sig från det som sparats för det här kortet.</string>
+    <string name="links_psa_cert">PSA-certifikat</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Identifiera online</string>
+    <string name="identify_hint">Skickar det här fotot till appens prisserver för bildigenkänning (Ximilar). Fotot sparas inte.</string>
+    <string name="identify_searching">Identifierar online…</string>
+    <string name="identify_none">Inte heller igenkänt online. Prova ett skarpare foto eller skriv in kortet själv.</string>
+    <string name="identify_failed">Identifiering online är inte tillgänglig just nu (dagsgränsen nådd eller ingen anslutning).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Prisserver</string>
+    <string name="settings_server_summary">Appens egen kostnadsfria server för graded-priser, PSA-certifikatkontroller och identifiering online. Byggen från GitHub har den inbyggd; se docs/CLOUDFLARE.md för att sätta upp din egen.</string>
+    <string name="settings_server_url">Serveradress (https://…)</string>
+    <string name="settings_server_key">Appnyckel</string>
+    <string name="settings_server_save">Spara</string>
+    <string name="settings_server_reset">Använd inbyggd</string>
+    <string name="settings_server_test">Testa</string>
+    <string name="settings_server_ok">Ansluten till prisservern.</string>
+    <string name="settings_server_bad">Prisservern svarade inte. Kontrollera adressen och appnyckeln.</string>
+    <string name="settings_server_off">Ingen prisserver är konfigurerad: graded-priser använder ditt eget värde.</string>
+</resources>

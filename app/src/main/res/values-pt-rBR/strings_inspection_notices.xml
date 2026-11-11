@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Triagem fotográfica não profissional. As faixas experimentais usam suas observações de cantos, bordas e superfície, não probabilidades de nota validadas. A nota profissional pode ser diferente. Defeitos ocultos, alterações e problemas de autenticidade não são descartados.</string>
+    <string name="center_manual_notice">Medição manual da centralização. Guias e perspectiva afetam a proporção. Estimativas experimentais também exigem inspeção de cantos, bordas e superfície sob vários ângulos de luz.</string>
+    <string name="wear_observation_scope">Suas observações ficam nesta sessão e são usadas na faixa experimental. Não certificam o estado nem compensam fotos ruins. Danos registrados ampliam ou reduzem a faixa.</string>
+</resources>

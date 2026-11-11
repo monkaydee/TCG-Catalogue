@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">Setel ulang</string>
+  <string name="center_rotation_hint">Penjajaran halus ±15°. Seret atau putar gambar dengan bebas, atau gunakan penggeser. Panduan tetap diperbaiki.</string>
+  <string name="center_rotation_done">Selesai berputar</string>
+  <string name="center_rotation_saved">Rotasi perataan: %1$.2f°</string>
+</resources>

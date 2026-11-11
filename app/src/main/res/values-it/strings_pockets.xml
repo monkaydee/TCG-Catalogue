@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Ogni copia nella sua tasca</string>
+    <string name="binder_move_hint">Tocca una tasca per spostarvi la carta</string>
+    <string name="binder_remove">Rimuovi dal raccoglitore</string>
+    <string name="binder_pick_for_pocket">Scegli una carta per questa tasca</string>
+    <string name="binder_all_placed">Tutte le copie sono già in questo raccoglitore</string>
+</resources>

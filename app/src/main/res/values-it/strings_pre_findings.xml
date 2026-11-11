@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Riscontri</string>
+    <string name="pre_findings_scope">I riscontri mostrano dove guardare. Per ora non modificano il punteggio.</string>
+    <string name="pre_findings_confirmed">Confermato</string>
+    <string name="pre_findings_possible">Possibile</string>
+    <string name="pre_findings_blind">Non valutabile</string>
+    <string name="pre_findings_markers">Mostra indicatori</string>
+    <string name="pre_findings_none">Nessuna anomalia segnalata dove le foto erano misurabili. Non è la prova di una carta perfetta.</string>
+    <string name="pre_findings_corner_shape">Il contorno dell\'angolo è diverso dagli altri</string>
+    <string name="pre_findings_surface_scratches">Graffi sulla superficie</string>
+    <string name="pre_findings_surface_dent">Ammaccatura o piega sulla superficie</string>
+    <string name="pre_findings_surface_blind">Una foto piatta non mostra graffi o ammaccature. Aggiungi foto con luce radente.</string>
+    <string name="pre_findings_export">Esporta report (JSON)</string>
+    <string name="pre_whole_surface">Intera superficie</string>
+    <string name="pre_verified_title">Voto ricevuto</string>
+    <string name="pre_verified_hint">Dopo la gradazione, inserisci il voto dello slab. Le tue foto e quel voto diventano un campione verificato che può migliorare il pre-grading.</string>
+    <string name="pre_verified_grade">Voto (1–10)</string>
+    <string name="pre_verified_cert">Numero di certificato (facoltativo)</string>
+    <string name="pre_verified_save">Salva voto</string>
+    <string name="pre_verified_invalid">Inserisci un voto da 1 a 10 a mezzi punti e un numero di certificato numerico.</string>
+    <string name="pre_verified_export">Esporta campione di addestramento</string>
+    <string name="pre_verified_remove">Rimuovi voto</string>
+</resources>

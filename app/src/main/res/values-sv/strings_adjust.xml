@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Justera hörn</string>
+    <string name="grade_adjust_hint">Dra de fyra punkterna till kortets hörn. Förstoringsglaset hjälper dig att placera dem exakt.</string>
+    <string name="grade_adjust_apply">Använd</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA popülasyonu</string>
+    <string name="pop_show">Popülasyonu göster</string>
+    <string name="pop_none">Popülasyonu görmek için bu kartın sertifika numaralı bir PSA slab’ını ekleyin.</string>
+    <string name="pop_total">PSA tarafından derecelendirilen: %1$d</string>
+    <string name="pop_gem_rate">Gem oranı (PSA 10): %%%1$s</string>
+    <string name="decks_title">Desteler</string>
+    <string name="decks_new">Yeni deste</string>
+    <string name="decks_empty">Henüz deste yok. Bir tane oluşturup liste yapıştırın veya koleksiyonunuzdan kart ekleyin.</string>
+    <string name="deck_cards">Kart: %1$d</string>
+    <string name="deck_value">Deste değeri: %1$s</string>
+    <string name="deck_missing">Eksik: %1$d · maliyet: %2$s</string>
+    <string name="deck_missing_none">Bu destenin tüm kartlarına sahipsiniz.</string>
+    <string name="deck_owned">sahip %1$d / %2$d</string>
+    <string name="deck_import">Deste listesi yapıştır</string>
+    <string name="deck_import_hint">Her satıra bir kart, örn. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Koleksiyondan ekle</string>
+    <string name="deck_share">Listeyi paylaş</string>
+    <string name="deck_delete">Desteyi sil</string>
+    <string name="deck_delete_confirm">“%1$s” silinsin mi? Koleksiyonunuz değişmez.</string>
+    <string name="deck_rule_total">%1$s desteleri %2$d karttır; bunda %3$d var.</string>
+    <string name="deck_rule_min">%1$s desteleri en az %2$d kart ister; bunda %3$d var.</string>
+    <string name="deck_rule_copies">%1$d kopyadan fazla: %2$s</string>
+    <string name="deck_rules_note">Yalnızca kart sayısı ve kopyalar kontrol edilir; yasaklı kartlar ve formatlar kontrol edilmez.</string>
+    <string name="deck_not_found">Bulunamadı: %1$s</string>
+    <string name="share_cards">Sayfa olarak paylaş</string>
+    <string name="share_cards_text">Bu kartları (%1$d) paylaşım menüsüyle tek bir web sayfası olarak gönderir. Uygulama hiçbir şey yüklemez.</string>
+    <string name="share_with_prices">Fiyatlarla</string>
+    <string name="share_without_prices">Fiyatsız</string>
+</resources>

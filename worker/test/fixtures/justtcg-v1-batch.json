@@ -1,0 +1,34 @@
+{
+  "data": [
+    {
+      "id": "pokemon-base-set-charizard-holo-rare",
+      "uuid": "0b7c1f4e-1111-4c1a-9a51-9f1f7a2b0c01",
+      "name": "Charizard",
+      "game": "Pokemon",
+      "set": "base-set-pokemon",
+      "set_name": "Base Set",
+      "number": "4/102",
+      "tcgplayerId": "42382",
+      "rarity": "Holo Rare",
+      "variants": [
+        { "id": "v1", "condition": "Near Mint", "printing": "Holofoil", "language": "English", "price": 420.5, "lastUpdated": 1780936262 },
+        { "id": "v2", "condition": "Lightly Played", "printing": "Holofoil", "language": "English", "price": 310, "lastUpdated": 1780936262 },
+        { "id": "v3", "condition": "Damaged", "printing": "Holofoil", "language": "English", "price": 95.25, "lastUpdated": 1780936262 },
+        { "id": "v4", "condition": "Near Mint", "printing": "1st Edition Holofoil", "language": "English", "price": 9000, "lastUpdated": 1780936262 }
+      ]
+    },
+    {
+      "id": "magic-alpha-black-lotus",
+      "name": "Black Lotus",
+      "game": "Magic: The Gathering",
+      "tcgplayerId": "1000",
+      "scryfallId": "bd8fa327-dd41-4737-8f19-2cf5eb1f7cdd",
+      "variants": [
+        { "condition": "Heavily Played", "printing": "Normal", "price": "15000.00" },
+        { "condition": "Near Mint", "printing": "Normal", "language": "Japanese", "price": 1 }
+      ]
+    }
+  ],
+  "meta": { "total": 2, "limit": 20, "offset": 0, "hasMore": false },
+  "_metadata": { "apiPlan": "Free", "apiRequestsRemaining": 950 }
+}

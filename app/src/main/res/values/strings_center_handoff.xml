@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="center_outline_next">Continue to centering</string>
+    <string name="center_confirm_next">Confirm outline and measure centering</string>
+    <string name="center_step_two">Step 2: outer and inner guides</string>
+</resources>

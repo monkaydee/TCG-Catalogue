@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Kumpulkan kasus uji pengenalan</string>
+    <string name="settings_collect_cases_hint">Simpan impor foto yang dikonfirmasi (dengan kartu yang benar) di ponsel ini untuk meningkatkan pengenalan. Koreksi selalu disimpan. Tidak ada yang dikirim sampai kamu mengekspor.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="other">Ekspor %d kasus uji</item>
+    </plurals>
+    <string name="settings_clear_cases">Hapus kasus</string>
+    <string name="import_details_title">Cara dikenali</string>
+    <string name="import_details_by_picture">Ditemukan dari gambarnya</string>
+    <string name="import_details_by_number">Ditemukan dari nomor %1$s</string>
+    <string name="import_details_read">Terbaca di kartu:</string>
+</resources>

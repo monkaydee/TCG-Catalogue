@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Opsional: bagikan pengenal kartu dan sidik OCR, bukan foto atau teks OCR yang terbaca. Laporan disimpan 90 hari.</string>
+    <string name="learning_photos_paused">Berbagi foto dijeda hingga pemeriksaan konten dan identitas kartu tervalidasi. Pemindaian lokal tetap berfungsi.</string>
+    <string name="price_health_summary">%1$d kartu tanpa harga pasar · %2$d identitas Jepang perlu diperbaiki</string>
+</resources>

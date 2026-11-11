@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Więcej działań</string>
+    <string name="design_game">Gra</string>
+    <string name="design_select">Wybierz</string>
+    <string name="design_sort">Sortuj</string>
+    <string name="design_layout">Widok</string>
+    <string name="design_language">Język</string>
+    <string name="design_capture">Zdjęcie</string>
+    <string name="design_alignment">Wyrównanie</string>
+    <string name="design_inspection">Kontrola</string>
+    <string name="design_result">Wynik</string>
+    <string name="design_stage">Krok %1$d z %2$d · %3$s</string>
+    <string name="design_expanded">Rozwinięte</string>
+    <string name="design_collapsed">Zwinięte</string>
+    <string name="design_evidence">Źródła ceny</string>
+    <string name="design_details">Szczegóły karty</string>
+    <string name="design_slab_hint">Ceny odpowiadają zapisanej firmie gradingowej, ocenie i językowi druku. Ceny kart bez gradingu są pokazane osobno.</string>
+</resources>

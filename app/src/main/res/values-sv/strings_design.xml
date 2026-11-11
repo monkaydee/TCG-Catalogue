@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Fler åtgärder</string>
+    <string name="design_game">Spel</string>
+    <string name="design_select">Välj</string>
+    <string name="design_sort">Sortera</string>
+    <string name="design_layout">Layout</string>
+    <string name="design_language">Språk</string>
+    <string name="design_capture">Foto</string>
+    <string name="design_alignment">Justering</string>
+    <string name="design_inspection">Granskning</string>
+    <string name="design_result">Resultat</string>
+    <string name="design_stage">Steg %1$d av %2$d · %3$s</string>
+    <string name="design_expanded">Utökad</string>
+    <string name="design_collapsed">Hopfälld</string>
+    <string name="design_evidence">Priskällor</string>
+    <string name="design_details">Kortdetaljer</string>
+    <string name="design_slab_hint">Priser matchar registrerat gradingföretag, betyg och tryckspråk. Referenser utan grading visas separat.</string>
+</resources>

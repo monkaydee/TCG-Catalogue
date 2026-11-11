@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Hiển thị giá bằng</string>
+    <string name="settings_display_same">Như bộ sưu tập (%1$s)</string>
+    <string name="settings_display_offline">Không tải được tỷ giá. Hãy thử lại khi có mạng.</string>
+    <string name="settings_display_hint">Quy đổi theo tỷ giá tham chiếu ECB chỉ để hiển thị. Số bạn nhập và giá trị đã lưu vẫn là EUR hoặc USD.</string>
+    <string name="card_notes">Ghi chú</string>
+    <string name="card_notes_hint">Mua ở đâu, lỗi, dành cho ai …</string>
+    <string name="worth_grading_title">Có nên chấm điểm?</string>
+    <string name="worth_grading_cost">Chi phí chấm điểm mỗi thẻ bằng %1$s (phí + vận chuyển)</string>
+    <string name="worth_grading_no_raw">Chưa biết giá thẻ chưa chấm điểm nên không tính được lợi nhuận.</string>
+    <string name="worth_grading_from">%1$s: có lời từ điểm %2$s</string>
+    <string name="worth_grading_never">%1$s: không có lời ở điểm nào được liệt kê</string>
+    <string name="worth_grading_note">So với giá chưa chấm điểm của bản này là %1$s. Giá thẻ đã chấm điểm là giá thị trường hoặc giá rao; điểm nhận được không được đảm bảo.</string>
+    <string name="completion_title">Chi phí để hoàn thành</string>
+    <string name="completion_total">%1$s cho %2$d thẻ</string>
+    <string name="completion_unknown">%1$d thẻ chưa biết giá (không tính)</string>
+    <string name="completion_progress">Đã tải giá: %1$d / %2$d</string>
+    <string name="completion_hint">Bản in rẻ nhất của mỗi thẻ còn thiếu theo giá thị trường</string>
+    <string name="completion_calculate">Tính</string>
+    <string name="lot_title">Máy tính lô</string>
+    <string name="lot_remove">Xóa</string>
+    <string name="lot_add_value">Thêm giá trị (%1$s)</string>
+    <string name="lot_add">Thêm</string>
+    <string name="lot_market">Giá thị trường: %1$s (%2$d món)</string>
+    <string name="lot_unknown">%1$d món chưa có giá (không tính)</string>
+    <string name="lot_percent">Trả giá %1$d %% thị trường</string>
+    <string name="lot_offer">Giá lô: %1$s</string>
+    <string name="bulk_add_to_binder">Thêm vào album</string>
+    <string name="bulk_trade">Đánh dấu để trao đổi</string>
+    <string name="bulk_trade_done">Đã đánh dấu %1$d thẻ để trao đổi</string>
+    <string name="bulk_delete">Xóa</string>
+    <string name="bulk_delete_confirm">Xóa %1$d thẻ khỏi bộ sưu tập?</string>
+    <string name="bulk_select_all">Chọn tất cả (%1$d)</string>
+    <string name="bulk_no_binders">Bạn chưa có album riêng. Hãy tạo trong Mở album.</string>
+    <string name="bulk_added_to_binder">Đã thêm %1$d thẻ vào %2$s</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">कीमतें इसमें दिखाएँ</string>
+    <string name="settings_display_same">संग्रह जैसा (%1$s)</string>
+    <string name="settings_display_offline">विनिमय दरें लोड नहीं हो सकीं। ऑनलाइन होने पर फिर कोशिश करें।</string>
+    <string name="settings_display_hint">सिर्फ़ दिखाने के लिए ECB संदर्भ दरों से बदला गया। आप जो दर्ज करते हैं और सहेजे गए मान EUR या USD में रहते हैं।</string>
+    <string name="card_notes">नोट्स</string>
+    <string name="card_notes_hint">कहाँ से खरीदा, कमियाँ, किसके लिए …</string>
+    <string name="worth_grading_title">क्या ग्रेडिंग फ़ायदेमंद है?</string>
+    <string name="worth_grading_cost">प्रति कार्ड ग्रेडिंग लागत %1$s में (शुल्क + शिपिंग)</string>
+    <string name="worth_grading_no_raw">इस कार्ड का रॉ मूल्य अज्ञात है, इसलिए लाभ नहीं निकाला जा सकता।</string>
+    <string name="worth_grading_from">%1$s: ग्रेड %2$s से फ़ायदेमंद</string>
+    <string name="worth_grading_never">%1$s: किसी सूचीबद्ध ग्रेड पर फ़ायदेमंद नहीं</string>
+    <string name="worth_grading_note">इस प्रति के रॉ मूल्य %1$s से तुलना। ग्रेडेड कीमतें बाज़ार या लिस्टिंग कीमतें हैं; मिलने वाला ग्रेड पक्का नहीं है।</string>
+    <string name="completion_title">पूरा करने की लागत</string>
+    <string name="completion_total">%2$d कार्ड के लिए %1$s</string>
+    <string name="completion_unknown">%1$d कार्ड की कीमत अज्ञात (गिने नहीं गए)</string>
+    <string name="completion_progress">लोड हुई कीमतें: %2$d में से %1$d</string>
+    <string name="completion_hint">हर गायब कार्ड का सबसे सस्ता प्रिंट, बाज़ार कीमत पर</string>
+    <string name="completion_calculate">गणना करें</string>
+    <string name="lot_title">लॉट कैलकुलेटर</string>
+    <string name="lot_remove">हटाएँ</string>
+    <string name="lot_add_value">मूल्य जोड़ें (%1$s)</string>
+    <string name="lot_add">जोड़ें</string>
+    <string name="lot_market">बाज़ार मूल्य: %1$s (%2$d आइटम)</string>
+    <string name="lot_unknown">%1$d आइटम बिना कीमत (गिने नहीं गए)</string>
+    <string name="lot_percent">बाज़ार के %1$d %% पर ऑफ़र</string>
+    <string name="lot_offer">लॉट कीमत: %1$s</string>
+    <string name="bulk_add_to_binder">बाइंडर में जोड़ें</string>
+    <string name="bulk_trade">ट्रेड के लिए चिह्नित करें</string>
+    <string name="bulk_trade_done">%1$d कार्ड ट्रेड के लिए चिह्नित</string>
+    <string name="bulk_delete">हटाएँ</string>
+    <string name="bulk_delete_confirm">अपने संग्रह से %1$d कार्ड हटाएँ?</string>
+    <string name="bulk_select_all">सभी चुनें (%1$d)</string>
+    <string name="bulk_no_binders">आपके पास अभी कोई अपना बाइंडर नहीं है। बाइंडर खोलें में एक बनाएँ।</string>
+    <string name="bulk_added_to_binder">%1$d कार्ड %2$s में जोड़े गए</string>
+</resources>

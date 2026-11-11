@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_previous">Coleção anterior</string>
+    <string name="set_next">Próxima coleção</string>
+    <string name="import_add_all_sure">Adicionar todas as certas (%1$d)</string>
+    <string name="import_sure_match">Correspondência certa</string>
+    <string name="import_by_picture_check">Encontrada pela imagem – confira</string>
+</resources>

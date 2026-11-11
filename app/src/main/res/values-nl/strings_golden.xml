@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Testgevallen voor herkenning verzamelen</string>
+    <string name="settings_collect_cases_hint">Bevestigde foto-imports (met de juiste kaart) op deze telefoon bewaren om de herkenning te verbeteren. Correcties worden altijd bewaard. Er wordt niets verzonden tot je exporteert.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">%d testgeval exporteren</item>
+        <item quantity="other">%d testgevallen exporteren</item>
+    </plurals>
+    <string name="settings_clear_cases">Gevallen verwijderen</string>
+    <string name="import_details_title">Hoe hij herkend is</string>
+    <string name="import_details_by_picture">Gevonden aan de afbeelding</string>
+    <string name="import_details_by_number">Gevonden aan nummer %1$s</string>
+    <string name="import_details_read">Gelezen op de kaart:</string>
+</resources>

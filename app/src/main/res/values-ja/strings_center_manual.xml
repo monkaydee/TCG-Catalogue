@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">センタリングガイドを調整する</string>
+  <string name="center_hint">各面には、カードの外側の端と内側の印刷フレームの 2 つのガイドがあります。両方をドラッグしてギャップを測定します。シアンは外側のガイドをマークします。緑色のマークはインナーガイドです。黄色が選択されたガイドです。どの面にも同じプリントフレームを使用します。</string>
+  <string name="center_left">左</string>
+  <string name="center_right">右</string>
+  <string name="center_top">トップへ</string>
+  <string name="center_bottom">下</string>
+  <string name="center_detail">選択したガイドの詳細</string>
+  <string name="center_outer">外縁</string>
+  <string name="center_inner">インナーフレーム</string>
+  <string name="center_minus_pixel">−1画像ピクセル</string>
+  <string name="center_plus_pixel">+1 画像ピクセル</string>
+  <string name="center_cancel">キャンセル</string>
+  <string name="center_apply">これらのガイドを使用してください</string>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alert_channel">Avvisi di prezzo</string>
+    <string name="alert_above">Ora %1$s — sopra il tuo avviso di %2$s</string>
+    <string name="alert_below">Ora %1$s — sotto il tuo avviso di %2$s</string>
+    <string name="alert_wish">Nella tua wishlist: ora %1$s — pari o sotto il tuo obiettivo di %2$s</string>
+
+    <string name="stack_mode">Modalità pila</string>
+    <string name="stack_review_later">%1$s — controllala più tardi nella striscia qui sotto</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d carta da controllare — toccala</item>
+        <item quantity="many">%d di carte da controllare — toccale</item>
+        <item quantity="other">%d carte da controllare — toccale</item>
+    </plurals>
+    <string name="stack_tap_to_review">Tocca per controllare</string>
+    <string name="stack_undo">Annulla</string>
+    <string name="stack_discard">Scarta</string>
+
+    <string name="sealed_title">Prodotti sigillati</string>
+    <string name="sealed_add">Aggiungi prodotto sigillato</string>
+    <string name="sealed_value">Valore sigillato</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d articolo</item>
+        <item quantity="many">%d di articoli</item>
+        <item quantity="other">%d articoli</item>
+    </plurals>
+    <string name="sealed_empty">Tieni traccia qui di box di buste, buste, mazzi e scatole non aperti. Il loro valore di mercato conta nel tuo portafoglio.</string>
+    <string name="sealed_remove_hint">Salvando con 0 il prodotto viene rimosso.</string>
+    <string name="sealed_gain">%1$s dall\'acquisto</string>
+    <string name="sealed_no_price">nessun prezzo</string>
+    <string name="sealed_search_hint">Nome del prodotto o set, es. “box di buste 151”</string>
+    <string name="sealed_no_results">Nessun prodotto sigillato trovato</string>
+
+    <string name="crash_title">Spiacenti, l\'app si è arrestata</string>
+    <string name="crash_text">È stato conservato un rapporto tecnico (versione dell\'app e di Android, modello del telefono ed errore — nessuna delle tue carte). Puoi inviarlo per aiutare a risolvere il problema.</string>
+    <string name="crash_report_github">Segnala su GitHub</string>
+    <string name="crash_share">Condividi</string>
+    <string name="crash_dismiss">Non ora</string>
+
+    <string name="home_cloud_newer_title">Una collezione più recente da un altro telefono</string>
+    <string name="home_cloud_newer_text">Il tuo backup cloud è stato aggiornato su un altro telefono. Tocca per caricarlo o unirlo in Impostazioni.</string>
+
+    <string name="picture_find">Cerca per immagine</string>
+    <string name="picture_preparing">Preparazione della ricerca per immagine — download una tantum di circa 20 MB…</string>
+    <string name="picture_searching">Ricerca della carta tramite la sua immagine…</string>
+    <string name="picture_none">Nessuna carta trovata tramite l\'immagine — prova a digitarla.</string>
+    <string name="picture_unavailable">La ricerca per immagine non è disponibile al momento — controlla la connessione.</string>
+    <string name="picture_check">Trovata tramite l\'immagine — controlla che sia la carta giusta.</string>
+</resources>

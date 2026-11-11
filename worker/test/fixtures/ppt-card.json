@@ -1,0 +1,19 @@
+{
+  "data": {
+    "tcgPlayerId": "42382",
+    "name": "Charizard",
+    "setName": "Base Set",
+    "prices": { "market": 420.1, "low": 380 },
+    "ebay": {
+      "salesByGrade": {
+        "psa10": { "count": 12, "averagePrice": 13000, "medianPrice": 12800, "smartMarketPrice": { "price": 12650.55, "confidence": "high" } },
+        "psa9": { "count": 40, "averagePrice": 2100, "medianPrice": 2050 },
+        "cgc9_5": { "count": 3, "averagePrice": 3000, "medianPrice": null, "smartMarketPrice": { "price": null } },
+        "unknownKey": { "count": 1, "averagePrice": 5 }
+      },
+      "totalSales": 55,
+      "dateRangeEnd": "2026-10-01T00:00:00.000Z"
+    }
+  },
+  "metadata": { "apiCallsConsumed": { "total": 2 } }
+}

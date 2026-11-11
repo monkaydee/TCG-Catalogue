@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Övre vänstra hörnet</string>
+  <string name="wear_top_right">Det övre högra hörnet</string>
+  <string name="wear_bottom_right">Nedre högra hörnet</string>
+  <string name="wear_bottom_left">Nedre vänstra hörnet</string>
+  <string name="wear_top">Överkant</string>
+  <string name="wear_right">Höger kant</string>
+  <string name="wear_bottom">Nederkant</string>
+  <string name="wear_left">Vänster kant</string>
+  <string name="wear_evidence_count">Automatisk kontroll: %1$d av 8 regioner har användbara färgbevis</string>
+  <string name="wear_review_count">Manuell granskning: %1$d av 8 regioner</string>
+  <string name="wear_inspect_regions">Inspektera alla fyra hörn och fyra kanter</string>
+  <string name="wear_hide_regions">Dölj regiondetaljer</string>
+  <string name="wear_screening_scope">Varje region kontrolleras separat för färgavvikelser och blekning. Utskrift, folie och skärning kan likna skada. Öppna en region för att inspektera fotot och spela in vad du ser.</string>
+  <string name="wear_not_assessed">Ej bedömd — otillräcklig användbar bevisning</string>
+  <string name="wear_inconclusive">Automatisk kontroll är inte avgörande</string>
+  <string name="wear_possible_damage">Automatisk kontroll: möjligt slitage — inspektera detta område</string>
+  <string name="wear_auto_none">Automatisk kontroll: ingen färgavvikelse flaggad</string>
+  <string name="wear_your_observation">Din observation: %1$s</string>
+  <string name="wear_white_border">Vita kanter kan dölja blekning; färgkontroller kan inte bekräfta deras tillstånd.</string>
+  <string name="wear_textured_border">Variabel konst eller folie begränsar färgjämförelsen.</string>
+  <string name="wear_flagged_pixels">Flaggade regionpixlar: %1$.1f%% · ljusare anomalier: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Nyp för att zooma och dra för att inspektera. Förstoring ger inga fotodetaljer; ta om suddiga bilder.</string>
+  <string name="wear_record_observation">Din observation för denna region</string>
+  <string name="wear_not_reviewed">Ej granskad</string>
+  <string name="wear_observed_clear">Inga synliga skador på denna bild</string>
+  <string name="wear_whitening">Blekning / skavning synlig</string>
+  <string name="wear_chip">Spån/reva synlig</string>
+  <string name="wear_bend">Böjning/buckla synlig</string>
+  <string name="wear_done">Klart</string>
+  <string name="wear_damage_blocks_grade">Synliga skador registrerades. Den övergripande modelluppskattningen undanhålls eftersom manuella fynd inte är kalibrerade modellindata. Centreringsresultat tar inte hänsyn till denna skada.</string>
+  <string name="wear_incomplete_blocks_grade">Hörn och kanter behöver ses närmare. Saknade eller ofullständiga bevis förhindrar en övergripande modelluppskattning; Enbart centrering sätter inte ett betyg.</string>
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">Не вдалося завантажити дані картки — перевірте з\'єднання</string>
+    <string name="card_pager_position">%1$d / %2$d · гортайте далі</string>
+    <string name="card_back">Назад</string>
+    <string name="card_edit">Редагувати картку</string>
+    <string name="card_remove_from_collection">Видалити з колекції</string>
+    <string name="card_save">Зберегти</string>
+    <string name="card_remove_title">Видалити картку?</string>
+    <plurals name="card_remove_message">
+        <item quantity="one">Буде видалено %1$d копію картки %2$s з вашої колекції.</item>
+        <item quantity="few">Буде видалено всі %1$d копії картки %2$s з вашої колекції.</item>
+        <item quantity="many">Буде видалено всі %1$d копій картки %2$s з вашої колекції.</item>
+        <item quantity="other">Буде видалено всі %1$d копії картки %2$s з вашої колекції.</item>
+    </plurals>
+    <string name="card_remove">Видалити</string>
+    <string name="card_cancel">Скасувати</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s за копію (%2$s на %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s за копію (%2$s на ринку)</string>
+    <string name="card_price_updated">Оновлено %1$s</string>
+    <string name="card_no_market_price">Ринкової ціни немає</string>
+    <string name="card_own_value">Ваша оцінка: %1$s за копію</string>
+    <string name="card_own_value_with_market">Ваша оцінка: %1$s за копію · ринок %2$s</string>
+    <string name="card_bought_for_with_percent">Куплено за %1$s за шт. · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Куплено за %1$s за шт. · %2$s</string>
+    <string name="card_cert">Серт. №%1$s</string>
+    <string name="card_graded_hint">Для градованих копій використовується ваша оцінка — перегляньте останні продажі за посиланнями нижче.</string>
+    <string name="card_raw_hint">Ринкова ціна негрейдованої картки для цього стану.</string>
+    <string name="card_quantity">Кількість</string>
+    <string name="card_cardmarket_listing">Позиція на Cardmarket</string>
+    <string name="card_condition">Стан</string>
+    <string name="card_all_prices">Усі ціни</string>
+    <string name="card_show">Показати</string>
+    <string name="card_refresh">Оновити</string>
+    <string name="card_check_prices">Перевірити ціни онлайн</string>
+    <string name="set_back">Назад</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%1$d з %2$d картки (%3$d%%)</item>
+        <item quantity="few">%1$d з %2$d карток (%3$d%%)</item>
+        <item quantity="many">%1$d з %2$d карток (%3$d%%)</item>
+        <item quantity="other">%1$d з %2$d картки (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="one">%d картка</item>
+        <item quantity="few">%d картки</item>
+        <item quantity="many">%d карток</item>
+        <item quantity="other">%d картки</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="one">%d копія</item>
+        <item quantity="few">%d копії</item>
+        <item quantity="many">%d копій</item>
+        <item quantity="other">%d копії</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">За вартістю</string>
+    <string name="set_sort_number">За номером</string>
+    <string name="set_no_price">без ціни</string>
+    <string name="common_auto">Авто</string>
+    <string name="common_less">Менше</string>
+    <string name="common_more">Більше</string>
+    <string name="links_ebay_sold">Продажі на eBay</string>
+</resources>

@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="widget_customize">Customize widget</string>
+    <string name="widget_design_intro">Choose a layout. Each widget on your home screen can have its own look.</string>
+    <string name="widget_style_value">Focus</string>
+    <string name="widget_style_value_desc">A bold collection value with a quiet, minimal layout.</string>
+    <string name="widget_style_dashboard">Dashboard</string>
+    <string name="widget_style_dashboard_desc">Value, collection counts, and price coverage in one view.</string>
+    <string name="widget_style_collector">Collector</string>
+    <string name="widget_style_collector_desc">A card-inspired display with a distinctive mint accent.</string>
+    <string name="widget_transparent">Transparent background</string>
+    <string name="widget_text_color">Text color</string>
+    <string name="widget_apply">Apply widget</string>
+    <string name="widget_preview_label">Live preview</string>
+    <string name="widget_default_note">These defaults apply to new and uncustomized widgets. Tap the customize icon on a placed widget to change only that widget.</string>
+    <string name="widget_short_cards">Cards</string>
+    <string name="widget_short_sealed">Sealed</string>
+    <string name="widget_short_missing">Unpriced</string>
+    <string name="widget_known_only">Known values only</string>
+    <string name="widget_all_priced">All items priced</string>
+    <string name="widget_waiting">Waiting for prices</string>
+    <string name="widget_30d_short">30-day change</string>
+    <string name="widget_preview_empty">Add cards to see your collection value.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Tiếp tục căn giữa</string>
+  <string name="center_confirm_next">Xác nhận đường viền và đo tâm</string>
+  <string name="center_step_two">Bước 2: hướng dẫn bên ngoài và bên trong</string>
+</resources>

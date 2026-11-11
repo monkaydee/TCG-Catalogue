@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Инструменты сбора</string>
+  <string name="tools_costs">Книга затрат</string>
+  <string name="tools_grading">Карточки отправлены на оценку</string>
+  <string name="tools_shipping">Доставка за копию</string>
+  <string name="tools_tax">Налог за копию</string>
+  <string name="tools_grading_cost">Стоимость оценки за копию</string>
+  <string name="tools_pnl">Нереализованный прибыль и убыток</string>
+  <string name="tools_unknown">Неизвестная цена или стоимость</string>
+  <string name="tools_blank">Оставьте неизвестные расходы пустыми. Введите 0 бесплатно.</string>
+  <string name="tools_reference">Ссылка на отправку</string>
+  <string name="tools_notes">Примечания</string>
+  <string name="tools_export">Страховой экспорт</string>
+  <string name="tools_review">Ожидаются фотообзоры</string>
+  <string name="tools_evidence">Ценовое подтверждение</string>
+  <string name="tools_stale">Устаревшая рыночная цена</string>
+  <string name="tools_current">Текущая рыночная цена</string>
+  <string name="tools_fees">Комиссия за продажу</string>
+  <string name="tools_learning">Помогите улучшить узнаваемость</string>
+  <string name="tools_photos">Поделитесь утвержденными карточными урожаями</string>
+  <string name="tools_send">Отправлять ожидающие отчеты</string>
+  <string name="tools_delete">Удаление общих отчетов</string>
+  <string name="tools_consent">Необязательно. Текстовые отчеты включают данные карты и ваши исправления. Фотографии требуют отдельного предварительного просмотра и утверждения. Отчеты хранятся 90 дней.</string>
+  <string name="tools_preview">Утвердить обрезку карточки</string>
+  <string name="tools_preparing">Подготовка</string>
+  <string name="tools_shipped">Отправлено</string>
+  <string name="tools_received">Получено</string>
+  <string name="tools_grading_status">Выполняется оценка карты</string>
+  <string name="tools_returned">Вернулся</string>
+  <string name="tools_cancelled">Отменено</string>
+  <string name="tools_complete">Завершить</string>
+  <string name="tools_price_challenge">Сообщить о неверной цене</string>
+  <string name="tools_confirm_outline">Подтвердите всю структуру карты</string>
+  <string name="tools_outline_hint">Перед подтверждением убедитесь, что все четыре угла являются внешними углами карты.</string>
+  <string name="tools_duplicate_cert">Этот сертификат уже находится в вашей коллекции.</string>
+</resources>

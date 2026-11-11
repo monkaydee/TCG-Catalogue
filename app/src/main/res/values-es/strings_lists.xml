@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lists_back">Atrás</string>
+    <string name="lists_cancel">Cancelar</string>
+    <string name="lists_save">Guardar</string>
+    <string name="lists_clear">Borrar</string>
+    <string name="lists_remove">Quitar</string>
+    <string name="lists_retry">Reintentar</string>
+    <string name="lists_title">Listas</string>
+    <string name="lists_amount_in">Importe (%1$s)</string>
+    <string name="lists_amount_invalid">Introduce un importe, p. ej. 12,50</string>
+
+    <string name="checklist_title">Lista de control</string>
+    <string name="checklist_open">Mostrar lista de control</string>
+        <plurals name="checklist_progress">
+        <item quantity="one">%1$d de %2$d carta en tu poder</item>
+        <item quantity="many">%1$d de %2$d cartas en tu poder</item>
+        <item quantity="other">%1$d de %2$d cartas en tu poder</item>
+    </plurals>
+    <string name="checklist_filter_all">Todas · %1$d</string>
+    <string name="checklist_filter_owned">Tengo · %1$d</string>
+    <string name="checklist_filter_missing">Faltan · %1$d</string>
+    <string name="checklist_loading">Cargando las cartas de este set…</string>
+    <string name="checklist_empty_title">No hay lista de control para este set</string>
+    <string name="checklist_empty_text">No se pudo cargar la lista de cartas. Comprueba tu conexión, o puede que este set aún no figure.</string>
+    <string name="checklist_none_owned">Aún no tienes ninguna carta de este set.</string>
+    <string name="checklist_none_missing">¡Completo! Tienes todas las cartas de este set.</string>
+    <string name="checklist_owned_badge">×%1$d</string>
+    <string name="checklist_missing">Falta</string>
+    <string name="checklist_on_wishlist">En tu lista de deseos</string>
+    <string name="checklist_add_collection">Añadir a la colección</string>
+    <string name="checklist_add_wishlist">Añadir a la lista de deseos</string>
+    <string name="checklist_card_loading">Cargando carta…</string>
+    <string name="checklist_card_failed">No se pudo cargar esta carta — comprueba tu conexión</string>
+    <string name="checklist_added">%1$s añadida a tu colección</string>
+    <string name="checklist_printing">Impresión</string>
+
+    <string name="wish_title">Lista de deseos</string>
+    <string name="wish_add">Añadir a la lista de deseos</string>
+    <string name="wish_remove">Quitar de la lista de deseos</string>
+    <string name="wish_added">%1$s añadida a tu lista de deseos</string>
+    <string name="wish_removed">%1$s quitada de tu lista de deseos</string>
+    <string name="wish_add_failed">No se pudo añadir la carta — comprueba tu conexión</string>
+    <string name="wish_total">Coste total</string>
+    <plurals name="wish_count">
+        <item quantity="one">%1$d carta</item>
+        <item quantity="many">%1$d de cartas</item>
+        <item quantity="other">%1$d cartas</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="one">%1$d en o por debajo de tu objetivo</item>
+        <item quantity="many">%1$d en o por debajo de tu objetivo</item>
+        <item quantity="other">%1$d en o por debajo de tu objetivo</item>
+    </plurals>
+    <string name="wish_empty_title">Tu lista de deseos está vacía</string>
+    <string name="wish_empty_text">Añade cartas desde la búsqueda o desde las cartas que faltan en la lista de control de un set.</string>
+    <string name="wish_no_price">Sin precio</string>
+    <string name="wish_target">Objetivo %1$s</string>
+    <string name="wish_no_target">Sin precio objetivo</string>
+    <string name="wish_target_reached">En tu objetivo</string>
+    <string name="wish_set_target">Fijar precio objetivo</string>
+    <string name="wish_target_title">Precio objetivo</string>
+    <string name="wish_target_text">Recibirás una notificación cuando el precio baje a esta cantidad o menos. Ahora: %1$s</string>
+    <string name="wish_target_text_no_price">Recibirás una notificación cuando el precio baje a esta cantidad o menos.</string>
+
+    <string name="trade_title">Lista de intercambio</string>
+    <string name="trade_toggle">Para intercambio</string>
+    <string name="trade_share">Compartir lista</string>
+    <string name="trade_remove">Quitar de la lista de intercambio</string>
+    <string name="trade_total">Valor de intercambio</string>
+    <string name="trade_empty_title">Aún nada para intercambiar</string>
+    <string name="trade_empty_text">Abre una carta de tu colección y toca «Para intercambio» para añadirla aquí.</string>
+        <plurals name="trade_share_heading">
+        <item quantity="one">Mi lista de intercambio (%1$d carta)</item>
+        <item quantity="many">Mi lista de intercambio (%1$d de cartas)</item>
+        <item quantity="other">Mi lista de intercambio (%1$d cartas)</item>
+    </plurals>
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <string name="trade_share_total">Valor total: %1$s</string>
+    <string name="trade_share_footer">Compartido desde %1$s</string>
+    <string name="trade_share_subject">Mi lista de intercambio</string>
+
+    <string name="sold_sell">Vender</string>
+    <string name="sold_sell_title">Vender %1$s</string>
+    <string name="sold_quantity">Copias vendidas</string>
+    <string name="sold_quantity_of">de %1$d</string>
+    <string name="sold_price_each">Precio por copia (%1$s)</string>
+    <string name="sold_total_line">Total %1$s</string>
+    <string name="sold_profit_line">Beneficio %1$s</string>
+    <string name="sold_confirm">Vender</string>
+    <string name="sold_done">Vendido %1$d× %2$s</string>
+    <string name="sold_title">Vendidas</string>
+    <string name="sold_realised">Beneficio realizado</string>
+    <string name="sold_revenue">Ventas %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="one">%1$d venta sin precio de compra no se cuenta</item>
+        <item quantity="many">%1$d de ventas sin precio de compra no se cuentan</item>
+        <item quantity="other">%1$d ventas sin precio de compra no se cuentan</item>
+    </plurals>
+    <string name="sold_empty_title">Aún no hay ventas</string>
+    <string name="sold_empty_text">Abre una carta de tu colección y toca «Vender» para registrar aquí una venta.</string>
+    <string name="sold_sale_line">Vendido %1$d × %2$s</string>
+    <string name="sold_paid_line">Pagado %1$s cada una</string>
+    <string name="sold_paid_unknown">Precio de compra desconocido</string>
+    <string name="sold_on">Vendido el %1$s</string>
+    <string name="sold_delete">Eliminar entrada</string>
+    <string name="sold_delete_title">¿Eliminar esta venta?</string>
+    <string name="sold_delete_text">Se quita de la lista de vendidas y del beneficio realizado. La carta no vuelve a tu colección.</string>
+
+    <string name="alert_ui_short">Alerta</string>
+    <string name="alert_ui_title">Alerta de precio</string>
+    <string name="alert_ui_text">Recibe una notificación cuando el valor por copia cruce una de estas cantidades. Ahora: %1$s</string>
+    <string name="alert_ui_above">Avisar por encima de (%1$s)</string>
+    <string name="alert_ui_below">Avisar por debajo de (%1$s)</string>
+    <string name="alert_ui_order">«Por encima» debe ser mayor que «por debajo»</string>
+    <string name="alert_ui_active_above">Por encima de %1$s</string>
+    <string name="alert_ui_active_below">Por debajo de %1$s</string>
+
+    <string name="history_title">Historial de precios</string>
+    <string name="history_max">Máx. %1$s</string>
+    <string name="history_min">Mín. %1$s</string>
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <string name="lists_card_edit">Editar</string>
+    <string name="lists_card_remove">Quitar</string>
+</resources>

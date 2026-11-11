@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Merkezleme kılavuzlarını ayarlayın</string>
+  <string name="center_hint">Her iki tarafta iki kılavuz bulunur: dış kart kenarı ve iç baskılı çerçeve. Boşluklarını ölçmek için her ikisini de sürükleyin. Camgöbeği dış kılavuzları işaretler; yeşil iç kılavuzları işaretler. Sarı seçilen kılavuzdur. Her tarafta aynı baskılı çerçeveyi kullanın.</string>
+  <string name="center_left">Sol</string>
+  <string name="center_right">Sağ</string>
+  <string name="center_top">Üst</string>
+  <string name="center_bottom">Alt</string>
+  <string name="center_detail">Seçilen kılavuz detayı</string>
+  <string name="center_outer">Dış kenar</string>
+  <string name="center_inner">İç çerçeve</string>
+  <string name="center_minus_pixel">−1 resim pikseli</string>
+  <string name="center_plus_pixel">+1 resim pikseli</string>
+  <string name="center_cancel">İptal</string>
+  <string name="center_apply">Bu kılavuzları kullanın</string>
+</resources>

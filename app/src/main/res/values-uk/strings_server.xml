@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">нещодавніх продажів %1$s не знайдено — вкажіть власну оцінку або перегляньте посилання на ціни</string>
+    <string name="data_graded_server_error">сервер цін зараз недоступний</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="one">%1$d продаж</item>
+        <item quantity="few">%1$d продажі</item>
+        <item quantity="many">%1$d продажів</item>
+        <item quantity="other">%1$d продажу</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Ціни градованих карток</string>
+    <string name="graded_none">Продажів градованих копій цієї картки не знайдено.</string>
+    <string name="graded_failed">Сервер цін зараз недоступний.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">ваша оцінка</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Перевірити сертифікат у PSA</string>
+    <string name="cert_unknown">У PSA немає картки з таким номером сертифіката.</string>
+    <string name="cert_failed">PSA зараз недоступний. Спробуйте пізніше.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">Оцінка PSA: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Популяція: %1$d з такою оцінкою, %2$d вище</string>
+    <string name="cert_mismatch">Оцінка в записі PSA відрізняється від збереженої для цієї картки.</string>
+    <string name="links_psa_cert">Сертифікат PSA</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Розпізнати онлайн</string>
+    <string name="identify_hint">Надсилає це фото на сервер цін застосунку для розпізнавання зображення (Ximilar). Фото не зберігається.</string>
+    <string name="identify_searching">Розпізнаємо онлайн…</string>
+    <string name="identify_none">Онлайн також не розпізнано. Спробуйте чіткіше фото або введіть картку вручну.</string>
+    <string name="identify_failed">Онлайн-розпізнавання зараз недоступне (досягнуто денного ліміту або немає з\'єднання).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Сервер цін</string>
+    <string name="settings_server_summary">Власний безплатний сервер застосунку для цін градованих карток, перевірки сертифікатів PSA та онлайн-розпізнавання. У збірках з GitHub він уже вбудований; щоб налаштувати свій, див. docs/CLOUDFLARE.md.</string>
+    <string name="settings_server_url">Адреса сервера (https://…)</string>
+    <string name="settings_server_key">Ключ застосунку</string>
+    <string name="settings_server_save">Зберегти</string>
+    <string name="settings_server_reset">Використати вбудований</string>
+    <string name="settings_server_test">Перевірити</string>
+    <string name="settings_server_ok">Підключено до сервера цін.</string>
+    <string name="settings_server_bad">Сервер цін не відповів. Перевірте адресу та ключ застосунку.</string>
+    <string name="settings_server_off">Сервер цін не налаштовано: ціни градованих карток використовують вашу власну оцінку.</string>
+</resources>

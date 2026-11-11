@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Zbieraj przypadki testowe rozpoznawania</string>
+    <string name="settings_collect_cases_hint">Zachowuj na tym telefonie potwierdzone importy zdjęć (z właściwą kartą), aby ulepszyć rozpoznawanie. Poprawki są zawsze zachowywane. Nic nie jest wysyłane, dopóki nie wyeksportujesz.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">Eksportuj %d przypadek testowy</item>
+        <item quantity="few">Eksportuj %d przypadki testowe</item>
+        <item quantity="many">Eksportuj %d przypadki testowe</item>
+        <item quantity="other">Eksportuj %d przypadki testowe</item>
+    </plurals>
+    <string name="settings_clear_cases">Usuń przypadki</string>
+    <string name="import_details_title">Jak rozpoznano</string>
+    <string name="import_details_by_picture">Znaleziono po obrazku</string>
+    <string name="import_details_by_number">Znaleziono po numerze %1$s</string>
+    <string name="import_details_read">Odczytano na karcie:</string>
+</resources>

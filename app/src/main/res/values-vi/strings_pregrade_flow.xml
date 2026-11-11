@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Phác thảo thẻ · bốn góc</string>
+  <string name="pre_center_screen">Định tâm · tám hướng dẫn</string>
+  <string name="pre_open_centering">Đo đường viền bên trong và bên ngoài</string>
+  <string name="pre_outline_continue">Xác nhận phác thảo toàn bộ thẻ</string>
+  <string name="pre_outline_adjust">Điều chỉnh bốn góc thẻ</string>
+  <string name="pre_choose_game">Trò chơi bài</string>
+  <string name="pre_center_missing">Đặt các thanh dẫn hướng bên ngoài và bên trong ở bên này để hoàn thành phép đo định tâm của nó.</string>
+  <string name="pre_center_ready">Đo định tâm. Bạn có thể điều chỉnh tất cả tám hướng dẫn.</string>
+  <string name="pre_edit_front">Chỉnh sửa căn giữa phía trước</string>
+  <string name="pre_edit_back">Chỉnh sửa căn giữa phía sau</string>
+  <string name="pre_potential_title">Tiềm năng định tâm</string>
+  <string name="pre_potential_10">Trong giới hạn định tâm PSA 10</string>
+  <string name="pre_potential_borderline">Định tâm đường biên PSA 10</string>
+  <string name="pre_potential_below">Bên ngoài giới hạn định tâm PSA 10</string>
+  <string name="pre_potential_incomplete">Hoàn thành cả hai bên để có tiềm năng định tâm</string>
+  <string name="pre_potential_scope">Chỉ tập trung vào các trò chơi bài. Sử dụng giới hạn PSA phía trước 55/45 và phía sau 75/25. Đường viền có nghĩa là việc điều chỉnh hướng dẫn một pixel có thể thay đổi kết quả. Các góc, cạnh, bề mặt và tính xác thực có thể làm giảm chất lượng cuối cùng.</string>
+  <string name="pre_model_scope">Dự đoán điểm tổng thể không được xác thực cho trò chơi này hoặc các phép đo này. Điện thế định tâm ở trên vẫn có sẵn sau khi đo cả hai bên.</string>
+  <string name="pre_experimental_model">Ước tính ảnh Pokémon thử nghiệm</string>
+  <string name="pre_quality_blocked">Chụp lại mặt này: đường viền hoặc chất lượng ảnh của nó không phù hợp để đánh giá độ hao mòn.</string>
+  <string name="pre_no_wear_detected">không phát hiện thấy sự hao mòn</string>
+  <string name="pre_skip_frame">Không có khung in nào có thể so sánh được</string>
+  <string name="pre_retake_front">Chụp lại ảnh mặt trước</string>
+  <string name="pre_retake_back">Chụp lại ảnh</string>
+</resources>

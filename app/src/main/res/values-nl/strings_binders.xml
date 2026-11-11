@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Collectie openen</string>
+    <string name="binders_title">Mappen</string>
+    <string name="binders_all">Alle kaarten</string>
+    <string name="binders_new">Nieuwe map</string>
+    <string name="binders_card_count">Kaarten: %1$d</string>
+    <string name="binder_open_hint">Veeg of tik om te openen</string>
+    <string name="binder_add_cards">Kaarten toevoegen</string>
+    <string name="binder_choose_cards">Kaarten in deze map</string>
+    <string name="binder_edit">Map bewerken</string>
+    <string name="binder_delete">Map verwijderen</string>
+    <string name="binder_delete_confirm">“%1$s” verwijderen? De kaarten blijven in je collectie.</string>
+    <string name="binder_name">Naam</string>
+    <string name="binder_cover_design">Omslagontwerp</string>
+    <string name="binder_cover_upload">Eigen afbeelding gebruiken</string>
+    <string name="binder_cover_remove">Afbeelding verwijderen</string>
+    <string name="binder_save">Opslaan</string>
+    <string name="binder_empty_custom">Deze map is leeg. Voeg kaarten uit je collectie toe.</string>
+    <string name="binder_search">Kaarten zoeken</string>
+    <string name="binder_new_name">Mijn map</string>
+    <string name="binder_selected">Geselecteerd: %1$d</string>
+    <string name="collection_title">Collectie</string>
+    <string name="collection_sort_recent">Recent toegevoegd</string>
+    <string name="collection_sort_grade">Grade</string>
+    <string name="collection_sort_set">Set</string>
+    <string name="collection_empty">Nog geen kaarten.</string>
+    <string name="collection_summary">Kaarten: %1$d · %2$s</string>
+    <string name="cover_midnight">Middernacht</string>
+    <string name="cover_crimson">Karmijn</string>
+    <string name="cover_forest">Bos</string>
+    <string name="cover_ocean">Oceaan</string>
+    <string name="cover_galaxy">Melkweg</string>
+    <string name="cover_sunset">Zonsondergang</string>
+    <string name="cover_gold">Goudfolie</string>
+    <string name="cover_carbon">Carbon</string>
+</resources>

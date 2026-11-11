@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Верхний левый угол</string>
+  <string name="wear_top_right">Верхний правый угол</string>
+  <string name="wear_bottom_right">Нижний правый угол</string>
+  <string name="wear_bottom_left">Нижний левый угол</string>
+  <string name="wear_top">Верхний край</string>
+  <string name="wear_right">Правый край</string>
+  <string name="wear_bottom">Нижний край</string>
+  <string name="wear_left">Левый край</string>
+  <string name="wear_evidence_count">Автоматическая проверка: %1$d из 8 регионов имеют пригодные цветовые доказательства</string>
+  <string name="wear_review_count">Ручная проверка: %1$d из 8 регионов</string>
+  <string name="wear_inspect_regions">Осмотрите все четыре угла и четыре края.</string>
+  <string name="wear_hide_regions">Скрыть информацию о регионе</string>
+  <string name="wear_screening_scope">Каждый регион отдельно проверяется на предмет цветовых аномалий и побеления. Выравнивание печати, фольги и обрезки может напоминать повреждение. Откройте область, чтобы просмотреть фотографию и записать то, что вы видите.</string>
+  <string name="wear_not_assessed">Не оценено — недостаточно полезных доказательств</string>
+  <string name="wear_inconclusive">Автоматическая проверка не дает результатов</string>
+  <string name="wear_possible_damage">Автоматическая проверка: возможный износ — осмотрите этот участок</string>
+  <string name="wear_auto_none">Автоматическая проверка: аномалии цвета не отмечены</string>
+  <string name="wear_your_observation">Ваше наблюдение: %1$s</string>
+  <string name="wear_white_border">Белая кайма может скрыть отбеливание; цветные проверки не могут подтвердить их состояние.</string>
+  <string name="wear_textured_border">Различные рисунки или фольга ограничивают сравнение цветов.</string>
+  <string name="wear_flagged_pixels">Пиксели помеченной области: %1$.1f%% · более яркие аномалии: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Сведите пальцы, чтобы увеличить масштаб, и перетащите, чтобы осмотреть. Увеличение не добавляет деталей фотографии; переснять размытые фотографии.</string>
+  <string name="wear_record_observation">Ваше наблюдение для этого региона</string>
+  <string name="wear_not_reviewed">Не проверено</string>
+  <string name="wear_observed_clear">На этом фото видимых повреждений нет.</string>
+  <string name="wear_whitening">Видны побеление/потертости</string>
+  <string name="wear_chip">Виден скол/надрыв</string>
+  <string name="wear_bend">Виден изгиб/вмятина</string>
+  <string name="wear_done">Готово</string>
+  <string name="wear_damage_blocks_grade">Зафиксированы видимые повреждения. Общая оценка модели не учитывается, поскольку результаты, полученные вручную, не являются калиброванными входными данными модели. Результаты центрирования не учитывают это повреждение.</string>
+  <string name="wear_incomplete_blocks_grade">Углы и края требуют более тщательного осмотра. Отсутствующие или неубедительные данные не позволяют получить общую оценку модели; само по себе центрирование не определяет оценку.</string>
+</resources>

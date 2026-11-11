@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">Hoppa över</string>
+    <string name="onboarding_next">Nästa</string>
+    <string name="onboarding_get_started">Kom igång</string>
+    <string name="onboarding_scan_title">Skanna dina kort</string>
+    <string name="onboarding_scan_text">Rikta kameran mot ett kort eller importera foton från galleriet. Namn och nummer läses av åt dig.</string>
+    <string name="onboarding_binder_title">Din samling i en binder</string>
+    <string name="onboarding_binder_text">Bläddra bland korten sida för sida i en virtuell binder och vänd blad som i verkligheten.</string>
+    <string name="onboarding_prices_title">Priser och värde</string>
+    <string name="onboarding_prices_text">Se vad varje kort är värt och följ värdet på hela din samling över tid.</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">Sida %1$d av %2$d</string>
+</resources>

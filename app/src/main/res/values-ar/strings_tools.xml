@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">أدوات الجمع</string>
+  <string name="tools_costs">دفتر التكاليف</string>
+  <string name="tools_grading">تم إرسال البطاقات للتصنيف</string>
+  <string name="tools_shipping">الشحن لكل نسخة</string>
+  <string name="tools_tax">الضريبة على كل نسخة</string>
+  <string name="tools_grading_cost">تكلفة التصنيف لكل نسخة</string>
+  <string name="tools_pnl">الربح والخسارة غير المحققة</string>
+  <string name="tools_unknown">سعر أو تكلفة غير معروفة</string>
+  <string name="tools_blank">اترك التكاليف غير المعروفة فارغة. أدخل 0 دون أي تكلفة.</string>
+  <string name="tools_reference">مرجع التقديم</string>
+  <string name="tools_notes">ملاحظات</string>
+  <string name="tools_export">تصدير التأمين</string>
+  <string name="tools_review">في انتظار مراجعات الصور</string>
+  <string name="tools_evidence">أدلة الأسعار</string>
+  <string name="tools_stale">سعر السوق عفا عليه الزمن</string>
+  <string name="tools_current">سعر السوق الحالي</string>
+  <string name="tools_fees">رسوم البيع</string>
+  <string name="tools_learning">ساعد في تحسين التعرف</string>
+  <string name="tools_photos">مشاركة محاصيل البطاقات المعتمدة</string>
+  <string name="tools_send">إرسال التقارير المعلقة</string>
+  <string name="tools_delete">حذف التقارير المشتركة</string>
+  <string name="tools_consent">اختياري. تتضمن التقارير النصية تفاصيل البطاقة وتصحيحك. تتطلب الصور معاينة وموافقة منفصلة. يتم الاحتفاظ بالتقارير لمدة 90 يومًا.</string>
+  <string name="tools_preview">الموافقة على اقتصاص البطاقة</string>
+  <string name="tools_preparing">تحضير</string>
+  <string name="tools_shipped">تم الشحن</string>
+  <string name="tools_received">تم الاستلام</string>
+  <string name="tools_grading_status">جاري تصنيف البطاقة</string>
+  <string name="tools_returned">عاد</string>
+  <string name="tools_cancelled">تم الإلغاء</string>
+  <string name="tools_complete">كامل</string>
+  <string name="tools_price_challenge">الإبلاغ عن سعر غير صحيح</string>
+  <string name="tools_confirm_outline">تأكيد مخطط البطاقة بالكامل</string>
+  <string name="tools_outline_hint">تأكد من أن جميع الزوايا الأربع هي الزوايا الخارجية للبطاقة قبل التأكيد.</string>
+  <string name="tools_duplicate_cert">شهادة التقدير هذه موجودة بالفعل في مجموعتك.</string>
+</resources>

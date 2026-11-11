@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="data_listings_count">
+        <item quantity="one">%d inserzione</item>
+        <item quantity="other">%d inserzioni</item>
+    </plurals>
+</resources>

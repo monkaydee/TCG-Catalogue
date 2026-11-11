@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Cada copia en su propia funda</string>
+    <string name="binder_move_hint">Toca una funda para mover la carta allí</string>
+    <string name="binder_remove">Quitar de la carpeta</string>
+    <string name="binder_pick_for_pocket">Elige una carta para esta funda</string>
+    <string name="binder_all_placed">Todas las copias ya están en esta carpeta</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">Wyreguluj prowadnice centrujące</string>
+  <string name="center_hint">Każda strona posiada dwie prowadnice: zewnętrzną krawędź karty i wewnętrzną zadrukowaną ramkę. Przeciągnij oba, aby zmierzyć odstęp. Cyjan oznacza zewnętrzne prowadnice; zielone oznaczają wewnętrzne prowadnice. Wybranym przewodnikiem jest kolor żółty. Użyj tej samej drukowanej ramki z każdej strony.</string>
+  <string name="center_left">Lewy</string>
+  <string name="center_right">Jasne</string>
+  <string name="center_top">Góra</string>
+  <string name="center_bottom">Dół</string>
+  <string name="center_detail">Wybrany szczegół przewodnika</string>
+  <string name="center_outer">Zewnętrzna krawędź</string>
+  <string name="center_inner">Wewnętrzna rama</string>
+  <string name="center_minus_pixel">−1 piksel obrazu</string>
+  <string name="center_plus_pixel">+1 piksel obrazu</string>
+  <string name="center_cancel">Anuluj</string>
+  <string name="center_apply">Skorzystaj z tych przewodników</string>
+</resources>

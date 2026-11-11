@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Namnet på det skannade kortet stämmer inte med det här kortet — numret kan ha lästs fel. Kontrollera det, eller avbryt och skriv in det manuellt.</string>
+    <string name="data_graded">Graded</string>
+    <string name="data_graded_grade">Graded %1$s</string>
+    <string name="data_graded_choose_grader">välj graderingsföretag</string>
+    <string name="data_graded_choose_grade">välj betyg</string>
+    <string name="data_graded_no_source">ingen källa för graded-priser — ange ditt eget värde eller använd prislänkarna på kortsidan</string>
+    <string name="data_variant_normal">Normal</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">Standard</string>
+    <string name="data_variant_numbered">Variant %1$d</string>
+    <string name="data_overview_prices">Priser</string>
+    <string name="data_overview_no_card_data">det gick inte att läsa in kortdata — kontrollera anslutningen</string>
+    <string name="data_overview_no_cardmarket">inga Cardmarket-priser för det här kortet</string>
+    <string name="data_overview_no_tcgplayer">inga TCGplayer-priser för det här kortet</string>
+    <string name="data_overview_by_condition">TCGplayer efter skick (försäljningar)</string>
+    <string name="data_overview_no_condition_sales">inga försäljningar efter skick</string>
+    <string name="price_label_trend">Trend</string>
+    <string name="price_label_lowest_offer">Lägsta bud</string>
+    <string name="price_label_average_sold">Snitt såld</string>
+    <string name="price_label_avg1">1-dagarssnitt</string>
+    <string name="price_label_avg7">7-dagarssnitt</string>
+    <string name="price_label_avg30">30-dagarssnitt</string>
+    <string name="price_label_market">Marknad</string>
+    <string name="price_label_lowest_listing">Lägsta annons</string>
+    <string name="price_label_mid">Mellan</string>
+    <string name="price_label_highest_listing">Högsta annons</string>
+    <string name="price_label_direct_low">Direct low</string>
+    <string name="price_note_raw_no_graded_source">Visar raw-priset — ingen källa för graded-priser — ange ditt eget värde eller använd prislänkarna på kortsidan</string>
+    <string name="price_note_markets_disagree">%1$s-annonsen matchade inte det här kortet (%2$dx skillnad); använder %3$s</string>
+    <string name="price_note_capped">%1$s värderat som %2$s (dess försäljningsdata var högre)</string>
+    <string name="price_note_tcgplayer_sales">%1$s-pris från TCGplayer-försäljningar</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% av NM (TCGplayer-försäljningar)</string>
+    <string name="price_note_estimated_share">%1$s uppskattat till %2$d%% av NM (inga försäljningsdata)</string>
+    <string name="data_http_error">HTTP %1$d för %2$s</string>
+    <string name="data_service_unavailable">Kortservicen (%1$s) svarar inte just nu. Försök igen om en minut.</string>
+</resources>

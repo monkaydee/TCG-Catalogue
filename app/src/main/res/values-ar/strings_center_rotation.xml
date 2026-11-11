@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">إعادة تعيين</string>
+  <string name="center_rotation_hint">محاذاة دقيقة ±15 درجة. اسحب الصورة أو قم بتحريفها بحرية، أو استخدم شريط التمرير. تظل الأدلة ثابتة.</string>
+  <string name="center_rotation_done">الانتهاء من الدورية</string>
+  <string name="center_rotation_saved">دوران المحاذاة: %1$.2f°</string>
+</resources>

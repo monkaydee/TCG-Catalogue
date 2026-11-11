@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">تخطي</string>
+    <string name="onboarding_next">التالي</string>
+    <string name="onboarding_get_started">ابدأ</string>
+    <string name="onboarding_scan_title">امسح بطاقاتك</string>
+    <string name="onboarding_scan_text">وجّه الكاميرا نحو بطاقة أو استورد صورًا من معرضك. تتم قراءة الاسم والرقم تلقائيًا.</string>
+    <string name="onboarding_binder_title">مجموعتك في ألبوم</string>
+    <string name="onboarding_binder_text">تصفّح بطاقاتك صفحة بصفحة في ألبوم افتراضي وقلّبها كما في الواقع.</string>
+    <string name="onboarding_prices_title">الأسعار والقيمة</string>
+    <string name="onboarding_prices_text">اعرف قيمة كل بطاقة وتابع قيمة مجموعتك كاملة عبر الزمن.</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">الصفحة %1$d من %2$d</string>
+</resources>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">価格アラート</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">現在 %1$s — アラート価格 %2$s を上回りました</string>
+    <string name="alert_below">現在 %1$s — アラート価格 %2$s を下回りました</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">ウィッシュリスト：現在 %1$s — 目標価格 %2$s 以下です</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">連続スキャンモード</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — 下のリストであとで確認してください</string>
+    <plurals name="stack_to_review">
+        <item quantity="other">確認待ちのカード：%d枚 — タップして確認</item>
+    </plurals>
+    <string name="stack_tap_to_review">タップして確認</string>
+    <string name="stack_undo">元に戻す</string>
+    <string name="stack_discard">破棄</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">未開封商品</string>
+    <string name="sealed_add">未開封商品を追加</string>
+    <string name="sealed_value">未開封の評価額</string>
+    <plurals name="sealed_count">
+        <item quantity="other">%d点</item>
+    </plurals>
+    <string name="sealed_empty">未開封のBOX、パック、デッキなどをここで管理できます。市場価値はポートフォリオに加算されます。</string>
+    <string name="sealed_remove_hint">0で保存すると商品が削除されます。</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">購入後 %1$s</string>
+    <string name="sealed_no_price">価格なし</string>
+    <string name="sealed_search_hint">商品名またはセット名（例：「151 ブースターボックス」）</string>
+    <string name="sealed_no_results">未開封商品が見つかりません</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">申し訳ありません、アプリがクラッシュしました</string>
+    <string name="crash_text">技術レポートが保存されました（アプリとAndroidのバージョン、端末機種、エラー内容。カード情報は含まれません）。問題の修正に役立てるため送信できます。</string>
+    <string name="crash_report_github">GitHubで報告</string>
+    <string name="crash_share">共有</string>
+    <string name="crash_dismiss">今はしない</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">別の端末に新しいコレクションがあります</string>
+    <string name="home_cloud_newer_text">クラウドバックアップが別の端末で更新されました。設定で読み込みまたは統合できます。</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">画像で検索</string>
+    <string name="picture_preparing">画像検索を準備中 — 初回のみ約20MBをダウンロードします…</string>
+    <string name="picture_searching">画像でカードを検索中…</string>
+    <string name="picture_none">画像に一致するカードが見つかりません。手入力をお試しください。</string>
+    <string name="picture_unavailable">現在、画像検索を利用できません。接続を確認してください。</string>
+    <string name="picture_check">画像から見つかりました。正しいカードか確認してください。</string>
+</resources>

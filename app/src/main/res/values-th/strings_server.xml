@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">ไม่พบการขาย %1$s ล่าสุด — ตั้งค่ามูลค่าของคุณเอง หรือดูลิงก์ราคา</string>
+    <string name="data_graded_server_error">ตอนนี้เชื่อมต่อเซิร์ฟเวอร์ราคาไม่ได้</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="other">ขายแล้ว %1$d ครั้ง</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">ราคาการ์ดเกรด</string>
+    <string name="graded_none">ไม่พบการขายการ์ดเกรดของการ์ดใบนี้</string>
+    <string name="graded_failed">ตอนนี้เชื่อมต่อเซิร์ฟเวอร์ราคาไม่ได้</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">เกรดของคุณ</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">ตรวจใบรับรองกับ PSA</string>
+    <string name="cert_unknown">PSA ไม่มีการ์ดที่ตรงกับหมายเลขใบรับรองนี้</string>
+    <string name="cert_failed">ตอนนี้เชื่อมต่อ PSA ไม่ได้ ลองใหม่ภายหลัง</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">เกรด PSA: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">จำนวนการ์ด: เกรดเดียวกัน %1$d ใบ, เกรดสูงกว่า %2$d ใบ</string>
+    <string name="cert_mismatch">เกรดในบันทึกของ PSA ต่างจากเกรดที่บันทึกไว้สำหรับการ์ดใบนี้</string>
+    <string name="links_psa_cert">ใบรับรอง PSA</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">ระบุตัวตนออนไลน์</string>
+    <string name="identify_hint">ส่งรูปนี้ไปยังเซิร์ฟเวอร์ราคาของแอปเพื่อจดจำภาพ (Ximilar) ไม่มีการเก็บรูปไว้</string>
+    <string name="identify_searching">กำลังระบุตัวตนออนไลน์…</string>
+    <string name="identify_none">ระบุแบบออนไลน์ก็ไม่พบ ลองใช้รูปที่คมชัดขึ้น หรือพิมพ์ชื่อการ์ดเอง</string>
+    <string name="identify_failed">ตอนนี้ใช้การระบุตัวตนออนไลน์ไม่ได้ (ครบโควตารายวันหรือไม่มีการเชื่อมต่อ)</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">เซิร์ฟเวอร์ราคา</string>
+    <string name="settings_server_summary">เซิร์ฟเวอร์ฟรีของแอปเองสำหรับราคาการ์ดเกรด การตรวจใบรับรอง PSA และการระบุตัวตนออนไลน์ บิลด์จาก GitHub มีมาให้ในตัวแล้ว ดู docs/CLOUDFLARE.md เพื่อตั้งค่าของคุณเอง</string>
+    <string name="settings_server_url">ที่อยู่เซิร์ฟเวอร์ (https://…)</string>
+    <string name="settings_server_key">คีย์แอป</string>
+    <string name="settings_server_save">บันทึก</string>
+    <string name="settings_server_reset">ใช้ค่าในตัว</string>
+    <string name="settings_server_test">ทดสอบ</string>
+    <string name="settings_server_ok">เชื่อมต่อเซิร์ฟเวอร์ราคาแล้ว</string>
+    <string name="settings_server_bad">เซิร์ฟเวอร์ราคาไม่ตอบสนอง ตรวจสอบที่อยู่และคีย์แอป</string>
+    <string name="settings_server_off">ยังไม่ได้ตั้งค่าเซิร์ฟเวอร์ราคา: ราคาการ์ดเกรดจะใช้มูลค่าของคุณเอง</string>
+</resources>

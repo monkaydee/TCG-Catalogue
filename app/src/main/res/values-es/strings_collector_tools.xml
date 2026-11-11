@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Mostrar precios en</string>
+    <string name="settings_display_same">Igual que la colección (%1$s)</string>
+    <string name="settings_display_offline">No se pudieron cargar los tipos de cambio. Inténtalo de nuevo con conexión.</string>
+    <string name="settings_display_hint">Convertido con tipos de referencia del BCE solo para mostrar. Lo que introduces y los valores guardados siguen en EUR o USD.</string>
+    <string name="card_notes">Notas</string>
+    <string name="card_notes_hint">Dónde la compraste, defectos, para quién es …</string>
+    <string name="worth_grading_title">¿Vale la pena gradear?</string>
+    <string name="worth_grading_cost">Coste de gradeo por carta en %1$s (tarifa + envío)</string>
+    <string name="worth_grading_no_raw">Se desconoce el valor sin gradear de esta carta, así que no se puede calcular la ganancia.</string>
+    <string name="worth_grading_from">%1$s: compensa desde la nota %2$s</string>
+    <string name="worth_grading_never">%1$s: no compensa con ninguna nota listada</string>
+    <string name="worth_grading_note">Comparado con el valor sin gradear de esta copia, %1$s. Los precios gradeados son de mercado u ofertas; la nota obtenida no está garantizada.</string>
+    <string name="completion_title">Coste para completar</string>
+    <string name="completion_total">%1$s por %2$d cartas</string>
+    <string name="completion_unknown">%1$d cartas sin precio conocido (no contadas)</string>
+    <string name="completion_progress">Precios cargados: %1$d de %2$d</string>
+    <string name="completion_hint">Impresión más barata de cada carta que falta a precio de mercado</string>
+    <string name="completion_calculate">Calcular</string>
+    <string name="lot_title">Calculadora de lotes</string>
+    <string name="lot_remove">Quitar</string>
+    <string name="lot_add_value">Añadir valor (%1$s)</string>
+    <string name="lot_add">Añadir</string>
+    <string name="lot_market">Valor de mercado: %1$s (%2$d artículos)</string>
+    <string name="lot_unknown">%1$d artículos sin precio (no contados)</string>
+    <string name="lot_percent">Oferta al %1$d %% del mercado</string>
+    <string name="lot_offer">Precio del lote: %1$s</string>
+    <string name="bulk_add_to_binder">Añadir a carpeta</string>
+    <string name="bulk_trade">Marcar para cambio</string>
+    <string name="bulk_trade_done">%1$d cartas marcadas para cambio</string>
+    <string name="bulk_delete">Eliminar</string>
+    <string name="bulk_delete_confirm">¿Eliminar %1$d cartas de tu colección?</string>
+    <string name="bulk_select_all">Seleccionar todo (%1$d)</string>
+    <string name="bulk_no_binders">Aún no tienes carpetas propias. Crea una en Abrir carpeta.</string>
+    <string name="bulk_added_to_binder">%1$d cartas añadidas a %2$s</string>
+</resources>

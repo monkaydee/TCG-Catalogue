@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA 개체 수</string>
+    <string name="pop_show">개체 수 보기</string>
+    <string name="pop_none">개체 수를 보려면 이 카드의 인증 번호가 있는 PSA 슬랩을 추가하세요.</string>
+    <string name="pop_total">PSA 등급 수: %1$d</string>
+    <string name="pop_gem_rate">젬 비율 (PSA 10): %1$s %%</string>
+    <string name="decks_title">덱</string>
+    <string name="decks_new">새 덱</string>
+    <string name="decks_empty">아직 덱이 없습니다. 덱을 만들고 덱 목록을 붙여넣거나 컬렉션에서 카드를 추가하세요.</string>
+    <string name="deck_cards">카드: %1$d</string>
+    <string name="deck_value">덱 가치: %1$s</string>
+    <string name="deck_missing">부족: %1$d · 비용: %2$s</string>
+    <string name="deck_missing_none">이 덱의 카드를 모두 보유하고 있습니다.</string>
+    <string name="deck_owned">보유 %1$d / %2$d</string>
+    <string name="deck_import">덱 목록 붙여넣기</string>
+    <string name="deck_import_hint">한 줄에 카드 하나, 예: 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">컬렉션에서 추가</string>
+    <string name="deck_share">목록 공유</string>
+    <string name="deck_delete">덱 삭제</string>
+    <string name="deck_delete_confirm">“%1$s”을(를) 삭제할까요? 컬렉션은 바뀌지 않습니다.</string>
+    <string name="deck_rule_total">%1$s 덱은 %2$d장입니다. 이 덱은 %3$d장입니다.</string>
+    <string name="deck_rule_min">%1$s 덱은 최소 %2$d장이 필요합니다. 이 덱은 %3$d장입니다.</string>
+    <string name="deck_rule_copies">%1$d장 초과: %2$s</string>
+    <string name="deck_rules_note">카드 수와 장수만 확인합니다. 금지 카드와 포맷은 확인하지 않습니다.</string>
+    <string name="deck_not_found">찾을 수 없음: %1$s</string>
+    <string name="share_cards">페이지로 공유</string>
+    <string name="share_cards_text">이 카드들(%1$d)을 공유 메뉴로 웹페이지 하나로 보냅니다. 앱은 아무것도 업로드하지 않습니다.</string>
+    <string name="share_with_prices">가격 포함</string>
+    <string name="share_without_prices">가격 제외</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Nieprofesjonalna kontrola zdjęć. Zakresy eksperymentalne opierają się na obserwacjach rogów, krawędzi i powierzchni, a nie na zweryfikowanych prawdopodobieństwach ocen. Ocena profesjonalna może być inna. Nie wyklucza się ukrytych wad, przeróbek ani problemów z autentycznością.</string>
+    <string name="center_manual_notice">Ręczny pomiar centrowania. Linie pomocnicze i perspektywa wpływają na proporcje. Eksperymentalne szacunki wymagają również kontroli rogów, krawędzi i powierzchni przy różnych kątach oświetlenia.</string>
+    <string name="wear_observation_scope">Obserwacje są przechowywane w tej sesji i używane w zakresie eksperymentalnym. Nie potwierdzają stanu ani nie zastępują dobrych zdjęć. Zapisane uszkodzenia poszerzają lub obniżają zakres.</string>
+</resources>

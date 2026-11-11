@@ -1,0 +1,185 @@
+name: Deploy price server
+
+# Run by hand from the Actions tab (works from the GitHub phone app too), or by a push below.
+# Needs repo secrets CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID (exactly these names) and APP_KEY; the provider keys
+# are optional. See docs/CLOUDFLARE.md.
+#
+# It also runs on pushes that change the server (any branch), so it can be started before the
+# workflow is on the default branch (GitHub only shows "Run workflow" for workflows there).
+# Pushed runs skip quietly while the secrets aren't set up yet; with them, a push deploys.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, claude/tcg-card-scanner-app-e2tlar]
+    paths:
+      - "worker/**"
+      - "scripts/check_prices.py"
+      - ".github/workflows/worker.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-price-server
+  cancel-in-progress: false
+
+jobs:
+  # Are the required secrets there? A manual run without them fails with a clear message; a
+  # pushed run is simply skipped.
+  check:
+    name: Check secrets
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          APP_KEY: ${{ secrets.APP_KEY }}
+        run: |
+          missing=""
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || missing="$missing CLOUDFLARE_API_TOKEN"
+          [ -n "$CLOUDFLARE_ACCOUNT_ID" ] || missing="$missing CLOUDFLARE_ACCOUNT_ID"
+          [ -n "$APP_KEY" ] || missing="$missing APP_KEY"
+          if [ -z "$missing" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "ready=false" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "::error::These repository secrets are missing:$missing (see docs/CLOUDFLARE.md)"
+            exit 1
+          fi
+          echo "::notice::Price server not deployed: repository secrets missing:$missing (see docs/CLOUDFLARE.md)"
+
+  deploy:
+    name: Deploy price server
+    needs: check
+    if: needs.check.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: worker
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      DB_NAME: tcg-price-cache
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Tests
+        run: npx vitest run && npx tsc --noEmit
+
+      # Creates the D1 database the first time; later runs reuse it. Its id is written into
+      # wrangler.toml only inside this run (nothing is committed).
+      - name: Create or find the D1 database
+        run: |
+          id=$(npx wrangler d1 list --json | jq -r --arg n "$DB_NAME" '.[] | select(.name == $n) | .uuid' | head -n1)
+          if [ -z "$id" ]; then
+            echo "Creating D1 database $DB_NAME"
+            npx wrangler d1 create "$DB_NAME" > /dev/null
+            id=$(npx wrangler d1 list --json | jq -r --arg n "$DB_NAME" '.[] | select(.name == $n) | .uuid' | head -n1)
+          fi
+          if [ -z "$id" ]; then echo "::error::Could not create or find the D1 database"; exit 1; fi
+          sed -i "s/^database_id = .*/database_id = \"$id\"/" wrangler.toml
+          echo "Using D1 database $DB_NAME ($id)"
+
+      - name: Apply database schema
+        run: npx wrangler d1 execute "$DB_NAME" --remote --file schema.sql --yes
+
+      - name: Attach private bucket for legacy-photo cleanup
+        run: |
+          if npx wrangler r2 bucket create cardnavo-recognition-private > r2.log 2>&1 || grep -qi "already exists" r2.log; then
+            printf '\n[[r2_buckets]]\nbinding = "FEEDBACK_IMAGES"\nbucket_name = "cardnavo-recognition-private"\n' >> wrangler.toml
+            echo "Private bucket attached for legacy-photo cleanup; new shared photo uploads stay disabled."
+          else
+            echo "::warning::Private bucket unavailable. New photo uploads remain disabled. Legacy R2 cleanup requires the original bucket binding; D1 cleanup remains available when no R2 photos exist."
+          fi
+
+      - name: Deploy
+        id: deploy
+        run: |
+          set -o pipefail
+          if ! npx wrangler deploy 2>&1 | tee deploy.log; then
+            if grep -q "No access" deploy.log; then
+              echo "::error::Cloudflare refused the upload: the API token needs the permission Workers Scripts = Edit (see docs/CLOUDFLARE.md, step B)."
+            fi
+            exit 1
+          fi
+          url=$(grep -oE 'https://[a-zA-Z0-9._-]+\.workers\.dev' deploy.log | head -n1)
+          if [ -z "$url" ]; then
+            echo "::warning::No workers.dev URL in the output. Open Cloudflare > Workers & Pages once to choose your workers.dev subdomain, then run this again."
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      # Only secrets that have a value are uploaded. Values are piped straight to wrangler and
+      # never printed.
+      - name: Upload secrets
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          FEEDBACK_ADMIN_KEY: ${{ secrets.FEEDBACK_ADMIN_KEY }}
+          JUSTTCG_KEY: ${{ secrets.JUSTTCG_KEY }}
+          POKETRACE_KEY: ${{ secrets.POKETRACE_KEY }}
+          TCGAPI_KEY: ${{ secrets.TCGAPI_KEY }}
+          XIMILAR_KEY: ${{ secrets.XIMILAR_KEY }}
+          PSA_TOKEN: ${{ secrets.PSA_TOKEN }}
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          PPT_KEY: ${{ secrets.PPT_KEY }}
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+        run: |
+          names="APP_KEY FEEDBACK_ADMIN_KEY JUSTTCG_KEY POKETRACE_KEY TCGAPI_KEY XIMILAR_KEY PSA_TOKEN RAPIDAPI_KEY PPT_KEY EBAY_CLIENT_ID EBAY_CLIENT_SECRET"
+          json='{}'
+          for n in $names; do
+            v="${!n}"
+            if [ -n "$v" ]; then
+              json=$(jq -c --arg k "$n" --arg v "$v" '. + {($k): $v}' <<< "$json")
+              echo "Uploading $n"
+            else
+              echo "Skipping $n (no repository secret)"
+            fi
+          done
+          printf '%s' "$json" | npx wrangler secret bulk > /dev/null
+          echo "Secrets uploaded."
+
+      - name: Smoke test (/v1/status)
+        if: steps.deploy.outputs.url != ''
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          echo "Price server URL: $URL"
+          echo "### Price server URL: $URL" >> "$GITHUB_STEP_SUMMARY"
+          # A brand-new workers.dev address can take a minute to start answering.
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS -H "X-App-Key: $APP_KEY" "$URL/v1/status" -o status.json; then
+              jq . status.json
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::$URL/v1/status did not answer"
+          exit 1
+
+      - name: Verify live language-specific price routes
+        if: steps.deploy.outputs.url != ''
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          JUSTTCG_KEY: ${{ secrets.JUSTTCG_KEY }}
+          URL: ${{ steps.deploy.outputs.url }}
+        run: python ../scripts/check_prices.py
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: price-verification
+          path: worker/price-verification.json
+          if-no-files-found: ignore

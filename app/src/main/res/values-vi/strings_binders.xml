@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Mở bộ sưu tập</string>
+    <string name="binders_title">Album</string>
+    <string name="binders_all">Tất cả thẻ</string>
+    <string name="binders_new">Album mới</string>
+    <string name="binders_card_count">Thẻ: %1$d</string>
+    <string name="binder_open_hint">Vuốt hoặc chạm để mở</string>
+    <string name="binder_add_cards">Thêm thẻ</string>
+    <string name="binder_choose_cards">Thẻ trong album này</string>
+    <string name="binder_edit">Sửa album</string>
+    <string name="binder_delete">Xóa album</string>
+    <string name="binder_delete_confirm">Xóa “%1$s”? Thẻ vẫn ở trong bộ sưu tập.</string>
+    <string name="binder_name">Tên</string>
+    <string name="binder_cover_design">Thiết kế bìa</string>
+    <string name="binder_cover_upload">Dùng ảnh của bạn</string>
+    <string name="binder_cover_remove">Xóa ảnh</string>
+    <string name="binder_save">Lưu</string>
+    <string name="binder_empty_custom">Album này trống. Hãy thêm thẻ từ bộ sưu tập.</string>
+    <string name="binder_search">Tìm thẻ</string>
+    <string name="binder_new_name">Album của tôi</string>
+    <string name="binder_selected">Đã chọn: %1$d</string>
+    <string name="collection_title">Bộ sưu tập</string>
+    <string name="collection_sort_recent">Mới thêm</string>
+    <string name="collection_sort_grade">Điểm grade</string>
+    <string name="collection_sort_set">Bộ</string>
+    <string name="collection_empty">Chưa có thẻ nào.</string>
+    <string name="collection_summary">Thẻ: %1$d · %2$s</string>
+    <string name="cover_midnight">Nửa đêm</string>
+    <string name="cover_crimson">Đỏ thẫm</string>
+    <string name="cover_forest">Rừng</string>
+    <string name="cover_ocean">Đại dương</string>
+    <string name="cover_galaxy">Thiên hà</string>
+    <string name="cover_sunset">Hoàng hôn</string>
+    <string name="cover_gold">Lá vàng</string>
+    <string name="cover_carbon">Carbon</string>
+</resources>

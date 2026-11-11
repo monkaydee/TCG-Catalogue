@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">تعذّر تحميل بيانات البطاقة — تحقق من اتصالك</string>
+    <string name="card_pager_position">%1$d / %2$d · مرّر للمزيد</string>
+    <string name="card_back">رجوع</string>
+    <string name="card_edit">تعديل البطاقة</string>
+    <string name="card_remove_from_collection">إزالة من المجموعة</string>
+    <string name="card_save">حفظ</string>
+    <string name="card_remove_title">إزالة البطاقة؟</string>
+    <plurals name="card_remove_message">
+        <item quantity="zero">سيؤدي هذا إلى إزالة جميع نسخ %2$s (%1$d) من مجموعتك.</item>
+        <item quantity="one">سيؤدي هذا إلى إزالة نسخة واحدة من %2$s من مجموعتك.</item>
+        <item quantity="two">سيؤدي هذا إلى إزالة نسختَي %2$s من مجموعتك.</item>
+        <item quantity="few">سيؤدي هذا إلى إزالة جميع نسخ %2$s (%1$d) من مجموعتك.</item>
+        <item quantity="many">سيؤدي هذا إلى إزالة جميع نسخ %2$s (%1$d) من مجموعتك.</item>
+        <item quantity="other">سيؤدي هذا إلى إزالة جميع نسخ %2$s (%1$d) من مجموعتك.</item>
+    </plurals>
+    <string name="card_remove">إزالة</string>
+    <string name="card_cancel">إلغاء</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s للنسخة (%2$s على %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s للنسخة (%2$s في السوق)</string>
+    <string name="card_price_updated">آخر تحديث: %1$s</string>
+    <string name="card_no_market_price">لا يتوفر سعر في السوق</string>
+    <string name="card_own_value">قيمتك الخاصة: %1$s للنسخة</string>
+    <string name="card_own_value_with_market">قيمتك الخاصة: %1$s للنسخة · السوق %2$s</string>
+    <string name="card_bought_for_with_percent">تم الشراء بسعر %1$s للنسخة · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">تم الشراء بسعر %1$s للنسخة · %2$s</string>
+    <string name="card_cert">شهادة رقم %1$s</string>
+    <string name="card_graded_hint">النسخ المُقيَّمة تستخدم قيمتك الخاصة — تحقق من المبيعات الأخيرة عبر الروابط أدناه.</string>
+    <string name="card_raw_hint">سعر السوق للبطاقة غير المُقيَّمة (Raw) بهذه الحالة.</string>
+    <string name="card_quantity">الكمية</string>
+    <string name="card_cardmarket_listing">إدراج Cardmarket</string>
+    <string name="card_condition">الحالة</string>
+    <string name="card_all_prices">كل الأسعار</string>
+    <string name="card_show">عرض</string>
+    <string name="card_refresh">تحديث</string>
+    <string name="card_check_prices">تحقق من الأسعار عبر الإنترنت</string>
+    <string name="set_back">رجوع</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="zero">%1$d من %2$d بطاقة (%3$d%%)</item>
+        <item quantity="one">%1$d من بطاقة واحدة (%3$d%%)</item>
+        <item quantity="two">%1$d من بطاقتين (%3$d%%)</item>
+        <item quantity="few">%1$d من %2$d بطاقات (%3$d%%)</item>
+        <item quantity="many">%1$d من %2$d بطاقة (%3$d%%)</item>
+        <item quantity="other">%1$d من %2$d بطاقة (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="zero">%d بطاقة</item>
+        <item quantity="one">بطاقة واحدة</item>
+        <item quantity="two">بطاقتان</item>
+        <item quantity="few">%d بطاقات</item>
+        <item quantity="many">%d بطاقة</item>
+        <item quantity="other">%d بطاقة</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="zero">%d نسخة</item>
+        <item quantity="one">نسخة واحدة</item>
+        <item quantity="two">نسختان</item>
+        <item quantity="few">%d نسخ</item>
+        <item quantity="many">%d نسخة</item>
+        <item quantity="other">%d نسخة</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">حسب القيمة</string>
+    <string name="set_sort_number">حسب الرقم</string>
+    <string name="set_no_price">بلا سعر</string>
+    <string name="common_auto">تلقائي</string>
+    <string name="common_less">أقل</string>
+    <string name="common_more">أكثر</string>
+    <string name="links_ebay_sold">مبيعات eBay</string>
+</resources>

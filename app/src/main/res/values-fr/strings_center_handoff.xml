@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Continuer à centrer</string>
+  <string name="center_confirm_next">Confirmer le contour et le centrage des mesures</string>
+  <string name="center_step_two">Étape 2 : guides extérieurs et intérieurs</string>
+</resources>

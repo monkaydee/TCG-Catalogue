@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Pojok kiri atas</string>
+  <string name="wear_top_right">Pojok kanan atas</string>
+  <string name="wear_bottom_right">Pojok kanan bawah</string>
+  <string name="wear_bottom_left">Pojok kiri bawah</string>
+  <string name="wear_top">Tepi atas</string>
+  <string name="wear_right">Tepi kanan</string>
+  <string name="wear_bottom">Tepi bawah</string>
+  <string name="wear_left">Tepi kiri</string>
+  <string name="wear_evidence_count">Pemeriksaan otomatis: %1$d dari 8 wilayah memiliki bukti warna yang dapat digunakan</string>
+  <string name="wear_review_count">Peninjauan manual: %1$d dari 8 wilayah</string>
+  <string name="wear_inspect_regions">Periksa keempat sudut dan keempat tepinya</string>
+  <string name="wear_hide_regions">Sembunyikan detail wilayah</string>
+  <string name="wear_screening_scope">Setiap wilayah diperiksa secara terpisah untuk anomali warna dan pemutihan. Pencetakan, foil, dan penyelarasan potongan dapat menyerupai kerusakan. Buka suatu wilayah untuk memeriksa foto dan merekam apa yang Anda lihat.</string>
+  <string name="wear_not_assessed">Tidak dinilai – tidak cukup bukti yang dapat digunakan</string>
+  <string name="wear_inconclusive">Pemeriksaan otomatis tidak meyakinkan</string>
+  <string name="wear_possible_damage">Pemeriksaan otomatis: kemungkinan keausan — periksa wilayah ini</string>
+  <string name="wear_auto_none">Pemeriksaan otomatis: tidak ada anomali warna yang ditandai</string>
+  <string name="wear_your_observation">Pengamatan Anda: %1$s</string>
+  <string name="wear_white_border">Batas putih dapat menyembunyikan pemutihan; cek warna tidak dapat memastikan kondisinya.</string>
+  <string name="wear_textured_border">Karya seni atau foil yang bervariasi membatasi perbandingan warna.</string>
+  <string name="wear_flagged_pixels">Piksel wilayah yang ditandai: %1$.1f%% · anomali yang lebih cerah: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Cubit untuk memperbesar dan seret untuk memeriksa. Pembesaran tidak menambahkan detail foto; mengambil kembali foto buram.</string>
+  <string name="wear_record_observation">Pengamatan Anda untuk wilayah ini</string>
+  <string name="wear_not_reviewed">Tidak ditinjau</string>
+  <string name="wear_observed_clear">Tidak ada kerusakan yang terlihat di foto ini</string>
+  <string name="wear_whitening">Pemutihan / lecet terlihat</string>
+  <string name="wear_chip">Terlihat keripik/sobek</string>
+  <string name="wear_bend">Terlihat bengkok/penyok</string>
+  <string name="wear_done">Selesai</string>
+  <string name="wear_damage_blocks_grade">Kerusakan yang terlihat dicatat. Estimasi model keseluruhan tidak diberikan karena temuan manual bukanlah masukan model yang dikalibrasi. Hasil pemusatan tidak memperhitungkan kerusakan ini.</string>
+  <string name="wear_incomplete_blocks_grade">Sudut dan tepinya perlu diperiksa lebih dekat. Bukti yang hilang atau tidak meyakinkan menghalangi estimasi model secara keseluruhan; pemusatan saja tidak menentukan nilai.</string>
+</resources>

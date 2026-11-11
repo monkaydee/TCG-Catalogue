@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Fiyat uyarıları</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Şu an %1$s — %2$s uyarı fiyatınızın üzerinde</string>
+    <string name="alert_below">Şu an %1$s — %2$s uyarı fiyatınızın altında</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">İstek listenizde: şu an %1$s — %2$s hedefinize ulaştı veya altında</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Yığın modu</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — aşağıdaki şeritten sonra kontrol edin</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">Kontrol edilecek %d kart — dokunun</item>
+        <item quantity="other">Kontrol edilecek %d kart — dokunun</item>
+    </plurals>
+    <string name="stack_tap_to_review">Kontrol etmek için dokunun</string>
+    <string name="stack_undo">Geri al</string>
+    <string name="stack_discard">At</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Mühürlü ürünler</string>
+    <string name="sealed_add">Mühürlü ürün ekle</string>
+    <string name="sealed_value">Mühürlü değer</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d ürün</item>
+        <item quantity="other">%d ürün</item>
+    </plurals>
+    <string name="sealed_empty">Açılmamış booster box, paket, deste ve kutuları burada takip edin. Piyasa değerleri portföyünüze dahil edilir.</string>
+    <string name="sealed_remove_hint">0 olarak kaydetmek ürünü kaldırır.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">Satın alındığından beri %1$s</string>
+    <string name="sealed_no_price">fiyat yok</string>
+    <string name="sealed_search_hint">Ürün adı veya set, örn. “151 booster box”</string>
+    <string name="sealed_no_results">Mühürlü ürün bulunamadı</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Üzgünüz, uygulama çöktü</string>
+    <string name="crash_text">Teknik bir rapor saklandı (uygulama ve Android sürümü, telefon modeli ve hata — kartlarınız yok). Sorunun giderilmesine yardımcı olmak için gönderebilirsiniz.</string>
+    <string name="crash_report_github">GitHub\'da bildir</string>
+    <string name="crash_share">Paylaş</string>
+    <string name="crash_dismiss">Şimdi değil</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">Başka bir telefondan daha yeni koleksiyon</string>
+    <string name="home_cloud_newer_text">Bulut yedeğiniz başka bir telefonda güncellendi. Ayarlar\'da yüklemek veya birleştirmek için dokunun.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Resimle bul</string>
+    <string name="picture_preparing">Resimle arama hazırlanıyor — tek seferlik yaklaşık 20 MB indirme…</string>
+    <string name="picture_searching">Kart resminden aranıyor…</string>
+    <string name="picture_none">Resimle kart bulunamadı — elle yazmayı deneyin.</string>
+    <string name="picture_unavailable">Resimle arama şu an kullanılamıyor — bağlantınızı kontrol edin.</string>
+    <string name="picture_check">Resimle bulundu — lütfen doğru kart olduğunu kontrol edin.</string>
+</resources>

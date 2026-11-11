@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Ecken anpassen</string>
+    <string name="grade_adjust_hint">Zieh die vier Punkte auf die Ecken der Karte. Die Lupe hilft, sie genau zu setzen.</string>
+    <string name="grade_adjust_apply">Übernehmen</string>
+</resources>

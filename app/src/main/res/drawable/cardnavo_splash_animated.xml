@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/cardnavo_splash_vector">
+    <target android:name="cardnavo_mark_motion" android:animation="@animator/cardnavo_mark_motion" />
+    <target android:name="cardnavo_cyan" android:animation="@animator/cardnavo_back_reveal" />
+    <target android:name="cardnavo_white" android:animation="@animator/cardnavo_outline_reveal" />
+    <target android:name="cardnavo_teal" android:animation="@animator/cardnavo_n_reveal" />
+</animated-vector>

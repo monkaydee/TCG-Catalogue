@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Kartenumriss · vier Ecken</string>
+  <string name="pre_center_screen">Zentrierung · acht Führungen</string>
+  <string name="pre_open_centering">Innen- und Außenränder messen</string>
+  <string name="pre_outline_continue">Bestätigen Sie den Umriss der gesamten Karte</string>
+  <string name="pre_outline_adjust">Passen Sie die vier Kartenecken an</string>
+  <string name="pre_choose_game">Kartenspiel</string>
+  <string name="pre_center_missing">Platzieren Sie die äußere und innere Führung auf dieser Seite, um die Zentrierungsmessung abzuschließen.</string>
+  <string name="pre_center_ready">Zentrierung gemessen. Sie können alle acht Hilfslinien anpassen.</string>
+  <string name="pre_edit_front">Vordere Zentrierung bearbeiten</string>
+  <string name="pre_edit_back">Bearbeiten Sie die hintere Zentrierung</string>
+  <string name="pre_potential_title">Zentrierungspotenzial</string>
+  <string name="pre_potential_10">Innerhalb der Zentriergrenzen von PSA 10</string>
+  <string name="pre_potential_borderline">Borderline-PSA-10-Zentrierung</string>
+  <string name="pre_potential_below">Außerhalb der Zentriergrenzen von PSA 10</string>
+  <string name="pre_potential_incomplete">Füllen Sie beide Seiten aus, um eine mögliche Zentrierung zu gewährleisten</string>
+  <string name="pre_potential_scope">Nur zentriert, über Kartenspiele hinweg. Verwendet die PSA-Grenzwerte vorne 55/45 und hinten 75/25. „Grenzwert“ bedeutet, dass eine Anpassung der Hilfslinie um ein Bildpixel das Ergebnis verändern könnte. Ecken, Kanten, Oberfläche und Authentizität können die Endnote mindern.</string>
+  <string name="pre_model_scope">Eine Vorhersage der Gesamtnote ist für dieses Spiel oder diese Messungen nicht validiert. Das obige Zentrierpotential bleibt verfügbar, sobald beide Seiten gemessen wurden.</string>
+  <string name="pre_experimental_model">Experimenteller Kostenvoranschlag für Pokémon-Fotos</string>
+  <string name="pre_quality_blocked">Nehmen Sie diese Seite noch einmal auf: Der Umriss oder die Fotoqualität sind für eine Verschleißbeurteilung nicht geeignet.</string>
+  <string name="pre_no_wear_detected">Es wurde kein sichtbarer Verschleiß festgestellt</string>
+  <string name="pre_skip_frame">Kein vergleichbarer bedruckter Rahmen</string>
+  <string name="pre_retake_front">Vorderes Foto erneut aufnehmen</string>
+  <string name="pre_retake_back">Foto erneut aufnehmen</string>
+</resources>

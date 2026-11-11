@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">카드 정보를 불러올 수 없어요. 연결을 확인해 주세요</string>
+    <string name="card_pager_position">%1$d / %2$d · 스와이프하여 더 보기</string>
+    <string name="card_back">뒤로</string>
+    <string name="card_edit">카드 편집</string>
+    <string name="card_remove_from_collection">컬렉션에서 삭제</string>
+    <string name="card_save">저장</string>
+    <string name="card_remove_title">카드를 삭제할까요?</string>
+    <plurals name="card_remove_message">
+        <item quantity="other">컬렉션에서 %2$s의 모든 사본 %1$d장이 삭제돼요.</item>
+    </plurals>
+    <string name="card_remove">삭제</string>
+    <string name="card_cancel">취소</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">장당 %1$s (%3$s 기준 %2$s)</string>
+    <string name="card_unit_price_on_market">장당 %1$s (시장 기준 %2$s)</string>
+    <string name="card_price_updated">%1$s 업데이트됨</string>
+    <string name="card_no_market_price">시장 가격 없음</string>
+    <string name="card_own_value">내 평가액: 장당 %1$s</string>
+    <string name="card_own_value_with_market">내 평가액: 장당 %1$s · 시장 %2$s</string>
+    <string name="card_bought_for_with_percent">장당 %1$s에 구매 · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">장당 %1$s에 구매 · %2$s</string>
+    <string name="card_cert">인증번호 %1$s</string>
+    <string name="card_graded_hint">그레이딩 카드는 내 평가액을 사용해요. 아래 링크에서 최근 판매 내역을 확인하세요.</string>
+    <string name="card_raw_hint">이 상태의 미그레이딩(Raw) 카드 시장 가격이에요.</string>
+    <string name="card_quantity">수량</string>
+    <string name="card_cardmarket_listing">Cardmarket 상품</string>
+    <string name="card_condition">상태</string>
+    <string name="card_all_prices">전체 가격</string>
+    <string name="card_show">보기</string>
+    <string name="card_refresh">새로고침</string>
+    <string name="card_check_prices">온라인 가격 확인</string>
+    <string name="set_back">뒤로</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="other">%2$d장 중 %1$d장 (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="other">카드 %d장</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="other">사본 %d장</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">가치순</string>
+    <string name="set_sort_number">번호순</string>
+    <string name="set_no_price">가격 없음</string>
+    <string name="common_auto">자동</string>
+    <string name="common_less">줄이기</string>
+    <string name="common_more">늘리기</string>
+    <string name="links_ebay_sold">eBay 판매 내역</string>
+</resources>

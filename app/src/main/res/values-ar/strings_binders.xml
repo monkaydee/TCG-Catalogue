@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">فتح المجموعة</string>
+    <string name="binders_title">المجلدات</string>
+    <string name="binders_all">كل البطاقات</string>
+    <string name="binders_new">مجلد جديد</string>
+    <string name="binders_card_count">البطاقات: %1$d</string>
+    <string name="binder_open_hint">اسحب أو انقر للفتح</string>
+    <string name="binder_add_cards">إضافة بطاقات</string>
+    <string name="binder_choose_cards">البطاقات في هذا المجلد</string>
+    <string name="binder_edit">تعديل المجلد</string>
+    <string name="binder_delete">حذف المجلد</string>
+    <string name="binder_delete_confirm">حذف «%1$s»؟ تبقى البطاقات في مجموعتك.</string>
+    <string name="binder_name">الاسم</string>
+    <string name="binder_cover_design">تصميم الغلاف</string>
+    <string name="binder_cover_upload">استخدام صورتي</string>
+    <string name="binder_cover_remove">إزالة الصورة</string>
+    <string name="binder_save">حفظ</string>
+    <string name="binder_empty_custom">هذا المجلد فارغ. أضف بطاقات من مجموعتك.</string>
+    <string name="binder_search">البحث عن بطاقات</string>
+    <string name="binder_new_name">مجلدي</string>
+    <string name="binder_selected">المحدد: %1$d</string>
+    <string name="collection_title">المجموعة</string>
+    <string name="collection_sort_recent">المضافة حديثًا</string>
+    <string name="collection_sort_grade">التقييم</string>
+    <string name="collection_sort_set">الإصدار</string>
+    <string name="collection_empty">لا توجد بطاقات بعد.</string>
+    <string name="collection_summary">البطاقات: %1$d · %2$s</string>
+    <string name="cover_midnight">منتصف الليل</string>
+    <string name="cover_crimson">قرمزي</string>
+    <string name="cover_forest">غابة</string>
+    <string name="cover_ocean">محيط</string>
+    <string name="cover_galaxy">مجرة</string>
+    <string name="cover_sunset">غروب</string>
+    <string name="cover_gold">رقائق ذهبية</string>
+    <string name="cover_carbon">كربون</string>
+</resources>

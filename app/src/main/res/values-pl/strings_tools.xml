@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Narzędzia do zbierania</string>
+  <string name="tools_costs">Księga kosztów</string>
+  <string name="tools_grading">Karty wysłane do oceny</string>
+  <string name="tools_shipping">Wysyłka za egzemplarz</string>
+  <string name="tools_tax">Podatek od egzemplarza</string>
+  <string name="tools_grading_cost">Koszt klasyfikacji za kopię</string>
+  <string name="tools_pnl">Niezrealizowany PnL</string>
+  <string name="tools_unknown">Nieznana cena lub koszt</string>
+  <string name="tools_blank">Pozostaw nieznane koszty puste. Wpisz 0 bez żadnych kosztów.</string>
+  <string name="tools_reference">Odniesienie do zgłoszenia</string>
+  <string name="tools_notes">Notatki</string>
+  <string name="tools_export">Eksport ubezpieczeń</string>
+  <string name="tools_review">Oczekujące recenzje zdjęć</string>
+  <string name="tools_evidence">Dowody cenowe</string>
+  <string name="tools_stale">Nieaktualna cena rynkowa</string>
+  <string name="tools_current">Aktualna cena rynkowa</string>
+  <string name="tools_fees">Opłaty za sprzedaż</string>
+  <string name="tools_learning">Pomóż poprawić rozpoznawalność</string>
+  <string name="tools_photos">Udostępnij zatwierdzone uprawy kart</string>
+  <string name="tools_send">Wyślij oczekujące raporty</string>
+  <string name="tools_delete">Usuń udostępnione raporty</string>
+  <string name="tools_consent">Opcjonalne. Raporty tekstowe zawierają dane karty i Twoją korektę. Zdjęcia wymagają osobnego podglądu i akceptacji. Raporty są przechowywane przez 90 dni.</string>
+  <string name="tools_preview">Zatwierdź przycięcie karty</string>
+  <string name="tools_preparing">Przygotowanie</string>
+  <string name="tools_shipped">Wysłane</string>
+  <string name="tools_received">Otrzymano</string>
+  <string name="tools_grading_status">Trwa ocenianie kart</string>
+  <string name="tools_returned">Wrócił</string>
+  <string name="tools_cancelled">Anulowano</string>
+  <string name="tools_complete">Kompletny</string>
+  <string name="tools_price_challenge">Zgłoś nieprawidłową cenę</string>
+  <string name="tools_confirm_outline">Potwierdź cały zarys karty</string>
+  <string name="tools_outline_hint">Przed potwierdzeniem sprawdź, czy wszystkie cztery rogi są zewnętrznymi rogami karty.</string>
+  <string name="tools_duplicate_cert">Ten certyfikat oceny jest już w Twojej kolekcji.</string>
+</resources>

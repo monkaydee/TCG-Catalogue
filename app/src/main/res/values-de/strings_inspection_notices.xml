@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Nicht professionelle Foto-Vorprüfung. Experimentelle Bereiche basieren auf Ihren Beobachtungen zu Ecken, Kanten und Oberfläche, nicht auf validierten Bewertungswahrscheinlichkeiten. Eine professionelle Bewertung kann abweichen. Verborgene Schäden, Veränderungen und Echtheitsprobleme sind nicht ausgeschlossen.</string>
+    <string name="center_manual_notice">Manuelle Zentrierungsmessung. Hilfslinien und Fotoperspektive beeinflussen das Verhältnis. Experimentelle Schätzungen erfordern auch die Prüfung von Ecken, Kanten und Oberfläche aus mehreren Lichtwinkeln.</string>
+    <string name="wear_observation_scope">Ihre Beobachtungen gelten für diese Fotositzung und fließen in den experimentellen Bereich ein. Sie bestätigen keinen Zustand und ersetzen keine guten Fotos. Erfasste Schäden erweitern oder senken den Schätzbereich.</string>
+</resources>

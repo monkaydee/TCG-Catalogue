@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Phát hiện</string>
+    <string name="pre_findings_scope">Các phát hiện cho biết nên xem ở đâu. Hiện chúng chưa làm thay đổi điểm.</string>
+    <string name="pre_findings_confirmed">Đã xác nhận</string>
+    <string name="pre_findings_possible">Có thể</string>
+    <string name="pre_findings_blind">Không thể đánh giá</string>
+    <string name="pre_findings_markers">Hiện dấu đánh dấu</string>
+    <string name="pre_findings_none">Không phát hiện bất thường ở những chỗ ảnh đo được. Điều đó không chứng minh thẻ hoàn hảo.</string>
+    <string name="pre_findings_corner_shape">Đường viền góc khác với các góc còn lại</string>
+    <string name="pre_findings_surface_scratches">Vết xước trên bề mặt</string>
+    <string name="pre_findings_surface_dent">Vết lõm hoặc nếp gấp trên bề mặt</string>
+    <string name="pre_findings_surface_blind">Ảnh chụp phẳng không cho thấy vết xước hay vết lõm. Hãy thêm ảnh chụp dưới ánh sáng xiên.</string>
+    <string name="pre_findings_export">Xuất báo cáo (JSON)</string>
+    <string name="pre_whole_surface">Toàn bộ bề mặt</string>
+    <string name="pre_verified_title">Điểm đã nhận</string>
+    <string name="pre_verified_hint">Sau khi chấm điểm, hãy nhập điểm trên slab. Ảnh của bạn và điểm đó trở thành mẫu đã xác minh, có thể giúp cải thiện việc chấm sơ bộ.</string>
+    <string name="pre_verified_grade">Điểm (1–10)</string>
+    <string name="pre_verified_cert">Số chứng nhận (không bắt buộc)</string>
+    <string name="pre_verified_save">Lưu điểm</string>
+    <string name="pre_verified_invalid">Hãy nhập điểm từ 1 đến 10 theo bước 0,5 và số chứng nhận chỉ gồm chữ số.</string>
+    <string name="pre_verified_export">Xuất mẫu huấn luyện</string>
+    <string name="pre_verified_remove">Xóa điểm</string>
+</resources>

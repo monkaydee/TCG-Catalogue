@@ -1,0 +1,83 @@
+{
+  "id": "me01-150",
+  "name": "Steelix",
+  "localId": "150",
+  "set": {
+    "cardCount": {
+      "official": 132,
+      "total": 188
+    },
+    "id": "me01",
+    "logo": "https://assets.tcgdex.net/en/me/me01/logo",
+    "name": "Mega Evolution",
+    "symbol": "https://assets.tcgdex.net/univ/me/me01/symbol"
+  },
+  "variants": {
+    "firstEdition": false,
+    "holo": true,
+    "normal": false,
+    "reverse": false,
+    "wPromo": false
+  },
+  "pricing": {
+    "cardmarket": {
+      "updated": "2026-10-06T22:54:32.761Z",
+      "unit": "EUR",
+      "idProduct": 851221,
+      "avg": 7.84,
+      "low": 2.9,
+      "trend": 7.6,
+      "avg1": 7.68,
+      "avg7": 8.11,
+      "avg30": 7.59,
+      "avg-holo": null,
+      "low-holo": null,
+      "trend-holo": 0,
+      "avg1-holo": null,
+      "avg7-holo": null,
+      "avg30-holo": null
+    },
+    "tcgplayer": {
+      "unit": "USD",
+      "updated": "2026-10-06T22:55:10.389Z",
+      "holofoil": {
+        "productId": 654489,
+        "lowPrice": 3.95,
+        "midPrice": 7,
+        "highPrice": 999,
+        "marketPrice": 5.31,
+        "directLowPrice": 5.31
+      }
+    }
+  },
+  "image": "https://assets.tcgdex.net/en/me/me01/150",
+  "illustrator": "Tonji Matsuno",
+  "hp": 200,
+  "rarity": "Illustration rare",
+  "stage": "Stage1",
+  "regulationMark": "I",
+  "dexId": [
+    208
+  ],
+  "attacks": [
+    {
+      "cost": [
+        "Colorless",
+        "Colorless"
+      ],
+      "name": "Welcoming Tail",
+      "effect": "If you have exactly 6 Prize cards remaining, this attack does 200 more damage.",
+      "damage": "40+"
+    },
+    {
+      "cost": [
+        "Metal",
+        "Metal",
+        "Colorless",
+        "Colorless"
+      ],
+      "name": "Skull Bash",
+      "damage": 140
+    }
+  ]
+}

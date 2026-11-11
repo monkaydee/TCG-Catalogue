@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">Samlingsverktyg</string>
+  <string name="tools_costs">Kostnadsbok</string>
+  <string name="tools_grading">Kort skickas för betygssättning</string>
+  <string name="tools_shipping">Frakt per exemplar</string>
+  <string name="tools_tax">Skatt per exemplar</string>
+  <string name="tools_grading_cost">Betygskostnad per exemplar</string>
+  <string name="tools_pnl">Orealiserad PnL</string>
+  <string name="tools_unknown">Okänt pris eller kostnad</string>
+  <string name="tools_blank">Lämna okända kostnader tomt. Ange 0 utan kostnad.</string>
+  <string name="tools_reference">Inlämningsreferens</string>
+  <string name="tools_notes">Anteckningar</string>
+  <string name="tools_export">Försäkringsexport</string>
+  <string name="tools_review">Väntar på fotorecensioner</string>
+  <string name="tools_evidence">Prisbevis</string>
+  <string name="tools_stale">Föråldrat marknadspris</string>
+  <string name="tools_current">Aktuellt marknadspris</string>
+  <string name="tools_fees">Försäljningsavgifter</string>
+  <string name="tools_learning">Hjälp till att förbättra igenkänningen</string>
+  <string name="tools_photos">Dela godkända kortgrödor</string>
+  <string name="tools_send">Skicka väntande rapporter</string>
+  <string name="tools_delete">Ta bort delade rapporter</string>
+  <string name="tools_consent">Valfritt. Textrapporter inkluderar kortuppgifter och din rättelse. Foton kräver en separat förhandsgranskning och godkännande. Rapporter sparas i 90 dagar.</string>
+  <string name="tools_preview">Godkänn kortbeskärning</string>
+  <string name="tools_preparing">Förbereder</string>
+  <string name="tools_shipped">Skickas</string>
+  <string name="tools_received">Mottaget</string>
+  <string name="tools_grading_status">Kortgradering pågår</string>
+  <string name="tools_returned">Återvände</string>
+  <string name="tools_cancelled">Avbruten</string>
+  <string name="tools_complete">Komplett</string>
+  <string name="tools_price_challenge">Rapportera felaktigt pris</string>
+  <string name="tools_confirm_outline">Bekräfta hela kortkonturen</string>
+  <string name="tools_outline_hint">Kontrollera att alla fyra hörnen är de yttre korthörnen innan du bekräftar.</string>
+  <string name="tools_duplicate_cert">Detta betygsintyg finns redan i din samling.</string>
+</resources>

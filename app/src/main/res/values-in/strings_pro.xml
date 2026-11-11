@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Semua alat kolektor, satu kali beli.</string>
+    <string name="pro_feature_export">Laporan koleksi dan asuransi (PDF, CSV)</string>
+    <string name="pro_feature_import">Impor dari aplikasi dan daftar lain</string>
+    <string name="pro_feature_decks">Pembuat deck dengan biaya kartu yang belum dimiliki</string>
+    <string name="pro_feature_binders">Binder sendiri tanpa batas</string>
+    <string name="pro_feature_grading">Layak di-grading? dan populasi PSA</string>
+    <string name="pro_feature_set_cost">Biaya untuk melengkapi satu set</string>
+    <string name="pro_free_note">Pemindaian, harga, koleksimu, dan cadangan tetap gratis.</string>
+    <string name="pro_buy">Buka seharga %1$s</string>
+    <string name="pro_buy_no_price">Buka Pro</string>
+    <string name="pro_one_time">Sekali beli, tanpa langganan.</string>
+    <string name="pro_restore">Pulihkan pembelian</string>
+    <string name="pro_owned">Pro sudah terbuka. Terima kasih!</string>
+    <string name="pro_pending">Pembayaranmu masih diproses. Pro terbuka begitu pembayaran selesai.</string>
+    <string name="pro_store_unavailable">Google Play sedang tidak tersedia. Periksa koneksimu lalu coba lagi.</string>
+    <string name="pro_restore_none">Tidak ada pembelian untuk akun Google ini.</string>
+    <string name="pro_failed">Pembelian tidak berhasil. Kamu tidak dikenai biaya.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

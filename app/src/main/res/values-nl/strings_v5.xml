@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Prijsmeldingen</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Nu %1$s — boven je melding van %2$s</string>
+    <string name="alert_below">Nu %1$s — onder je melding van %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">Op je verlanglijst: nu %1$s — op of onder je streefprijs van %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Stapelmodus</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — controleer later in de strook hieronder</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d kaart om te controleren — tik erop</item>
+        <item quantity="other">%d kaarten om te controleren — tik erop</item>
+    </plurals>
+    <string name="stack_tap_to_review">Tik om te controleren</string>
+    <string name="stack_undo">Ongedaan maken</string>
+    <string name="stack_discard">Weggooien</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Sealed producten</string>
+    <string name="sealed_add">Sealed product toevoegen</string>
+    <string name="sealed_value">Sealed waarde</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <string name="sealed_empty">Houd hier ongeopende boosterboxen, packs, decks en boxen bij. Hun marktwaarde telt mee in je portfolio.</string>
+    <string name="sealed_remove_hint">Opslaan met 0 verwijdert het product.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s sinds aankoop</string>
+    <string name="sealed_no_price">geen prijs</string>
+    <string name="sealed_search_hint">Productnaam of set, bijv. “151 boosterbox”</string>
+    <string name="sealed_no_results">Geen sealed producten gevonden</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Sorry, de app is gecrasht</string>
+    <string name="crash_text">Er is een technisch rapport bewaard (app- en Android-versie, telefoonmodel en de fout — geen van je kaarten). Je kunt het versturen om het probleem te helpen oplossen.</string>
+    <string name="crash_report_github">Melden op GitHub</string>
+    <string name="crash_share">Delen</string>
+    <string name="crash_dismiss">Niet nu</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">Een nieuwere collectie van een andere telefoon</string>
+    <string name="home_cloud_newer_text">Je cloud-back-up is bijgewerkt op een andere telefoon. Tik om hem te laden of samen te voegen in Instellingen.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Zoeken op afbeelding</string>
+    <string name="picture_preparing">Afbeeldingen zoeken voorbereiden — een eenmalige download van ongeveer 20 MB…</string>
+    <string name="picture_searching">Kaart zoeken op basis van de afbeelding…</string>
+    <string name="picture_none">Geen kaart gevonden op afbeelding — probeer het in te typen.</string>
+    <string name="picture_unavailable">Zoeken op afbeelding is nu niet beschikbaar — controleer je verbinding.</string>
+    <string name="picture_check">Gevonden op afbeelding — controleer of het de juiste kaart is.</string>
+</resources>

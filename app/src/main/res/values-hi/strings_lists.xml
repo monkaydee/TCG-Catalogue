@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Common -->
+    <string name="lists_back">वापस</string>
+    <string name="lists_cancel">रद्द करें</string>
+    <string name="lists_save">सेव करें</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">हटाएँ</string>
+    <string name="lists_remove">हटाएँ</string>
+    <string name="lists_retry">फिर कोशिश करें</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">लिस्ट</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">राशि (%1$s)</string>
+    <string name="lists_amount_invalid">राशि डालें, जैसे 12.50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">चेकलिस्ट</string>
+    <string name="checklist_open">चेकलिस्ट दिखाएँ</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="one">%2$d में से %1$d कार्ड आपके पास</item>
+        <item quantity="other">%2$d में से %1$d कार्ड आपके पास</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">सभी · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">मौजूद · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">बाकी · %1$d</string>
+    <string name="checklist_loading">इस सेट के कार्ड लोड हो रहे हैं…</string>
+    <string name="checklist_empty_title">इस सेट की कोई चेकलिस्ट नहीं</string>
+    <string name="checklist_empty_text">कार्ड सूची लोड नहीं हो सकी। अपना कनेक्शन जाँचें, या हो सकता है यह सेट अभी सूचीबद्ध न हो।</string>
+    <string name="checklist_none_owned">इस सेट का कोई कार्ड अभी आपके पास नहीं है।</string>
+    <string name="checklist_none_missing">पूरा हो गया! इस सेट का हर कार्ड आपके पास है।</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">बाकी</string>
+    <string name="checklist_on_wishlist">आपकी विशलिस्ट में</string>
+    <string name="checklist_add_collection">कलेक्शन में जोड़ें</string>
+    <string name="checklist_add_wishlist">विशलिस्ट में जोड़ें</string>
+    <string name="checklist_card_loading">कार्ड लोड हो रहा है…</string>
+    <string name="checklist_card_failed">यह कार्ड लोड नहीं हो सका — अपना कनेक्शन जाँचें</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s आपके कलेक्शन में जोड़ा गया</string>
+    <string name="checklist_printing">प्रिंटिंग</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">विशलिस्ट</string>
+    <string name="wish_add">विशलिस्ट में जोड़ें</string>
+    <string name="wish_remove">विशलिस्ट से हटाएँ</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s आपकी विशलिस्ट में जोड़ा गया</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s आपकी विशलिस्ट से हटा दिया गया</string>
+    <string name="wish_add_failed">कार्ड नहीं जोड़ा जा सका — अपना कनेक्शन जाँचें</string>
+    <string name="wish_total">कुल लागत</string>
+    <plurals name="wish_count">
+        <item quantity="one">%1$d कार्ड</item>
+        <item quantity="other">%1$d कार्ड</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="one">%1$d आपके लक्ष्य पर या उससे कम</item>
+        <item quantity="other">%1$d आपके लक्ष्य पर या उससे कम</item>
+    </plurals>
+    <string name="wish_empty_title">आपकी विशलिस्ट खाली है</string>
+    <string name="wish_empty_text">खोज से या किसी सेट चेकलिस्ट के बाकी कार्ड से कार्ड जोड़ें।</string>
+    <string name="wish_no_price">कीमत नहीं</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">लक्ष्य %1$s</string>
+    <string name="wish_no_target">कोई लक्षित कीमत नहीं</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">आपके लक्ष्य पर</string>
+    <string name="wish_set_target">लक्षित कीमत सेट करें</string>
+    <string name="wish_target_title">लक्षित कीमत</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">कीमत इस राशि या उससे कम होने पर आपको नोटिफ़िकेशन मिलेगा। अभी: %1$s</string>
+    <string name="wish_target_text_no_price">कीमत इस राशि या उससे कम होने पर आपको नोटिफ़िकेशन मिलेगा।</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">ट्रेड लिस्ट</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">ट्रेड के लिए</string>
+    <string name="trade_share">लिस्ट शेयर करें</string>
+    <string name="trade_remove">ट्रेड लिस्ट से हटाएँ</string>
+    <string name="trade_total">ट्रेड वैल्यू</string>
+    <string name="trade_empty_title">अभी ट्रेड के लिए कुछ नहीं है</string>
+    <string name="trade_empty_text">अपने कलेक्शन में कोई कार्ड खोलें और उसे यहाँ जोड़ने के लिए “ट्रेड के लिए” पर टैप करें।</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="one">मेरी ट्रेड लिस्ट (%1$d कार्ड)</item>
+        <item quantity="other">मेरी ट्रेड लिस्ट (%1$d कार्ड)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">कुल वैल्यू: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">%1$s से शेयर किया गया</string>
+    <string name="trade_share_subject">मेरी ट्रेड लिस्ट</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">बेचें</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">%1$s बेचें</string>
+    <string name="sold_quantity">बेची गई कॉपी</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">%1$d में से</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">प्रति कॉपी कीमत (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">कुल %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">मुनाफ़ा %1$s</string>
+    <string name="sold_confirm">बेचें</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">%1$d× %2$s बेचा गया</string>
+    <string name="sold_title">बिक चुके</string>
+    <string name="sold_realised">वास्तविक मुनाफ़ा</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">बिक्री %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="one">खरीद कीमत के बिना %1$d बिक्री गिनी नहीं गई</item>
+        <item quantity="other">खरीद कीमत के बिना %1$d बिक्री गिनी नहीं गईं</item>
+    </plurals>
+    <string name="sold_empty_title">अभी तक कोई बिक्री नहीं</string>
+    <string name="sold_empty_text">अपने कलेक्शन में कोई कार्ड खोलें और बिक्री यहाँ दर्ज करने के लिए “बेचें” पर टैप करें।</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">%1$d × %2$s में बेचा</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">प्रति कॉपी %1$s दिए</string>
+    <string name="sold_paid_unknown">खरीद कीमत अज्ञात</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">%1$s को बेचा गया</string>
+    <string name="sold_delete">एंट्री हटाएँ</string>
+    <string name="sold_delete_title">यह बिक्री हटाएँ?</string>
+    <string name="sold_delete_text">यह बिक चुके कार्ड की सूची और वास्तविक मुनाफ़े से हट जाएगी। कार्ड आपके कलेक्शन में वापस नहीं आता।</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">अलर्ट</string>
+    <string name="alert_ui_title">कीमत अलर्ट</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">प्रति कॉपी वैल्यू इनमें से किसी राशि को पार करने पर नोटिफ़िकेशन पाएँ। अभी: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">इससे ऊपर होने पर सूचित करें (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">इससे नीचे होने पर सूचित करें (%1$s)</string>
+    <string name="alert_ui_order">“ऊपर” की राशि “नीचे” से ज़्यादा होनी चाहिए</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">%1$s से ऊपर</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">%1$s से नीचे</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">कीमत की हिस्ट्री</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">उच्चतम %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">न्यूनतम %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">बदलें</string>
+    <string name="lists_card_remove">हटाएँ</string>
+</resources>

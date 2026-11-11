@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">Prijzen tonen in</string>
+    <string name="settings_display_same">Zelfde als collectie (%1$s)</string>
+    <string name="settings_display_offline">Wisselkoersen konden niet worden geladen. Probeer het online opnieuw.</string>
+    <string name="settings_display_hint">Alleen voor weergave omgerekend met ECB-referentiekoersen. Wat je invoert en opgeslagen waarden blijven in EUR of USD.</string>
+    <string name="card_notes">Notities</string>
+    <string name="card_notes_hint">Waar gekocht, gebreken, voor wie …</string>
+    <string name="worth_grading_title">Loont graden?</string>
+    <string name="worth_grading_cost">Gradingkosten per kaart in %1$s (tarief + verzending)</string>
+    <string name="worth_grading_no_raw">De ongegradede waarde van deze kaart is onbekend, dus de winst kan niet worden berekend.</string>
+    <string name="worth_grading_from">%1$s: loont vanaf cijfer %2$s</string>
+    <string name="worth_grading_never">%1$s: loont bij geen enkel vermeld cijfer</string>
+    <string name="worth_grading_note">Vergeleken met de ongegradede waarde van dit exemplaar, %1$s. Gegradede prijzen zijn markt- of vraagprijzen; het cijfer is niet gegarandeerd.</string>
+    <string name="completion_title">Kosten om te voltooien</string>
+    <string name="completion_total">%1$s voor %2$d kaarten</string>
+    <string name="completion_unknown">%1$d kaarten zonder bekende prijs (niet meegeteld)</string>
+    <string name="completion_progress">Prijzen geladen: %1$d van %2$d</string>
+    <string name="completion_hint">Goedkoopste druk van elke ontbrekende kaart tegen marktprijs</string>
+    <string name="completion_calculate">Berekenen</string>
+    <string name="lot_title">Lot-calculator</string>
+    <string name="lot_remove">Verwijderen</string>
+    <string name="lot_add_value">Waarde toevoegen (%1$s)</string>
+    <string name="lot_add">Toevoegen</string>
+    <string name="lot_market">Marktwaarde: %1$s (%2$d items)</string>
+    <string name="lot_unknown">%1$d items zonder prijs (niet meegeteld)</string>
+    <string name="lot_percent">Bod op %1$d %% van de markt</string>
+    <string name="lot_offer">Lotprijs: %1$s</string>
+    <string name="bulk_add_to_binder">Aan map toevoegen</string>
+    <string name="bulk_trade">Markeren voor ruil</string>
+    <string name="bulk_trade_done">%1$d kaarten gemarkeerd voor ruil</string>
+    <string name="bulk_delete">Verwijderen</string>
+    <string name="bulk_delete_confirm">%1$d kaarten uit je collectie verwijderen?</string>
+    <string name="bulk_select_all">Alles selecteren (%1$d)</string>
+    <string name="bulk_no_binders">Je hebt nog geen eigen mappen. Maak er een via Map openen.</string>
+    <string name="bulk_added_to_binder">%1$d kaarten toegevoegd aan %2$s</string>
+</resources>

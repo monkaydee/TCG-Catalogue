@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Controllo fotografico non professionale. Gli intervalli sperimentali si basano sulle vostre osservazioni di angoli, bordi e superficie, non su probabilità di voto validate. Il voto professionale può differire. Difetti nascosti, alterazioni e problemi di autenticità non sono esclusi.</string>
+    <string name="center_manual_notice">Misurazione manuale della centratura. Guide e prospettiva influenzano il rapporto. Le stime sperimentali richiedono anche la verifica di angoli, bordi e superficie con diversi angoli di luce.</string>
+    <string name="wear_observation_scope">Le osservazioni sono conservate per questa sessione e usate nell’intervallo sperimentale. Non certificano le condizioni né compensano foto scadenti. I danni registrati ampliano o abbassano l’intervallo.</string>
+</resources>

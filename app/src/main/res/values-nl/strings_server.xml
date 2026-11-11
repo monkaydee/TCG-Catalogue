@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">geen recente verkopen van %1$s gevonden — stel je eigen waarde in of bekijk de prijslinks</string>
+    <string name="data_graded_server_error">de prijsserver is nu niet bereikbaar</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="one">%1$d verkoop</item>
+        <item quantity="other">%1$d verkopen</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Graded prijzen</string>
+    <string name="graded_none">Geen graded verkopen gevonden voor deze kaart.</string>
+    <string name="graded_failed">De prijsserver is nu niet bereikbaar.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">jouw grade</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Controleer het certificaat bij PSA</string>
+    <string name="cert_unknown">PSA heeft geen kaart met dit certificaatnummer.</string>
+    <string name="cert_failed">PSA is nu niet bereikbaar. Probeer het later opnieuw.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">PSA-grade: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Populatie: %1$d met deze grade, %2$d hoger</string>
+    <string name="cert_mismatch">De grade in het PSA-register wijkt af van de grade die voor deze kaart is opgeslagen.</string>
+    <string name="links_psa_cert">PSA-certificaat</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Online herkennen</string>
+    <string name="identify_hint">Stuurt deze foto voor beeldherkenning (Ximilar) naar de prijsserver van de app. De foto wordt niet opgeslagen.</string>
+    <string name="identify_searching">Online herkennen…</string>
+    <string name="identify_none">Ook online niet herkend. Probeer een scherpere foto of typ de kaart zelf in.</string>
+    <string name="identify_failed">Online herkenning is nu niet beschikbaar (daglimiet bereikt of geen verbinding).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Prijsserver</string>
+    <string name="settings_server_summary">De gratis eigen server van de app voor graded prijzen, PSA-certificaatcontroles en online herkenning. Builds van GitHub hebben hem ingebouwd; zie docs/CLOUDFLARE.md om een eigen server in te stellen.</string>
+    <string name="settings_server_url">Serveradres (https://…)</string>
+    <string name="settings_server_key">App-sleutel</string>
+    <string name="settings_server_save">Opslaan</string>
+    <string name="settings_server_reset">Ingebouwde gebruiken</string>
+    <string name="settings_server_test">Testen</string>
+    <string name="settings_server_ok">Verbonden met de prijsserver.</string>
+    <string name="settings_server_bad">De prijsserver reageerde niet. Controleer het adres en de app-sleutel.</string>
+    <string name="settings_server_off">Geen prijsserver ingesteld: graded prijzen gebruiken je eigen waarde.</string>
+</resources>

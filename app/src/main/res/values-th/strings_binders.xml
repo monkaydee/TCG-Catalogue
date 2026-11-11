@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">เปิดคอลเลกชัน</string>
+    <string name="binders_title">แฟ้ม</string>
+    <string name="binders_all">การ์ดทั้งหมด</string>
+    <string name="binders_new">แฟ้มใหม่</string>
+    <string name="binders_card_count">การ์ด: %1$d</string>
+    <string name="binder_open_hint">ปัดหรือแตะเพื่อเปิด</string>
+    <string name="binder_add_cards">เพิ่มการ์ด</string>
+    <string name="binder_choose_cards">การ์ดในแฟ้มนี้</string>
+    <string name="binder_edit">แก้ไขแฟ้ม</string>
+    <string name="binder_delete">ลบแฟ้ม</string>
+    <string name="binder_delete_confirm">ลบ “%1$s” ไหม การ์ดยังอยู่ในคอลเลกชันของคุณ</string>
+    <string name="binder_name">ชื่อ</string>
+    <string name="binder_cover_design">ดีไซน์ปก</string>
+    <string name="binder_cover_upload">ใช้รูปของคุณเอง</string>
+    <string name="binder_cover_remove">ลบรูป</string>
+    <string name="binder_save">บันทึก</string>
+    <string name="binder_empty_custom">แฟ้มนี้ว่างอยู่ เพิ่มการ์ดจากคอลเลกชันของคุณ</string>
+    <string name="binder_search">ค้นหาการ์ด</string>
+    <string name="binder_new_name">แฟ้มของฉัน</string>
+    <string name="binder_selected">เลือกแล้ว: %1$d</string>
+    <string name="collection_title">คอลเลกชัน</string>
+    <string name="collection_sort_recent">เพิ่มล่าสุด</string>
+    <string name="collection_sort_grade">เกรด</string>
+    <string name="collection_sort_set">ชุด</string>
+    <string name="collection_empty">ยังไม่มีการ์ด</string>
+    <string name="collection_summary">การ์ด: %1$d · %2$s</string>
+    <string name="cover_midnight">เที่ยงคืน</string>
+    <string name="cover_crimson">แดงเข้ม</string>
+    <string name="cover_forest">ป่า</string>
+    <string name="cover_ocean">มหาสมุทร</string>
+    <string name="cover_galaxy">กาแล็กซี</string>
+    <string name="cover_sunset">พระอาทิตย์ตก</string>
+    <string name="cover_gold">ฟอยล์ทอง</string>
+    <string name="cover_carbon">คาร์บอน</string>
+</resources>

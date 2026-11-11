@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">非专业照片预检。实验性范围依据您对角、边缘和表面的观察，并非经过验证的评级概率。专业评级可能不同。无法排除隐藏缺陷、改动或真伪问题。</string>
+    <string name="center_manual_notice">手动测量居中比例。辅助线位置和照片透视会影响比例。实验性估计还需要检查角、边缘及不同光照角度下的表面。</string>
+    <string name="wear_observation_scope">您的观察记录保留在本次拍照会话中，用于实验性范围。记录不证明品相，也不能弥补低质量照片。记录的损伤会扩大或降低估计范围。</string>
+</resources>

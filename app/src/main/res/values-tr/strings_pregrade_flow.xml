@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Kart taslağı · dört köşe</string>
+  <string name="pre_center_screen">Merkezleme · sekiz kılavuz</string>
+  <string name="pre_open_centering">İç ve dış sınırları ölçün</string>
+  <string name="pre_outline_continue">Tam kart taslağını onaylayın</string>
+  <string name="pre_outline_adjust">Dört kart köşesini ayarlayın</string>
+  <string name="pre_choose_game">Kart oyunu</string>
+  <string name="pre_center_missing">Merkezleme ölçümünü tamamlamak için dış ve iç kılavuzları bu tarafa yerleştirin.</string>
+  <string name="pre_center_ready">Merkezleme ölçüldü. Sekiz kılavuzun tümünü ayarlayabilirsiniz.</string>
+  <string name="pre_edit_front">Ön ortalamayı düzenle</string>
+  <string name="pre_edit_back">Geri ortalamayı düzenle</string>
+  <string name="pre_potential_title">Merkezleme potansiyeli</string>
+  <string name="pre_potential_10">PSA 10 merkezleme sınırları dahilinde</string>
+  <string name="pre_potential_borderline">Borderline PSA 10 merkezleme</string>
+  <string name="pre_potential_below">PSA 10 merkezleme limitlerinin dışında</string>
+  <string name="pre_potential_incomplete">Potansiyeli ortalamak için her iki tarafı da tamamlayın</string>
+  <string name="pre_potential_scope">Kart oyunlarında yalnızca ortalama. PSA ön 55/45 ve arka 75/25 limitlerini kullanır. Sınır çizgisi, tek görüntü piksellik kılavuz ayarlamasının sonucu değiştirebileceği anlamına gelir. Köşeler, kenarlar, yüzey ve özgünlük son notu düşürebilir.</string>
+  <string name="pre_model_scope">Bu oyun veya bu ölçümler için genel not tahmini doğrulanmadı. Her iki taraf da ölçüldüğünde, yukarıdaki merkezleme potansiyeli mevcut kalır.</string>
+  <string name="pre_experimental_model">Deneysel Pokémon fotoğraf tahmini</string>
+  <string name="pre_quality_blocked">Bu tarafı tekrar ele alalım: dış hatları veya fotoğraf kalitesi aşınma değerlendirmesi için uygun değil.</string>
+  <string name="pre_no_wear_detected">gözle görülür bir aşınma tespit edilmedi</string>
+  <string name="pre_skip_frame">Karşılaştırılabilir basılı çerçeve yok</string>
+  <string name="pre_retake_front">Ön fotoğrafı yeniden çek</string>
+  <string name="pre_retake_back">Fotoğrafı yeniden çek</string>
+</resources>

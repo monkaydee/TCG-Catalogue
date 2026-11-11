@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">找不到 %1$s 的近期成交紀錄 — 請設定你自己的價值，或查看價格連結</string>
+    <string name="data_graded_server_error">目前無法連線至價格伺服器</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="other">%1$d 筆成交</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">評級卡價格</string>
+    <string name="graded_none">找不到這張卡片的評級成交紀錄。</string>
+    <string name="graded_failed">目前無法連線至價格伺服器。</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">你的評級</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">透過 PSA 查驗證書</string>
+    <string name="cert_unknown">PSA 中沒有此證書編號對應的卡片。</string>
+    <string name="cert_failed">目前無法連線至 PSA，請稍後再試。</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">PSA 評級：%1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">存世量：同評級 %1$d 張，更高評級 %2$d 張</string>
+    <string name="cert_mismatch">PSA 紀錄中的評級與此卡片儲存的評級不一致。</string>
+    <string name="links_psa_cert">PSA 證書</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">線上辨識</string>
+    <string name="identify_hint">將這張照片傳送到 App 的價格伺服器進行影像辨識（Ximilar）。照片不會被儲存。</string>
+    <string name="identify_searching">正在線上辨識…</string>
+    <string name="identify_none">線上也無法辨識。請嘗試更清晰的照片，或手動輸入卡片。</string>
+    <string name="identify_failed">線上辨識目前無法使用（已達每日上限或沒有網路連線）。</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">價格伺服器</string>
+    <string name="settings_server_summary">App 專屬的免費伺服器，用於評級卡價格、PSA 證書查驗和線上辨識。來自 GitHub 的建置版本已內建；如需自行架設，請參閱 docs/CLOUDFLARE.md。</string>
+    <string name="settings_server_url">伺服器位址（https://…）</string>
+    <string name="settings_server_key">App 金鑰</string>
+    <string name="settings_server_save">儲存</string>
+    <string name="settings_server_reset">使用內建伺服器</string>
+    <string name="settings_server_test">測試</string>
+    <string name="settings_server_ok">已連線至價格伺服器。</string>
+    <string name="settings_server_bad">價格伺服器沒有回應。請檢查位址和 App 金鑰。</string>
+    <string name="settings_server_off">尚未設定價格伺服器：評級卡價格將使用你自己的價值。</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Revisión fotográfica no profesional. Los intervalos experimentales se basan en sus observaciones de esquinas, bordes y superficie, no en probabilidades de nota validadas. La nota profesional puede diferir. No se descartan defectos ocultos, alteraciones ni problemas de autenticidad.</string>
+    <string name="center_manual_notice">Medición manual del centrado. Las guías y la perspectiva afectan a la proporción. Las estimaciones experimentales requieren revisar esquinas, bordes y superficie con varios ángulos de luz.</string>
+    <string name="wear_observation_scope">Sus observaciones se conservan durante esta sesión y se usan en el intervalo experimental. No certifican el estado ni compensan fotos de mala calidad. Los daños registrados amplían o reducen el intervalo.</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="pre_outline_use">この輪郭を使用</string>
+    <string name="pre_outline_seed">カード全体を自動検出できませんでした。続行する前に、4つの点を実際の角に合わせてください。</string>
+    <string name="pre_outline_invalid">4つの角で四角形を作ってください。交差している角や重なっている角を移動してください。</string>
+    <string name="pre_outline_front">表面の角を調整</string>
+    <string name="pre_outline_back">裏面の角を調整</string>
+</resources>

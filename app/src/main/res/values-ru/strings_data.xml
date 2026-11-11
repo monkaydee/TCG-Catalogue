@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">Название на отсканированной карте не совпадает с этой картой — возможно, номер распознан неверно. Проверьте его или отмените и введите вручную.</string>
+
+    <string name="data_graded">С грейдом</string>
+    <string name="data_graded_grade">Грейд %1$s</string>
+
+    <string name="data_graded_choose_grader">выберите грейдинговую компанию</string>
+    <string name="data_graded_choose_grade">выберите грейд</string>
+    <string name="data_graded_no_source">нет источника цен для карт с грейдом — укажите свою оценку или проверьте ссылки на цены на странице карты</string>
+
+    <string name="data_variant_normal">Обычная</string>
+    <string name="data_variant_holo">Холо</string>
+    <string name="data_variant_reverse_holo">Реверс-холо</string>
+    <string name="data_variant_first_edition">1-е издание</string>
+    <string name="data_variant_foil">Фойл</string>
+    <string name="data_variant_etched_foil">Etched-фойл</string>
+    <string name="data_variant_standard">Стандарт</string>
+    <string name="data_variant_numbered">Вариант %1$d</string>
+
+    <string name="data_overview_prices">Цены</string>
+    <string name="data_overview_no_card_data">не удалось загрузить данные карты — проверьте подключение</string>
+    <string name="data_overview_no_cardmarket">нет цен Cardmarket для этой карты</string>
+    <string name="data_overview_no_tcgplayer">нет цен TCGplayer для этой карты</string>
+    <string name="data_overview_by_condition">TCGplayer по состоянию (продажи)</string>
+    <string name="data_overview_no_condition_sales">нет продаж по состоянию</string>
+
+    <string name="price_label_trend">Тренд</string>
+    <string name="price_label_lowest_offer">Мин. предложение</string>
+    <string name="price_label_average_sold">Средняя цена продаж</string>
+    <string name="price_label_avg1">Среднее за 1 день</string>
+    <string name="price_label_avg7">Среднее за 7 дней</string>
+    <string name="price_label_avg30">Среднее за 30 дней</string>
+    <string name="price_label_market">Рыночная</string>
+    <string name="price_label_lowest_listing">Мин. цена лота</string>
+    <string name="price_label_mid">Средняя</string>
+    <string name="price_label_highest_listing">Макс. цена лота</string>
+    <string name="price_label_direct_low">Мин. Direct</string>
+
+    <string name="price_note_raw_no_graded_source">Показана цена без грейда — нет источника цен для карт с грейдом — укажите свою оценку или проверьте ссылки на цены на странице карты</string>
+    <string name="price_note_markets_disagree">Лот на %1$s не соответствует этой карте (разница ×%2$d); используется %3$s</string>
+    <string name="price_note_capped">%1$s оценена как %2$s (по данным продаж выходило дороже)</string>
+    <string name="price_note_tcgplayer_sales">Цена %1$s по продажам TCGplayer</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% от NM (продажи TCGplayer)</string>
+    <string name="price_note_estimated_share">%1$s: оценка %2$d%% от NM (нет данных о продажах)</string>
+
+    <string name="data_http_error">HTTP %1$d для %2$s</string>
+    <string name="data_service_unavailable">Сервис карт (%1$s) сейчас не отвечает. Повторите попытку через минуту.</string>
+</resources>

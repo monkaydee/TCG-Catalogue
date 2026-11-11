@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Regola gli angoli</string>
+    <string name="grade_adjust_hint">Trascina i quattro punti sugli angoli della carta. La lente aiuta a posizionarli con precisione.</string>
+    <string name="grade_adjust_apply">Applica</string>
+</resources>

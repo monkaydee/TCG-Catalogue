@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">Contorno della carta · quattro angoli</string>
+  <string name="pre_center_screen">Centraggio · otto guide</string>
+  <string name="pre_open_centering">Misura i bordi interni ed esterni</string>
+  <string name="pre_outline_continue">Conferma il contorno dell\'intera carta</string>
+  <string name="pre_outline_adjust">Regola i quattro angoli della carta</string>
+  <string name="pre_choose_game">Gioco di carte</string>
+  <string name="pre_center_missing">Posizionare le guide esterne ed interne su questo lato per completare la misurazione del centraggio.</string>
+  <string name="pre_center_ready">Centratura misurata. È possibile regolare tutte e otto le guide.</string>
+  <string name="pre_edit_front">Modifica la centratura anteriore</string>
+  <string name="pre_edit_back">Modifica la centratura del retro</string>
+  <string name="pre_potential_title">Potenziale di centratura</string>
+  <string name="pre_potential_10">Entro i limiti di centraggio PSA 10</string>
+  <string name="pre_potential_borderline">Centratura PSA 10 borderline</string>
+  <string name="pre_potential_below">Fuori dai limiti di centraggio PSA 10</string>
+  <string name="pre_potential_incomplete">Completa entrambi i lati per il potenziale di centratura</string>
+  <string name="pre_potential_scope">Solo centratura, tra i giochi di carte. Utilizza i limiti PSA anteriore 55/45 e posteriore 75/25. Borderline significa che una regolazione della guida pixel di un\'immagine potrebbe modificare il risultato. Angoli, bordi, superficie e autenticità possono ridurre il voto finale.</string>
+  <string name="pre_model_scope">Una previsione del voto complessivo non è convalidata per questo gioco o per queste misurazioni. Il potenziale di centratura sopra rimane disponibile una volta misurati entrambi i lati.</string>
+  <string name="pre_experimental_model">Stima delle foto dei Pokémon sperimentali</string>
+  <string name="pre_quality_blocked">Riprendi questo lato: il suo contorno o la qualità della foto non sono adatti per una valutazione dell\'usura.</string>
+  <string name="pre_no_wear_detected">nessuna usura visibile rilevata</string>
+  <string name="pre_skip_frame">Nessuna cornice stampata paragonabile</string>
+  <string name="pre_retake_front">Riprendi la foto frontale</string>
+  <string name="pre_retake_back">Riprendi la foto</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Ustalenia</string>
+    <string name="pre_findings_scope">Ustalenia pokazują, gdzie warto spojrzeć. Na razie nie zmieniają oceny.</string>
+    <string name="pre_findings_confirmed">Potwierdzone</string>
+    <string name="pre_findings_possible">Możliwe</string>
+    <string name="pre_findings_blind">Nie do oceny</string>
+    <string name="pre_findings_markers">Pokaż znaczniki</string>
+    <string name="pre_findings_none">Tam, gdzie zdjęcia dało się zmierzyć, nie wykryto nieprawidłowości. To nie dowodzi, że karta jest bez wad.</string>
+    <string name="pre_findings_corner_shape">Kontur rogu różni się od pozostałych rogów</string>
+    <string name="pre_findings_surface_scratches">Rysy na powierzchni</string>
+    <string name="pre_findings_surface_dent">Wgniecenie lub zagięcie powierzchni</string>
+    <string name="pre_findings_surface_blind">Płaskie zdjęcie nie pokaże rys ani wgnieceń. Dodaj zdjęcia w świetle padającym pod kątem.</string>
+    <string name="pre_findings_export">Eksportuj raport (JSON)</string>
+    <string name="pre_whole_surface">Cała powierzchnia</string>
+    <string name="pre_verified_title">Otrzymana ocena</string>
+    <string name="pre_verified_hint">Po gradingu wpisz ocenę ze slabu. Twoje zdjęcia i ta ocena stają się zweryfikowaną próbką, która może ulepszyć pre-grader.</string>
+    <string name="pre_verified_grade">Ocena (1–10)</string>
+    <string name="pre_verified_cert">Numer certyfikatu (opcjonalnie)</string>
+    <string name="pre_verified_save">Zapisz ocenę</string>
+    <string name="pre_verified_invalid">Wpisz ocenę od 1 do 10 w krokach co pół punktu i numer certyfikatu złożony z cyfr.</string>
+    <string name="pre_verified_export">Eksportuj próbkę treningową</string>
+    <string name="pre_verified_remove">Usuń ocenę</string>
+</resources>

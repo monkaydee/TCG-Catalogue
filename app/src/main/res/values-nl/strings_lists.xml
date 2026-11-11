@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common -->
+    <string name="lists_back">Terug</string>
+    <string name="lists_cancel">Annuleren</string>
+    <string name="lists_save">Opslaan</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">Wissen</string>
+    <string name="lists_remove">Verwijderen</string>
+    <string name="lists_retry">Opnieuw proberen</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">Lijsten</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">Bedrag (%1$s)</string>
+    <string name="lists_amount_invalid">Voer een bedrag in, bijv. 12,50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">Checklist</string>
+    <string name="checklist_open">Checklist tonen</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="one">%1$d van %2$d kaart in bezit</item>
+        <item quantity="other">%1$d van %2$d kaarten in bezit</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">Alle · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">In bezit · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">Ontbrekend · %1$d</string>
+    <string name="checklist_loading">Kaarten van deze set laden…</string>
+    <string name="checklist_empty_title">Geen checklist voor deze set</string>
+    <string name="checklist_empty_text">De kaartenlijst kon niet worden geladen. Controleer je verbinding, of deze set staat nog niet in de lijst.</string>
+    <string name="checklist_none_owned">Je bezit nog geen kaart van deze set.</string>
+    <string name="checklist_none_missing">Compleet! Je bezit elke kaart van deze set.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">Ontbreekt</string>
+    <string name="checklist_on_wishlist">Op je verlanglijst</string>
+    <string name="checklist_add_collection">Toevoegen aan collectie</string>
+    <string name="checklist_add_wishlist">Toevoegen aan verlanglijst</string>
+    <string name="checklist_card_loading">Kaart laden…</string>
+    <string name="checklist_card_failed">Kaart kon niet worden geladen — controleer je verbinding</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">%1$s toegevoegd aan je collectie</string>
+    <string name="checklist_printing">Druk</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">Verlanglijst</string>
+    <string name="wish_add">Toevoegen aan verlanglijst</string>
+    <string name="wish_remove">Verwijderen van verlanglijst</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">%1$s toegevoegd aan je verlanglijst</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">%1$s verwijderd van je verlanglijst</string>
+    <string name="wish_add_failed">Kaart kon niet worden toegevoegd — controleer je verbinding</string>
+    <string name="wish_total">Totale kosten</string>
+    <plurals name="wish_count">
+        <item quantity="one">%1$d kaart</item>
+        <item quantity="other">%1$d kaarten</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="one">%1$d op of onder je streefprijs</item>
+        <item quantity="other">%1$d op of onder je streefprijs</item>
+    </plurals>
+    <string name="wish_empty_title">Je verlanglijst is leeg</string>
+    <string name="wish_empty_text">Voeg kaarten toe via zoeken of via de ontbrekende kaarten van een setchecklist.</string>
+    <string name="wish_no_price">Geen prijs</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">Streef %1$s</string>
+    <string name="wish_no_target">Geen streefprijs</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">Op je streefprijs</string>
+    <string name="wish_set_target">Streefprijs instellen</string>
+    <string name="wish_target_title">Streefprijs</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">Je krijgt een melding wanneer de prijs tot dit bedrag of lager daalt. Nu: %1$s</string>
+    <string name="wish_target_text_no_price">Je krijgt een melding wanneer de prijs tot dit bedrag of lager daalt.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">Ruillijst</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">Te ruil</string>
+    <string name="trade_share">Lijst delen</string>
+    <string name="trade_remove">Van de ruillijst halen</string>
+    <string name="trade_total">Ruilwaarde</string>
+    <string name="trade_empty_title">Nog niets te ruil</string>
+    <string name="trade_empty_text">Open een kaart in je collectie en tik op “Te ruil” om hem hier toe te voegen.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="one">Mijn ruillijst (%1$d kaart)</item>
+        <item quantity="other">Mijn ruillijst (%1$d kaarten)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">Totale waarde: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">Gedeeld vanuit %1$s</string>
+    <string name="trade_share_subject">Mijn ruillijst</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">Verkopen</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">%1$s verkopen</string>
+    <string name="sold_quantity">Verkochte exemplaren</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">van %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">Prijs per exemplaar (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">Totaal %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">Winst %1$s</string>
+    <string name="sold_confirm">Verkopen</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">%1$d× %2$s verkocht</string>
+    <string name="sold_title">Verkocht</string>
+    <string name="sold_realised">Gerealiseerde winst</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">Verkopen %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="one">%1$d verkoop zonder aankoopprijs telt niet mee</item>
+        <item quantity="other">%1$d verkopen zonder aankoopprijs tellen niet mee</item>
+    </plurals>
+    <string name="sold_empty_title">Nog geen verkopen</string>
+    <string name="sold_empty_text">Open een kaart in je collectie en tik op “Verkopen” om hier een verkoop vast te leggen.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">%1$d × %2$s verkocht</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">%1$s per stuk betaald</string>
+    <string name="sold_paid_unknown">Aankoopprijs onbekend</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">Verkocht op %1$s</string>
+    <string name="sold_delete">Item verwijderen</string>
+    <string name="sold_delete_title">Deze verkoop verwijderen?</string>
+    <string name="sold_delete_text">Hij wordt verwijderd uit de verkochtlijst en de gerealiseerde winst. De kaart komt niet terug in je collectie.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">Melding</string>
+    <string name="alert_ui_title">Prijsmelding</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">Krijg een melding wanneer de waarde per exemplaar een van deze bedragen overschrijdt. Nu: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">Melden boven (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">Melden onder (%1$s)</string>
+    <string name="alert_ui_order">“Boven” moet hoger zijn dan “onder”</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">Boven %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">Onder %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">Prijsverloop</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">Hoog %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">Laag %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">Bewerken</string>
+    <string name="lists_card_remove">Verwijderen</string>
+</resources>

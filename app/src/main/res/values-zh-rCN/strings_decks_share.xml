@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA 数量</string>
+    <string name="pop_show">显示数量</string>
+    <string name="pop_none">添加一张带证书编号的此卡 PSA 评级卡，即可查看数量。</string>
+    <string name="pop_total">PSA 评级数：%1$d</string>
+    <string name="pop_gem_rate">满分率（PSA 10）：%1$s %%</string>
+    <string name="decks_title">卡组</string>
+    <string name="decks_new">新建卡组</string>
+    <string name="decks_empty">还没有卡组。创建一个，然后粘贴卡表或从收藏中添加卡牌。</string>
+    <string name="deck_cards">卡牌：%1$d</string>
+    <string name="deck_value">卡组价值：%1$s</string>
+    <string name="deck_missing">仍缺：%1$d · 成本：%2$s</string>
+    <string name="deck_missing_none">你拥有这套卡组的全部卡牌。</string>
+    <string name="deck_owned">拥有 %1$d / %2$d</string>
+    <string name="deck_import">粘贴卡表</string>
+    <string name="deck_import_hint">每行一张，如 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">从收藏添加</string>
+    <string name="deck_share">分享卡表</string>
+    <string name="deck_delete">删除卡组</string>
+    <string name="deck_delete_confirm">删除“%1$s”？你的收藏不会改变。</string>
+    <string name="deck_rule_total">%1$s 卡组为 %2$d 张；此卡组有 %3$d 张。</string>
+    <string name="deck_rule_min">%1$s 卡组至少需要 %2$d 张；此卡组有 %3$d 张。</string>
+    <string name="deck_rule_copies">超过 %1$d 张：%2$s</string>
+    <string name="deck_rules_note">只检查卡牌数量和同名张数；不检查禁卡和赛制。</string>
+    <string name="deck_not_found">未找到：%1$s</string>
+    <string name="share_cards">以网页分享</string>
+    <string name="share_cards_text">通过分享菜单将这些卡牌（%1$d）作为一个网页发送。本应用不会上传任何内容。</string>
+    <string name="share_with_prices">含价格</string>
+    <string name="share_without_prices">不含价格</string>
+</resources>

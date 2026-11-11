@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">%1$s의 최근 판매 내역이 없어요 — 직접 가치를 설정하거나 가격 링크를 확인해 보세요</string>
+    <string name="data_graded_server_error">지금은 가격 서버에 연결할 수 없어요</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="other">판매 %1$d건</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">그레이딩 가격</string>
+    <string name="graded_none">이 카드의 그레이딩 판매 내역이 없어요.</string>
+    <string name="graded_failed">지금은 가격 서버에 연결할 수 없어요.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">내 등급</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">PSA에서 인증서 확인</string>
+    <string name="cert_unknown">PSA에 이 인증 번호의 카드가 없어요.</string>
+    <string name="cert_failed">지금은 PSA에 연결할 수 없어요. 나중에 다시 시도해 주세요.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">PSA 등급: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">개체 수: 같은 등급 %1$d장, 더 높은 등급 %2$d장</string>
+    <string name="cert_mismatch">PSA 기록의 등급이 이 카드에 저장된 등급과 달라요.</string>
+    <string name="links_psa_cert">PSA 인증서</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">온라인으로 식별</string>
+    <string name="identify_hint">이미지 인식을 위해 이 사진을 앱의 가격 서버로 보내요 (Ximilar). 사진은 저장되지 않아요.</string>
+    <string name="identify_searching">온라인으로 식별하는 중…</string>
+    <string name="identify_none">온라인에서도 인식하지 못했어요. 더 선명한 사진으로 시도하거나 카드를 직접 입력해 주세요.</string>
+    <string name="identify_failed">지금은 온라인 식별을 사용할 수 없어요 (일일 한도 도달 또는 연결 없음).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">가격 서버</string>
+    <string name="settings_server_summary">그레이딩 가격, PSA 인증서 확인, 온라인 식별을 위한 앱 전용 무료 서버예요. GitHub 빌드에는 기본 내장되어 있어요. 직접 설정하려면 docs/CLOUDFLARE.md를 참고하세요.</string>
+    <string name="settings_server_url">서버 주소 (https://…)</string>
+    <string name="settings_server_key">앱 키</string>
+    <string name="settings_server_save">저장</string>
+    <string name="settings_server_reset">내장 서버 사용</string>
+    <string name="settings_server_test">테스트</string>
+    <string name="settings_server_ok">가격 서버에 연결됐어요.</string>
+    <string name="settings_server_bad">가격 서버가 응답하지 않았어요. 주소와 앱 키를 확인해 주세요.</string>
+    <string name="settings_server_off">설정된 가격 서버가 없어요: 그레이딩 가격은 내가 정한 가치를 사용해요.</string>
+</resources>

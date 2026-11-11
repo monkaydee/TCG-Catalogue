@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="pre_outline_screen">Card outline · four corners</string>
+    <string name="pre_center_screen">Centering · eight guides</string>
+    <string name="pre_open_centering">Measure inner and outer borders</string>
+    <string name="pre_outline_continue">Confirm whole-card outline</string>
+    <string name="pre_outline_adjust">Adjust the four card corners</string>
+    <string name="pre_choose_game">Card game</string>
+    <string name="pre_center_missing">Place outer and inner guides on this side to complete its centering measurement.</string>
+    <string name="pre_center_ready">Centering measured. You can adjust all eight guides.</string>
+    <string name="pre_edit_front">Edit front centering</string>
+    <string name="pre_edit_back">Edit back centering</string>
+    <string name="pre_potential_title">Centering potential</string>
+    <string name="pre_potential_10">Within PSA 10 centering limits</string>
+    <string name="pre_potential_borderline">Borderline PSA 10 centering</string>
+    <string name="pre_potential_below">Outside PSA 10 centering limits</string>
+    <string name="pre_potential_incomplete">Complete both sides for centering potential</string>
+    <string name="pre_potential_scope">Centering only, across card games. Uses PSA front 55/45 and back 75/25 limits. Borderline means a one-image-pixel guide adjustment could change the result. Corners, edges, surface and authenticity can reduce the final grade.</string>
+    <string name="pre_model_scope">An overall grade prediction is not validated for this game or these measurements. Centering potential above remains available once both sides are measured.</string>
+    <string name="pre_experimental_model">Experimental Pokémon photo estimate</string>
+    <string name="pre_quality_blocked">Retake this side: its outline or photo quality is not suitable for a wear assessment.</string>
+    <string name="pre_no_wear_detected">no visible wear detected</string>
+    <string name="pre_assessment_notice">Non-professional photo screening. Experimental ranges use your recorded corner, edge and surface observations, not validated grade probabilities. A professional grade may differ. Hidden defects, alteration and authenticity are not excluded.</string>
+    <string name="pre_skip_frame">No comparable printed frame</string>
+    <string name="pre_retake_front">Retake front photo</string>
+    <string name="pre_retake_back">Retake back photo</string>
+</resources>

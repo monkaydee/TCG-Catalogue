@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">檢查結果</string>
+    <string name="pre_findings_scope">檢查結果提示該看哪裡，目前不會改變評分。</string>
+    <string name="pre_findings_confirmed">已確認</string>
+    <string name="pre_findings_possible">可能</string>
+    <string name="pre_findings_blind">無法判斷</string>
+    <string name="pre_findings_markers">顯示標記</string>
+    <string name="pre_findings_none">在照片可測量的區域沒有發現異常。這並不能證明卡牌毫無瑕疵。</string>
+    <string name="pre_findings_corner_shape">該角的輪廓與其他角不同</string>
+    <string name="pre_findings_surface_scratches">表面刮痕</string>
+    <string name="pre_findings_surface_dent">表面凹痕或摺痕</string>
+    <string name="pre_findings_surface_blind">平拍的照片看不出刮痕和凹痕。請加入斜光拍攝的照片。</string>
+    <string name="pre_findings_export">匯出報告（JSON）</string>
+    <string name="pre_whole_surface">整個表面</string>
+    <string name="pre_verified_title">實際鑑定分數</string>
+    <string name="pre_verified_hint">鑑定後，請輸入卡磚上的分數。你的照片和該分數會成為經過驗證的樣本，可用來改進預先鑑定。</string>
+    <string name="pre_verified_grade">分數（1–10）</string>
+    <string name="pre_verified_cert">證書編號（選填）</string>
+    <string name="pre_verified_save">儲存分數</string>
+    <string name="pre_verified_invalid">請輸入 1 到 10、以 0.5 為間隔的分數，證書編號須為數字。</string>
+    <string name="pre_verified_export">匯出訓練樣本</string>
+    <string name="pre_verified_remove">刪除分數</string>
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">कार्ड का डेटा लोड नहीं हो सका — अपना कनेक्शन जाँचें</string>
+    <string name="card_pager_position">%1$d / %2$d · और देखने के लिए स्वाइप करें</string>
+    <string name="card_back">वापस</string>
+    <string name="card_edit">कार्ड संपादित करें</string>
+    <string name="card_remove_from_collection">कलेक्शन से हटाएँ</string>
+    <string name="card_save">सेव करें</string>
+    <string name="card_remove_title">कार्ड हटाएँ?</string>
+    <plurals name="card_remove_message">
+        <item quantity="one">इससे आपके कलेक्शन से %2$s की %1$d कॉपी हट जाएगी।</item>
+        <item quantity="other">इससे आपके कलेक्शन से %2$s की सभी %1$d कॉपियाँ हट जाएँगी।</item>
+    </plurals>
+    <string name="card_remove">हटाएँ</string>
+    <string name="card_cancel">रद्द करें</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">प्रति कॉपी %1$s (%3$s पर %2$s)</string>
+    <string name="card_unit_price_on_market">प्रति कॉपी %1$s (बाज़ार में %2$s)</string>
+    <string name="card_price_updated">%1$s अपडेट हुआ</string>
+    <string name="card_no_market_price">बाज़ार भाव उपलब्ध नहीं है</string>
+    <string name="card_own_value">आपकी तय की गई वैल्यू: प्रति कॉपी %1$s</string>
+    <string name="card_own_value_with_market">आपकी तय की गई वैल्यू: प्रति कॉपी %1$s · बाज़ार भाव %2$s</string>
+    <string name="card_bought_for_with_percent">प्रति कॉपी %1$s में खरीदा · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">प्रति कॉपी %1$s में खरीदा · %2$s</string>
+    <string name="card_cert">सर्टिफ़िकेट #%1$s</string>
+    <string name="card_graded_hint">ग्रेडेड कॉपी में आपकी तय की गई वैल्यू इस्तेमाल होती है — नीचे दिए लिंक से हाल की बिक्री देखें।</string>
+    <string name="card_raw_hint">इस कंडीशन के Raw कार्ड का बाज़ार भाव।</string>
+    <string name="card_quantity">संख्या</string>
+    <string name="card_cardmarket_listing">Cardmarket लिस्टिंग</string>
+    <string name="card_condition">कंडीशन</string>
+    <string name="card_all_prices">सभी कीमतें</string>
+    <string name="card_show">दिखाएँ</string>
+    <string name="card_refresh">रिफ़्रेश करें</string>
+    <string name="card_check_prices">ऑनलाइन कीमतें देखें</string>
+    <string name="set_back">वापस</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%2$d में से %1$d कार्ड (%3$d%%)</item>
+        <item quantity="other">%2$d में से %1$d कार्ड (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="one">%d कार्ड</item>
+        <item quantity="other">%d कार्ड</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="one">%d कॉपी</item>
+        <item quantity="other">%d कॉपियाँ</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">वैल्यू के अनुसार</string>
+    <string name="set_sort_number">नंबर के अनुसार</string>
+    <string name="set_no_price">कीमत नहीं</string>
+    <string name="common_auto">ऑटो</string>
+    <string name="common_less">कम</string>
+    <string name="common_more">ज़्यादा</string>
+    <string name="links_ebay_sold">eBay पर बिके</string>
+</resources>

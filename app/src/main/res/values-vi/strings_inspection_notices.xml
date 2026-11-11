@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Kiểm tra ảnh không chuyên nghiệp. Khoảng thử nghiệm dựa trên quan sát của bạn về góc, cạnh và bề mặt, không phải xác suất điểm đã được kiểm chứng. Điểm chuyên nghiệp có thể khác. Không loại trừ được lỗi ẩn, chỉnh sửa hay vấn đề tính xác thực.</string>
+    <string name="center_manual_notice">Đo độ cân giữa thủ công. Vị trí đường dẫn và phối cảnh ảnh ảnh hưởng đến tỷ lệ. Ước tính thử nghiệm cũng cần kiểm tra góc, cạnh và bề mặt dưới nhiều góc chiếu sáng.</string>
+    <string name="wear_observation_scope">Quan sát được giữ trong phiên chụp ảnh này và dùng cho khoảng thử nghiệm. Chúng không chứng nhận tình trạng hoặc bù cho ảnh kém. Hư hại được ghi nhận làm khoảng rộng hơn hoặc thấp hơn.</string>
+</resources>

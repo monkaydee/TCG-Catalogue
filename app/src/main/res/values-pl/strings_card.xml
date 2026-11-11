@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_load_failed">Nie udało się wczytać danych karty — sprawdź połączenie</string>
+    <string name="card_pager_position">%1$d / %2$d · przesuń, aby zobaczyć więcej</string>
+    <string name="card_back">Wstecz</string>
+    <string name="card_edit">Edytuj kartę</string>
+    <string name="card_remove_from_collection">Usuń z kolekcji</string>
+    <string name="card_save">Zapisz</string>
+    <string name="card_remove_title">Usunąć kartę?</string>
+    <plurals name="card_remove_message">
+        <item quantity="one">Spowoduje to usunięcie %1$d egzemplarza karty %2$s z kolekcji.</item>
+        <item quantity="few">Spowoduje to usunięcie wszystkich %1$d egzemplarzy karty %2$s z kolekcji.</item>
+        <item quantity="many">Spowoduje to usunięcie wszystkich %1$d egzemplarzy karty %2$s z kolekcji.</item>
+        <item quantity="other">Spowoduje to usunięcie wszystkich %1$d egzemplarzy karty %2$s z kolekcji.</item>
+    </plurals>
+    <string name="card_remove">Usuń</string>
+    <string name="card_cancel">Anuluj</string>
+    <string name="card_cardmarket_label">Cardmarket: %1$s</string>
+    <string name="card_unit_price_on_source">%1$s za egzemplarz (%2$s na %3$s)</string>
+    <string name="card_unit_price_on_market">%1$s za egzemplarz (%2$s na rynku)</string>
+    <string name="card_price_updated">Zaktualizowano %1$s</string>
+    <string name="card_no_market_price">Brak ceny rynkowej</string>
+    <string name="card_own_value">Twoja wartość: %1$s za egzemplarz</string>
+    <string name="card_own_value_with_market">Twoja wartość: %1$s za egzemplarz · rynek %2$s</string>
+    <string name="card_bought_for_with_percent">Kupiono za %1$s za szt. · %2$s (%3$+.0f%%)</string>
+    <string name="card_bought_for">Kupiono za %1$s za szt. · %2$s</string>
+    <string name="card_cert">Cert. nr %1$s</string>
+    <string name="card_graded_hint">Egzemplarze graded używają Twojej własnej wartości — ostatnie sprzedaże sprawdzisz w linkach poniżej.</string>
+    <string name="card_raw_hint">Cena rynkowa karty raw w tym stanie.</string>
+    <string name="card_quantity">Ilość</string>
+    <string name="card_cardmarket_listing">Oferta Cardmarket</string>
+    <string name="card_condition">Stan</string>
+    <string name="card_all_prices">Wszystkie ceny</string>
+    <string name="card_show">Pokaż</string>
+    <string name="card_refresh">Odśwież</string>
+    <string name="card_check_prices">Sprawdź ceny online</string>
+    <string name="set_back">Wstecz</string>
+    <plurals name="set_owned_of_total">
+        <item quantity="one">%1$d z %2$d karty (%3$d%%)</item>
+        <item quantity="few">%1$d z %2$d kart (%3$d%%)</item>
+        <item quantity="many">%1$d z %2$d kart (%3$d%%)</item>
+        <item quantity="other">%1$d z %2$d kart (%3$d%%)</item>
+    </plurals>
+    <plurals name="set_owned">
+        <item quantity="one">%d karta</item>
+        <item quantity="few">%d karty</item>
+        <item quantity="many">%d kart</item>
+        <item quantity="other">%d karty</item>
+    </plurals>
+    <plurals name="set_copies">
+        <item quantity="one">%d egzemplarz</item>
+        <item quantity="few">%d egzemplarze</item>
+        <item quantity="many">%d egzemplarzy</item>
+        <item quantity="other">%d egzemplarza</item>
+    </plurals>
+    <string name="set_summary">%1$s · %2$s</string>
+    <string name="set_sort_value">Wg wartości</string>
+    <string name="set_sort_number">Wg numeru</string>
+    <string name="set_no_price">brak ceny</string>
+    <string name="common_auto">Auto</string>
+    <string name="common_less">Mniej</string>
+    <string name="common_more">Więcej</string>
+    <string name="links_ebay_sold">eBay sprzedane</string>
+</resources>

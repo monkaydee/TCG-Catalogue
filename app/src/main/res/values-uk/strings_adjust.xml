@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Налаштувати кути</string>
+    <string name="grade_adjust_hint">Перетягніть чотири точки на кути картки. Лупа допоможе поставити їх точно.</string>
+    <string name="grade_adjust_apply">Застосувати</string>
+</resources>

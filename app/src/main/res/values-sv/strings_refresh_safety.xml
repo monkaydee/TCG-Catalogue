@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">Den senaste sökningen hittade inget matchande pris; det tidigare priset har behållits</string>
+</resources>

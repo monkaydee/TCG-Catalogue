@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_previous">Set sebelumnya</string>
+    <string name="set_next">Set berikutnya</string>
+    <string name="import_add_all_sure">Tambahkan semua yang pasti (%1$d)</string>
+    <string name="import_sure_match">Cocok pasti</string>
+    <string name="import_by_picture_check">Ditemukan dari gambar – mohon periksa</string>
+</resources>

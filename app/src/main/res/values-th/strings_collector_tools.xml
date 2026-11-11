@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">แสดงราคาเป็น</string>
+    <string name="settings_display_same">เหมือนคอลเลกชัน (%1$s)</string>
+    <string name="settings_display_offline">โหลดอัตราแลกเปลี่ยนไม่ได้ ลองใหม่เมื่อออนไลน์</string>
+    <string name="settings_display_hint">แปลงด้วยอัตราอ้างอิงของ ECB เพื่อแสดงผลเท่านั้น จำนวนที่คุณป้อนและค่าที่บันทึกยังเป็น EUR หรือ USD</string>
+    <string name="card_notes">บันทึก</string>
+    <string name="card_notes_hint">ซื้อที่ไหน ตำหนิ ให้ใคร …</string>
+    <string name="worth_grading_title">คุ้มไหมที่จะส่งเกรด?</string>
+    <string name="worth_grading_cost">ค่าส่งเกรดต่อใบเป็น %1$s (ค่าธรรมเนียม + ค่าส่ง)</string>
+    <string name="worth_grading_no_raw">ไม่ทราบมูลค่าการ์ดดิบใบนี้ จึงคำนวณกำไรไม่ได้</string>
+    <string name="worth_grading_from">%1$s: คุ้มตั้งแต่เกรด %2$s</string>
+    <string name="worth_grading_never">%1$s: ไม่คุ้มที่เกรดใดในรายการ</string>
+    <string name="worth_grading_note">เทียบกับมูลค่าดิบของใบนี้ %1$s ราคาการ์ดเกรดเป็นราคาตลาดหรือราคาประกาศขาย ไม่รับประกันเกรดที่จะได้</string>
+    <string name="completion_title">ค่าใช้จ่ายเพื่อสะสมให้ครบ</string>
+    <string name="completion_total">%1$s สำหรับ %2$d ใบ</string>
+    <string name="completion_unknown">การ์ด %1$d ใบไม่ทราบราคา (ไม่นับ)</string>
+    <string name="completion_progress">โหลดราคาแล้ว %1$d จาก %2$d</string>
+    <string name="completion_hint">พิมพ์ที่ถูกที่สุดของการ์ดที่ขาดแต่ละใบ ตามราคาตลาด</string>
+    <string name="completion_calculate">คำนวณ</string>
+    <string name="lot_title">เครื่องคิดเลขล็อต</string>
+    <string name="lot_remove">นำออก</string>
+    <string name="lot_add_value">เพิ่มมูลค่า (%1$s)</string>
+    <string name="lot_add">เพิ่ม</string>
+    <string name="lot_market">มูลค่าตลาด: %1$s (%2$d รายการ)</string>
+    <string name="lot_unknown">%1$d รายการไม่มีราคา (ไม่นับ)</string>
+    <string name="lot_percent">เสนอที่ %1$d %% ของตลาด</string>
+    <string name="lot_offer">ราคาล็อต: %1$s</string>
+    <string name="bulk_add_to_binder">เพิ่มลงแฟ้ม</string>
+    <string name="bulk_trade">ทำเครื่องหมายเพื่อแลก</string>
+    <string name="bulk_trade_done">ทำเครื่องหมายเพื่อแลกแล้ว %1$d ใบ</string>
+    <string name="bulk_delete">ลบ</string>
+    <string name="bulk_delete_confirm">ลบการ์ด %1$d ใบออกจากคอลเลกชันไหม</string>
+    <string name="bulk_select_all">เลือกทั้งหมด (%1$d)</string>
+    <string name="bulk_no_binders">คุณยังไม่มีแฟ้มของตัวเอง สร้างได้ที่ เปิดแฟ้ม</string>
+    <string name="bulk_added_to_binder">เพิ่มการ์ด %1$d ใบลงใน %2$s แล้ว</string>
+</resources>

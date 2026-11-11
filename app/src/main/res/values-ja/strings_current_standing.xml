@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">任意：写真や読めるOCRテキストではなく、カードIDとOCR指紋を共有します。報告は90日間保存されます。</string>
+    <string name="learning_photos_paused">内容とカード識別の検証が完了するまで写真共有を停止しています。端末内のスキャンは引き続き使えます。</string>
+    <string name="price_health_summary">市場価格のないカード：%1$d枚 · 修正が必要な日本語カードID：%2$d件</string>
+</resources>

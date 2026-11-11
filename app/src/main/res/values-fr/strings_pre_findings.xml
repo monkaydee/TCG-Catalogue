@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Constats</string>
+    <string name="pre_findings_scope">Les constats montrent où regarder. Ils ne modifient pas encore la note.</string>
+    <string name="pre_findings_confirmed">Confirmé</string>
+    <string name="pre_findings_possible">Possible</string>
+    <string name="pre_findings_blind">Non évaluable</string>
+    <string name="pre_findings_markers">Afficher les repères</string>
+    <string name="pre_findings_none">Aucune anomalie signalée là où les photos ont pu être mesurées. Cela ne prouve pas que la carte est sans défaut.</string>
+    <string name="pre_findings_corner_shape">Le contour du coin diffère des autres coins</string>
+    <string name="pre_findings_surface_scratches">Rayures sur la surface</string>
+    <string name="pre_findings_surface_dent">Bosse ou pli sur la surface</string>
+    <string name="pre_findings_surface_blind">Une photo à plat ne montre ni rayures ni bosses. Ajoutez des photos en lumière rasante.</string>
+    <string name="pre_findings_export">Exporter le rapport (JSON)</string>
+    <string name="pre_whole_surface">Toute la surface</string>
+    <string name="pre_verified_title">Note obtenue</string>
+    <string name="pre_verified_hint">Après la gradation, saisissez la note du slab. Vos photos et cette note deviennent un exemple vérifié qui peut améliorer le pré-grading.</string>
+    <string name="pre_verified_grade">Note (1–10)</string>
+    <string name="pre_verified_cert">Numéro de certificat (facultatif)</string>
+    <string name="pre_verified_save">Enregistrer la note</string>
+    <string name="pre_verified_invalid">Saisissez une note de 1 à 10 par demi-points et un numéro de certificat en chiffres.</string>
+    <string name="pre_verified_export">Exporter l\'exemple d\'entraînement</string>
+    <string name="pre_verified_remove">Supprimer la note</string>
+</resources>

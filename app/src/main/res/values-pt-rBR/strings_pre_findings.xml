@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Constatações</string>
+    <string name="pre_findings_scope">As constatações mostram onde olhar. Elas ainda não alteram a pontuação.</string>
+    <string name="pre_findings_confirmed">Confirmado</string>
+    <string name="pre_findings_possible">Possível</string>
+    <string name="pre_findings_blind">Não avaliável</string>
+    <string name="pre_findings_markers">Mostrar marcadores</string>
+    <string name="pre_findings_none">Nenhuma anomalia foi sinalizada onde as fotos puderam ser medidas. Isso não prova que a carta é perfeita.</string>
+    <string name="pre_findings_corner_shape">O contorno do canto difere dos outros cantos</string>
+    <string name="pre_findings_surface_scratches">Arranhões na superfície</string>
+    <string name="pre_findings_surface_dent">Amassado ou vinco na superfície</string>
+    <string name="pre_findings_surface_blind">Uma foto plana não mostra arranhões nem amassados. Adicione fotos com luz inclinada.</string>
+    <string name="pre_findings_export">Exportar relatório (JSON)</string>
+    <string name="pre_whole_surface">Toda a superfície</string>
+    <string name="pre_verified_title">Nota recebida</string>
+    <string name="pre_verified_hint">Depois da graduação, digite a nota do slab. Suas fotos e essa nota viram uma amostra verificada que pode melhorar o pré-grading.</string>
+    <string name="pre_verified_grade">Nota (1–10)</string>
+    <string name="pre_verified_cert">Número do certificado (opcional)</string>
+    <string name="pre_verified_save">Salvar nota</string>
+    <string name="pre_verified_invalid">Digite uma nota de 1 a 10 em passos de meio ponto e um número de certificado numérico.</string>
+    <string name="pre_verified_export">Exportar amostra de treino</string>
+    <string name="pre_verified_remove">Remover nota</string>
+</resources>

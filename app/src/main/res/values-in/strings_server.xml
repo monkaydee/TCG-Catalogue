@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">tidak ada penjualan terbaru %1$s — tetapkan nilai Anda sendiri, atau periksa tautan harga</string>
+    <string name="data_graded_server_error">server harga tidak dapat dijangkau saat ini</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="other">%1$d penjualan</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Harga graded</string>
+    <string name="graded_none">Tidak ada penjualan graded untuk kartu ini.</string>
+    <string name="graded_failed">Server harga tidak dapat dijangkau saat ini.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">grade Anda</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Periksa sertifikat dengan PSA</string>
+    <string name="cert_unknown">PSA tidak memiliki kartu dengan nomor sertifikat ini.</string>
+    <string name="cert_failed">PSA tidak dapat dijangkau saat ini. Coba lagi nanti.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">Grade PSA: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Populasi: %1$d dengan grade ini, %2$d lebih tinggi</string>
+    <string name="cert_mismatch">Grade pada catatan PSA berbeda dengan yang tersimpan untuk kartu ini.</string>
+    <string name="links_psa_cert">Sertifikat PSA</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Kenali secara online</string>
+    <string name="identify_hint">Mengirim foto ini ke server harga aplikasi untuk pengenalan gambar (Ximilar). Foto tidak disimpan.</string>
+    <string name="identify_searching">Mengenali secara online…</string>
+    <string name="identify_none">Tidak dikenali secara online juga. Coba foto yang lebih tajam, atau ketik kartunya secara manual.</string>
+    <string name="identify_failed">Pengenalan online tidak tersedia saat ini (batas harian tercapai atau tidak ada koneksi).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Server harga</string>
+    <string name="settings_server_summary">Server gratis milik aplikasi untuk harga graded, pemeriksaan sertifikat PSA, dan pengenalan online. Build dari GitHub sudah menyertakannya; lihat docs/CLOUDFLARE.md untuk menyiapkan server Anda sendiri.</string>
+    <string name="settings_server_url">Alamat server (https://…)</string>
+    <string name="settings_server_key">Kunci aplikasi</string>
+    <string name="settings_server_save">Simpan</string>
+    <string name="settings_server_reset">Gunakan bawaan</string>
+    <string name="settings_server_test">Uji</string>
+    <string name="settings_server_ok">Terhubung ke server harga.</string>
+    <string name="settings_server_bad">Server harga tidak merespons. Periksa alamat dan kunci aplikasi.</string>
+    <string name="settings_server_off">Server harga belum disiapkan: harga graded memakai nilai Anda sendiri.</string>
+</resources>

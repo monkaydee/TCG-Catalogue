@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common -->
+    <string name="lists_back">Wstecz</string>
+    <string name="lists_cancel">Anuluj</string>
+    <string name="lists_save">Zapisz</string>
+    <!-- Button that removes a saved value (target price, price alerts) -->
+    <string name="lists_clear">Wyczyść</string>
+    <string name="lists_remove">Usuń</string>
+    <string name="lists_retry">Spróbuj ponownie</string>
+    <!-- Title of the row of shortcuts on the collection screen -->
+    <string name="lists_title">Listy</string>
+    <!-- %1$s = currency code, e.g. EUR -->
+    <string name="lists_amount_in">Kwota (%1$s)</string>
+    <string name="lists_amount_invalid">Wpisz kwotę, np. 12,50</string>
+
+    <!-- Set checklist -->
+    <string name="checklist_title">Lista kontrolna</string>
+    <string name="checklist_open">Pokaż listę kontrolną</string>
+    <!-- Quantity follows %2$d. %1$d = owned cards, %2$d = cards in the set -->
+    <plurals name="checklist_progress">
+        <item quantity="one">%1$d z %2$d karty w posiadaniu</item>
+        <item quantity="few">%1$d z %2$d kart w posiadaniu</item>
+        <item quantity="many">%1$d z %2$d kart w posiadaniu</item>
+        <item quantity="other">%1$d z %2$d karty w posiadaniu</item>
+    </plurals>
+    <!-- Filter chip: every card of the set, %1$d = count -->
+    <string name="checklist_filter_all">Wszystkie · %1$d</string>
+    <!-- Filter chip: cards the user owns, %1$d = count -->
+    <string name="checklist_filter_owned">Posiadane · %1$d</string>
+    <!-- Filter chip: cards the user doesn't own yet, %1$d = count -->
+    <string name="checklist_filter_missing">Brakujące · %1$d</string>
+    <string name="checklist_loading">Wczytywanie kart z tego zestawu…</string>
+    <string name="checklist_empty_title">Brak listy kontrolnej dla tego zestawu</string>
+    <string name="checklist_empty_text">Nie udało się wczytać listy kart. Sprawdź połączenie lub tego zestawu może jeszcze nie być na liście.</string>
+    <string name="checklist_none_owned">Nie masz jeszcze żadnej karty z tego zestawu.</string>
+    <string name="checklist_none_missing">Komplet! Masz każdą kartę z tego zestawu.</string>
+    <!-- Small badge on a card the user owns, %1$d = copies -->
+    <string name="checklist_owned_badge">×%1$d</string>
+    <!-- Label on a card the user doesn't own -->
+    <string name="checklist_missing">Brak</string>
+    <string name="checklist_on_wishlist">Na twojej liście życzeń</string>
+    <string name="checklist_add_collection">Dodaj do kolekcji</string>
+    <string name="checklist_add_wishlist">Dodaj do listy życzeń</string>
+    <string name="checklist_card_loading">Wczytywanie karty…</string>
+    <string name="checklist_card_failed">Nie udało się wczytać tej karty — sprawdź połączenie</string>
+    <!-- %1$s = card name -->
+    <string name="checklist_added">Dodano %1$s do twojej kolekcji</string>
+    <string name="checklist_printing">Druk</string>
+
+    <!-- Wishlist -->
+    <string name="wish_title">Lista życzeń</string>
+    <string name="wish_add">Dodaj do listy życzeń</string>
+    <string name="wish_remove">Usuń z listy życzeń</string>
+    <!-- %1$s = card name -->
+    <string name="wish_added">Dodano %1$s do twojej listy życzeń</string>
+    <!-- %1$s = card name -->
+    <string name="wish_removed">Usunięto %1$s z twojej listy życzeń</string>
+    <string name="wish_add_failed">Nie udało się dodać karty — sprawdź połączenie</string>
+    <string name="wish_total">Łączny koszt</string>
+    <plurals name="wish_count">
+        <item quantity="one">%1$d karta</item>
+        <item quantity="few">%1$d karty</item>
+        <item quantity="many">%1$d kart</item>
+        <item quantity="other">%1$d karty</item>
+    </plurals>
+    <plurals name="wish_targets_reached">
+        <item quantity="one">%1$d na poziomie lub poniżej ceny docelowej</item>
+        <item quantity="few">%1$d na poziomie lub poniżej ceny docelowej</item>
+        <item quantity="many">%1$d na poziomie lub poniżej ceny docelowej</item>
+        <item quantity="other">%1$d na poziomie lub poniżej ceny docelowej</item>
+    </plurals>
+    <string name="wish_empty_title">Twoja lista życzeń jest pusta</string>
+    <string name="wish_empty_text">Dodawaj karty z wyszukiwarki lub z brakujących kart na liście kontrolnej zestawu.</string>
+    <string name="wish_no_price">Brak ceny</string>
+    <!-- %1$s = target price -->
+    <string name="wish_target">Cel %1$s</string>
+    <string name="wish_no_target">Brak ceny docelowej</string>
+    <!-- Shown when the current price is at or below the target price -->
+    <string name="wish_target_reached">Cena docelowa osiągnięta</string>
+    <string name="wish_set_target">Ustaw cenę docelową</string>
+    <string name="wish_target_title">Cena docelowa</string>
+    <!-- %1$s = current price -->
+    <string name="wish_target_text">Dostaniesz powiadomienie, gdy cena spadnie do tej kwoty lub niżej. Teraz: %1$s</string>
+    <string name="wish_target_text_no_price">Dostaniesz powiadomienie, gdy cena spadnie do tej kwoty lub niżej.</string>
+
+    <!-- Trade list -->
+    <string name="trade_title">Lista wymiany</string>
+    <!-- Toggle on the card page: offer this card for trade -->
+    <string name="trade_toggle">Na wymianę</string>
+    <string name="trade_share">Udostępnij listę</string>
+    <string name="trade_remove">Zdejmij z listy wymiany</string>
+    <string name="trade_total">Wartość wymiany</string>
+    <string name="trade_empty_title">Jeszcze nic na wymianę</string>
+    <string name="trade_empty_text">Otwórz kartę w swojej kolekcji i dotknij „Na wymianę”, aby dodać ją tutaj.</string>
+    <!-- Heading of the shared text, %1$d = number of cards -->
+    <plurals name="trade_share_heading">
+        <item quantity="one">Moja lista wymiany (%1$d karta)</item>
+        <item quantity="few">Moja lista wymiany (%1$d karty)</item>
+        <item quantity="many">Moja lista wymiany (%1$d kart)</item>
+        <item quantity="other">Moja lista wymiany (%1$d karty)</item>
+    </plurals>
+    <!-- One line of the shared text: %1$s = quantity prefix (e.g. "2× ") or empty, %2$s = card name, %3$s = set name, %4$s = card number, %5$s = printing and condition or grade (e.g. "Holo · NM", "Normal · PSA 10"), %6$s = value per copy -->
+    <string name="trade_share_line">• %1$s%2$s — %3$s #%4$s · %5$s · %6$s</string>
+    <!-- %1$s = total value -->
+    <string name="trade_share_total">Łączna wartość: %1$s</string>
+    <!-- %1$s = app name -->
+    <string name="trade_share_footer">Udostępniono z %1$s</string>
+    <string name="trade_share_subject">Moja lista wymiany</string>
+
+    <!-- Selling -->
+    <!-- Action on the card page -->
+    <string name="sold_sell">Sprzedaj</string>
+    <!-- %1$s = card name -->
+    <string name="sold_sell_title">Sprzedaj %1$s</string>
+    <string name="sold_quantity">Sprzedane egzemplarze</string>
+    <!-- %1$d = copies owned -->
+    <string name="sold_quantity_of">z %1$d</string>
+    <!-- %1$s = currency code -->
+    <string name="sold_price_each">Cena za egzemplarz (%1$s)</string>
+    <!-- %1$s = total amount -->
+    <string name="sold_total_line">Razem %1$s</string>
+    <!-- %1$s = profit or loss, signed -->
+    <string name="sold_profit_line">Zysk %1$s</string>
+    <string name="sold_confirm">Sprzedaj</string>
+    <!-- %1$d = copies, %2$s = card name -->
+    <string name="sold_done">Sprzedano %1$d× %2$s</string>
+    <string name="sold_title">Sprzedane</string>
+    <string name="sold_realised">Zrealizowany zysk</string>
+    <!-- %1$s = total sales amount -->
+    <string name="sold_revenue">Sprzedaż %1$s</string>
+    <plurals name="sold_unknown_cost">
+        <item quantity="one">%1$d sprzedaż bez ceny zakupu nie jest wliczana</item>
+        <item quantity="few">%1$d sprzedaże bez ceny zakupu nie są wliczane</item>
+        <item quantity="many">%1$d sprzedaży bez ceny zakupu nie jest wliczanych</item>
+        <item quantity="other">%1$d sprzedaży bez ceny zakupu nie jest wliczanych</item>
+    </plurals>
+    <string name="sold_empty_title">Brak sprzedaży</string>
+    <string name="sold_empty_text">Otwórz kartę w swojej kolekcji i dotknij „Sprzedaj”, aby zapisać tu sprzedaż.</string>
+    <!-- %1$d = copies, %2$s = sale price per copy -->
+    <string name="sold_sale_line">Sprzedano %1$d × %2$s</string>
+    <!-- %1$s = purchase price per copy -->
+    <string name="sold_paid_line">Zapłacono %1$s za sztukę</string>
+    <string name="sold_paid_unknown">Cena zakupu nieznana</string>
+    <!-- %1$s = date of the sale -->
+    <string name="sold_on">Sprzedano %1$s</string>
+    <string name="sold_delete">Usuń wpis</string>
+    <string name="sold_delete_title">Usunąć tę sprzedaż?</string>
+    <string name="sold_delete_text">Zostanie usunięta z listy sprzedanych i ze zrealizowanego zysku. Karta nie wróci do twojej kolekcji.</string>
+
+    <!-- Price alerts (on the card page) -->
+    <!-- Short label in the card actions bar -->
+    <string name="alert_ui_short">Alert</string>
+    <string name="alert_ui_title">Alert cenowy</string>
+    <!-- %1$s = current value per copy -->
+    <string name="alert_ui_text">Dostaniesz powiadomienie, gdy wartość egzemplarza przekroczy jedną z tych kwot. Teraz: %1$s</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_above">Powiadom powyżej (%1$s)</string>
+    <!-- %1$s = currency code -->
+    <string name="alert_ui_below">Powiadom poniżej (%1$s)</string>
+    <string name="alert_ui_order">„Powyżej” musi być wyższe niż „poniżej”</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_above">Powyżej %1$s</string>
+    <!-- Chip on the card page, %1$s = alert amount -->
+    <string name="alert_ui_active_below">Poniżej %1$s</string>
+
+    <!-- Price history chart -->
+    <string name="history_title">Historia cen</string>
+    <!-- %1$s = highest price -->
+    <string name="history_max">Max %1$s</string>
+    <!-- %1$s = lowest price -->
+    <string name="history_min">Min %1$s</string>
+    <!-- Change over the chart's period: %1$s = signed amount, %2$+.0f = percent -->
+    <string name="history_change">%1$s (%2$+.0f%%)</string>
+
+    <!-- Card page actions -->
+    <string name="lists_card_edit">Edytuj</string>
+    <string name="lists_card_remove">Usuń</string>
+</resources>

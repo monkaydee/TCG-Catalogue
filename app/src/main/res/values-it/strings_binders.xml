@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_open_collection">Apri collezione</string>
+    <string name="binders_title">Raccoglitori</string>
+    <string name="binders_all">Tutte le carte</string>
+    <string name="binders_new">Nuovo raccoglitore</string>
+    <string name="binders_card_count">Carte: %1$d</string>
+    <string name="binder_open_hint">Scorri o tocca per aprire</string>
+    <string name="binder_add_cards">Aggiungi carte</string>
+    <string name="binder_choose_cards">Carte in questo raccoglitore</string>
+    <string name="binder_edit">Modifica raccoglitore</string>
+    <string name="binder_delete">Elimina raccoglitore</string>
+    <string name="binder_delete_confirm">Eliminare «%1$s»? Le carte restano nella tua collezione.</string>
+    <string name="binder_name">Nome</string>
+    <string name="binder_cover_design">Design copertina</string>
+    <string name="binder_cover_upload">Usa la tua immagine</string>
+    <string name="binder_cover_remove">Rimuovi immagine</string>
+    <string name="binder_save">Salva</string>
+    <string name="binder_empty_custom">Questo raccoglitore è vuoto. Aggiungi carte dalla tua collezione.</string>
+    <string name="binder_search">Cerca carte</string>
+    <string name="binder_new_name">Il mio raccoglitore</string>
+    <string name="binder_selected">Selezionate: %1$d</string>
+    <string name="collection_title">Collezione</string>
+    <string name="collection_sort_recent">Aggiunte di recente</string>
+    <string name="collection_sort_grade">Voto</string>
+    <string name="collection_sort_set">Espansione</string>
+    <string name="collection_empty">Ancora nessuna carta.</string>
+    <string name="collection_summary">Carte: %1$d · %2$s</string>
+    <string name="cover_midnight">Mezzanotte</string>
+    <string name="cover_crimson">Cremisi</string>
+    <string name="cover_forest">Foresta</string>
+    <string name="cover_ocean">Oceano</string>
+    <string name="cover_galaxy">Galassia</string>
+    <string name="cover_sunset">Tramonto</string>
+    <string name="cover_gold">Lamina d’oro</string>
+    <string name="cover_carbon">Carbonio</string>
+</resources>

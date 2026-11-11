@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Pemeriksaan foto nonprofesional. Rentang eksperimen menggunakan pengamatan sudut, tepi, dan permukaan Anda, bukan probabilitas nilai yang tervalidasi. Nilai profesional dapat berbeda. Cacat tersembunyi, perubahan, dan masalah keaslian tidak dapat dikesampingkan.</string>
+    <string name="center_manual_notice">Pengukuran pemusatan manual. Posisi panduan dan perspektif foto memengaruhi rasio. Perkiraan eksperimen juga memerlukan pemeriksaan sudut, tepi, dan permukaan dengan beberapa sudut cahaya.</string>
+    <string name="wear_observation_scope">Pengamatan Anda disimpan untuk sesi foto ini dan digunakan dalam rentang eksperimen. Pengamatan tidak menjamin kondisi atau mengatasi foto buruk. Kerusakan yang dicatat memperluas atau menurunkan rentang.</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="pre_outline_use">Use this outline</string>
+    <string name="pre_outline_seed">Automatic detection could not find the full card. Place the four dots on its physical corners before continuing.</string>
+    <string name="pre_outline_invalid">The corners must form a full four-sided card. Move any crossed or overlapping corners.</string>
+    <string name="pre_outline_front">Adjust front corners</string>
+    <string name="pre_outline_back">Adjust back corners</string>
+</resources>

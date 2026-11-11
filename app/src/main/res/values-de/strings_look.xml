@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">Überspringen</string>
+    <string name="onboarding_next">Weiter</string>
+    <string name="onboarding_get_started">Los geht\'s</string>
+    <string name="onboarding_scan_title">Scanne deine Karten</string>
+    <string name="onboarding_scan_text">Richte die Kamera auf eine Karte oder importiere Fotos aus deiner Galerie. Name und Nummer werden für dich ausgelesen.</string>
+    <string name="onboarding_binder_title">Deine Sammlung im Binder</string>
+    <string name="onboarding_binder_text">Blättere in einem virtuellen Binder Seite für Seite durch deine Karten — wie beim echten.</string>
+    <string name="onboarding_prices_title">Preise und Wert</string>
+    <string name="onboarding_prices_text">Sieh, was jede Karte wert ist, und verfolge den Wert deiner gesamten Sammlung im Zeitverlauf.</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">Seite %1$d von %2$d</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">Niet-professionele fotocontrole. Experimentele bereiken gebruiken uw waarnemingen van hoeken, randen en oppervlak, geen gevalideerde cijferkansen. Een professioneel cijfer kan afwijken. Verborgen gebreken, wijzigingen en echtheidsproblemen zijn niet uitgesloten.</string>
+    <string name="center_manual_notice">Handmatige centreringmeting. Hulplijnen en perspectief beïnvloeden de verhouding. Experimentele schattingen vereisen ook controle van hoeken, randen en oppervlak vanuit meerdere lichthoeken.</string>
+    <string name="wear_observation_scope">Uw waarnemingen blijven in deze fotosessie en worden voor het experimentele bereik gebruikt. Ze certificeren de staat niet en compenseren geen slechte foto’s. Vastgelegde schade verbreedt of verlaagt het bereik.</string>
+</resources>

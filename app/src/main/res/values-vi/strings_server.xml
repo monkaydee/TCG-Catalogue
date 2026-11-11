@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== The app's own price server (graded prices, PSA certs, online identification) ==== -->
+
+    <!-- Shown in brackets after "No graded price found"; %1$s = the grade, e.g. "PSA 10" -->
+    <string name="data_graded_no_sales">không tìm thấy giao dịch gần đây của %1$s — hãy đặt giá trị riêng của bạn hoặc xem các liên kết giá</string>
+    <string name="data_graded_server_error">hiện không thể kết nối đến máy chủ giá</string>
+    <!-- Part of a price note: "PSA 10 · JustTCG · 12 sales · 2026-10-01" -->
+    <plurals name="data_graded_sales_count">
+        <item quantity="other">%1$d giao dịch</item>
+    </plurals>
+
+    <!-- Card page panel -->
+    <string name="graded_title">Giá thẻ đã grade</string>
+    <string name="graded_none">Không tìm thấy giao dịch thẻ đã grade nào cho thẻ này.</string>
+    <string name="graded_failed">Hiện không thể kết nối đến máy chủ giá.</string>
+    <!-- %1$s = grading company and grade ("PSA 10"), %2$s = where the price comes from -->
+    <string name="graded_row_source">%1$s · %2$s</string>
+    <string name="graded_yours">grade của bạn</string>
+
+    <!-- PSA cert check on the card page -->
+    <string name="cert_check">Kiểm tra cert với PSA</string>
+    <string name="cert_unknown">PSA không có thẻ nào với số cert này.</string>
+    <string name="cert_failed">Hiện không thể kết nối đến PSA. Hãy thử lại sau.</string>
+    <!-- %1$s = grade as PSA writes it, e.g. "GEM MT 10" -->
+    <string name="cert_grade">Grade PSA: %1$s</string>
+    <!-- %1$d = copies graded the same, %2$d = copies graded higher -->
+    <string name="cert_population">Số lượng: %1$d thẻ cùng grade, %2$d thẻ grade cao hơn</string>
+    <string name="cert_mismatch">Grade trong hồ sơ của PSA khác với grade đã lưu cho thẻ này.</string>
+    <string name="links_psa_cert">Cert PSA</string>
+
+    <!-- Online identification (when the phone can't recognise a card) -->
+    <string name="identify_online">Nhận diện trực tuyến</string>
+    <string name="identify_hint">Gửi ảnh này đến máy chủ giá của ứng dụng để nhận dạng hình ảnh (Ximilar). Ảnh không được lưu trữ.</string>
+    <string name="identify_searching">Đang nhận diện trực tuyến…</string>
+    <string name="identify_none">Trực tuyến cũng không nhận ra. Hãy thử ảnh rõ nét hơn hoặc tự nhập thẻ.</string>
+    <string name="identify_failed">Hiện không dùng được tính năng nhận diện trực tuyến (đã hết lượt trong ngày hoặc không có kết nối).</string>
+
+    <!-- Settings: price server -->
+    <string name="settings_server_title">Máy chủ giá</string>
+    <string name="settings_server_summary">Máy chủ miễn phí riêng của ứng dụng cho giá thẻ đã grade, kiểm tra cert PSA và nhận diện trực tuyến. Các bản build từ GitHub đã tích hợp sẵn; xem docs/CLOUDFLARE.md để tự thiết lập.</string>
+    <string name="settings_server_url">Địa chỉ máy chủ (https://…)</string>
+    <string name="settings_server_key">Khóa ứng dụng</string>
+    <string name="settings_server_save">Lưu</string>
+    <string name="settings_server_reset">Dùng máy chủ tích hợp</string>
+    <string name="settings_server_test">Kiểm tra</string>
+    <string name="settings_server_ok">Đã kết nối với máy chủ giá.</string>
+    <string name="settings_server_bad">Máy chủ giá không phản hồi. Hãy kiểm tra địa chỉ và khóa ứng dụng.</string>
+    <string name="settings_server_off">Chưa thiết lập máy chủ giá: giá thẻ đã grade dùng giá trị của bạn.</string>
+</resources>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">가격 알림</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">현재 %1$s — 알림 가격 %2$s보다 높아요</string>
+    <string name="alert_below">현재 %1$s — 알림 가격 %2$s보다 낮아요</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">위시리스트: 현재 %1$s — 목표가 %2$s 이하예요</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">연속 스캔 모드</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — 아래 목록에서 나중에 확인하세요</string>
+    <plurals name="stack_to_review">
+        <item quantity="other">확인할 카드 %d장 — 탭해서 확인하세요</item>
+    </plurals>
+    <string name="stack_tap_to_review">탭해서 확인</string>
+    <string name="stack_undo">실행 취소</string>
+    <string name="stack_discard">삭제</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">미개봉 상품</string>
+    <string name="sealed_add">미개봉 상품 추가</string>
+    <string name="sealed_value">미개봉 가치</string>
+    <plurals name="sealed_count">
+        <item quantity="other">%d개</item>
+    </plurals>
+    <string name="sealed_empty">미개봉 부스터 박스, 팩, 덱 등을 여기에서 관리해요. 시장 가치는 포트폴리오에 포함돼요.</string>
+    <string name="sealed_remove_hint">0으로 저장하면 상품이 삭제돼요.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">구매 후 %1$s</string>
+    <string name="sealed_no_price">가격 없음</string>
+    <string name="sealed_search_hint">상품명 또는 세트 (예: “151 부스터 박스”)</string>
+    <string name="sealed_no_results">미개봉 상품을 찾을 수 없어요</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">죄송해요, 앱이 중단되었어요</string>
+    <string name="crash_text">기술 보고서가 저장되었어요 (앱 및 Android 버전, 휴대폰 모델, 오류 내용이며 카드 정보는 포함되지 않아요). 문제 해결을 위해 보내 주실 수 있어요.</string>
+    <string name="crash_report_github">GitHub에 신고</string>
+    <string name="crash_share">공유</string>
+    <string name="crash_dismiss">나중에</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">다른 휴대폰에 더 최신 컬렉션이 있어요</string>
+    <string name="home_cloud_newer_text">클라우드 백업이 다른 휴대폰에서 업데이트되었어요. 탭해서 설정에서 불러오거나 병합하세요.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">사진으로 찾기</string>
+    <string name="picture_preparing">사진 검색 준비 중 — 처음 한 번만 약 20MB를 다운로드해요…</string>
+    <string name="picture_searching">사진으로 카드를 찾는 중…</string>
+    <string name="picture_none">사진으로 카드를 찾지 못했어요. 직접 입력해 보세요.</string>
+    <string name="picture_unavailable">지금은 사진 검색을 사용할 수 없어요. 연결을 확인하세요.</string>
+    <string name="picture_check">사진으로 찾았어요. 맞는 카드인지 확인하세요.</string>
+</resources>

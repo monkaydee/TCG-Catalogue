@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="binder_spread">Her kopya kendi cebinde</string>
+    <string name="binder_move_hint">Kartı oraya taşımak için bir cebe dokunun</string>
+    <string name="binder_remove">Klasörden çıkar</string>
+    <string name="binder_pick_for_pocket">Bu cep için bir kart seçin</string>
+    <string name="binder_all_placed">Tüm kopyalar zaten bu klasörde</string>
+</resources>

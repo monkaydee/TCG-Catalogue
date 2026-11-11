@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quote_refresh_missing">Lần tìm kiếm mới nhất không tìm thấy giá phù hợp; giá trước đó được giữ lại</string>
+</resources>

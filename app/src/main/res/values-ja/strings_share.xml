@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home-screen widget, sharing a binder page as a picture, and cloud backup / sync.
+    English only for now; the translations follow in values-xx/strings_share.xml.
+-->
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">ポートフォリオ</string>
+    <string name="widget_description">コレクションの総評価額と、過去30日間の変動を表示します。</string>
+    <string name="widget_title">コレクションの評価額</string>
+    <string name="widget_cards">%1$d枚</string>
+    <string name="widget_updated">更新：%1$s</string>
+    <string name="widget_change_30d">30日間で %1$s</string>
+    <string name="widget_no_history">30日間の履歴はまだありません</string>
+    <string name="widget_preview_change" formatted="false">30日間で +€48.20 (+4.1%)</string>
+    <string name="widget_preview_cards">312枚</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">ページを共有</string>
+    <string name="share_chooser_title">バインダーのページを共有</string>
+    <string name="share_failed">ページを共有できませんでした：%1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">クラウドバックアップ</string>
+    <string name="cloud_hint">コレクションのコピーを、Googleドライブ、Dropbox、OneDriveなど、この端末のストレージアプリ上のファイルに保管します。アプリを閉じるときに保存され、アプリを開くと別の端末の新しいコピーが提案されます。</string>
+    <string name="cloud_choose_new">新規ファイル</string>
+    <string name="cloud_choose_existing">既存のファイルを使う</string>
+    <string name="cloud_file">ファイル：%1$s</string>
+    <string name="cloud_last_saved">最終保存：%1$s</string>
+    <string name="cloud_never_saved">未保存</string>
+    <string name="cloud_backup_now">今すぐバックアップ</string>
+    <string name="cloud_stop">停止</string>
+    <string name="cloud_saved">バックアップを保存しました</string>
+    <string name="cloud_unchanged">前回のバックアップから変更はありません</string>
+    <string name="cloud_stopped">クラウドバックアップを停止しました</string>
+    <string name="cloud_error">クラウドバックアップの問題：%1$s</string>
+    <string name="cloud_error_permission">ファイルへのアクセスが取り消されました。ファイルを選び直してください。</string>
+    <string name="cloud_error_not_backup">このファイルはCardNavoのバックアップではないため、変更しませんでした。</string>
+    <string name="cloud_error_blocked">別の端末の新しいコレクションが待機中です。先に読み込み、統合、または無視してください。</string>
+    <string name="cloud_error_unknown">不明なエラー</string>
+    <string name="cloud_pending_title">別の端末の新しいコレクション</string>
+    <string name="cloud_pending_text">バックアップファイルには%1$d枚のカードを含むコレクションがあります（保存日時：%2$s）。</string>
+    <string name="cloud_load">読み込む（置き換え）</string>
+    <string name="cloud_merge">統合</string>
+    <string name="cloud_ignore">無視</string>
+    <string name="cloud_loaded">バックアップファイルからコレクションを読み込みました</string>
+    <string name="cloud_merged">コレクションを統合しました</string>
+    <string name="cloud_load_confirm_title">コレクションを置き換えますか？</string>
+    <string name="cloud_load_confirm_text">この端末のすべてのデータが、バックアップファイル内のコレクションに置き換わります。</string>
+    <string name="cloud_load_confirm_button">置き換える</string>
+</resources>

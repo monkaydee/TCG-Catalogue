@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Ga verder met centreren</string>
+  <string name="center_confirm_next">Bevestig de omtrek en meet de centrering</string>
+  <string name="center_step_two">Stap 2: buitenste en binnenste geleiders</string>
+</resources>

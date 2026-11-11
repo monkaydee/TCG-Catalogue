@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==== Pre-grading (Standard): centering, corners and edges from photos ==== -->
+
+    <string name="grade_title">Pre-grade</string>
+    <string name="grade_open">Pre-grade</string>
+    <string name="grade_step_front">Front</string>
+    <string name="grade_step_back">Back</string>
+    <string name="grade_take_photo">Take photo</string>
+    <string name="grade_choose_photo">Choose a photo</string>
+    <string name="grade_skip_back">Skip the back</string>
+    <string name="grade_fill_guide">fit the whole card into the frame</string>
+    <string name="grade_analysing">Measuring centering, corners and edges…</string>
+    <string name="grade_no_card">No whole card found in the photo. Make sure all four corners are visible, on a plain dark background.</string>
+    <string name="grade_camera_failed">The camera couldn\'t take a photo. Try again, or choose a photo instead.</string>
+    <string name="grade_retake">Retake</string>
+    <string name="grade_next_back">Next: back</string>
+    <string name="grade_show_result">Show result</string>
+    <string name="grade_check_outline">The green box shows the measured print frame, red boxes show wear. If the outline is off, retake the photo.</string>
+
+    <string name="grade_tips_title">For an accurate result</string>
+    <string name="grade_tip_sleeve">Take the card out of its sleeve or toploader.</string>
+    <string name="grade_tip_background">Lay it on a plain, dark, matte surface.</string>
+    <string name="grade_tip_light">Use soft, even light without reflections on the card.</string>
+    <string name="grade_tip_straight">Hold the phone straight above the card, so the card fills most of the photo.</string>
+
+    <string name="grade_problem_blurry">The photo is blurry — hold still and tap to focus before taking it.</string>
+    <string name="grade_problem_glare">There are reflections on the card — tilt the light or the card a little.</string>
+    <string name="grade_problem_small">The card is small in the photo — move the phone closer.</string>
+
+    <string name="grade_likely">Likely grade</string>
+    <!-- %1$d = grade, %2$d = probability in percent -->
+    <string name="grade_most_likely">Most likely PSA %1$d (%2$d %%)</string>
+    <!-- %1$s = what limits the grade (one of grade_limit_*) -->
+    <string name="grade_limiting">Holding it back: %1$s</string>
+    <string name="grade_limit_corners">corner wear</string>
+    <string name="grade_limit_edges">edge wear</string>
+    <string name="grade_limit_centering">centering</string>
+    <string name="grade_limit_light_wear">light wear</string>
+    <string name="grade_limit_none">nothing measurable</string>
+
+    <string name="grade_centering">Centering</string>
+    <string name="grade_front">Front</string>
+    <string name="grade_back">Back</string>
+    <string name="grade_not_measurable">not measurable</string>
+    <!-- %1$s = grading company (PSA, BGS, CGC), %2$s = best grade its centering rules allow -->
+    <string name="grade_centering_allows">%1$s: centering allows up to %2$s</string>
+
+    <string name="grade_corners_edges">Corners and edges</string>
+    <string name="grade_corners">Corners</string>
+    <string name="grade_edges">Edges</string>
+    <string name="grade_zone_clean">clean</string>
+    <string name="grade_zone_light">light wear</string>
+    <string name="grade_zone_visible">visible wear</string>
+    <string name="grade_zone_heavy">heavy wear</string>
+
+    <string name="grade_disclaimer">An estimate from photos, calibrated on PSA scans of graded cards. Surface scratches, dents and print lines are not checked. Grading companies decide by hand, so the real grade can differ.</string>
+    <string name="grade_again">Pre-grade another card</string>
+    <string name="grade_centering_explain">50/50 is perfect. A PSA 10 allows up to 55/45 on the front and 75/25 on the back.</string>
+    <string name="grade_centering_good">well centred</string>
+    <string name="grade_centering_off">off-centre</string>
+    <string name="grade_no_frame">no printed frame to measure (normal for this back)</string>
+    <string name="grade_model_unavailable">Choose the card game. Grade estimates are available only for Pokémon; other games show measurements only.</string>
+    <string name="grade_photos_required">A grade estimate needs clear front and back photos with measurable borders. Retake or adjust the outline.</string>
+</resources>

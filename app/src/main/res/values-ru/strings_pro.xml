@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Все инструменты коллекционера — одна покупка.</string>
+    <string name="pro_feature_export">Отчёты по коллекции и для страховки (PDF, CSV)</string>
+    <string name="pro_feature_import">Импорт из других приложений и списков</string>
+    <string name="pro_feature_decks">Конструктор колод со стоимостью недостающих карт</string>
+    <string name="pro_feature_binders">Сколько угодно своих альбомов</string>
+    <string name="pro_feature_grading">Стоит ли грейдить? и популяция PSA</string>
+    <string name="pro_feature_set_cost">Стоимость сбора полного сета</string>
+    <string name="pro_free_note">Сканирование, цены, ваша коллекция и резервные копии остаются бесплатными.</string>
+    <string name="pro_buy">Разблокировать за %1$s</string>
+    <string name="pro_buy_no_price">Разблокировать Pro</string>
+    <string name="pro_one_time">Разовая покупка, без подписки.</string>
+    <string name="pro_restore">Восстановить покупку</string>
+    <string name="pro_owned">Pro разблокирован. Спасибо!</string>
+    <string name="pro_pending">Ваш платёж ещё обрабатывается. Pro откроется, как только он завершится.</string>
+    <string name="pro_store_unavailable">Google Play сейчас недоступен. Проверьте подключение и попробуйте ещё раз.</string>
+    <string name="pro_restore_none">Для этого аккаунта Google покупка не найдена.</string>
+    <string name="pro_failed">Покупка не прошла. Деньги не списаны.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

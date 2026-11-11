@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">Tüm koleksiyoncu araçları, tek satın alma.</string>
+    <string name="pro_feature_export">Koleksiyon ve sigorta raporları (PDF, CSV)</string>
+    <string name="pro_feature_import">Diğer uygulamalardan ve listelerden içe aktarma</string>
+    <string name="pro_feature_decks">Eksik kartların maliyetini gösteren deste oluşturucu</string>
+    <string name="pro_feature_binders">Sınırsız kendi klasörün</string>
+    <string name="pro_feature_grading">Derecelendirmeye değer mi? ve PSA popülasyonu</string>
+    <string name="pro_feature_set_cost">Bir seti tamamlamanın maliyeti</string>
+    <string name="pro_free_note">Tarama, fiyatlar, koleksiyonun ve yedekler ücretsiz kalır.</string>
+    <string name="pro_buy">%1$s karşılığında kilidi aç</string>
+    <string name="pro_buy_no_price">Pro\'nun kilidini aç</string>
+    <string name="pro_one_time">Tek seferlik satın alma, abonelik yok.</string>
+    <string name="pro_restore">Satın almayı geri yükle</string>
+    <string name="pro_owned">Pro\'nun kilidi açıldı. Teşekkürler!</string>
+    <string name="pro_pending">Ödemen hâlâ işleniyor. Tamamlanır tamamlanmaz Pro\'nun kilidi açılacak.</string>
+    <string name="pro_store_unavailable">Google Play şu anda kullanılamıyor. Bağlantını kontrol edip tekrar dene.</string>
+    <string name="pro_restore_none">Bu Google hesabı için satın alma bulunamadı.</string>
+    <string name="pro_failed">Satın alma tamamlanmadı. Senden ücret alınmadı.</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

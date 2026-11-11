@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_next">Tiếp</string>
+    <string name="onboarding_get_started">Bắt đầu</string>
+    <string name="onboarding_scan_title">Quét thẻ của bạn</string>
+    <string name="onboarding_scan_text">Hướng camera vào thẻ hoặc nhập ảnh từ thư viện. Tên và số thẻ sẽ được đọc tự động.</string>
+    <string name="onboarding_binder_title">Bộ sưu tập của bạn trong album</string>
+    <string name="onboarding_binder_text">Xem thẻ từng trang trong album ảo và lật qua như thật.</string>
+    <string name="onboarding_prices_title">Giá và giá trị</string>
+    <string name="onboarding_prices_text">Xem mỗi thẻ đáng giá bao nhiêu và theo dõi giá trị toàn bộ bộ sưu tập theo thời gian.</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">Trang %1$d/%2$d</string>
+</resources>

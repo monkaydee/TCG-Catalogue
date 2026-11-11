@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_rotation_value">%1$.2f° ▾</string>
+  <string name="center_rotation_reset">รีเซ็ต</string>
+  <string name="center_rotation_hint">การจัดตำแหน่งแบบละเอียด ±15° ลากหรือบิดรูปภาพได้อย่างอิสระ หรือใช้แถบเลื่อน คำแนะนำคงที่</string>
+  <string name="center_rotation_done">หมุนเสร็จแล้ว</string>
+  <string name="center_rotation_saved">การหมุนการจัดแนว: %1$.2f°</string>
+</resources>

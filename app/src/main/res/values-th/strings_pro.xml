@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_title">CardNavo Pro</string>
+    <string name="pro_tagline">เครื่องมือนักสะสมทั้งหมด ซื้อครั้งเดียว</string>
+    <string name="pro_feature_export">รายงานคอลเลกชันและประกันภัย (PDF, CSV)</string>
+    <string name="pro_feature_import">นำเข้าจากแอปและรายการอื่น</string>
+    <string name="pro_feature_decks">ตัวสร้างเด็คพร้อมราคาการ์ดที่ยังขาด</string>
+    <string name="pro_feature_binders">สร้างแฟ้มของตัวเองได้ไม่จำกัด</string>
+    <string name="pro_feature_grading">คุ้มที่จะส่งเกรดไหม และจำนวนประชากร PSA</string>
+    <string name="pro_feature_set_cost">ค่าใช้จ่ายในการสะสมให้ครบชุด</string>
+    <string name="pro_free_note">การสแกน ราคา คอลเลกชันของคุณ และการสำรองข้อมูลยังคงฟรี</string>
+    <string name="pro_buy">ปลดล็อกในราคา %1$s</string>
+    <string name="pro_buy_no_price">ปลดล็อก Pro</string>
+    <string name="pro_one_time">ซื้อครั้งเดียว ไม่มีการสมัครสมาชิก</string>
+    <string name="pro_restore">กู้คืนการซื้อ</string>
+    <string name="pro_owned">ปลดล็อก Pro แล้ว ขอบคุณ!</string>
+    <string name="pro_pending">การชำระเงินของคุณยังอยู่ระหว่างดำเนินการ Pro จะปลดล็อกทันทีที่เสร็จสิ้น</string>
+    <string name="pro_store_unavailable">ขณะนี้ใช้งาน Google Play ไม่ได้ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</string>
+    <string name="pro_restore_none">ไม่พบการซื้อสำหรับบัญชี Google นี้</string>
+    <string name="pro_failed">การซื้อไม่สำเร็จ คุณไม่ถูกเรียกเก็บเงิน</string>
+    <string name="pro_locked">%1$s · Pro</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">Canto superior esquerdo</string>
+  <string name="wear_top_right">Canto superior direito</string>
+  <string name="wear_bottom_right">Canto inferior direito</string>
+  <string name="wear_bottom_left">Canto inferior esquerdo</string>
+  <string name="wear_top">Borda superior</string>
+  <string name="wear_right">Margem direita</string>
+  <string name="wear_bottom">Borda inferior</string>
+  <string name="wear_left">Margem esquerda</string>
+  <string name="wear_evidence_count">Verificação automática: %1$d de 8 regiões possuem evidências de cores utilizáveis</string>
+  <string name="wear_review_count">Revisão manual: %1$d de 8 regiões</string>
+  <string name="wear_inspect_regions">Inspecione todos os quatro cantos e quatro bordas</string>
+  <string name="wear_hide_regions">Ocultar detalhes da região</string>
+  <string name="wear_screening_scope">Cada região é verificada separadamente quanto a anomalias de cor e branqueamento. O alinhamento da impressão, da folha e do corte pode assemelhar-se a danos. Abra uma região para inspecionar a foto e registrar o que você vê.</string>
+  <string name="wear_not_assessed">Não avaliado — evidência utilizável insuficiente</string>
+  <string name="wear_inconclusive">A verificação automática é inconclusiva</string>
+  <string name="wear_possible_damage">Verificação automática: possível desgaste — inspecione esta região</string>
+  <string name="wear_auto_none">Verificação automática: nenhuma anomalia de cor sinalizada</string>
+  <string name="wear_your_observation">Sua observação: %1$s</string>
+  <string name="wear_white_border">Bordas brancas podem ocultar o branqueamento; as verificações de cores não podem confirmar sua condição.</string>
+  <string name="wear_textured_border">Arte ou folha variável limitam a comparação de cores.</string>
+  <string name="wear_flagged_pixels">Pixels de região sinalizados: %1$.1f%% · anomalias mais brilhantes: %2$.1f%%</string>
+  <string name="wear_zoom_hint">Aperte para ampliar e arraste para inspecionar. A ampliação não adiciona detalhes à foto; refaça fotos borradas.</string>
+  <string name="wear_record_observation">Sua observação para esta região</string>
+  <string name="wear_not_reviewed">Não revisado</string>
+  <string name="wear_observed_clear">Nenhum dano visível nesta foto</string>
+  <string name="wear_whitening">Branqueamento / desgaste visível</string>
+  <string name="wear_chip">Lascas/rasgos visíveis</string>
+  <string name="wear_bend">Dobra/amassado visível</string>
+  <string name="wear_done">Concluído</string>
+  <string name="wear_damage_blocks_grade">Danos visíveis foram registrados. A estimativa geral do modelo é retida porque as descobertas manuais não são entradas calibradas do modelo. Os resultados de centralização não levam em conta esse dano.</string>
+  <string name="wear_incomplete_blocks_grade">Cantos e bordas precisam de uma inspeção mais detalhada. Evidências ausentes ou inconclusivas impedem uma estimativa global do modelo; a centralização por si só não estabelece uma nota.</string>
+</resources>

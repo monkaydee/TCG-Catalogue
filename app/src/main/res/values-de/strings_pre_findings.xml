@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Befunde</string>
+    <string name="pre_findings_scope">Befunde zeigen, wo du hinschauen solltest. Sie ändern die Wertung noch nicht.</string>
+    <string name="pre_findings_confirmed">Bestätigt</string>
+    <string name="pre_findings_possible">Möglich</string>
+    <string name="pre_findings_blind">Nicht beurteilbar</string>
+    <string name="pre_findings_markers">Markierungen anzeigen</string>
+    <string name="pre_findings_none">Wo die Fotos messbar waren, wurde keine Auffälligkeit gefunden. Das ist kein Beweis für eine makellose Karte.</string>
+    <string name="pre_findings_corner_shape">Eckenkontur weicht von den anderen Ecken ab</string>
+    <string name="pre_findings_surface_scratches">Kratzer auf der Oberfläche</string>
+    <string name="pre_findings_surface_dent">Delle oder Knick in der Oberfläche</string>
+    <string name="pre_findings_surface_blind">Ein flaches Foto zeigt keine Kratzer oder Dellen. Füge Fotos mit schrägem Licht hinzu.</string>
+    <string name="pre_findings_export">Bericht exportieren (JSON)</string>
+    <string name="pre_whole_surface">Gesamte Oberfläche</string>
+    <string name="pre_verified_title">Erhaltene Note</string>
+    <string name="pre_verified_hint">Trage nach dem Grading die Note vom Slab ein. Deine Fotos und diese Note werden zu einem verifizierten Beispiel, das den Pre-Grader verbessern kann.</string>
+    <string name="pre_verified_grade">Note (1–10)</string>
+    <string name="pre_verified_cert">Zertifikatsnummer (optional)</string>
+    <string name="pre_verified_save">Note speichern</string>
+    <string name="pre_verified_invalid">Gib eine Note von 1 bis 10 in halben Schritten und eine Zertifikatsnummer aus Ziffern ein.</string>
+    <string name="pre_verified_export">Trainingsbeispiel exportieren</string>
+    <string name="pre_verified_remove">Note entfernen</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="tools_title">収集ツール</string>
+  <string name="tools_costs">原価台帳</string>
+  <string name="tools_grading">採点のために送られたカード</string>
+  <string name="tools_shipping">1冊あたりの送料</string>
+  <string name="tools_tax">コピーあたりの税金</string>
+  <string name="tools_grading_cost">コピーあたりのグレーディングコスト</string>
+  <string name="tools_pnl">未実現損益</string>
+  <string name="tools_unknown">価格やコストが不明</string>
+  <string name="tools_blank">不明なコストは空白のままにしておきます。コストがかからない場合は 0 を入力します。</string>
+  <string name="tools_reference">提出資料</string>
+  <string name="tools_notes">注意事項</string>
+  <string name="tools_export">保険輸出</string>
+  <string name="tools_review">保留中の写真レビュー</string>
+  <string name="tools_evidence">価格の証拠</string>
+  <string name="tools_stale">古い市場価格</string>
+  <string name="tools_current">現在の市場価格</string>
+  <string name="tools_fees">販売手数料</string>
+  <string name="tools_learning">認知度向上に貢献</string>
+  <string name="tools_photos">承認されたカード作物を共有する</string>
+  <string name="tools_send">保留中のレポートを送信する</string>
+  <string name="tools_delete">共有レポートを削除する</string>
+  <string name="tools_consent">オプション。テキストレポートには、カードの詳細と修正内容が含まれます。写真は別途プレビューと承認が必要です。レポートは 90 日間保存されます。</string>
+  <string name="tools_preview">カードクロップを承認する</string>
+  <string name="tools_preparing">準備中</string>
+  <string name="tools_shipped">出荷済み</string>
+  <string name="tools_received">受け取りました</string>
+  <string name="tools_grading_status">カードのグレーディング中</string>
+  <string name="tools_returned">返されました</string>
+  <string name="tools_cancelled">キャンセルされました</string>
+  <string name="tools_complete">完了</string>
+  <string name="tools_price_challenge">間違った価格を報告する</string>
+  <string name="tools_confirm_outline">カード全体の輪郭を確認する</string>
+  <string name="tools_outline_hint">確認する前に、カードの四隅がすべて外側のカードの角であることを確認してください。</string>
+  <string name="tools_duplicate_cert">このグレーディング証明書はすでにあなたのコレクションにあります。</string>
+</resources>

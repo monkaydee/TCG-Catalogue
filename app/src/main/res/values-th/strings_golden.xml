@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">เก็บกรณีทดสอบการจดจำ</string>
+    <string name="settings_collect_cases_hint">เก็บการนำเข้ารูปที่ยืนยันแล้ว (พร้อมการ์ดที่ถูกต้อง) ไว้ในโทรศัพท์เพื่อปรับปรุงการจดจำ การแก้ไขจะถูกเก็บเสมอ ไม่มีการส่งจนกว่าคุณจะส่งออก</string>
+    <plurals name="settings_export_cases">
+        <item quantity="other">ส่งออก %d กรณีทดสอบ</item>
+    </plurals>
+    <string name="settings_clear_cases">ลบกรณี</string>
+    <string name="import_details_title">จดจำได้อย่างไร</string>
+    <string name="import_details_by_picture">พบจากรูปภาพ</string>
+    <string name="import_details_by_number">พบจากหมายเลข %1$s</string>
+    <string name="import_details_read">อ่านได้บนการ์ด:</string>
+</resources>

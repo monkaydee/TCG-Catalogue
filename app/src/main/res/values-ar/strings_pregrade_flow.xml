@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="pre_outline_screen">مخطط البطاقة · الزوايا الأربع</string>
+  <string name="pre_center_screen">توسيط · ثمانية أدلة</string>
+  <string name="pre_open_centering">قياس الحدود الداخلية والخارجية</string>
+  <string name="pre_outline_continue">تأكيد مخطط البطاقة بالكامل</string>
+  <string name="pre_outline_adjust">اضبط زوايا البطاقة الأربع</string>
+  <string name="pre_choose_game">لعبة الورق</string>
+  <string name="pre_center_missing">ضع الأدلة الخارجية والداخلية على هذا الجانب لإكمال قياس التمركز.</string>
+  <string name="pre_center_ready">يتم قياس التمركز. يمكنك ضبط جميع الأدلة الثمانية.</string>
+  <string name="pre_edit_front">تحرير توسيط الجبهة</string>
+  <string name="pre_edit_back">تحرير توسيط الظهر</string>
+  <string name="pre_potential_title">إمكانية التمركز</string>
+  <string name="pre_potential_10">ضمن حدود التمركز PSA 10</string>
+  <string name="pre_potential_borderline">توسيط خط الحدود PSA 10</string>
+  <string name="pre_potential_below">خارج حدود التمركز PSA 10</string>
+  <string name="pre_potential_incomplete">أكمل كلا الجانبين لتوسيط الإمكانات</string>
+  <string name="pre_potential_scope">توسيط فقط، عبر ألعاب الورق. يستخدم حدود PSA الأمامية 55/45 والخلفية 75/25. يعني خط الحدود أن تعديل دليل صورة واحدة بكسل يمكن أن يغير النتيجة. يمكن للزوايا والحواف والسطح والأصالة أن تقلل من الدرجة النهائية.</string>
+  <string name="pre_model_scope">لم يتم التحقق من صحة التنبؤ الإجمالي لهذه اللعبة أو هذه القياسات. تظل إمكانات التمركز أعلاه متاحة بمجرد قياس كلا الجانبين.</string>
+  <string name="pre_experimental_model">تقدير صور البوكيمون التجريبي</string>
+  <string name="pre_quality_blocked">أعد التقاط هذا الجانب: الخطوط العريضة أو جودة الصورة ليست مناسبة لتقييم التآكل.</string>
+  <string name="pre_no_wear_detected">لم يتم اكتشاف أي تآكل مرئي</string>
+  <string name="pre_skip_frame">لا يوجد إطار مطبوع قابل للمقارنة</string>
+  <string name="pre_retake_front">إعادة التقاط الصورة الأمامية</string>
+  <string name="pre_retake_back">إعادة التقاط الصورة مرة أخرى</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_findings_title">Findings</string>
+    <string name="pre_findings_scope">Findings show where to look. They do not change the score yet.</string>
+    <string name="pre_findings_confirmed">Confirmed</string>
+    <string name="pre_findings_possible">Possible</string>
+    <string name="pre_findings_blind">Not assessable</string>
+    <string name="pre_findings_markers">Show markers</string>
+    <string name="pre_findings_none">No anomaly was flagged where the photos could be measured. That is not proof of a flawless card.</string>
+    <string name="pre_findings_corner_shape">Corner outline differs from the other corners</string>
+    <string name="pre_findings_surface_scratches">Surface scratches</string>
+    <string name="pre_findings_surface_dent">Surface dent or crease</string>
+    <string name="pre_findings_surface_blind">A flat photo cannot show scratches or dents. Add photos under angled light.</string>
+    <string name="pre_findings_export">Export report (JSON)</string>
+    <string name="pre_whole_surface">Whole surface</string>
+    <string name="pre_verified_title">Grade received</string>
+    <string name="pre_verified_hint">After grading, enter the grade from the slab. Your photos and that grade become a verified sample that can improve the pre-grader.</string>
+    <string name="pre_verified_grade">Grade (1–10)</string>
+    <string name="pre_verified_cert">Certificate number (optional)</string>
+    <string name="pre_verified_save">Save grade</string>
+    <string name="pre_verified_invalid">Enter a grade from 1 to 10 in half steps and a numeric certificate number.</string>
+    <string name="pre_verified_export">Export training sample</string>
+    <string name="pre_verified_remove">Remove grade</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_skip">Pular</string>
+    <string name="onboarding_next">Avançar</string>
+    <string name="onboarding_get_started">Começar</string>
+    <string name="onboarding_scan_title">Escaneie suas cartas</string>
+    <string name="onboarding_scan_text">Aponte a câmera para uma carta ou importe fotos da galeria. O nome e o número são lidos para você.</string>
+    <string name="onboarding_binder_title">Sua coleção em um fichário</string>
+    <string name="onboarding_binder_text">Navegue pelas suas cartas página por página em um fichário virtual e folheie como se fosse de verdade.</string>
+    <string name="onboarding_prices_title">Preços e valor</string>
+    <string name="onboarding_prices_text">Veja quanto vale cada carta e acompanhe o valor de toda a sua coleção ao longo do tempo.</string>
+    <string name="onboarding_page_of">Página %1$d de %2$d</string>
+</resources>

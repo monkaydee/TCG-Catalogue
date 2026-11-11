@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_adjust">ضبط أدلة التمركز</string>
+  <string name="center_hint">يحتوي كل جانب على دليلين: حافة البطاقة الخارجية والإطار المطبوع الداخلي. اسحب كلاهما لقياس الفجوة بينهما. سماوي علامات الأدلة الخارجية؛ العلامات الخضراء الأدلة الداخلية. الأصفر هو الدليل المحدد. استخدم نفس الإطار المطبوع على كل جانب.</string>
+  <string name="center_left">اليسار</string>
+  <string name="center_right">صحيح</string>
+  <string name="center_top">أعلى</string>
+  <string name="center_bottom">أسفل</string>
+  <string name="center_detail">تفاصيل الدليل المحدد</string>
+  <string name="center_outer">الحافة الخارجية</string>
+  <string name="center_inner">الإطار الداخلي</string>
+  <string name="center_minus_pixel">-1 بكسل للصورة</string>
+  <string name="center_plus_pixel">+1 بكسل الصورة</string>
+  <string name="center_cancel">إلغاء</string>
+  <string name="center_apply">استخدم هذه الأدلة</string>
+</resources>

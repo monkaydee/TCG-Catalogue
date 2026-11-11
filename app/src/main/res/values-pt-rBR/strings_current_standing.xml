@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Opcional: compartilhar identificadores de cartas e uma impressão OCR, sem fotos ou texto OCR legível. Os relatórios duram 90 dias.</string>
+    <string name="learning_photos_paused">O compartilhamento de fotos está pausado até validar as verificações de conteúdo e identidade. A leitura local continua disponível.</string>
+    <string name="price_health_summary">%1$d cartas sem preço de mercado · %2$d identidades japonesas a corrigir</string>
+</resources>

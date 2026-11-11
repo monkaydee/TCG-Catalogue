@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_assessment_notice">非專業照片預檢。實驗性範圍依據您對角、邊緣和表面的觀察，並非經過驗證的評級機率。專業評級可能不同。無法排除隱藏缺陷、改動或真偽問題。</string>
+    <string name="center_manual_notice">手動測量置中比例。輔助線位置和照片透視會影響比例。實驗性估計還需要檢查角、邊緣及不同光照角度下的表面。</string>
+    <string name="wear_observation_scope">您的觀察紀錄保留在本次拍照工作階段中，用於實驗性範圍。紀錄不證明品相，也不能彌補低品質照片。記錄的損傷會擴大或降低估計範圍。</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">ไม่บังคับ: แชร์รหัสการ์ดและลายนิ้วมือ OCR โดยไม่ส่งรูปหรือข้อความ OCR ที่อ่านได้ เก็บรายงาน 90 วัน</string>
+    <string name="learning_photos_paused">หยุดแชร์รูปจนกว่าจะตรวจสอบระบบกรองเนื้อหาและตัวตนการ์ด การสแกนในเครื่องยังใช้งานได้</string>
+    <string name="price_health_summary">%1$d การ์ดไม่มีราคาตลาด · %2$d ตัวตนการ์ดญี่ปุ่นต้องแก้ไข</string>
+</resources>

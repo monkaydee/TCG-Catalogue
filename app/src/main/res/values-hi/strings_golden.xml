@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">पहचान के टेस्ट केस इकट्ठा करें</string>
+    <string name="settings_collect_cases_hint">पहचान बेहतर करने के लिए पुष्टि किए गए फ़ोटो इम्पोर्ट (सही कार्ड के साथ) इस फ़ोन पर रखें। सुधार हमेशा रखे जाते हैं। एक्सपोर्ट करने तक कुछ नहीं भेजा जाता।</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">%d टेस्ट केस एक्सपोर्ट करें</item>
+        <item quantity="other">%d टेस्ट केस एक्सपोर्ट करें</item>
+    </plurals>
+    <string name="settings_clear_cases">केस हटाएँ</string>
+    <string name="import_details_title">कैसे पहचाना गया</string>
+    <string name="import_details_by_picture">तस्वीर से मिला</string>
+    <string name="import_details_by_number">नंबर %1$s से मिला</string>
+    <string name="import_details_read">कार्ड पर पढ़ा गया:</string>
+</resources>

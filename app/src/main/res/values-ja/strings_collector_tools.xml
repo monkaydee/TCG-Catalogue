@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_display_currency">価格の表示通貨</string>
+    <string name="settings_display_same">コレクションと同じ（%1$s）</string>
+    <string name="settings_display_offline">為替レートを読み込めませんでした。オンライン時にもう一度お試しください。</string>
+    <string name="settings_display_hint">ECBの参照レートで表示用にのみ換算します。入力した金額と保存された値はEURまたはUSDのままです。</string>
+    <string name="card_notes">メモ</string>
+    <string name="card_notes_hint">購入場所、傷、誰のためか…</string>
+    <string name="worth_grading_title">鑑定する価値は？</string>
+    <string name="worth_grading_cost">1枚あたりの鑑定費用（%1$s、料金＋送料）</string>
+    <string name="worth_grading_no_raw">このカードの未鑑定価格が不明なため、利益を計算できません。</string>
+    <string name="worth_grading_from">%1$s：グレード%2$s以上で利益</string>
+    <string name="worth_grading_never">%1$s：掲載されたどのグレードでも利益なし</string>
+    <string name="worth_grading_note">この1枚の未鑑定価格%1$sと比較。鑑定品の価格は相場または出品価格で、取得グレードは保証されません。</string>
+    <string name="completion_title">コンプリートまでの費用</string>
+    <string name="completion_total">%2$d枚で%1$s</string>
+    <string name="completion_unknown">価格不明のカード%1$d枚（計算外）</string>
+    <string name="completion_progress">価格を読み込み済み：%1$d / %2$d</string>
+    <string name="completion_hint">不足カードそれぞれの最安版を相場価格で</string>
+    <string name="completion_calculate">計算</string>
+    <string name="lot_title">ロット計算</string>
+    <string name="lot_remove">削除</string>
+    <string name="lot_add_value">金額を追加（%1$s）</string>
+    <string name="lot_add">追加</string>
+    <string name="lot_market">相場合計：%1$s（%2$d点）</string>
+    <string name="lot_unknown">価格なし%1$d点（計算外）</string>
+    <string name="lot_percent">相場の%1$d %%で提示</string>
+    <string name="lot_offer">ロット価格：%1$s</string>
+    <string name="bulk_add_to_binder">バインダーに追加</string>
+    <string name="bulk_trade">トレード用にする</string>
+    <string name="bulk_trade_done">%1$d枚をトレード用にしました</string>
+    <string name="bulk_delete">削除</string>
+    <string name="bulk_delete_confirm">コレクションから%1$d枚を削除しますか？</string>
+    <string name="bulk_select_all">すべて選択（%1$d）</string>
+    <string name="bulk_no_binders">自分のバインダーがまだありません。「バインダーを開く」から作成してください。</string>
+    <string name="bulk_added_to_binder">%2$sに%1$d枚追加しました</string>
+</resources>

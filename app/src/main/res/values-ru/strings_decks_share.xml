@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">Популяция PSA</string>
+    <string name="pop_show">Показать популяцию</string>
+    <string name="pop_none">Добавьте слаб PSA этой карты с номером сертификата, чтобы увидеть популяцию.</string>
+    <string name="pop_total">Оценено PSA: %1$d</string>
+    <string name="pop_gem_rate">Gem rate (PSA 10): %1$s %%</string>
+    <string name="decks_title">Колоды</string>
+    <string name="decks_new">Новая колода</string>
+    <string name="decks_empty">Колод пока нет. Создайте колоду и вставьте список или добавьте карты из коллекции.</string>
+    <string name="deck_cards">Карт: %1$d</string>
+    <string name="deck_value">Стоимость колоды: %1$s</string>
+    <string name="deck_missing">Не хватает: %1$d · стоимость: %2$s</string>
+    <string name="deck_missing_none">У вас есть все карты этой колоды.</string>
+    <string name="deck_owned">есть %1$d / %2$d</string>
+    <string name="deck_import">Вставить список колоды</string>
+    <string name="deck_import_hint">Одна карта на строку, напр. 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">Добавить из коллекции</string>
+    <string name="deck_share">Поделиться списком</string>
+    <string name="deck_delete">Удалить колоду</string>
+    <string name="deck_delete_confirm">Удалить «%1$s»? Коллекция не изменится.</string>
+    <string name="deck_rule_total">В колодах %1$s %2$d карт; в этой %3$d.</string>
+    <string name="deck_rule_min">В колодах %1$s нужно не меньше %2$d карт; в этой %3$d.</string>
+    <string name="deck_rule_copies">Больше %1$d копий: %2$s</string>
+    <string name="deck_rules_note">Проверяются только число карт и копий; запрещённые карты и форматы — нет.</string>
+    <string name="deck_not_found">Не найдено: %1$s</string>
+    <string name="share_cards">Поделиться страницей</string>
+    <string name="share_cards_text">Отправляет эти карты (%1$d) одной веб-страницей через меню «Поделиться». Приложение ничего не загружает.</string>
+    <string name="share_with_prices">С ценами</string>
+    <string name="share_without_prices">Без цен</string>
+</resources>

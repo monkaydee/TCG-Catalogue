@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Erkennungs-Testfälle sammeln</string>
+    <string name="settings_collect_cases_hint">Bestätigte Foto-Importe (mit der richtigen Karte) auf diesem Handy behalten, um die Erkennung zu verbessern. Korrigierte Treffer werden immer behalten. Nichts wird gesendet, bis du exportierst.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">%d Testfall exportieren</item>
+        <item quantity="other">%d Testfälle exportieren</item>
+    </plurals>
+    <string name="settings_clear_cases">Fälle löschen</string>
+    <string name="import_details_title">So wurde erkannt</string>
+    <string name="import_details_by_picture">Am Bild erkannt</string>
+    <string name="import_details_by_number">An der Nummer %1$s erkannt</string>
+    <string name="import_details_read">Auf der Karte gelesen:</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Coletar casos de teste de reconhecimento</string>
+    <string name="settings_collect_cases_hint">Manter neste celular as importações de fotos confirmadas (com a carta certa) para melhorar o reconhecimento. Correções são sempre mantidas. Nada é enviado até você exportar.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">Exportar %d caso de teste</item>
+        <item quantity="other">Exportar %d casos de teste</item>
+    </plurals>
+    <string name="settings_clear_cases">Apagar casos</string>
+    <string name="import_details_title">Como foi reconhecida</string>
+    <string name="import_details_by_picture">Encontrada pela imagem</string>
+    <string name="import_details_by_number">Encontrada pelo número %1$s</string>
+    <string name="import_details_read">Lido na carta:</string>
+</resources>

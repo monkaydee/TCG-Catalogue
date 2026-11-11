@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Цінові сповіщення</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Зараз %1$s — вище за ваш поріг %2$s</string>
+    <string name="alert_below">Зараз %1$s — нижче за ваш поріг %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">У списку бажань: зараз %1$s — не вище за вашу ціль %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Режим стосу</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — перевірте пізніше у стрічці нижче</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d картку треба перевірити — торкніться її</item>
+        <item quantity="few">%d картки треба перевірити — торкніться їх</item>
+        <item quantity="many">%d карток треба перевірити — торкніться їх</item>
+        <item quantity="other">%d картки треба перевірити — торкніться їх</item>
+    </plurals>
+    <string name="stack_tap_to_review">Торкніться, щоб перевірити</string>
+    <string name="stack_undo">Скасувати</string>
+    <string name="stack_discard">Відхилити</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Запечатані товари</string>
+    <string name="sealed_add">Додати запечатаний товар</string>
+    <string name="sealed_value">Вартість запечатаних</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d товар</item>
+        <item quantity="few">%d товари</item>
+        <item quantity="many">%d товарів</item>
+        <item quantity="other">%d товару</item>
+    </plurals>
+    <string name="sealed_empty">Ведіть тут облік нерозпечатаних бустер-боксів, паків, колод і коробок. Їхня ринкова вартість входить до вашого портфеля.</string>
+    <string name="sealed_remove_hint">Якщо зберегти з 0, товар буде видалено.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s від моменту купівлі</string>
+    <string name="sealed_no_price">немає ціни</string>
+    <string name="sealed_search_hint">Назва товару або сет, наприклад «151 booster box»</string>
+    <string name="sealed_no_results">Запечатаних товарів не знайдено</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Вибачте, застосунок вилетів</string>
+    <string name="crash_text">Збережено технічний звіт (версії застосунку й Android, модель телефона та помилка — без ваших карток). Ви можете надіслати його, щоб допомогти виправити проблему.</string>
+    <string name="crash_report_github">Повідомити на GitHub</string>
+    <string name="crash_share">Поділитися</string>
+    <string name="crash_dismiss">Не зараз</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">Новіша колекція з іншого телефона</string>
+    <string name="home_cloud_newer_text">Хмарну копію оновлено на іншому телефоні. Торкніться, щоб завантажити або об\'єднати її в налаштуваннях.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Знайти за зображенням</string>
+    <string name="picture_preparing">Підготовка пошуку за зображенням — одноразове завантаження близько 20 МБ…</string>
+    <string name="picture_searching">Шукаємо картку за зображенням…</string>
+    <string name="picture_none">Картку за зображенням не знайдено — спробуйте ввести вручну.</string>
+    <string name="picture_unavailable">Пошук за зображенням зараз недоступний — перевірте з\'єднання.</string>
+    <string name="picture_check">Знайдено за зображенням — перевірте, чи це потрібна картка.</string>
+</resources>

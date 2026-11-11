@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">略過</string>
+    <string name="onboarding_next">下一步</string>
+    <string name="onboarding_get_started">開始使用</string>
+    <string name="onboarding_scan_title">掃描你的卡片</string>
+    <string name="onboarding_scan_text">將相機對準卡片，或從相簿匯入照片。名稱和編號會自動辨識。</string>
+    <string name="onboarding_binder_title">用卡冊管理你的收藏</string>
+    <string name="onboarding_binder_text">在虛擬卡冊中逐頁瀏覽卡片，像真實卡冊一樣翻閱。</string>
+    <string name="onboarding_prices_title">價格與價值</string>
+    <string name="onboarding_prices_text">查看每張卡片的價值，並持續追蹤整個收藏的價值變化。</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">第 %1$d / %2$d 頁</string>
+</resources>

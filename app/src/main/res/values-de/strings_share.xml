@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home-screen widget -->
+    <string name="widget_name">Portfolio</string>
+    <string name="widget_description">Der Gesamtwert deiner Sammlung und wie er sich in den letzten 30 Tagen verändert hat.</string>
+    <string name="widget_title">Sammlungswert</string>
+    <string name="widget_cards">%1$d Karten</string>
+    <string name="widget_updated">Aktualisiert %1$s</string>
+    <string name="widget_change_30d">%1$s in 30 Tagen</string>
+    <string name="widget_no_history">Noch kein 30-Tage-Verlauf</string>
+    <string name="widget_preview_change" formatted="false">+€48.20 (+4.1%) in 30 Tagen</string>
+    <string name="widget_preview_cards">312 Karten</string>
+
+    <!-- Share a binder page -->
+    <string name="share_page">Seite teilen</string>
+    <string name="share_chooser_title">Binder-Seite teilen</string>
+    <string name="share_failed">Seite konnte nicht geteilt werden: %1$s</string>
+
+    <!-- Cloud backup -->
+    <string name="cloud_title">Cloud-Backup</string>
+    <string name="cloud_hint">Bewahre eine Kopie deiner Sammlung in einer Datei auf Google Drive, Dropbox, OneDrive oder einer anderen Speicher-App auf diesem Smartphone auf. Sie wird beim Verlassen der App gespeichert, und eine neuere Kopie von einem anderen Smartphone wird dir beim Öffnen angeboten.</string>
+    <string name="cloud_choose_new">Neue Datei</string>
+    <string name="cloud_choose_existing">Vorhandene Datei verwenden</string>
+    <string name="cloud_file">Datei: %1$s</string>
+    <string name="cloud_last_saved">Zuletzt gespeichert: %1$s</string>
+    <string name="cloud_never_saved">Noch nicht gespeichert</string>
+    <string name="cloud_backup_now">Jetzt sichern</string>
+    <string name="cloud_stop">Beenden</string>
+    <string name="cloud_saved">Backup gespeichert</string>
+    <string name="cloud_unchanged">Seit dem letzten Backup hat sich nichts geändert</string>
+    <string name="cloud_stopped">Cloud-Backup beendet</string>
+    <string name="cloud_error">Problem beim Cloud-Backup: %1$s</string>
+    <string name="cloud_error_permission">Der Zugriff auf die Datei wurde entzogen. Wähle die Datei erneut aus.</string>
+    <string name="cloud_error_not_backup">Die Datei ist kein TCG-Catalogue-Backup und blieb daher unverändert.</string>
+    <string name="cloud_error_blocked">Eine neuere Sammlung von einem anderen Smartphone wartet. Lade sie, führe sie zusammen oder ignoriere sie zuerst.</string>
+    <string name="cloud_error_unknown">unbekannter Fehler</string>
+    <string name="cloud_pending_title">Neuere Sammlung von einem anderen Smartphone</string>
+    <string name="cloud_pending_text">Die Backup-Datei enthält eine Sammlung mit %1$d Karten, gespeichert %2$s.</string>
+    <string name="cloud_load">Laden (ersetzen)</string>
+    <string name="cloud_merge">Zusammenführen</string>
+    <string name="cloud_ignore">Ignorieren</string>
+    <string name="cloud_loaded">Sammlung aus der Backup-Datei geladen</string>
+    <string name="cloud_merged">Sammlungen zusammengeführt</string>
+    <string name="cloud_load_confirm_title">Sammlung ersetzen?</string>
+    <string name="cloud_load_confirm_text">Alles auf diesem Smartphone wird durch die Sammlung in der Backup-Datei ersetzt.</string>
+    <string name="cloud_load_confirm_button">Ersetzen</string>
+</resources>

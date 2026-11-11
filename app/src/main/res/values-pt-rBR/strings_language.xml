@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_language">Idioma</string>
+    <string name="price_note_english_price">Ainda sem preço para este idioma — mostrando o preço em inglês</string>
+</resources>

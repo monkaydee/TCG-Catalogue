@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Köşeleri ayarla</string>
+    <string name="grade_adjust_hint">Dört noktayı kartın köşelerine sürükleyin. Büyüteç onları tam yerleştirmeye yardımcı olur.</string>
+    <string name="grade_adjust_apply">Uygula</string>
+</resources>

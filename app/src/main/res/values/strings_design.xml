@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">More actions</string>
+    <string name="design_game">Game</string>
+    <string name="design_select">Select</string>
+    <string name="design_sort">Sort</string>
+    <string name="design_layout">Layout</string>
+    <string name="design_language">Language</string>
+    <string name="design_capture">Capture</string>
+    <string name="design_alignment">Alignment</string>
+    <string name="design_inspection">Inspection</string>
+    <string name="design_result">Result</string>
+    <string name="design_stage">Step %1$d of %2$d · %3$s</string>
+    <string name="design_expanded">Expanded</string>
+    <string name="design_collapsed">Collapsed</string>
+    <string name="design_evidence">Price evidence</string>
+    <string name="design_details">Card details</string>
+    <string name="design_slab_hint">Prices match the recorded grader, grade and printed language. Ungraded references are shown separately.</string>
+</resources>

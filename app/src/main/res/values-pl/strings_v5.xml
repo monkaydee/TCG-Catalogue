@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Alerty cenowe</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Teraz %1$s — powyżej twojego alertu na %2$s</string>
+    <string name="alert_below">Teraz %1$s — poniżej twojego alertu na %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">Na twojej liście życzeń: teraz %1$s — na poziomie lub poniżej ceny docelowej %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Tryb stosu</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — sprawdź później na pasku poniżej</string>
+    <plurals name="stack_to_review">
+        <item quantity="one">%d karta do sprawdzenia — dotknij jej</item>
+        <item quantity="few">%d karty do sprawdzenia — dotknij ich</item>
+        <item quantity="many">%d kart do sprawdzenia — dotknij ich</item>
+        <item quantity="other">%d karty do sprawdzenia — dotknij ich</item>
+    </plurals>
+    <string name="stack_tap_to_review">Dotknij, aby sprawdzić</string>
+    <string name="stack_undo">Cofnij</string>
+    <string name="stack_discard">Odrzuć</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Produkty zapieczętowane</string>
+    <string name="sealed_add">Dodaj produkt zapieczętowany</string>
+    <string name="sealed_value">Wartość zapieczętowanych</string>
+    <plurals name="sealed_count">
+        <item quantity="one">%d pozycja</item>
+        <item quantity="few">%d pozycje</item>
+        <item quantity="many">%d pozycji</item>
+        <item quantity="other">%d pozycji</item>
+    </plurals>
+    <string name="sealed_empty">Śledź tu nieotwarte boostery, pudełka, talie i zestawy. Ich wartość rynkowa wlicza się do twojego portfolio.</string>
+    <string name="sealed_remove_hint">Zapisanie z 0 usuwa produkt.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s od zakupu</string>
+    <string name="sealed_no_price">brak ceny</string>
+    <string name="sealed_search_hint">Nazwa produktu lub zestawu, np. „151 booster box”</string>
+    <string name="sealed_no_results">Nie znaleziono produktów zapieczętowanych</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Przepraszamy, aplikacja uległa awarii</string>
+    <string name="crash_text">Zapisano raport techniczny (wersja aplikacji i Androida, model telefonu oraz błąd — bez żadnych twoich kart). Możesz go wysłać, aby pomóc naprawić problem.</string>
+    <string name="crash_report_github">Zgłoś na GitHubie</string>
+    <string name="crash_share">Udostępnij</string>
+    <string name="crash_dismiss">Nie teraz</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">Nowsza kolekcja z innego telefonu</string>
+    <string name="home_cloud_newer_text">Twoja kopia zapasowa w chmurze została zaktualizowana na innym telefonie. Dotknij, aby wczytać ją lub scalić w Ustawieniach.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Szukaj po obrazie</string>
+    <string name="picture_preparing">Przygotowywanie wyszukiwania po obrazie — jednorazowe pobranie około 20 MB…</string>
+    <string name="picture_searching">Szukanie karty po obrazie…</string>
+    <string name="picture_none">Nie znaleziono karty po obrazie — spróbuj wpisać ją ręcznie.</string>
+    <string name="picture_unavailable">Wyszukiwanie po obrazie jest teraz niedostępne — sprawdź połączenie.</string>
+    <string name="picture_check">Znaleziono po obrazie — sprawdź, czy to właściwa karta.</string>
+</resources>

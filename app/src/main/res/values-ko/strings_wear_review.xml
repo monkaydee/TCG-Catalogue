@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="wear_top_left">왼쪽 상단</string>
+  <string name="wear_top_right">오른쪽 상단</string>
+  <string name="wear_bottom_right">오른쪽 하단</string>
+  <string name="wear_bottom_left">왼쪽 하단 모서리</string>
+  <string name="wear_top">상단 가장자리</string>
+  <string name="wear_right">오른쪽 가장자리</string>
+  <string name="wear_bottom">하단 가장자리</string>
+  <string name="wear_left">왼쪽 가장자리</string>
+  <string name="wear_evidence_count">자동 확인: 8개 지역 중 %1$d개에 사용 가능한 색상 증거가 있습니다.</string>
+  <string name="wear_review_count">직접 검토: 8개 지역 중 %1$d개</string>
+  <string name="wear_inspect_regions">네 모서리와 네 모서리 모두 검사</string>
+  <string name="wear_hide_regions">지역 세부정보 숨기기</string>
+  <string name="wear_screening_scope">각 지역별로 색상 이상 및 미백 여부를 확인합니다. 인쇄, 포일 및 절단 정렬은 손상과 유사할 수 있습니다. 영역을 열어 사진을 검사하고 본 내용을 기록하세요.</string>
+  <string name="wear_not_assessed">평가되지 않음 - 사용 가능한 증거가 불충분함</string>
+  <string name="wear_inconclusive">자동 확인 결과가 불확실함</string>
+  <string name="wear_possible_damage">자동 확인: 마모 가능성 - 이 부분을 검사합니다.</string>
+  <string name="wear_auto_none">자동 확인: 색상 이상 징후가 표시되지 않음</string>
+  <string name="wear_your_observation">귀하의 관찰 내용: %1$s</string>
+  <string name="wear_white_border">흰색 테두리는 미백을 숨길 수 있습니다. 컬러 체크로는 상태를 확인할 수 없습니다.</string>
+  <string name="wear_textured_border">다양한 아트웍이나 포일로 인해 색상 비교가 제한됩니다.</string>
+  <string name="wear_flagged_pixels">플래그가 지정된 지역 픽셀: %1$.1f%% · 더 밝은 이상: %2$.1f%%</string>
+  <string name="wear_zoom_hint">손가락을 모아 확대/축소하고 드래그하여 검사하세요. 확대하면 사진 세부정보가 추가되지 않습니다. 흐릿한 사진을 다시 찍으세요.</string>
+  <string name="wear_record_observation">이 지역에 대한 귀하의 관찰</string>
+  <string name="wear_not_reviewed">검토되지 않음</string>
+  <string name="wear_observed_clear">이 사진에는 눈에 띄는 손상이 없습니다.</string>
+  <string name="wear_whitening">미백/스커링이 눈에 띕니다</string>
+  <string name="wear_chip">칩 / 찢어짐 표시</string>
+  <string name="wear_bend">굽힘/움푹 들어간 곳이 보입니다.</string>
+  <string name="wear_done">완료</string>
+  <string name="wear_damage_blocks_grade">눈에 보이는 손상이 기록되었습니다. 수동 결과는 보정된 모델 입력이 아니기 때문에 전체 모델 추정치는 보류됩니다. 센터링 결과는 이러한 손상을 설명하지 않습니다.</string>
+  <string name="wear_incomplete_blocks_grade">모서리와 가장자리는 면밀한 검사가 필요합니다. 누락되거나 결정적이지 않은 증거로 인해 전체 모델 추정이 불가능해집니다. 센터링만으로는 등급이 설정되지 않습니다.</string>
+</resources>

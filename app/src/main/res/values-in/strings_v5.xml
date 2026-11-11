@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Price alerts (notifications) -->
+    <string name="alert_channel">Peringatan harga</string>
+    <!-- %1$s = current value per copy, %2$s = the alert price -->
+    <string name="alert_above">Sekarang %1$s — di atas peringatan Anda di %2$s</string>
+    <string name="alert_below">Sekarang %1$s — di bawah peringatan Anda di %2$s</string>
+    <!-- A card on the wishlist reached the price the user wants to pay -->
+    <string name="alert_wish">Ada di wishlist: sekarang %1$s — sama dengan atau di bawah target Anda %2$s</string>
+
+    <!-- Stack mode: scan many cards one after another without confirming each -->
+    <string name="stack_mode">Mode tumpukan</string>
+    <!-- %1$s = card name; it couldn't be identified for sure and waits for the user -->
+    <string name="stack_review_later">%1$s — periksa nanti di deretan bawah</string>
+    <plurals name="stack_to_review">
+        <item quantity="other">%d kartu perlu diperiksa — ketuk</item>
+    </plurals>
+    <string name="stack_tap_to_review">Ketuk untuk memeriksa</string>
+    <string name="stack_undo">Urungkan</string>
+    <string name="stack_discard">Buang</string>
+
+    <!-- Sealed products: unopened booster boxes, packs, decks, Elite Trainer Boxes … -->
+    <string name="sealed_title">Produk segel</string>
+    <string name="sealed_add">Tambah produk segel</string>
+    <string name="sealed_value">Nilai segel</string>
+    <plurals name="sealed_count">
+        <item quantity="other">%d item</item>
+    </plurals>
+    <string name="sealed_empty">Lacak booster box, pack, deck, dan box yang belum dibuka di sini. Nilai pasarnya dihitung dalam portofolio Anda.</string>
+    <string name="sealed_remove_hint">Menyimpan dengan 0 akan menghapus produk.</string>
+    <!-- %1$s = signed amount, e.g. +12.00 € -->
+    <string name="sealed_gain">%1$s sejak dibeli</string>
+    <string name="sealed_no_price">tanpa harga</string>
+    <string name="sealed_search_hint">Nama produk atau set, mis. “151 booster box”</string>
+    <string name="sealed_no_results">Produk segel tidak ditemukan</string>
+
+    <!-- Shown at the start after the app crashed -->
+    <string name="crash_title">Maaf, aplikasi mengalami crash</string>
+    <string name="crash_text">Laporan teknis telah disimpan (versi aplikasi dan Android, model ponsel, serta error — bukan kartu Anda). Anda dapat mengirimnya untuk membantu memperbaiki masalah.</string>
+    <string name="crash_report_github">Laporkan di GitHub</string>
+    <string name="crash_share">Bagikan</string>
+    <string name="crash_dismiss">Nanti saja</string>
+
+    <!-- Cloud backup: another phone saved a newer collection to the shared backup file -->
+    <string name="home_cloud_newer_title">Koleksi lebih baru dari ponsel lain</string>
+    <string name="home_cloud_newer_text">Cadangan cloud Anda diperbarui di ponsel lain. Ketuk untuk memuat atau menggabungkannya di Pengaturan.</string>
+
+    <!-- Find a card by its picture alone, when its number can't be read -->
+    <string name="picture_find">Cari dengan gambar</string>
+    <string name="picture_preparing">Menyiapkan pencarian gambar — unduhan satu kali sekitar 20 MB…</string>
+    <string name="picture_searching">Mencari kartu dari gambarnya…</string>
+    <string name="picture_none">Tidak ada kartu yang cocok dengan gambarnya — coba ketik manual.</string>
+    <string name="picture_unavailable">Pencarian gambar belum tersedia saat ini — periksa koneksi Anda.</string>
+    <string name="picture_check">Ditemukan lewat gambar — pastikan ini kartu yang benar.</string>
+</resources>

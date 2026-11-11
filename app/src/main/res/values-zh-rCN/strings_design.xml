@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">更多操作</string>
+    <string name="design_game">游戏</string>
+    <string name="design_select">选择</string>
+    <string name="design_sort">排序</string>
+    <string name="design_layout">布局</string>
+    <string name="design_language">语言</string>
+    <string name="design_capture">拍摄</string>
+    <string name="design_alignment">对齐</string>
+    <string name="design_inspection">检查</string>
+    <string name="design_result">结果</string>
+    <string name="design_stage">第 %1$d 步，共 %2$d 步 · %3$s</string>
+    <string name="design_expanded">已展开</string>
+    <string name="design_collapsed">已折叠</string>
+    <string name="design_evidence">价格依据</string>
+    <string name="design_details">卡片详情</string>
+    <string name="design_slab_hint">价格对应已记录的评级公司、等级和印刷语言。未评级卡片的参考价格单独显示。</string>
+</resources>

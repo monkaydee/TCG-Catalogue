@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_collect_cases">Samla testfall för igenkänning</string>
+    <string name="settings_collect_cases_hint">Spara bekräftade fotoimporter (med rätt kort) på telefonen för att förbättra igenkänningen. Rättelser sparas alltid. Inget skickas förrän du exporterar.</string>
+    <plurals name="settings_export_cases">
+        <item quantity="one">Exportera %d testfall</item>
+        <item quantity="other">Exportera %d testfall</item>
+    </plurals>
+    <string name="settings_clear_cases">Radera fall</string>
+    <string name="import_details_title">Så kändes det igen</string>
+    <string name="import_details_by_picture">Hittat via bilden</string>
+    <string name="import_details_by_number">Hittat via numret %1$s</string>
+    <string name="import_details_read">Läst på kortet:</string>
+</resources>

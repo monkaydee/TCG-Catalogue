@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="center_outline_next">Продолжить центрирование</string>
+  <string name="center_confirm_next">Подтвердите контур и измерьте центрирование</string>
+  <string name="center_step_two">Шаг 2: внешние и внутренние направляющие</string>
+</resources>

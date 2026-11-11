@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">अन्य कार्य</string>
+    <string name="design_game">खेल</string>
+    <string name="design_select">चुनें</string>
+    <string name="design_sort">क्रम</string>
+    <string name="design_layout">दृश्य</string>
+    <string name="design_language">भाषा</string>
+    <string name="design_capture">फ़ोटो</string>
+    <string name="design_alignment">संरेखण</string>
+    <string name="design_inspection">निरीक्षण</string>
+    <string name="design_result">परिणाम</string>
+    <string name="design_stage">चरण %1$d / %2$d · %3$s</string>
+    <string name="design_expanded">विस्तारित</string>
+    <string name="design_collapsed">संक्षिप्त</string>
+    <string name="design_evidence">मूल्य स्रोत</string>
+    <string name="design_details">कार्ड विवरण</string>
+    <string name="design_slab_hint">कीमतें दर्ज ग्रेडिंग कंपनी, ग्रेड और मुद्रित भाषा से मेल खाती हैं। बिना ग्रेड वाले कार्ड का संदर्भ मूल्य अलग दिखाया जाता है।</string>
+</resources>

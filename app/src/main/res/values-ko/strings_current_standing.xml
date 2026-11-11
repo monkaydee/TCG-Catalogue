@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">선택 사항: 사진이나 읽을 수 있는 OCR 텍스트 대신 카드 ID와 OCR 지문을 공유합니다. 보고서는 90일간 보관됩니다.</string>
+    <string name="learning_photos_paused">콘텐츠와 카드 식별 검사가 검증될 때까지 사진 공유가 중지됩니다. 기기 내 스캔은 계속 작동합니다.</string>
+    <string name="price_health_summary">시장 가격 없는 카드 %1$d개 · 수정할 일본어 카드 ID %2$d개</string>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_scan_name_mismatch">الاسم على البطاقة الممسوحة لا يطابق هذه البطاقة — ربما قُرئ الرقم بشكل خاطئ. راجعه، أو ألغِ وأدخله يدويًا.</string>
+    <string name="data_graded">مُقيَّمة</string>
+    <string name="data_graded_grade">مُقيَّمة %1$s</string>
+    <string name="data_graded_choose_grader">اختر شركة التقييم</string>
+    <string name="data_graded_choose_grade">اختر التقييم</string>
+    <string name="data_graded_no_source">لا يوجد مصدر لأسعار البطاقات المُقيَّمة — حدّد قيمتك الخاصة أو راجع روابط الأسعار في صفحة البطاقة</string>
+    <string name="data_variant_normal">عادية</string>
+    <string name="data_variant_holo">Holo</string>
+    <string name="data_variant_reverse_holo">Reverse Holo</string>
+    <string name="data_variant_first_edition">1st Edition</string>
+    <string name="data_variant_foil">Foil</string>
+    <string name="data_variant_etched_foil">Etched foil</string>
+    <string name="data_variant_standard">قياسية</string>
+    <string name="data_variant_numbered">نسخة %1$d</string>
+    <string name="data_overview_prices">الأسعار</string>
+    <string name="data_overview_no_card_data">تعذّر تحميل بيانات البطاقة — تحقق من اتصالك</string>
+    <string name="data_overview_no_cardmarket">لا توجد أسعار Cardmarket لهذه البطاقة</string>
+    <string name="data_overview_no_tcgplayer">لا توجد أسعار TCGplayer لهذه البطاقة</string>
+    <string name="data_overview_by_condition">TCGplayer حسب الحالة (المبيعات)</string>
+    <string name="data_overview_no_condition_sales">لا توجد مبيعات حسب الحالة</string>
+    <string name="price_label_trend">الاتجاه</string>
+    <string name="price_label_lowest_offer">أقل عرض</string>
+    <string name="price_label_average_sold">متوسط البيع</string>
+    <string name="price_label_avg1">متوسط يوم واحد</string>
+    <string name="price_label_avg7">متوسط 7 أيام</string>
+    <string name="price_label_avg30">متوسط 30 يومًا</string>
+    <string name="price_label_market">السوق</string>
+    <string name="price_label_lowest_listing">أقل إدراج</string>
+    <string name="price_label_mid">المتوسط</string>
+    <string name="price_label_highest_listing">أعلى إدراج</string>
+    <string name="price_label_direct_low">Direct الأدنى</string>
+    <string name="price_note_raw_no_graded_source">يتم عرض سعر البطاقة غير المُقيَّمة (Raw) — لا يوجد مصدر لأسعار البطاقات المُقيَّمة — حدّد قيمتك الخاصة أو راجع روابط الأسعار في صفحة البطاقة</string>
+    <string name="price_note_markets_disagree">إدراج %1$s لم يطابق هذه البطاقة (بفارق %2$d×)؛ يتم استخدام %3$s</string>
+    <string name="price_note_capped">تم تقييم %1$s مثل %2$s (بيانات مبيعاته كانت أعلى)</string>
+    <string name="price_note_tcgplayer_sales">سعر %1$s من مبيعات TCGplayer</string>
+    <string name="price_note_sales_share">%1$s = %2$d%% من NM (مبيعات TCGplayer)</string>
+    <string name="price_note_estimated_share">%1$s مقدَّرة بنحو %2$d%% من NM (لا توجد بيانات مبيعات)</string>
+    <string name="data_http_error">HTTP %1$d لـ %2$s</string>
+    <string name="data_service_unavailable">خدمة البطاقات (%1$s) لا تستجيب حاليًا. يرجى المحاولة مرة أخرى بعد دقيقة.</string>
+</resources>

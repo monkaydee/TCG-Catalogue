@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding (first launch) -->
+    <string name="onboarding_skip">Overslaan</string>
+    <string name="onboarding_next">Volgende</string>
+    <string name="onboarding_get_started">Aan de slag</string>
+    <string name="onboarding_scan_title">Scan je kaarten</string>
+    <string name="onboarding_scan_text">Richt de camera op een kaart of importeer foto\'s uit je galerij. De naam en het nummer worden voor je uitgelezen.</string>
+    <string name="onboarding_binder_title">Je collectie in een binder</string>
+    <string name="onboarding_binder_text">Blader pagina voor pagina door je kaarten in een virtuele binder en sla ze om zoals in het echt.</string>
+    <string name="onboarding_prices_title">Prijzen en waarde</string>
+    <string name="onboarding_prices_text">Zie wat elke kaart waard is en volg de waarde van je hele collectie in de loop van de tijd.</string>
+    <!-- %1$d = current page, %2$d = number of pages -->
+    <string name="onboarding_page_of">Pagina %1$d van %2$d</string>
+</resources>

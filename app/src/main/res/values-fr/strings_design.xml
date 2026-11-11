@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="design_more">Autres actions</string>
+    <string name="design_game">Jeu</string>
+    <string name="design_select">Choisir</string>
+    <string name="design_sort">Trier</string>
+    <string name="design_layout">Affichage</string>
+    <string name="design_language">Langue</string>
+    <string name="design_capture">Photo</string>
+    <string name="design_alignment">Alignement</string>
+    <string name="design_inspection">Inspection</string>
+    <string name="design_result">Résultat</string>
+    <string name="design_stage">Étape %1$d sur %2$d · %3$s</string>
+    <string name="design_expanded">Déplié</string>
+    <string name="design_collapsed">Replié</string>
+    <string name="design_evidence">Sources du prix</string>
+    <string name="design_details">Détails de la carte</string>
+    <string name="design_slab_hint">Les prix correspondent à la société de grading, à la note et à la langue enregistrées. Les références non gradées sont séparées.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="grade_adjust">Ajuster les coins</string>
+    <string name="grade_adjust_hint">Faites glisser les quatre points sur les coins de la carte. La loupe aide à les placer précisément.</string>
+    <string name="grade_adjust_apply">Appliquer</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pop_title">PSA पॉपुलेशन</string>
+    <string name="pop_show">पॉपुलेशन दिखाएँ</string>
+    <string name="pop_none">पॉपुलेशन देखने के लिए इस कार्ड का सर्टिफ़िकेट नंबर वाला PSA स्लैब जोड़ें।</string>
+    <string name="pop_total">PSA द्वारा ग्रेड किए गए: %1$d</string>
+    <string name="pop_gem_rate">जेम रेट (PSA 10): %1$s %%</string>
+    <string name="decks_title">डेक</string>
+    <string name="decks_new">नया डेक</string>
+    <string name="decks_empty">अभी कोई डेक नहीं। एक बनाएँ, फिर डेक सूची पेस्ट करें या संग्रह से कार्ड जोड़ें।</string>
+    <string name="deck_cards">कार्ड: %1$d</string>
+    <string name="deck_value">डेक का मूल्य: %1$s</string>
+    <string name="deck_missing">अभी कम: %1$d · लागत: %2$s</string>
+    <string name="deck_missing_none">इस डेक के सभी कार्ड आपके पास हैं।</string>
+    <string name="deck_owned">पास %1$d / %2$d</string>
+    <string name="deck_import">डेक सूची पेस्ट करें</string>
+    <string name="deck_import_hint">हर पंक्ति में एक कार्ड, जैसे 4 Pikachu ex SVI 63</string>
+    <string name="deck_add_owned">संग्रह से जोड़ें</string>
+    <string name="deck_share">सूची शेयर करें</string>
+    <string name="deck_delete">डेक हटाएँ</string>
+    <string name="deck_delete_confirm">“%1$s” हटाएँ? आपका संग्रह नहीं बदलेगा।</string>
+    <string name="deck_rule_total">%1$s डेक में %2$d कार्ड होते हैं; इसमें %3$d हैं।</string>
+    <string name="deck_rule_min">%1$s डेक में कम से कम %2$d कार्ड चाहिए; इसमें %3$d हैं।</string>
+    <string name="deck_rule_copies">%1$d से ज़्यादा प्रतियाँ: %2$s</string>
+    <string name="deck_rules_note">सिर्फ़ कार्ड संख्या और प्रतियाँ जाँची जाती हैं; प्रतिबंधित कार्ड और फ़ॉर्मेट नहीं।</string>
+    <string name="deck_not_found">नहीं मिला: %1$s</string>
+    <string name="share_cards">पेज के रूप में शेयर करें</string>
+    <string name="share_cards_text">ये कार्ड (%1$d) शेयर मेनू से एक वेब पेज के रूप में भेजता है। ऐप कुछ अपलोड नहीं करता।</string>
+    <string name="share_with_prices">कीमतों के साथ</string>
+    <string name="share_without_prices">बिना कीमतों के</string>
+</resources>

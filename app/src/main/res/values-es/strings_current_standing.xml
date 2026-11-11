@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="learning_metadata_notice">Opcional: compartir identificadores de cartas y una huella OCR, sin fotos ni texto OCR legible. Los informes se conservan 90 días.</string>
+    <string name="learning_photos_paused">Compartir fotos está pausado hasta validar las comprobaciones de contenido e identidad. El escaneo local sigue funcionando.</string>
+    <string name="price_health_summary">%1$d cartas sin precio de mercado · %2$d identidades japonesas por corregir</string>
+</resources>
